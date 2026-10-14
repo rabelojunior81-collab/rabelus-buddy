@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-14T103810-0300-claude-code-c33594-0005",
+  "ts": "2026-10-14T10:38:10-03:00",
+  "utc": "2026-10-14T13:38:10.691Z",
+  "session": "claude-code-c33594",
+  "seq": 5,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-4-corpus-e-bootstrap",
+  "type": "pesquisa",
+  "summary": "BMAD: estável v6.12.2 (2026-10-11); v7 preview alpha com ETA 2026-10-16; skills bmad-spec/ticket/build",
+  "refs": [
+    "https://github.com/bmad-code-org/BMAD-METHOD"
+  ],
+  "data": {}
+}
