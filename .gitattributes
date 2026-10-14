@@ -8,3 +8,8 @@
 
 # Proveniência: bytes exatamente como importados (inclusive CRLF). Nunca normalizar.
 docs/00-proveniencia/** -text
+
+# Arquivos append-only do buddy-dev: ramos paralelos somam linhas no merge, sem conflito.
+.buddy-dev/CHANGELOG.md merge=union
+.buddy-dev/LEARNING-CURVE.md merge=union
+.buddy-dev/diario/*.md merge=union
