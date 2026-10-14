@@ -1,0 +1,23 @@
+name: Proposta / Proposal
+description: Ideia de capacidade ou mudança. Vira SPEC se aceita. / Feature idea; becomes a SPEC if accepted.
+labels: [proposta]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema / Problem
+      description: Quem sente a dor e em que situação.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Resultado desejado / Desired outcome
+      description: Como saberemos que deu certo (critério observável).
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Referências / References
+      description: Fontes primárias com data de acesso.
