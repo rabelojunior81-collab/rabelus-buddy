@@ -10,6 +10,6 @@
   },
   "scripts": {
     "bd": "node scripts/bd.mjs",
-    "test": "node --test scripts/test/"
+    "test": "node --test \"scripts/test/*.test.mjs\""
   }
 }
