@@ -1,8 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { isAbsolute, resolve } from 'node:path';
 
+// core.quotePath=false: caminhos com acento chegam como UTF-8, não escapados em octal.
 export function git(cwd, ...args) {
-  return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  return execFileSync('git', ['-c', 'core.quotePath=false', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 }
 
 export function tryGit(cwd, ...args) {

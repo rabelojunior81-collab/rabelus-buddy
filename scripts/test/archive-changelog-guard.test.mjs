@@ -48,6 +48,15 @@ test('guard encontra exclusões e aceita renomeações', () => {
   assert.deepEqual(findDeletions(r, { base: 'HEAD~1' }), ['docs/d/b.md']);
 });
 
+test('guard devolve caminhos com acento sem escape', () => {
+  const r = repo();
+  writeFileSync(join(r, 'docs/ação.md'), 'x\n');
+  g(r, 'add', '-A');
+  g(r, 'commit', '-q', '-m', 'acento');
+  g(r, 'rm', '-q', 'docs/ação.md');
+  assert.deepEqual(findDeletions(r, { staged: true }), ['docs/ação.md']);
+});
+
 test('changelog: numeração contínua e prune só com lições registradas', () => {
   const r = mkdtempSync(join(tmpdir(), 'buddy-cl-'));
   mkdirSync(join(r, '.buddy-dev'));

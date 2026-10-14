@@ -40,9 +40,8 @@ export function checkPath(path) {
   const p = path.replace(/\\/g, '/');
   if (EXEMPT.some((re) => re.test(p))) return [];
   const problems = [];
-  for (const seg of p.split('/')) {
-    if (!SAFE_SEGMENT.test(seg)) problems.push(`${p}: segmento "${seg}" fora do padrão ASCII sem espaços`);
-  }
+  const bad = p.split('/').filter((seg) => !SAFE_SEGMENT.test(seg));
+  if (bad.length) problems.push(`${p}: fora do padrão ASCII sem espaços (${bad.map((b) => `"${b}"`).join(', ')})`);
   const rule = RULES.find(([prefix]) => p.startsWith(prefix));
   if (rule) {
     const [prefix, re, desc] = rule;
