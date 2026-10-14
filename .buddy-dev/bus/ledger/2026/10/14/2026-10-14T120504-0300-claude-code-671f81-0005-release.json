@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T120504-0300-claude-code-671f81-0005",
+  "ts": "2026-10-14T12:05:04-03:00",
+  "utc": "2026-10-14T15:05:04.901Z",
+  "session": "claude-code-671f81",
+  "seq": 5,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-8-roadmap-e-plano-macro",
+  "type": "release",
+  "summary": "docs/50-planos/PLANO-MACRO.md",
+  "refs": [],
+  "data": {}
+}

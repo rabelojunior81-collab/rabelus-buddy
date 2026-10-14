@@ -47,3 +47,11 @@ Revisão 0.2 (F0.7): R1 custos (orçamento da 0.1 = US$ 60,82–62,82; uso agên
 ### #0010 · 2026-10-14T112002-0300 · claude-code-5c038b · processo
 
 O Pai disse que mergeou os PRs; o GitHub mostrou #1–#5 abertos e a main no commit de importação. Registrado e seguido em pilha (#6 sobre #5), sem presumir o merge.
+
+### #0011 · 2026-10-14T120553-0300 · claude-code-671f81 · decisao
+
+Decisões do Pai sobre a 0.2 viraram ADRs 0008–0012: orçamento US$ 50 com trabalho via ChatGPT Plus e OpenCode Go por ACP (conferido ao vivo: codex-acp 2.2.2 com login ChatGPT; opencode acp); aprovações com escopo; núcleo governado + composição; binários rabelus-buddy e rbuddy; canais globais.
+
+### #0012 · 2026-10-14T120554-0300 · claude-code-671f81 · doc
+
+F0.8: Roadmap v2 e Plano Macro v2 sobre a Revisão 0.2; retrospectiva da Fase 0 (75 commits, 27 testes, 12 ADRs, 10 fichas). PR #7.
