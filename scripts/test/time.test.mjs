@@ -29,17 +29,29 @@ test('zona UTC vira +00:00, nunca hora nua', () => {
   assert.equal(formats(T, 'UTC').stamp, '2026-10-14T131733+0000');
 });
 
-test('verifyClock mede o desvio contra o cabeçalho Date', async () => {
-  const fakeFetch = async () => ({ headers: new Map([['date', 'Wed, 14 Oct 2026 13:17:00 GMT']]) });
-  const ok = await verifyClock({ fetchImpl: fakeFetch, now: () => new Date('2026-10-14T13:17:30Z') });
+const cfOk = async () => ({ text: async () => 'fl=1\nts=1791983820.25\nh=x\n' }); // 2026-10-14T13:17:00.250Z
+const dateOk = async () => ({ headers: new Map([['date', 'Wed, 14 Oct 2026 13:17:00 GMT']]) });
+const down = async () => { throw new Error('offline'); };
+
+test('verifyClock mede o desvio na trace da Cloudflare', async () => {
+  const ok = await verifyClock({ fetchImpl: cfOk, now: () => new Date('2026-10-14T13:17:30Z') });
   assert.equal(ok.state, 'ok');
   assert.equal(ok.driftSec, 30);
-  const off = await verifyClock({ fetchImpl: fakeFetch, now: () => new Date('2026-10-14T13:27:00Z') });
+  assert.match(ok.source, /cloudflare/);
+  const off = await verifyClock({ fetchImpl: cfOk, now: () => new Date('2026-10-14T13:27:00Z') });
   assert.equal(off.state, 'drift');
 });
 
+test('verifyClock cai para o cabeçalho Date quando a primeira fonte falha', async () => {
+  const fetchImpl = (url, opts) => (url.includes('cloudflare') ? down() : dateOk(url, opts));
+  const r = await verifyClock({ fetchImpl, now: () => new Date('2026-10-14T13:17:05Z') });
+  assert.equal(r.state, 'ok');
+  assert.equal(r.driftSec, 5);
+  assert.match(r.source, /google/);
+});
+
 test('verifyClock degrada com honestidade quando não há rede', async () => {
-  const r = await verifyClock({ fetchImpl: async () => { throw new Error('offline'); } });
+  const r = await verifyClock({ fetchImpl: down });
   assert.equal(r.state, 'unverified');
   assert.match(r.reason, /offline/);
 });

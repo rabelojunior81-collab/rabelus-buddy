@@ -40,23 +40,43 @@ export function formats(date = new Date(), zone = ZONE) {
   };
 }
 
-// Compara o relógio local com o cabeçalho Date de um servidor confiável.
-// Sem rede, o resultado é declarado 'unverified', nunca inventado.
+// Fontes de referência, em ordem. Cicatriz de 2026-10-14: o cabeçalho Date do
+// api.github.com oscilou 1s, 10s e 31s em minutos (cache de CDN); a trace da
+// Cloudflare traz o horário do servidor com milissegundos e ficou em ±0,3s.
+export const CLOCK_SOURCES = [
+  {
+    url: 'https://www.cloudflare.com/cdn-cgi/trace',
+    method: 'GET',
+    read: async (res) => Number((await res.text()).match(/^ts=([\d.]+)$/m)?.[1]) * 1000 || null,
+  },
+  {
+    url: 'https://www.google.com',
+    method: 'HEAD',
+    read: async (res) => (res.headers.get('date') ? new Date(res.headers.get('date')).getTime() : null),
+  },
+];
+
+// Compara o relógio local com a primeira fonte que responder.
+// Sem nenhuma fonte, o resultado é declarado 'unverified', nunca inventado.
 export async function verifyClock({
-  url = 'https://api.github.com',
+  sources = CLOCK_SOURCES,
   limitSec = 120,
   fetchImpl = fetch,
   now = () => new Date(),
 } = {}) {
-  try {
-    const before = now().getTime();
-    const res = await fetchImpl(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
-    const after = now().getTime();
-    const header = res.headers.get('date');
-    if (!header) return { state: 'unverified', reason: 'sem cabeçalho Date', source: url };
-    const driftSec = Math.round(((before + after) / 2 - new Date(header).getTime()) / 1000);
-    return { state: Math.abs(driftSec) <= limitSec ? 'ok' : 'drift', driftSec, limitSec, source: url };
-  } catch (e) {
-    return { state: 'unverified', reason: e.message, source: url };
+  const errors = [];
+  for (const { url, method, read } of sources) {
+    try {
+      const before = now().getTime();
+      const res = await fetchImpl(url, { method, signal: AbortSignal.timeout(5000) });
+      const after = now().getTime();
+      const remote = await read(res);
+      if (!remote) throw new Error('resposta sem horário');
+      const driftSec = Math.round(((before + after) / 2 - remote) / 1000);
+      return { state: Math.abs(driftSec) <= limitSec ? 'ok' : 'drift', driftSec, limitSec, source: url };
+    } catch (e) {
+      errors.push(`${url}: ${e.message}`);
+    }
   }
+  return { state: 'unverified', reason: errors.join('; ') };
 }
