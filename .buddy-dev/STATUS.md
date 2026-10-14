@@ -43,7 +43,6 @@
 
 | Pendência | Tipo | Dono |
 |---|---|---|
-| Merge dos PRs #1, #2, #3, #4 | aguarda-Pai | Pai |
 | Aceite das ADRs 0003 e 0005 e do METODO.md | aguarda-Pai | Pai |
 | Sobrenome, avatar, emojis do buddy-dev | aguarda-Pai | Pai |
 | Canal dedicado de denúncia e segurança antes de tornar público | aguarda-Pai | Pai |
