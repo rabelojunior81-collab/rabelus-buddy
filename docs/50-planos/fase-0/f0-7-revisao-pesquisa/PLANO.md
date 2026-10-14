@@ -1,7 +1,7 @@
 # Plano — Sub-fase F0.7: Revisão 0.2 da pesquisa
 
 **SPEC:** ordem do Pai em 2026-10-14 ("pode seguir com a F0.7") sobre o escopo declarado em [`fase-0/PLANO.md`](../PLANO.md): corrigir os 9 limites de [`docs/00-proveniencia/README.md`](../../../00-proveniencia/README.md#limites-conhecidos-deste-material). Tamanho: sessão longa.
-**Estado:** em execução · **Branch:** `feat/f0-7-revisao-pesquisa` (empilhada sobre o PR #5) · **Atualizado em:** 2026-10-14T11:10:00-03:00
+**Estado:** concluído, aguarda aceite do Pai · **Branch:** `feat/f0-7-revisao-pesquisa` (empilhada sobre o PR #5) · **Atualizado em:** 2026-10-14T11:10:00-03:00
 
 ## Objetivo
 
@@ -26,7 +26,7 @@ Produzir `docs/10-pesquisa/rev-0.2/`: relatório e notas que substituem, nos pon
 
 Estado de cada item: `[ ]` aberto · `[~]` em andamento · `[x]` feito (commit).
 
-- [ ] R1 · [ ] R2 · [ ] R3 · [ ] R4 · [ ] R5 · [ ] R6 · [ ] R7
+- [x] R1 · [x] R2 · [x] R3 · [x] R4 · [x] R5 · [x] R6 · [x] R7 — commits de `a5e9ab2` a este PR
 
 ## Paralelismo
 
