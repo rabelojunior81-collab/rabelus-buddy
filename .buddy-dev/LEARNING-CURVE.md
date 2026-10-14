@@ -19,3 +19,5 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 7. **O próprio rito achou o bug.** O `bd post` reprovou nomes e revelou o problema de escape. → Rodar o rito em cada etapa, não só no fim.
 8. **O merge não é meu.** A política de permissões bloqueou `gh pr merge` sem revisão. → Fluxo de PRs empilhados; o Pai mergeia (ADR 0003, proposta).
 9. **Heredoc com aspas e crases quebra o shell.** Um bloco longo de arquivos falhou inteiro, sem gravar nada. → Arquivos longos vão pela ferramenta de escrita; mensagens de commit por `git commit -F -`.
+10. **Versão local não é versão suportada.** `node --test <dir>` passa no Node 26 e quebra no 24, que é o piso declarado. → A CI roda no piso; `npm test` usa glob explícito. Ferramenta de "trocar versão" também se mede: `npx node@24` rodou o 26.
+11. **Ferramenta de QA escreve onde a sessão nasceu.** O Playwright gravou artefatos no diretório de trabalho da sessão, que era a pasta de proveniência. → Próximas sessões abrem com o diretório de trabalho no repositório (`BOOTSTRAP.md`); artefatos de QA vão para `docs/registros/` quando forem evidência.
