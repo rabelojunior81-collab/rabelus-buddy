@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-14T104005-0300-claude-code-c33594-0006",
+  "ts": "2026-10-14T10:40:05-03:00",
+  "utc": "2026-10-14T13:40:05.690Z",
+  "session": "claude-code-c33594",
+  "seq": 6,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-5-governanca-e-roadmap",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-14T13:55:05.690Z",
+    "tookOverFrom": null
+  }
+}
