@@ -1,0 +1,15 @@
+{
+  "name": "rabelus-buddy",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rabelus Buddy — harness de agentes de IA agnóstico, extensível e multi-tudo. by Rabelus Lab",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "bd": "node scripts/bd.mjs",
+    "test": "node --test scripts/test/"
+  }
+}
