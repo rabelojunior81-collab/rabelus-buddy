@@ -1,0 +1,65 @@
+# CI do Rabelus Buddy: as regras pétreas conferidas por máquina.
+# Actions fixadas por SHA de commit (versões e SHAs verificados em 2026-10-14;
+# ficha: docs/20-conhecimento/ci-github-actions.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  regras:
+    name: Testes, nomes e nenhuma exclusão
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Testes
+        run: npm test
+
+      - name: Nomes na convenção
+        run: node scripts/bd.mjs names-check
+
+      - name: Nenhuma exclusão (regra pétrea, ADR 0004)
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            base="origin/$BASE_REF"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            base="$BEFORE"
+          else
+            echo "primeiro push: nada a comparar"; exit 0
+          fi
+          node scripts/bd.mjs guard --base "$base"
+
+  segredos:
+    name: Varredura de segredos (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Instalar gitleaks (binário MIT, checksum conferido)
+        env:
+          V: 8.30.1
+        run: |
+          curl -sSfL -o gitleaks.tgz "https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz"
+          curl -sSfL -o sums.txt "https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_checksums.txt"
+          grep " gitleaks_${V}_linux_x64.tar.gz$" sums.txt | sed "s/gitleaks_${V}_linux_x64.tar.gz$/gitleaks.tgz/" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+
+      - name: Varrer todo o histórico
+        run: ./gitleaks git --redact --no-banner --verbose .
