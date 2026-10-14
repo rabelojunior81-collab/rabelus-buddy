@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T120648-0300-claude-code-671f81-0008",
+  "ts": "2026-10-14T12:06:48-03:00",
+  "utc": "2026-10-14T15:06:48.421Z",
+  "session": "claude-code-671f81",
+  "seq": 8,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-8-roadmap-e-plano-macro",
+  "type": "session-end",
+  "summary": "Decisões do Pai em ADRs 0008–0012; F0.8 no PR #7 (CI verde); Fase 0 fechada aguardando aprovação do Roadmap e merges #1–#7",
+  "refs": [],
+  "data": {}
+}
