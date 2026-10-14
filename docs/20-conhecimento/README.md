@@ -40,3 +40,4 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [precos-llm.md](./precos-llm.md) | Preços de Anthropic, OpenAI e Google | 2026-10-14 (reverificar antes de 30/11) |
 | [sandbox-e-permissoes.md](./sandbox-e-permissoes.md) | Isolamento de execução e modelos de permissão | 2026-10-14 |
 | [projetos-comparaveis.md](./projetos-comparaveis.md) | Harnesses, agentes e gateways abertos | 2026-10-14 |
+| [assinaturas-de-agentes.md](./assinaturas-de-agentes.md) | ChatGPT Plus (Codex) e OpenCode Go via ACP | 2026-10-14 |
