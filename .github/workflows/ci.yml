@@ -35,6 +35,14 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: node scripts/bd.mjs surfaces --base "origin/${BASE_REF:-main}"
 
+      - name: Dependências conforme o protocolo (DEPENDENCIAS.md)
+        run: node scripts/bd.mjs deps
+
+      - name: Testes não se afrouxam (teste reprovado se corrige no código)
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node scripts/bd.mjs test-guard --base "origin/${BASE_REF:-main}"
+
       - name: Nenhuma exclusão (regra pétrea, ADR 0004)
         env:
           BASE_REF: ${{ github.base_ref }}
