@@ -1,0 +1,27 @@
+# Rotina semanal do protocolo de dependências (docs/30-governanca/DEPENDENCIAS.md).
+# Reprova se alguma verificação venceu; lista no resumo do job o que tem versão nova.
+name: Dependências (rotina semanal)
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # segunda-feira, 09:00 em Curitiba
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependencias:
+    name: Registro, prazos e versões novas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      - name: Protocolo e versões novas
+        run: |
+          set -o pipefail
+          node scripts/bd.mjs deps --latest | tee -a "$GITHUB_STEP_SUMMARY"

@@ -115,3 +115,7 @@ Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en c
 ### #0027 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · ferramenta
 
 bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.
+
+### #0028 · 2026-10-15T045853-0300 · claude-code-vs-code-3a6e29 · ferramenta
+
+bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 dias; rotina semanal na CI) e bd test-guard (a suíte não perde testes nem asserções; sem skip/todo/only), no bd post e na CI. Ordens do Pai de 2026-10-15. 57 testes.

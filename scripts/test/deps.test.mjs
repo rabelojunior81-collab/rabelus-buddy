@@ -79,3 +79,10 @@ test('tipo errado: dependência de runtime registrada como dev (ou o contrário)
   const r = base({ devDependencies: { openai: '7.34.0' } }, [entry()], { 'package-lock.json': '{}' });
   assert.match(checkDeps(r, { now: NOW }).join('\n'), /openai.*registrada como runtime/);
 });
+
+test('dependência proposta (sem aprovação do Pai) não pode ser instalada', () => {
+  const r = base({ devDependencies: { typescript: '7.0.2' } },
+    [entry({ name: 'typescript', version: '7.0.2', kind: 'dev', status: 'proposta', approvedBy: 'pendente' })],
+    { 'package-lock.json': '{}' });
+  assert.match(checkDeps(r, { now: NOW }).join('\n'), /typescript.*proposta.*aprovação do Pai/);
+});

@@ -7,6 +7,7 @@
 | [`METODO.md`](./METODO.md) | A cadeia de trabalho, o tamanho certo, o ciclo de uma unidade e como o lore vira produto |
 | [`CONVENCOES.md`](./CONVENCOES.md) | Hora, nomes, idiomas, git, fim de linha |
 | [`SUPERFICIES.md`](./SUPERFICIES.md) | Que superfícies atualizar em cada evento; o que o `bd surfaces` confere |
+| [`DEPENDENCIAS.md`](./DEPENDENCIAS.md) | Protocolo de dependências: registro, aprovação, rotina de atualização; o que o `bd deps` confere |
 | [`templates/`](./templates/) | SPEC e PLANO |
 | [`../../AGENTS.md`](../../AGENTS.md) | Conduta dos agentes e a tabela regra → mecanismo |
 

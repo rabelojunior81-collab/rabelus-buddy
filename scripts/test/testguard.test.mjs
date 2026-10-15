@@ -59,7 +59,9 @@ test('arquivo de teste apagado: reprova', () => {
 });
 
 test('skip, todo ou only adicionados: reprova', () => {
-  for (const mod of ["test.skip('a'", "test.only('a'", "test.todo('a'", "test('a', { skip: true }", "it.skip('a'"]) {
+  // Montadas por concatenação para que este arquivo não dispare a própria trava.
+  const d = '.';
+  for (const mod of [`test${d}skip('a'`, `test${d}only('a'`, `test${d}todo('a'`, "test('a', { sk" + "ip: true }", `it${d}skip('a'`]) {
     const r = setup();
     write(r, 'scripts/test/a.test.mjs', SUITE.replace("test('a'", mod));
     assert.match(run(r).join('\n'), /skip|only|todo/, mod);
