@@ -22,7 +22,7 @@ Tudo aqui é conferido por ferramenta (`bd names-check`, `bd guard`, `bd post`, 
 - pt-BR é o idioma primário; inglês é espelho ([ADR 0002](../60-decisoes/0002-idiomas-pt-br-e-en.md)).
 - **Superfície pública com espelho `.en.md`:** `README`, `CONTRIBUTING`. `SECURITY` é bilíngue no mesmo arquivo. `CODE_OF_CONDUCT.md` é o texto canônico em inglês, com tradução de cortesia `.pt-BR.md`.
 - Documentação interna (governança, specs, planos, conhecimento, corpus do buddy-dev): só pt-BR.
-- Código *(proposta do buddy-dev, aguarda aceite)*: identificadores em inglês (padrão global de código aberto); comentários e mensagens das ferramentas de desenvolvimento em pt-BR; strings do produto sempre via catálogo de tradução em `locales/`.
+- Código *(aceita pelo Pai em 2026-10-15)*: identificadores em inglês (padrão global de código aberto); comentários e mensagens das ferramentas de desenvolvimento em pt-BR; strings do produto sempre via catálogo de tradução em `locales/`.
 
 ## Git
 

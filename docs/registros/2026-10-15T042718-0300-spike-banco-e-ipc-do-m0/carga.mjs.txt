@@ -1,0 +1,75 @@
+// Spike: (1) N clientes simultâneos por IPC contra um dono; (2) kill -9 no meio e retomada.
+import { fork } from 'node:child_process';
+import net from 'node:net';
+import { DatabaseSync } from 'node:sqlite';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const dir = mkdtempSync(join(tmpdir(), 'spike-m0-'));
+const db = join(dir, 'nucleo.db');
+const ep = (n) => process.platform === 'win32' ? `\\\\.\\pipe\\rbuddy-spike-${process.pid}-${n}` : join(dir, `s${n}.sock`);
+const here = new URL('.', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+
+function startOwner(endpoint) {
+  return new Promise((res) => { const p = fork(join(here, 'dono.mjs'), [db, endpoint]); p.on('message', () => res(p)); });
+}
+
+function client(endpoint, session, n, lat) {
+  return new Promise((res, rej) => {
+    const s = net.connect(endpoint); let buf = ''; let got = 0; const t0 = new Map(); const errors = [];
+    s.setEncoding('utf8');
+    s.on('data', (d) => {
+      buf += d; let i;
+      while ((i = buf.indexOf('\n')) >= 0) {
+        const r = JSON.parse(buf.slice(0, i)); buf = buf.slice(i + 1);
+        lat.push(performance.now() - t0.get(r.id)); if (r.error) errors.push(r.error);
+        if (++got === n) { s.end(); res(errors); }
+      }
+    });
+    s.on('error', rej);
+    s.on('connect', () => { for (let k = 0; k < n; k++) { t0.set(k, performance.now()); s.write(JSON.stringify({ id: k, session, kind: 'passo', body: 'x'.repeat(200) }) + '\n'); } });
+  });
+}
+
+const pct = (a, p) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor((s.length - 1) * p)].toFixed(2); };
+
+// (1) carga
+const owner = await startOwner(ep(1));
+const CLIENTS = 8, PER = 1000, lat = [];
+const t = performance.now();
+const errs = (await Promise.all(Array.from({ length: CLIENTS }, (_, c) => client(ep(1), `s${c % 4}`, PER, lat)))).flat();
+const secs = (performance.now() - t) / 1000;
+owner.kill('SIGKILL');
+const r = new DatabaseSync(db);
+const total = r.prepare('SELECT COUNT(*) n FROM events').get().n;
+const gaps = r.prepare(`SELECT session, COUNT(*) n, MAX(seq) m FROM events GROUP BY session`).all().filter((x) => x.n !== x.m);
+console.log(JSON.stringify({ teste: 'R5-1 carga', clientes: CLIENTS, porCliente: PER, eventos: total, erros: errs.length, busy: errs.filter((e) => /busy|locked/i.test(e)).length, sessoesComBuraco: gaps.length, eventosPorSeg: Math.round(total / secs), p50ms: pct(lat, 0.5), p95ms: pct(lat, 0.95), p99ms: pct(lat, 0.99) }));
+r.close();
+
+// (2) kill -9 durante escrita contínua com efeito externo pendente
+const owner2 = await startOwner(ep(2));
+await new Promise((res) => {
+  const s = net.connect(ep(2)); s.on('error', () => res());
+  s.on('connect', () => {
+    s.write(JSON.stringify({ id: 'i', session: 'k', kind: 'effect-intent', body: 'api-call-42' }) + '\n');
+    let k = 0; const iv = setInterval(() => { for (let j = 0; j < 50; j++) s.write(JSON.stringify({ id: k++, session: 'k', kind: 'passo', body: 'y' }) + '\n'); }, 1);
+    setTimeout(() => { owner2.kill('SIGKILL'); clearInterval(iv); setTimeout(res, 200); }, 300);
+  });
+});
+const r2 = new DatabaseSync(db);
+const integ = r2.prepare('PRAGMA integrity_check').get();
+const k = r2.prepare(`SELECT COUNT(*) n, MAX(seq) m FROM events WHERE session='k'`).get();
+const effect = r2.prepare(`SELECT state FROM effects WHERE intent='api-call-42'`).get();
+console.log(JSON.stringify({ teste: 'R5-7 kill -9', integridade: Object.values(integ)[0], eventosK: k.n, maxSeqK: k.m, semBuraco: k.n === k.m, efeito: effect?.state ?? 'ausente' }));
+r2.close();
+
+// (3) retomada: o dono reabre o mesmo banco e continua a sequência
+const owner3 = await startOwner(ep(3));
+const lat3 = [];
+await client(ep(3), 'k', 10, lat3);
+owner3.kill('SIGKILL');
+const r3 = new DatabaseSync(db);
+const k3 = r3.prepare(`SELECT COUNT(*) n, MAX(seq) m FROM events WHERE session='k'`).get();
+console.log(JSON.stringify({ teste: 'retomada', eventosK: k3.n, maxSeqK: k3.m, continuaSemBuraco: k3.n === k3.m && k3.n === k.n + 10 }));
+console.log(JSON.stringify({ node: process.version, sqlite: r3.prepare('select sqlite_version() v').get().v, plataforma: process.platform }));

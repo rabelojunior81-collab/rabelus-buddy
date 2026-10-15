@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T044657-0300-claude-code-vs-code-3a6e29-0001",
+  "ts": "2026-10-15T04:46:57-03:00",
+  "utc": "2026-10-15T07:46:57.872Z",
+  "session": "claude-code-vs-code-3a6e29",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/spec-m0-nucleo-governado-r1",
+  "type": "session-start",
+  "summary": "decisões do Pai sobre a SPEC 0001: provedores por assinatura (OpenCode Go prioridade; ChatGPT OAuth), teto US$20, convenção aceita, SDKs OpenAI/Anthropic/Gemini/OpenCode com protocolo de atualização; explicar build x testes",
+  "refs": [],
+  "data": {}
+}

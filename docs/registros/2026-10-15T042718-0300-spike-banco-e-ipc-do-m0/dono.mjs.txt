@@ -1,0 +1,43 @@
+// Spike R5-1 e R5-7: um processo dono do banco (node:sqlite, WAL), clientes por IPC (named pipe / unix socket).
+// Uso: node dono.mjs <db> <endpoint>
+import { DatabaseSync } from 'node:sqlite';
+import net from 'node:net';
+import fs from 'node:fs';
+
+const [dbPath, endpoint] = process.argv.slice(2);
+const db = new DatabaseSync(dbPath, { timeout: 5000 });
+db.exec(`PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;
+CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY, session TEXT NOT NULL, seq INTEGER NOT NULL, kind TEXT NOT NULL, body TEXT, UNIQUE(session, seq));
+CREATE TABLE IF NOT EXISTS effects(intent TEXT PRIMARY KEY, state TEXT NOT NULL);`);
+const nextSeq = db.prepare('SELECT COALESCE(MAX(seq),0)+1 n FROM events WHERE session=?');
+const ins = db.prepare('INSERT INTO events(session,seq,kind,body) VALUES(?,?,?,?)');
+const eff = db.prepare('INSERT OR REPLACE INTO effects(intent,state) VALUES(?,?)');
+
+function append(session, kind, body) {
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    const seq = nextSeq.get(session).n;
+    ins.run(session, seq, kind, body);
+    if (kind === 'effect-intent') eff.run(body, 'pendente');
+    if (kind === 'effect-receipt') eff.run(body, 'concluido');
+    db.exec('COMMIT');
+    return seq;
+  } catch (e) { db.exec('ROLLBACK'); throw e; }
+}
+
+if (process.platform !== 'win32' && fs.existsSync(endpoint)) fs.unlinkSync(endpoint);
+net.createServer((sock) => {
+  let buf = '';
+  sock.setEncoding('utf8');
+  sock.on('data', (d) => {
+    buf += d;
+    let i;
+    while ((i = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, i); buf = buf.slice(i + 1);
+      const m = JSON.parse(line);
+      try { sock.write(JSON.stringify({ id: m.id, seq: append(m.session, m.kind, m.body) }) + '\n'); }
+      catch (e) { sock.write(JSON.stringify({ id: m.id, error: e.message }) + '\n'); }
+    }
+  });
+  sock.on('error', () => {});
+}).listen(endpoint, () => process.send ? process.send('pronto') : console.log('pronto'));

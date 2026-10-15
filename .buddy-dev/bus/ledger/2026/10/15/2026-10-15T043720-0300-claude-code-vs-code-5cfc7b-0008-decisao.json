@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T043720-0300-claude-code-vs-code-5cfc7b-0008",
+  "ts": "2026-10-15T04:37:20-03:00",
+  "utc": "2026-10-15T07:37:20.008Z",
+  "session": "claude-code-vs-code-5cfc7b",
+  "seq": 8,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/spec-m0-nucleo-governado-r1",
+  "type": "decisao",
+  "summary": "SPEC 0001 ganha decisão 8 (TypeScript apagável sem build, workspaces core/client/cli); plano de fase M0 proposto com 8 sub-fases",
+  "refs": [],
+  "data": {}
+}

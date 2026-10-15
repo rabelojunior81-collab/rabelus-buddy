@@ -1,0 +1,5 @@
+export interface Reserva { id: string; usd: number }
+export function reservar(saldo: number, custoMax: number): Reserva | null {
+  if (custoMax > saldo) return null;
+  return { id: 'r1', usd: custoMax };
+}

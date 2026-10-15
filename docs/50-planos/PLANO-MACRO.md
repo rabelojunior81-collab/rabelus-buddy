@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-15T04:24:23-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-15T17:16:41-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -17,7 +17,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 
 ## M0 — Núcleo governado
 
-- [~] SPEC do M0 aprovada pelo Pai (em preparação; spike de banco e IPC medido em 2026-10-15)
+- [x] SPEC do M0 aprovada pelo Pai (2026-10-15): [rascunho 0001](../40-specs/0001-nucleo-governado/SPEC.md) entregue em 2026-10-15, com spike de banco e IPC; [plano de fase](./m0/PLANO.md) proposto
 - [ ] Modelo de sessão, execução, passo e evento compartilhado entre interfaces [§8; R5]
 - [ ] Um processo dono do banco; IPC para os demais [R5-1]
 - [ ] Log de eventos em SQLite com projeções; retomada após `kill -9` [R5-7; §8]

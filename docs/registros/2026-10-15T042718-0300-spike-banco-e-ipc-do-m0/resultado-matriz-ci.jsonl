@@ -1,0 +1,30 @@
+{"matriz":"macos-latest, 24","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":28938,"p50ms":"141.43","p95ms":"254.76","p99ms":"266.44"}}
+{"matriz":"macos-latest, 24","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":13166,"maxSeqK":13166,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"macos-latest, 24","r":{"teste":"retomada","eventosK":13176,"maxSeqK":13176,"continuaSemBuraco":true}}
+{"matriz":"macos-latest, 24","r":{"node":"v24.20.0","sqlite":"3.53.4","plataforma":"darwin"}}
+{"matriz":"macos-latest, 24","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.078","p95ms":"0.143","p99ms":"0.238"}}
+{"matriz":"macos-latest, 26","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":24485,"p50ms":"157.10","p95ms":"300.26","p99ms":"310.80"}}
+{"matriz":"macos-latest, 26","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":10428,"maxSeqK":10428,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"macos-latest, 26","r":{"teste":"retomada","eventosK":10438,"maxSeqK":10438,"continuaSemBuraco":true}}
+{"matriz":"macos-latest, 26","r":{"node":"v26.12.0","sqlite":"3.54.0","plataforma":"darwin"}}
+{"matriz":"macos-latest, 26","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.069","p95ms":"0.123","p99ms":"0.244"}}
+{"matriz":"ubuntu-latest, 24","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":2182,"p50ms":"2927.70","p95ms":"3588.70","p99ms":"3601.46"}}
+{"matriz":"ubuntu-latest, 24","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":2766,"maxSeqK":2766,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"ubuntu-latest, 24","r":{"teste":"retomada","eventosK":2776,"maxSeqK":2776,"continuaSemBuraco":true}}
+{"matriz":"ubuntu-latest, 24","r":{"node":"v24.21.0","sqlite":"3.53.4","plataforma":"linux"}}
+{"matriz":"ubuntu-latest, 24","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.080","p95ms":"0.147","p99ms":"0.325"}}
+{"matriz":"windows-latest, 26","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":2941,"p50ms":"2675.47","p95ms":"2696.00","p99ms":"2696.76"}}
+{"matriz":"windows-latest, 26","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":1352,"maxSeqK":1352,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"windows-latest, 26","r":{"teste":"retomada","eventosK":1362,"maxSeqK":1362,"continuaSemBuraco":true}}
+{"matriz":"windows-latest, 26","r":{"node":"v26.12.0","sqlite":"3.54.0","plataforma":"win32"}}
+{"matriz":"windows-latest, 26","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.190","p95ms":"0.320","p99ms":"0.440"}}
+{"matriz":"windows-latest, 24","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":331,"p50ms":"24075.83","p95ms":"24125.86","p99ms":"24126.54"}}
+{"matriz":"windows-latest, 24","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":440,"maxSeqK":440,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"windows-latest, 24","r":{"teste":"retomada","eventosK":450,"maxSeqK":450,"continuaSemBuraco":true}}
+{"matriz":"windows-latest, 24","r":{"node":"v24.21.0","sqlite":"3.53.4","plataforma":"win32"}}
+{"matriz":"windows-latest, 24","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.194","p95ms":"0.393","p99ms":"2.240"}}
+{"matriz":"ubuntu-latest, 26","r":{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":8810,"p50ms":"387.22","p95ms":"822.34","p99ms":"851.17"}}
+{"matriz":"ubuntu-latest, 26","r":{"teste":"R5-7 kill -9","integridade":"ok","eventosK":3499,"maxSeqK":3499,"semBuraco":true,"efeito":"pendente"}}
+{"matriz":"ubuntu-latest, 26","r":{"teste":"retomada","eventosK":3509,"maxSeqK":3509,"continuaSemBuraco":true}}
+{"matriz":"ubuntu-latest, 26","r":{"node":"v26.12.0","sqlite":"3.54.0","plataforma":"linux"}}
+{"matriz":"ubuntu-latest, 26","r":{"teste":"latência ida e volta, 1 pedido por vez","n":2000,"p50ms":"0.148","p95ms":"0.212","p99ms":"0.511"}}

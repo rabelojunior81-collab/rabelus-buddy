@@ -19,3 +19,5 @@ Uma decisão aceita **não se edita** para mudar de ideia: escreve-se uma ADR no
 | [0011](./0011-binarios-da-cli.md) | Binários `rabelus-buddy` e `rbuddy` | aceita |
 | [0012](./0012-canais-globais-rede-e-buzz.md) | Canais globais; web como rede; regras do Buzz | aceita |
 | [0013](./0013-stack-mobile-e-web.md) | Stack mobile e Web UI: Expo universal (A) até a Web React DOM separada (B), sobre pacote de cliente TS | aceita |
+| [0014](./0014-assinaturas-consumidas-pelo-nucleo.md) | Assinaturas consumidas pelo núcleo: OpenCode Go primeiro, ChatGPT pelo Sign in with ChatGPT, API paga como reserva (ordem substituída pela 0015) | aceita |
+| [0015](./0015-ordem-de-provedores.md) | Ordem de provedores: OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga) | aceita |

@@ -1,0 +1,3 @@
+import { reservar } from './orcamento.ts';
+const n: number = reservar(10, 3); // erro de tipo: retorna Reserva | null
+console.log('rodou mesmo com erro de tipo:', n);

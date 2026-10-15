@@ -116,6 +116,21 @@ Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en c
 
 bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.
 
+### #0028 · 2026-10-15T043158-0300 · claude-code-vs-code-438d04 · doc
+
+SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decisões técnicas com fonte (node:sqlite + adaptador, JSON-RPC sobre node:net, GPT-6 Luna via openai, parseArgs/readline, i18next), 4 dúvidas bloqueantes ao Pai. Spike de banco e IPC registrado; fichas banco-e-ipc e bibliotecas-do-nucleo.
+
+### #0029 · 2026-10-15T043545-0300 · claude-code-vs-code-5cfc7b · aprendizado
+
+Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela. AGENTS §5.4/§5.7, checklist do PR, linha Seguindo em paralelo no STATUS; LEARNING-CURVE #6.
+
+### #0030 · 2026-10-15T044039-0300 · claude-code-vs-code-5cfc7b · doc
+
+M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (store:false vira requisito), decisão 8 (TypeScript sem build), plano de fase M0 (8 sub-fases), desenho dos 21 testes, spike de banco e IPC aprovado em 3 SOs × Node 24/26 no CI.
+
+### #0031 · 2026-10-15T045425-0300 · claude-code-vs-code-3a6e29 · decisao
+
+Respostas do Pai à SPEC 0001 aplicadas: ADR 0014 (OpenCode Go primeiro, ChatGPT por Sign in with ChatGPT, API paga como reserva), teto US$ 20, convenção de código aceita, SDKs OpenAI/Anthropic/Gemini (+OpenCode no M1). SPEC revisão 2 com 26 critérios; explicação de build e testes com prova executada.
 ### #0028 · 2026-10-15T045853-0300 · claude-code-vs-code-3a6e29 · ferramenta
 
 bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 dias; rotina semanal na CI) e bd test-guard (a suíte não perde testes nem asserções; sem skip/todo/only), no bd post e na CI. Ordens do Pai de 2026-10-15. 57 testes.
@@ -123,3 +138,11 @@ bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 
 ### #0029 · 2026-10-15T050153-0300 · claude-code-vs-code-3a6e29 · correcao
 
 bd deps --latest não era aceito pelo parser (opção documentada, não declarada; já na main pelo PR #18). Corrigido, com teste que exige que toda opção da ajuda seja aceita (LEARNING-CURVE #7).
+
+### #0032 · 2026-10-15T050534-0300 · claude-code-vs-code-3a6e29 · processo
+
+Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR 0014), bd deps e bd test-guard (PR #18), --latest corrigido (PR #19), registro de dependências preenchido, explicação de build e testes com prova. Post: A Pista Estava Quase Certa.
+
+### #0033 · 2026-10-15T171930-0300 · claude-code-vs-code-7ebb05 · decisao
+
+SPEC 0001 aprovada pelo Pai (rev. 3, decisão 8 = A) e mergeada; ADR 0015: ordem de provedores OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga); typescript e @types/node aprovados no registro. Regra: aprovado é mergeado na hora. Ficha pi-agent para a pergunta de forkar o Pi.

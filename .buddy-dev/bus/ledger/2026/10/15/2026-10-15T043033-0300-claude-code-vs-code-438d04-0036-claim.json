@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-15T043033-0300-claude-code-vs-code-438d04-0036",
+  "ts": "2026-10-15T04:30:33-03:00",
+  "utc": "2026-10-15T07:30:33.915Z",
+  "session": "claude-code-vs-code-438d04",
+  "seq": 36,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/spec-m0-nucleo-governado-r1",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-15T08:00:33.915Z",
+    "tookOverFrom": null
+  }
+}

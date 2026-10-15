@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T043201-0300-claude-code-vs-code-438d04-0042",
+  "ts": "2026-10-15T04:32:01-03:00",
+  "utc": "2026-10-15T07:32:01.721Z",
+  "session": "claude-code-vs-code-438d04",
+  "seq": 42,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/spec-m0-nucleo-governado-r1",
+  "type": "session-end",
+  "summary": "ADR 0013 aceita (PR #15); gate do Blog corrigido para PRs intermediários; auditoria de superfícies com bd surfaces (PR #16); spike de banco e IPC; SPEC 0001 do M0 em rascunho (aguarda o Pai); post Doze Lugares Que Diziam Coisas Velhas",
+  "refs": [],
+  "data": {}
+}
