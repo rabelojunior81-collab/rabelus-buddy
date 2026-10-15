@@ -1,0 +1,28 @@
+name: Falha / Bug
+description: Algo não funciona como documentado. / Something does not work as documented.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: O que aconteceu / What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: O que era esperado / Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Como reproduzir / Steps to reproduce
+      description: Comandos, versões (node --version, git --version) e sistema operacional.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidência / Evidence
+      description: Logs, saídas, capturas. Sem segredos. / No secrets.

@@ -1,0 +1,21 @@
+# Dependências e artefatos de build
+node_modules/
+dist/
+coverage/
+
+# Segredos: nunca no repositório
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Rascunho local sem garantia de preservação
+workspace/
