@@ -68,11 +68,11 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [ ] Multi-provedor por API completo (Anthropic, OpenAI, Google) com diferenças declaradas [§8]
 - [ ] Plugins, scripts e skills com permissão e isolamento; MCP; A2A registrado [§8]
 - [ ] Tracing, avaliação, controle de custo e auditoria (OTel GenAI) [§8]
-- [ ] Web UI · desktop · mobile cliente fino — [?] stack mobile
+- [ ] Web UI · desktop · mobile cliente fino — stack proposta na ADR 0013
 - [ ] Distribuição por instaladores; lojas depois
 - [ ] Abertura pública: buscas de marca (R6), canal de denúncia e segurança, rulesets, PVR
 
 ## Decisões pendentes do Pai
 
-- [?] Stack do app mobile (antes do M5)
-- [?] Aceite do `METODO.md` e da ADR 0005
+- [?] Stack do app mobile e da Web UI: ADR 0013 (proposta, 2026-10-15)
+- [x] Aceite do `METODO.md` e da ADR 0005 (2026-10-15)

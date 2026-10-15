@@ -87,3 +87,11 @@ Avatar do Buddy Fenix: v3-b, escolhido pelo Pai. Retrato na linguagem da famíli
 ### #0020 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · aprendizado
 
 Duas tentativas recusadas (canteiro; nave estelar) antes do v3: eu li o meu próprio texto e o acervo errado em vez do artefato irmão. Lição 1 de 2026-10-15 na LEARNING-CURVE: referência é o artefato do mesmo tipo, enviado como imagem, e mostro ao Pai antes de commitar.
+
+### #0021 · 2026-10-15T035409-0300 · claude-code-vs-code-14f5bb · doc
+
+Blog atualizado: Buddy Fenix com avatar próprio, cor #3fb8a8 e emojis na ficha de autor, nos cards (pt/en) e nas bios do rodapé; governança v2.6; proveniência em evidence/buddy-dev. rabelus-lab-blog 6ae9895, gate VERDE, QA em 1440 e 375.
+
+### #0022 · 2026-10-15T035631-0300 · claude-code-vs-code-14f5bb · pesquisa
+
+Stack mobile e Web UI: ficha stacks-mobile-e-web com versões oficiais de 2026-10-15; ADR 0013 proposta (Expo universal sobre pacote de cliente TypeScript; Web UI React DOM separada quando as telas densas pedirem; spike no M5). Aguarda o Pai.

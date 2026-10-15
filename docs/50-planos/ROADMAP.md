@@ -23,7 +23,7 @@ O Rabelus Buddy é um **núcleo governado** (aprovação, orçamento, memória c
 | **M2 — Execução isolada** | Spike `sandbox-runtime` × `mxc-sdk`; nível S1 em macOS, Linux e Windows; rede negada por padrão com proxy e lista de domínios; worktree por sessão com integração aprovada | Tentativas de ler, escrever e acessar a rede fora do permitido falham nos três SOs; comandos no workspace rodam sem prompt | RAM e latência por comando; taxa de bloqueio indevido | M0 |
 | **M3 — Memória e identidade** | Memória em níveis com claims e evidência, escrita do agente só com aprovação, expiração e exclusão; identidade versionada carregada por sessão | O agente propõe uma memória, o humano aprova, a recuperação cita a fonte; uma memória é apagada (arquivada) e some da recuperação | precisão de recuperação; cobertura de proveniência | M0 |
 | **M4 — Canais por composição** | Avaliação de OpenClaw, nanobot e gateway do Hermes como transporte; Telegram como canal de referência; regras da ADR 0012 (só mensagens endereçadas, conteúdo de sala não confiável) | Uma tarefa iniciada e aprovada por mensagem; reentrega do mesmo evento processada uma vez | entrega de eventos; duplicatas tratadas | M0, M1 |
-| **M5+ — Superfícies e operação** | Demais canais (WhatsApp, Slack, Teams, Discord, e-mail, Buzz), multi-provedor por API, observabilidade e avaliação, Web UI, desktop, mobile (stack a decidir), distribuição, abertura pública | Definidas quando o uso real do M0–M4 indicar a ordem | — | M0–M4 |
+| **M5+ — Superfícies e operação** | Demais canais (WhatsApp, Slack, Teams, Discord, e-mail, Buzz), multi-provedor por API, observabilidade e avaliação, Web UI, desktop, mobile (stack: ADR 0013, proposta), distribuição, abertura pública | Definidas quando o uso real do M0–M4 indicar a ordem | — | M0–M4 |
 
 ## Riscos que o roadmap carrega
 
@@ -34,8 +34,8 @@ O Rabelus Buddy é um **núcleo governado** (aprovação, orçamento, memória c
 
 ## Decisões ainda pendentes
 
-- Stack do app mobile (antes do M5).
-- Aceite do `METODO.md` e da ADR 0005 (barramento).
+- Stack do app mobile e da Web UI: [ADR 0013](../60-decisoes/0013-stack-mobile-e-web.md) proposta em 2026-10-15 (recomendação: Expo universal + pacote de cliente TypeScript); aguarda o Pai.
+- ~~Aceite do `METODO.md` e da ADR 0005~~: aceitos pelo Pai em 2026-10-15.
 
 ## Histórico
 
