@@ -1,0 +1,4 @@
+{"teste":"R5-1 carga","clientes":8,"porCliente":1000,"eventos":8000,"erros":0,"busy":0,"sessoesComBuraco":0,"eventosPorSeg":12675,"p50ms":"609.13","p95ms":"613.07","p99ms":"613.47"}
+{"teste":"R5-7 kill -9","integridade":"ok","eventosK":2052,"maxSeqK":2052,"semBuraco":true,"efeito":"pendente"}
+{"teste":"retomada","eventosK":2062,"maxSeqK":2062,"continuaSemBuraco":true}
+{"node":"v26.11.1","sqlite":"3.53.4","plataforma":"win32"}
