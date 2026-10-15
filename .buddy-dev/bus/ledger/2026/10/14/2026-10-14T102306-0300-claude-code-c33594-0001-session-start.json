@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T102306-0300-claude-code-c33594-0001",
+  "ts": "2026-10-14T10:23:06-03:00",
+  "utc": "2026-10-14T13:23:06.646Z",
+  "session": "claude-code-c33594",
+  "seq": 1,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-2-ferramentas",
+  "type": "session-start",
+  "summary": "F0 Organizar a Casa: ferramentas, esqueleto, corpus buddy-dev, governança, CI, Blog",
+  "refs": [],
+  "data": {}
+}

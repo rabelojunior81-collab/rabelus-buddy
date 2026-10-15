@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-14T102508-0300-claude-code-c33594-0003",
+  "ts": "2026-10-14T10:25:08-03:00",
+  "utc": "2026-10-14T13:25:08.516Z",
+  "session": "claude-code-c33594",
+  "seq": 3,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-2-ferramentas",
+  "type": "aprendizado",
+  "summary": "git escapa caminhos com acento; core.quotePath=false no lint e na guarda",
+  "refs": [
+    "460d1ca"
+  ],
+  "data": {}
+}
