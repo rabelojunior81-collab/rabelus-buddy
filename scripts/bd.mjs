@@ -9,6 +9,8 @@ import { stampedName, checkPath } from './lib/names.mjs';
 import { startSession, logEvent, endSession, status, claim, release, currentSession, lastSession } from './lib/bus.mjs';
 import { checkBlogDelivery, blogDir } from './lib/blog.mjs';
 import { surfaceGaps } from './lib/surfaces.mjs';
+import { checkDeps, latestVersions } from './lib/deps.mjs';
+import { testGuard } from './lib/testguard.mjs';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
 import { findDeletions } from './lib/guard.mjs';
@@ -34,6 +36,8 @@ const HELP = `bd — buddy-dev
   post                               rito DEPOIS: nomes, exclusões, push, sessão, Blog
   blog-check                         post e daily da sessão publicados no Blog?
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
+  deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
+  test-guard [--base origin/main]    a suíte não perde testes nem asserções; sem skip/todo/only
 `;
 
 const { values: o, positionals: pos } = parseArgs({
@@ -174,6 +178,30 @@ const commands = {
     } else console.log('nenhuma exclusão');
   },
 
+  async deps() {
+    const r = root();
+    const problems = checkDeps(r);
+    problems.forEach((p) => console.log(`  ✖ ${p}`));
+    if (problems.length) process.exitCode = 1;
+    else console.log('dependências conforme o protocolo (docs/30-governanca/DEPENDENCIAS.md)');
+    if (o.latest) {
+      for (const d of await latestVersions(r)) {
+        if (d.error) console.log(`  ⚠ ${d.name}: consulta falhou (${d.error})`);
+        else if (d.outdated) console.log(`  ⚠ ${d.name}: registrada ${d.registered}, latest ${d.latest} (${d.license})`);
+        else console.log(`  ✔ ${d.name} ${d.registered} é a latest`);
+      }
+    }
+  },
+
+  'test-guard'() {
+    const problems = testGuard(root(), { base: o.base ?? 'origin/main' });
+    problems.forEach((p) => console.log(`  ✖ ${p}`));
+    if (problems.length) {
+      console.log('teste reprovado se corrige no código, nunca afrouxando o teste');
+      process.exitCode = 1;
+    } else console.log('suíte de testes íntegra contra a base');
+  },
+
   surfaces() {
     const gaps = surfaceGaps(root(), { base: o.base ?? 'origin/main' });
     gaps.forEach((g) => console.log(`  ✖ ${g}`));
@@ -224,6 +252,12 @@ const commands = {
     const gaps = surfaceGaps(r, { base: o.base ?? 'origin/main' });
     if (gaps.length) fail(`superfícies desatualizadas (docs/30-governanca/SUPERFICIES.md):\n    ${gaps.join('\n    ')}`);
     else ok('superfícies coerentes');
+    const depProblems = checkDeps(r);
+    if (depProblems.length) fail(`dependências fora do protocolo (docs/30-governanca/DEPENDENCIAS.md):\n    ${depProblems.join('\n    ')}`);
+    else ok('dependências conforme o protocolo');
+    const weakened = testGuard(r, { base: o.base ?? 'origin/main' });
+    if (weakened.length) fail(`suíte de testes enfraquecida:\n    ${weakened.join('\n    ')}`);
+    else ok('suíte de testes íntegra contra a base');
     const s = syncInfo(r);
     if (s.dirty) fail(`alterações não commitadas:\n${s.dirty}`);
     else ok('árvore limpa');

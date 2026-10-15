@@ -11,7 +11,9 @@ Thanks for your interest. Rabelus Buddy is developed by humans and AI agents und
 3. **Small, frequent commits, pushed each time.** Messages follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/): type and scope in English, description in Portuguese (the project's primary language).
 4. **Document → Spec → Test → Code.** Behavior changes require an approved SPEC and a test before the code.
 5. **Nothing is deleted.** To retire something: `npm run bd -- archive <path> --reason "..." --name "..."`. CI rejects deletions.
-6. **After:** `npm test` and `npm run bd -- post`. Open the PR using the template. Once CI is green, the PR is merged with a merge commit (no squash) to keep the granular history.
+6. **Dependencies** only through the [protocol](./docs/30-governanca/DEPENDENCIAS.md): registry entry, exact version, approval, `bd deps` green.
+7. **A failing test is fixed in the code.** Removing or weakening tests fails CI (`bd test-guard`).
+8. **After:** `npm test` and `npm run bd -- post`. Open the PR using the template. Once CI is green, the PR is merged with a merge commit (no squash) to keep the granular history.
 
 ## Requirements
 
