@@ -1,8 +1,8 @@
 # SPEC — M0: Núcleo governado
 
-**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 2 · **Estado:** rascunho
-**Autor:** buddy-dev (Buddy Fenix), sessões `claude-code-vs-code-438d04`, `-5cfc7b`, `-3a6e29` · **Criada em:** 2026-10-15T04:29:18-03:00 · **Aprovada por:** pendente
-**Revisão anterior:** revisão 1 (rascunho, nunca aprovada), commit `6083ac2`. A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
+**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 3 · **Estado:** aprovada
+**Autor:** buddy-dev (Buddy Fenix), sessões `claude-code-vs-code-438d04`, `-5cfc7b`, `-3a6e29` · **Criada em:** 2026-10-15T04:29:18-03:00 · **Aprovada por:** Pai, 2026-10-15 ("Aprovada, DEVE Mergear"), com a decisão 8 = A
+**Revisões anteriores:** revisão 1 (rascunho), commit `6083ac2`; revisão 2 (rascunho), commit `1213bd2`. A revisão 3 é a 2 aprovada pelo Pai, com a ordem de provedores da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md) e a decisão 8 resolvida (A). A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
 
 ## Problema e resultado
 
@@ -11,7 +11,7 @@ O Pai quer operar agentes de IA sob aprovação humana, orçamento fechado e reg
 O M0 entrega o **núcleo governado mínimo**:
 - um processo local dono do estado;
 - uma CLI (`rabelus-buddy` / `rbuddy`);
-- um loop de agente que trabalha **dentro das assinaturas do Pai**: OpenCode Go primeiro, ChatGPT Plus pelo Sign in with ChatGPT, e API paga só como reserva.
+- um loop de agente que trabalha **dentro das assinaturas do Pai**, na ordem da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md): OpenCode Go, Ollama Cloud, ChatGPT Plus (Sign in with ChatGPT) e, por último, a API paga pelo OpenRouter.
 
 Toda ação passa pelo motor de política, todo consumo passa pelo orçamento atômico (dólares e janelas), e todo fato vira evento num log que sobrevive a `kill -9`.
 
@@ -40,8 +40,9 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
    - `write_file`: `ask`, com compare-and-set pelo hash da última leitura (R5-3, R5-8);
    - `run_command`: sempre `ask` até o M2;
    - "apagar" não existe; o equivalente é arquivar, e arquivar é `ask`.
-7. **Provedores** (ADR 0014), atrás de uma interface única, com um adaptador por rota:
+7. **Provedores** (ADRs 0014 e 0015), atrás de uma interface única, com um adaptador por rota, nesta ordem:
    - **OpenCode Go** (prioridade): base `https://opencode.ai/inference/go/v1`, chave da assinatura; adaptadores por rota (`openai` para `/responses` e `/chat/completions`; `@anthropic-ai/sdk` para `/messages`; `@google/genai` para a rota Google); `User-Agent: rabelus-buddy/<versão>` e `x-opencode-session` estável por sessão, como os termos exigem.
+   - **Ollama Cloud**: `https://ollama.com/api`, `Authorization: Bearer`; a rota (API nativa ou compatível com OpenAI/Anthropic) é fixada na ficha antes do código.
    - **ChatGPT Plus por Sign in with ChatGPT** (fluxo de código aberto):
      - `rbuddy login chatgpt` abre o navegador;
      - OAuth com PKCE S256 e callback em `http://127.0.0.1:<porta>/…`;
@@ -49,7 +50,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
      - escopos `openid profile email offline_access resource.invoke chatgpt.tokens.use.direct`;
      - refresh token rotativo;
      - Responses API com `store: false` e `stream: true`, sem os campos que a prévia proíbe; sucesso só em `response.completed`.
-   - **API paga por token** (OpenAI, Anthropic ou Gemini): reserva, desligada por padrão, com teto de **US$ 20/mês**.
+   - **API paga = OpenRouter** (`https://openrouter.ai/api/v1`, SDK `openai`): reserva, desligada por padrão, com teto de **US$ 20/mês**.
 8. **Credenciais:** chave do Go, tokens OAuth e chaves de API ficam num arquivo do diretório de configuração do usuário, com permissão só para ele (ou por variável de ambiente). Nunca no repositório, no log, na auditoria ou na saída.
 9. **Orçamento atômico** (R5-6, ADR 0008, ADR 0014):
    - reserva antes de cada chamada, por **estimativa** (entrada contada + saída estimada pelo histórico do modelo);
@@ -94,18 +95,18 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 |---|---|---|---|---|
 | 1 | Banco | `node:sqlite` (RC) atrás de adaptador; `better-sqlite3` como plano B documentado | zero dependência nativa; spike atendeu R5-1 e R5-7 em Windows, Linux e macOS, Node 24 e 26 | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md), [spike](../../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) |
 | 2 | IPC | JSON-RPC 2.0 por linhas sobre `node:net` | mesma API nos três SOs; mesmo modelo de mensagem do ACP (M1) | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md) |
-| 3 | Provedores | **Decidido pelo Pai** ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)): Go → ChatGPT (SIWC) → API paga | trabalho dentro dos US$ 30 das assinaturas | [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md) |
+| 3 | Provedores | **Decidido pelo Pai** ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md), ordem da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md)): Go → Ollama Cloud → ChatGPT (SIWC) → OpenRouter (pago) | trabalho dentro dos US$ 30 das assinaturas | [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md) |
 | 4 | CLI e TUI | `parseArgs` + despacho próprio; `readline`; sem TUI no M0 | menos dependências; `ink` quando houver telas interativas | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 5 | i18n | i18next 26.x; JSON por domínio | o mesmo catálogo serve à CLI, à Web e ao app (ADR 0013) | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 6 | Orçamento | reserva por estimativa e liquidação pelo `usage`; janelas por assinatura como recurso; erro de limite do provedor é fonte de verdade | o SIWC proíbe `max_output_tokens` e nenhuma assinatura informa preço por chamada | [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md), [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 7 | Fora do M0 | ver "Fora"; comandos sempre em `ask` | ADR 0009 (até o M2), ADR 0010 | ROADMAP |
-| 8 | Linguagem e execução | **Aguarda o Pai depois da explicação** ([anexo](./EXPLICACAO-BUILD-E-TESTES.md)): TypeScript só com sintaxe apagável, executado direto pelo Node; `tsc --noEmit` como gate obrigatório da CI; workspaces `core`, `client`, `cli` | sem build no caminho de execução e de teste; tipos checados por um gate separado | [node-runtime](../../20-conhecimento/node-runtime.md), [anexo](./EXPLICACAO-BUILD-E-TESTES.md) |
-| 9 | SDKs | **Decidido pelo Pai:** `openai`, `@anthropic-ai/sdk`, `@google/genai` no M0; `@opencode-ai/sdk` no M1 | cobrem todas as rotas do Go e a API paga | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
+| 8 | Linguagem e execução | **Decidido pelo Pai: A** ([anexo](./EXPLICACAO-BUILD-E-TESTES.md)): TypeScript só com sintaxe apagável, executado direto pelo Node; `tsc --noEmit` como gate obrigatório da CI; workspaces `core`, `client`, `cli` | sem build no caminho de execução e de teste; tipos checados por um gate separado | [node-runtime](../../20-conhecimento/node-runtime.md), [anexo](./EXPLICACAO-BUILD-E-TESTES.md) |
+| 9 | SDKs | **Decidido pelo Pai:** `openai`, `@anthropic-ai/sdk`, `@google/genai` no M0; `@opencode-ai/sdk` no M1 | cobrem as rotas do Go, do Ollama Cloud (compatível) e do OpenRouter | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 10 | Atualização de dependências | **Decidido pelo Pai:** protocolo com mecanismo (`bd deps`), valendo para toda dependência nova | regra sem mecanismo é desejo | [DEPENDENCIAS.md](../../30-governanca/DEPENDENCIAS.md) |
 
 **Dependências do M0** (versões exatas no registro do protocolo):
 - **em tempo de execução:** `openai`, `@anthropic-ai/sdk`, `@google/genai`, `i18next`;
-- **só no desenvolvimento:** `typescript` e `@types/node`, condicionados à decisão 8.
+- **só no desenvolvimento:** `typescript` e `@types/node` (decisão 8 = A).
 
 ## Critérios de aceitação (observáveis; cada um vira teste, e nenhum teste se afrouxa)
 
@@ -139,7 +140,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 
 **Provedores**
 
-17. Toda requisição ao Go leva `User-Agent: rabelus-buddy/<versão>` e `x-opencode-session` igual ao longo da mesma sessão (espião no transporte), e cada modelo vai pela rota e pelo SDK certos.
+17. Cada provedor da ordem (Go, Ollama Cloud, OpenRouter) é chamado pela rota e pelo SDK certos, com a identificação exigida. Toda requisição ao Go leva `User-Agent: rabelus-buddy/<versão>` e `x-opencode-session` igual ao longo da mesma sessão (espião no transporte), e cada modelo vai pela rota e pelo SDK certos.
 18. Toda requisição pelo SIWC leva `store: false` e `stream: true`, não leva nenhum campo proibido pela prévia, e só é concluída em `response.completed`. `response.failed` com `subscription_sharing_usage_limit_exceeded` esgota a janela do SIWC.
 19. O fluxo `rbuddy login chatgpt` usa PKCE S256, callback em `127.0.0.1`, `state` e `nonce` novos por tentativa, e o mesmo `ext_agent_host_id` entre logins. Um refresh substitui juntos access token, expiração e refresh token. Testado contra um servidor OAuth falso local.
 20. Modelos que treinam com os dados são negados por padrão; usá-los exige concessão explícita de projeto, registrada.
@@ -199,21 +200,11 @@ Consumo por tarefa (dólares de janela e US$ reais), latência de IPC p50/p95, a
 
 ## Dúvidas bloqueantes
 
-Respondidas pelo Pai em 2026-10-15:
-- provedor (ADR 0014);
-- teto (US$ 20);
-- convenção de código (aceita);
-- SDKs e protocolo de dependências (decisões 9 e 10).
+Nenhuma. Todas respondidas pelo Pai em 2026-10-15:
+- provedores e ordem (ADRs 0014 e 0015);
+- teto de US$ 20 (OpenRouter);
+- convenção de código;
+- SDKs e protocolo de dependências;
+- decisão 8 = A.
 
-Resta uma, que o Pai pediu para ver explicada antes de decidir:
-
-1. **Decisão 8, linguagem e execução sem build.** Explicação com prova executada em [EXPLICACAO-BUILD-E-TESTES.md](./EXPLICACAO-BUILD-E-TESTES.md).
-
-Não bloqueante, mas necessário para a demonstração (critério 26): a chave do OpenCode Go em `.buddy-dev/.env.local` como `OPENCODE_API_KEY`, e uma conta ChatGPT Plus para o `rbuddy login chatgpt`.
-
-**Já entregue em paralelo** (AGENTS §5.4):
-- `bd deps` e o protocolo de dependências (PR #18), com o registro preenchido nesta SPEC;
-- `bd test-guard` (PR #18) e a correção do `--latest` (PR #19);
-- plano e desenho dos testes atualizados para a revisão 2.
-
-Código do produto, só depois da aprovação.
+Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud já estão em `.buddy-dev/.env.local` (informado pelo Pai). A conta ChatGPT Plus entra no `rbuddy login chatgpt` da demonstração.

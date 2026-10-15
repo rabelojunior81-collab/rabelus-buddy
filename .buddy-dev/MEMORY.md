@@ -28,6 +28,9 @@
 | 2026-10-15 | Protocolo de atualização para toda dependência, atual e futura | `docs/30-governanca/DEPENDENCIAS.md`; `bd deps` |
 | 2026-10-15 | Teste reprovado: corrige o código, nunca afrouxa o teste | `bd test-guard`; gate de tipos `tsc --noEmit` |
 | 2026-10-15 | Pista de outro modelo se confere na fonte antes de aplicar (o texto trazido pelo Pai errou o escopo OAuth) | ficha `assinaturas-de-agentes` |
+| 2026-10-15 | SPEC 0001 aprovada (decisão 8 = A: TypeScript sem build, três portões) | SPEC 0001 rev. 3; PR #17 |
+| 2026-10-15 | **Mergear sem enrolar:** aprovado é mergeado na hora; não acumular commits e branches | ADR 0003; `bd surfaces` cobra a `main` do STATUS |
+| 2026-10-15 | Ordem de provedores: OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga) | ADR 0015 |
 | 2026-10-15 | Não parar: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela | `AGENTS.md` §5.4 e §5.7; checklist do PR; linha "Seguindo em paralelo" no STATUS |
 | 2026-10-15 | Bloqueio do harness se reporta como bloqueio do harness, nunca como regra do Lab | LEARNING-CURVE 2026-10-15 #4 |
 | 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |

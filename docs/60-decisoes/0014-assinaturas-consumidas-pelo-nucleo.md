@@ -1,5 +1,5 @@
 ---
-status: aceita (2026-10-15)
+status: aceita (2026-10-15); ordem de provedores substituída pela 0015
 date: 2026-10-15
 decision-makers: Pai (Adilson Rabelo Junior)
 consulted: buddy-dev (Buddy Fenix)

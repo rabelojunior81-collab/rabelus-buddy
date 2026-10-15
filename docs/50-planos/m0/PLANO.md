@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
-**SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** proposto (junto com a SPEC) · **Aprovado por:** pendente
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-15T04:54:12-03:00
+**SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** aprovado (com a SPEC) · **Aprovado por:** Pai, 2026-10-15
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-15T17:16:41-03:00
 
 ## Objetivo
 
@@ -46,8 +46,9 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
 - [ ] **M0.6 Provedores e loop do agente** (ADR 0014):
   - interface de provedor e provedores falsos (`fakeGo`, `fakeOpenAI`, `fakeAuth`);
   - **M0.6a OpenCode Go**: rotas `/responses`, `/chat/completions` e `/messages` e rota Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`; `User-Agent` próprio e `x-opencode-session`;
-  - **M0.6b ChatGPT por SIWC**: `rbuddy login chatgpt` (PKCE, callback em 127.0.0.1, refresh rotativo), contrato da prévia;
-  - **M0.6c API paga** (reserva, teto US$ 20);
+  - **M0.6b ChatGPT por SIWC** (terceiro na ordem da ADR 0015): `rbuddy login chatgpt` (PKCE, callback em 127.0.0.1, refresh rotativo), contrato da prévia;
+  - **M0.6c Ollama Cloud** (ADR 0015): rota fixada na ficha, mesmos SDKs;
+  - **M0.6d OpenRouter** como API paga (reserva, teto US$ 20, SDK `openai`);
   - compactação abaixo de 100k tokens;
   - ferramentas `read_file`, `list_dir`, `write_file`, `run_command`.
   - Critérios: 16–21.

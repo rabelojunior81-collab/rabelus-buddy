@@ -67,24 +67,24 @@
       "version": "7.0.2",
       "license": "Apache-2.0",
       "kind": "dev",
-      "status": "proposta",
+      "status": "aprovada",
       "purpose": "Gate de tipos tsc --noEmit (decisão 8 da SPEC 0001)",
       "phase": "M0",
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
       "verifiedAt": "2026-10-15",
-      "approvedBy": "pendente (decisão 8, depois da explicação)"
+      "approvedBy": "Pai, 2026-10-15 (decisão 8 = A)"
     },
     {
       "name": "@types/node",
       "version": "24.19.2",
       "license": "MIT",
       "kind": "dev",
-      "status": "proposta",
+      "status": "aprovada",
       "purpose": "Tipos dos módulos do Node para o tsc (linha 24, o piso)",
       "phase": "M0",
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
       "verifiedAt": "2026-10-15",
-      "approvedBy": "pendente (decisão 8, depois da explicação)"
+      "approvedBy": "Pai, 2026-10-15 (decisão 8 = A)"
     }
   ]
 }

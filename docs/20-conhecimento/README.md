@@ -43,5 +43,6 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [assinaturas-de-agentes.md](./assinaturas-de-agentes.md) | ChatGPT Plus (Codex) e OpenCode Go via ACP | 2026-10-14 |
 | [banco-e-ipc.md](./banco-e-ipc.md) | `node:sqlite`, better-sqlite3, IPC por named pipe e socket Unix; spike do M0 | 2026-10-15 |
 | [bibliotecas-do-nucleo.md](./bibliotecas-do-nucleo.md) | CLI, TUI, i18n, SDKs do provedor, limites da OpenAI | 2026-10-15 |
+| [pi-agent.md](./pi-agent.md) | Pi (earendil-works): harness, extensões, provedores; forkar ou compor | 2026-10-15 |
 | [stacks-mobile-e-web.md](./stacks-mobile-e-web.md) | Expo/React Native, Flutter, Compose MP, Capacitor, Tauri, PWA no iOS | 2026-10-15 |
 | [gemini-imagem.md](./gemini-imagem.md) | Geração de imagem com Gemini (Nano Banana), preços e boas práticas | 2026-10-15 |

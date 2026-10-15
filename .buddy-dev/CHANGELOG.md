@@ -142,3 +142,7 @@ bd deps --latest não era aceito pelo parser (opção documentada, não declarad
 ### #0032 · 2026-10-15T050534-0300 · claude-code-vs-code-3a6e29 · processo
 
 Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR 0014), bd deps e bd test-guard (PR #18), --latest corrigido (PR #19), registro de dependências preenchido, explicação de build e testes com prova. Post: A Pista Estava Quase Certa.
+
+### #0033 · 2026-10-15T171930-0300 · claude-code-vs-code-7ebb05 · decisao
+
+SPEC 0001 aprovada pelo Pai (rev. 3, decisão 8 = A) e mergeada; ADR 0015: ordem de provedores OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga); typescript e @types/node aprovados no registro. Regra: aprovado é mergeado na hora. Ficha pi-agent para a pergunta de forkar o Pi.
