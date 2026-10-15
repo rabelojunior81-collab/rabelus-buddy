@@ -14,7 +14,8 @@
 |---|---|---|---|
 | #1 | `feat/f0-2-ferramentas` | Ferramentas `bd` | aguarda merge do Pai |
 | #2 | `feat/f0-3-esqueleto-oss` | Superfície open source, ADRs, conhecimento | aguarda #1 |
-| #3 | `feat/f0-4-corpus-e-bootstrap` | Corpus do buddy-dev, bootstrap, governança, roadmap | aguarda #2 |
+| #3 | `feat/f0-4-corpus-e-bootstrap` | Corpus do buddy-dev, AGENTS, BOOTSTRAP, pontes | aguarda #2 |
+| #4 | `feat/f0-5-governanca-e-roadmap` | Método, convenções, templates, roadmap, plano macro, plano da Fase 0 | aguarda #3 |
 
 ## Ambiente medido (2026-10-14)
 
@@ -40,8 +41,8 @@
 
 | Pendência | Tipo | Dono |
 |---|---|---|
-| Merge dos PRs #1, #2, #3 | aguarda-Pai | Pai |
-| Aceite das ADRs 0003 e 0005 | aguarda-Pai | Pai |
+| Merge dos PRs #1, #2, #3, #4 | aguarda-Pai | Pai |
+| Aceite das ADRs 0003 e 0005 e do METODO.md | aguarda-Pai | Pai |
 | Sobrenome, avatar, emojis do buddy-dev | aguarda-Pai | Pai |
 | Canal dedicado de denúncia e segurança antes de tornar público | aguarda-Pai | Pai |
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |

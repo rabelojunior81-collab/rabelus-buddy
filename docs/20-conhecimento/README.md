@@ -35,3 +35,4 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [node-runtime.md](./node-runtime.md) | Versões do Node.js | 2026-10-14 |
 | [padroes-comunidade-oss.md](./padroes-comunidade-oss.md) | Licença, código de conduta, changelog, commits, ADR | 2026-10-14 |
 | [github-plataforma.md](./github-plataforma.md) | Plano, proteções de branch, segurança | 2026-10-14 |
+| [bmad-method.md](./bmad-method.md) | BMad Method: versões, caminhos, artefatos | 2026-10-14 (reverificar após 16/10) |
