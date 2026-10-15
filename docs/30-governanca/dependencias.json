@@ -1,5 +1,90 @@
 {
   "reverifyDays": 30,
   "licenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "0BSD"],
-  "dependencies": []
+  "dependencies": [
+    {
+      "name": "openai",
+      "version": "7.34.0",
+      "license": "Apache-2.0",
+      "kind": "runtime",
+      "status": "aprovada",
+      "purpose": "SDK das rotas OpenAI: Responses e Chat Completions do OpenCode Go; Sign in with ChatGPT; API paga de reserva",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
+    },
+    {
+      "name": "@anthropic-ai/sdk",
+      "version": "0.134.0",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "aprovada",
+      "purpose": "SDK da rota Messages (Anthropic) do OpenCode Go; API paga de reserva",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
+    },
+    {
+      "name": "@google/genai",
+      "version": "2.30.0",
+      "license": "Apache-2.0",
+      "kind": "runtime",
+      "status": "aprovada",
+      "purpose": "SDK da rota Google do OpenCode Go; API paga de reserva",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
+    },
+    {
+      "name": "@opencode-ai/sdk",
+      "version": "1.19.0",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "aprovada",
+      "purpose": "Cliente do servidor do OpenCode para conduzi-lo como agente",
+      "phase": "M1",
+      "ficha": "docs/20-conhecimento/assinaturas-de-agentes.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "Pai, 2026-10-15 (SDK extra)"
+    },
+    {
+      "name": "i18next",
+      "version": "26.4.5",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "aprovada",
+      "purpose": "Catálogo de tradução pt-BR/en compartilhado entre CLI, Web e app",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "Pai, 2026-10-15 (resposta 4: 'Além disso…', sem objeção ao i18next)"
+    },
+    {
+      "name": "typescript",
+      "version": "7.0.2",
+      "license": "Apache-2.0",
+      "kind": "dev",
+      "status": "proposta",
+      "purpose": "Gate de tipos tsc --noEmit (decisão 8 da SPEC 0001)",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "pendente (decisão 8, depois da explicação)"
+    },
+    {
+      "name": "@types/node",
+      "version": "24.19.2",
+      "license": "MIT",
+      "kind": "dev",
+      "status": "proposta",
+      "purpose": "Tipos dos módulos do Node para o tsc (linha 24, o piso)",
+      "phase": "M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-15",
+      "approvedBy": "pendente (decisão 8, depois da explicação)"
+    }
+  ]
 }

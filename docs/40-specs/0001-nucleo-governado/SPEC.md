@@ -211,9 +211,9 @@ Resta uma, que o Pai pediu para ver explicada antes de decidir:
 
 Não bloqueante, mas necessário para a demonstração (critério 26): a chave do OpenCode Go em `.buddy-dev/.env.local` como `OPENCODE_API_KEY`, e uma conta ChatGPT Plus para o `rbuddy login chatgpt`.
 
-**Enquanto isso, segue em paralelo** (AGENTS §5.4):
-- os mecanismos `bd deps` e `bd test-guard`;
-- o protocolo de dependências;
-- o plano e o desenho dos testes atualizados.
+**Já entregue em paralelo** (AGENTS §5.4):
+- `bd deps` e o protocolo de dependências (PR #18), com o registro preenchido nesta SPEC;
+- `bd test-guard` (PR #18) e a correção do `--latest` (PR #19);
+- plano e desenho dos testes atualizados para a revisão 2.
 
 Código do produto, só depois da aprovação.
