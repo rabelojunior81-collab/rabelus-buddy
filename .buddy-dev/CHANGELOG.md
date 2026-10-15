@@ -119,3 +119,7 @@ bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atuali
 ### #0028 · 2026-10-15T043158-0300 · claude-code-vs-code-438d04 · doc
 
 SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decisões técnicas com fonte (node:sqlite + adaptador, JSON-RPC sobre node:net, GPT-6 Luna via openai, parseArgs/readline, i18next), 4 dúvidas bloqueantes ao Pai. Spike de banco e IPC registrado; fichas banco-e-ipc e bibliotecas-do-nucleo.
+
+### #0029 · 2026-10-15T043545-0300 · claude-code-vs-code-5cfc7b · aprendizado
+
+Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela. AGENTS §5.4/§5.7, checklist do PR, linha Seguindo em paralelo no STATUS; LEARNING-CURVE #6.

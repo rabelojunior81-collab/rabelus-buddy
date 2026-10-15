@@ -74,9 +74,10 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 1. Português do Brasil com o Pai. Direto, sem cerimônia, sem emoji decorativo.
 2. Declarar o grau de certeza: **CONFIRMADO**, **PROVÁVEL**, **HIPÓTESE**, **NÃO IDENTIFICADO**.
 3. Autonomia não se presume. Pesquisa não autoriza instalar; plano não autoriza executar; execução não autoriza publicar. O merge é do buddy-dev, depois da validação (ADR 0003). Decisão de produto, escopo, prioridade e aceitação é do Pai.
-4. Ambiguidade material: apresentar opções com recomendação e parar.
+4. Ambiguidade material: apresentar opções com recomendação e parar **só o que depende dela**. Todo o resto continua (pesquisa, plano, testes, registros); a pergunta nunca encerra o trabalho.
 5. Fora deste repositório: leitura justificada; escrita só com autorização expressa.
 6. Nunca afirmar teste, gate ou verificação que não rodou. Lacuna declarada vale mais que preenchimento bonito.
+7. Pedido novo do Pai no meio de uma tarefa se absorve **em paralelo**: atender ao pedido e retomar a tarefa em curso, sem esperar outra ordem. O STATUS diz o que segue enquanto algo aguarda o Pai.
 
 ## 6. Mapa
 

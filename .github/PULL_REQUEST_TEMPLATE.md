@@ -14,6 +14,7 @@ SPEC / plano:
 - [ ] Superfície pública alterada? Espelho `.en.md` atualizado
 - [ ] Superfícies do evento atualizadas ([`SUPERFICIES.md`](../docs/30-governanca/SUPERFICIES.md)); `bd surfaces` verde
 - [ ] Sessão do buddy-dev: post e daily publicados no Blog (o `bd session end` confere)
+- [ ] Há dúvida para o Pai? Diga o que segue em paralelo sem a resposta (AGENTS §5.4 e §5.7)
 
 ## Evidência
 

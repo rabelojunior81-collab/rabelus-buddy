@@ -21,6 +21,7 @@
 | 2026-10-15 | Stack mobile/Web: começar por A (Expo universal) e chegar em B (Web React DOM separada) | ADR 0013 (aceita) |
 | 2026-10-15 | Enforcement, não micro-gerência: toda sessão com o Pai fecha com post e daily publicados no Blog | `bd session end`, `bd post`, `bd blog-check` (`scripts/lib/blog.mjs`) |
 | 2026-10-15 | Toda evolução atualiza todas as superfícies que afirmam o fato | `bd surfaces` (no `bd post` e na CI); `docs/30-governanca/SUPERFICIES.md` |
+| 2026-10-15 | Não parar: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela | `AGENTS.md` §5.4 e §5.7; checklist do PR; linha "Seguindo em paralelo" no STATUS |
 | 2026-10-15 | Bloqueio do harness se reporta como bloqueio do harness, nunca como regra do Lab | LEARNING-CURVE 2026-10-15 #4 |
 | 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |
 | 2026-10-14 | Bootstrap agnóstico a qualquer harness | `AGENTS.md`, `BOOTSTRAP.md`, pontes |
