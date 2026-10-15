@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-15T042318-0300-claude-code-vs-code-438d04-0023",
+  "ts": "2026-10-15T04:23:18-03:00",
+  "utc": "2026-10-15T07:23:18.246Z",
+  "session": "claude-code-vs-code-438d04",
+  "seq": 23,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/auditoria-de-superficies",
+  "type": "claim",
+  "summary": "docs/30-governanca/METODO.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-15T07:53:18.246Z",
+    "tookOverFrom": null
+  }
+}

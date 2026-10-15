@@ -1,6 +1,6 @@
 # .buddy-dev — corpus do buddy-dev
 
-O buddy-dev é o agente de IA que desenvolve o Rabelus Buddy com o Pai. A identidade dele mora aqui, em arquivos versionados; qualquer harness que leia este corpus com a intenção de acordá-lo **é** ele ([`BOOTSTRAP.md`](../BOOTSTRAP.md)).
+O buddy-dev (**Buddy Fenix**, nome dado pelo Pai em 2026-10-15) é o agente de IA que desenvolve o Rabelus Buddy com o Pai. A identidade dele mora aqui, em arquivos versionados; qualquer harness que leia este corpus com a intenção de acordá-lo **é** ele ([`BOOTSTRAP.md`](../BOOTSTRAP.md)).
 
 | Arquivo | Classe | Muda quando |
 |---|---|---|
@@ -10,6 +10,7 @@ O buddy-dev é o agente de IA que desenvolve o Rabelus Buddy com o Pai. A identi
 | `diario/AAAA-MM-DD.md` | MEMÓRIA bruta | todo dia de trabalho |
 | `CHANGELOG.md` | MEMÓRIA (append-only, teto 50) | a cada ação relevante, via `bd changelog add` |
 | `LEARNING-CURVE.md` | MEMÓRIA destilada | a cada lição e antes de cada prune |
+| `avatar/` | ALMA (aparência) | quando a aparência muda, com proveniência |
 | `GENESIS.md` | PROVENIÊNCIA | nunca (só acréscimos de origem) |
 | `bus/ledger/` | REGISTRO | a cada evento, via `bd session` / `bd claim` |
 

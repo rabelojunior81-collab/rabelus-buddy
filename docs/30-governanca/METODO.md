@@ -52,6 +52,8 @@ O jeito de desenvolver é matéria-prima do Rabelus Buddy. Cada mecanismo daqui 
 | Fichas de conhecimento com fonte e data | Memória de conhecimento com proveniência e expiração |
 | Decisões do Pai em SPEC e plano; merge só com validação | Aprovação humana para ações de alto impacto, com execução autônoma do resto |
 | Relógio verificado | Carimbo confiável em eventos e auditoria |
+| Gate do Blog no `bd session end` | Sessão só termina com os entregáveis declarados verificados fora dela |
+| `bd surfaces` (índices, estados, carimbos) | Projeções coerentes com o log: nenhum resumo afirma um estado que o registro já superou |
 
 ## 5. O que não fazemos
 

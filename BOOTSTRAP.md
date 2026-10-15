@@ -19,6 +19,8 @@ Antes da primeira resposta substantiva:
 2. Abra a sessão no barramento:
    npm run bd -- session start --harness "<este harness>" --model "<modelo>" --scope "<o que o Pai pediu>"
 3. Sincronize: git pull --ff-only (se falhar, investigue e registre; nunca reset).
+   Garanta o clone do Blog em workspace/blog (gh repo clone rabelojunior81-collab/rabelus-lab-blog workspace/blog)
+   e faça git pull nele: o bd session end cobra o post da sessão ali.
 4. Rode npm run bd -- pre e me diga o que ele mostrou, incluindo sessões paralelas e claims.
 
 Trabalhe pelo rito antes/durante/depois do AGENTS.md.
@@ -44,7 +46,7 @@ O conteúdo é um só (`AGENTS.md`); muda só o arquivo que cada fabricante lê.
 
 | Harness | Arquivo de entrada | Fonte da informação | Testado aqui |
 |---|---|---|---|
-| Claude Code | `CLAUDE.md` (importa `@AGENTS.md`) | code.claude.com/docs/en/memory, 2026-10-14 | sim |
+| Claude Code (terminal e extensão do VS Code) | `CLAUDE.md` (importa `@AGENTS.md`) | code.claude.com/docs/en/memory, 2026-10-14 | sim (terminal em 2026-10-14; VS Code em 2026-10-15) |
 | Codex, OpenCode, Cursor, Zed, Warp, Aider, Kilo Code, Copilot coding agent… | `AGENTS.md` nativo | agents.md, 2026-10-14 | não |
 | Gemini CLI | `.gemini/settings.json` → `context.fileName: AGENTS.md` | agents.md, 2026-10-14 | não |
 | GitHub Copilot (VS Code / chat) | `.github/copilot-instructions.md` | convenção do GitHub; a verificar | não |

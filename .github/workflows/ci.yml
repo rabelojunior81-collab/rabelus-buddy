@@ -30,6 +30,11 @@ jobs:
       - name: Nomes na convenção
         run: node scripts/bd.mjs names-check
 
+      - name: Superfícies coerentes (índices, ADRs, carimbos, STATUS)
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node scripts/bd.mjs surfaces --base "origin/${BASE_REF:-main}"
+
       - name: Nenhuma exclusão (regra pétrea, ADR 0004)
         env:
           BASE_REF: ${{ github.base_ref }}

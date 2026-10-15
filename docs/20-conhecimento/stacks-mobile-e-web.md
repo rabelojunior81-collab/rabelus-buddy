@@ -42,7 +42,7 @@ Escrever em Swift (SwiftUI) e Kotlin (Jetpack Compose) separadamente, mais uma W
 
 - Com o núcleo em TypeScript, a família 1 em **React Native/Expo** tem custo de integração menor: um pacote de cliente compartilhado (tipos do protocolo, estado, i18n) serve à CLI, à Web UI e ao app.
 - Push no iOS sem app nativo exige que o usuário instale o PWA na Tela de Início. Isso é atrito para um produto que vai notificar aprovações (ADR 0009). App nativo resolve.
-- A decisão é do Pai: [ADR 0013](../60-decisoes/0013-stack-mobile-e-web.md) (proposta).
+- Decisão: [ADR 0013](../60-decisoes/0013-stack-mobile-e-web.md), aceita pelo Pai em 2026-10-15 (começar por A, chegar em B).
 
 ## Histórico de verificações
 
