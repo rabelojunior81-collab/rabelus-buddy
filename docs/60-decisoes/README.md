@@ -10,7 +10,7 @@ Uma decisão aceita **não se edita** para mudar de ideia: escreve-se uma ADR no
 | [0002](./0002-idiomas-pt-br-e-en.md) | Idiomas: pt-BR primário e en | aceita |
 | [0003](./0003-fluxo-git-granular.md) | Fluxo git granular; merge commit pelo buddy-dev após validação | aceita |
 | [0004](./0004-nada-se-apaga.md) | Nada se apaga: arquivo com lápide | aceita |
-| [0005](./0005-barramento-ledger-por-arquivo.md) | Barramento: um arquivo por evento, claims locais | proposta |
+| [0005](./0005-barramento-ledger-por-arquivo.md) | Barramento: um arquivo por evento, claims locais | aceita |
 | [0006](./0006-corpus-do-buddy-dev-no-repositorio.md) | Corpus do buddy-dev dentro do repositório | aceita |
 | [0007](./0007-nome-publico-rabelus-buddy.md) | Nome público Rabelus Buddy; buddy na intimidade | aceita |
 | [0008](./0008-orcamento-por-assinaturas.md) | Orçamento US$ 50 com trabalho via ChatGPT Plus e OpenCode Go (ACP) | aceita |

@@ -12,9 +12,15 @@
 | 2026-10-14 | Nomes semânticos com carimbo de Curitiba, verificado por script | `bd now --verify`, `bd name`, `bd names-check` |
 | 2026-10-14 | Branch por feature; commit e push a cada etapa; merge só depois de validado | ADR 0003; template de PR; CI |
 | 2026-10-15 | O merge é do buddy-dev, com CI verde | ADR 0003 (aceita) |
+| 2026-10-15 | METODO.md e ADR 0005 aceitos | METODO v0.1; ADR 0005 |
+| 2026-10-15 | Meu nome é **Buddy Fenix**; buddy-dev fica como identificador técnico | `IDENTITY.md` |
+| 2026-10-15 | Avatar, emojis e cor de autoria são meus para decidir; avatar gerado com Gemini depois de pesquisa | missão em `STATUS.md` |
+| 2026-10-15 | Canal de segurança e denúncia: rabelo.work@gmail.com | `SECURITY.md`, Código de Conduta |
+| 2026-10-15 | Stack mobile: pesquisar cenários para iOS e Android nativos e WebUI responsiva, com recomendação | missão em `STATUS.md` |
+| 2026-10-15 | Ordem do dia: decisões → avatar → stack mobile → SPEC do M0 | `STATUS.md` (Fase atual) |
 | 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |
 | 2026-10-14 | Bootstrap agnóstico a qualquer harness | `AGENTS.md`, `BOOTSTRAP.md`, pontes |
-| 2026-10-14 | Barramento com ledger para agir em paralelo | `bd session`, `bd claim`, ADR 0005 (proposta) |
+| 2026-10-14 | Barramento com ledger para agir em paralelo | `bd session`, `bd claim`, ADR 0005 (aceita em 2026-10-15) |
 | 2026-10-14 | CHANGELOG append-only, teto de 50, prune com LEARNING-CURVE | `bd changelog`, `archive/changelog/` |
 | 2026-10-14 | Governança profunda e simples: sem regras sobre regras | Toda regra do `AGENTS.md` aponta o mecanismo que a confere |
 | 2026-10-14 | Idiomas: pt-BR e en apenas | ADR 0002 |

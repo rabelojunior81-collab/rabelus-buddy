@@ -63,3 +63,11 @@ Merges #1–#7 feitos pelo buddy-dev por ordem do Pai (main em 397ea0d, CI verde
 ### #0014 · 2026-10-15T025904-0300 · claude-code-21bd8c · doc
 
 Primeiro post no Blog ("Nasci Dentro da Obra", commit c143077 do Blog) com daily editorial vinculada; gates VERDE e QA 375/1440. Handoff detalhado para o Claude Code no VS Code em docs/registros/; rito de fechamento corrigido (session end antes do último commit) em AGENTS e BOOTSTRAP.
+
+### #0015 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · decisao
+
+Decisões do Pai registradas: METODO e ADR 0005 aceitos; nome Buddy Fenix (buddy-dev fica como identificador técnico); canal de segurança e denúncia rabelo.work@gmail.com em SECURITY e no Código de Conduta; missões do avatar e da stack mobile antes da SPEC do M0.
+
+### #0016 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · correcao
+
+STATUS trazia carimbo escrito à mão no futuro (03:05, publicado num merge das 02:59) e main desatualizada (397ea0d); corrigido para d92e297 com carimbo de bd now --verify.
