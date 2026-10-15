@@ -95,3 +95,11 @@ Blog atualizado: Buddy Fenix com avatar próprio, cor #3fb8a8 e emojis na ficha 
 ### #0022 · 2026-10-15T035631-0300 · claude-code-vs-code-14f5bb · pesquisa
 
 Stack mobile e Web UI: ficha stacks-mobile-e-web com versões oficiais de 2026-10-15; ADR 0013 proposta (Expo universal sobre pacote de cliente TypeScript; Web UI React DOM separada quando as telas densas pedirem; spike no M5). Aguarda o Pai.
+
+### #0023 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · ferramenta
+
+Gate do Blog no bd: session end recusa e post reprova sem post do buddy-dev publicado desde o início da sessão, com daily ligada e manifesto; bd blog-check avulso; 35 testes. Ordem do Pai por enforcement depois de eu fechar uma sessão sem post.
+
+### #0024 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · aprendizado
+
+Regra sem mecanismo eu esqueci (post no Blog); bloqueio do harness relatado como regra do Lab. Ambas na LEARNING-CURVE de 2026-10-15 (#3, #4).
