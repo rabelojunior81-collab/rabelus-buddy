@@ -1,7 +1,7 @@
 ---
-status: proposta (aguarda aceite do Pai)
+status: aceita (2026-10-15)
 date: 2026-10-14
-decision-makers: Pai (Adilson Rabelo Junior) — pendente
+decision-makers: Pai (Adilson Rabelo Junior)
 consulted: buddy-dev
 ---
 

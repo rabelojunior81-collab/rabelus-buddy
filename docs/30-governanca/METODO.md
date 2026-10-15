@@ -1,6 +1,6 @@
 # Método
 
-**Classe:** CÂNONE · **Versão:** 0.1 (proposta do buddy-dev, aguarda aceite do Pai) · **Data:** 2026-10-14
+**Classe:** CÂNONE · **Versão:** 0.1 (proposta do buddy-dev, **aceita pelo Pai em 2026-10-15**) · **Data:** 2026-10-14
 
 Síntese de quatro fontes: o BMad Method ([ficha](../20-conhecimento/bmad-method.md)) como referência; Document, Spec e Test Driven Development; a governança da família Rabelus Lab; e as regras que o Pai deu em 2026-10-14. Curto de propósito: cada regra tem um mecanismo ([`AGENTS.md` §3](../../AGENTS.md#3-regras-e-o-mecanismo-que-as-faz-valer)); o que não tem mecanismo não entra aqui.
 

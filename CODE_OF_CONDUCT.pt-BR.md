@@ -45,7 +45,7 @@ Concordamos em restringir os comportamentos a seguir. Ocorrências, ameaças e i
 
 Tensões podem surgir mesmo quando todos se esforçam para colaborar. Nem todo conflito é violação deste Código, e ele reforça comportamentos que ajudam a evitar conflitos e reduzir danos.
 
-Quando um incidente acontecer, é importante relatá-lo logo. Para relatar uma possível violação, contate o mantenedor de forma privada pelo perfil do GitHub [@rabelojunior81-collab](https://github.com/rabelojunior81-collab). Um endereço dedicado será publicado antes de o repositório se tornar público.
+Quando um incidente acontecer, é importante relatá-lo logo. Para relatar uma possível violação, escreva para **rabelo.work@gmail.com**, o endereço dedicado de denúncia. Os relatos são lidos pelo mantenedor e tratados com confidencialidade.
 
 Moderadores levam os relatos a sério e farão o possível para responder em tempo hábil. Investigarão todos os relatos, revisando mensagens, logs e gravações, ou ouvindo testemunhas e participantes. Manterão investigações e medidas tão transparentes quanto possível, priorizando segurança e confidencialidade. Por isso, as medidas são aplicadas em privado com as partes envolvidas; comunicar à comunidade pode fazer parte de uma resolução acordada.
 
