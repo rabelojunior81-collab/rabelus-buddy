@@ -6,7 +6,8 @@
 import { parseArgs } from 'node:util';
 import { formats, verifyClock, isKnownZone, ZONE } from './lib/time.mjs';
 import { stampedName, checkPath } from './lib/names.mjs';
-import { startSession, logEvent, endSession, status, claim, release, currentSession } from './lib/bus.mjs';
+import { startSession, logEvent, endSession, status, claim, release, currentSession, lastSession } from './lib/bus.mjs';
+import { checkBlogDelivery, blogDir } from './lib/blog.mjs';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
 import { findDeletions } from './lib/guard.mjs';
@@ -21,7 +22,7 @@ const HELP = `bd — buddy-dev
   names-check                        lint de nomes de todos os arquivos versionados
   session start --harness H --model M --scope S
   session log --type T --summary S [--refs a,b]
-  session end [--summary S]
+  session end [--summary S]          recusa sem post + daily publicados no Blog
   session status                     sessões abertas e claims (todos os worktrees)
   claim <recurso> [--ttl 30]         reivindica um recurso por N minutos
   release <recurso>
@@ -29,7 +30,8 @@ const HELP = `bd — buddy-dev
   changelog add --type T --text X | changelog prune | changelog count
   guard [--base origin/main] [--staged]
   pre                                rito ANTES: relógio, git, sessão, claims
-  post                               rito DEPOIS: nomes, exclusões, push, sessão
+  post                               rito DEPOIS: nomes, exclusões, push, sessão, Blog
+  blog-check                         post e daily da sessão publicados no Blog?
 `;
 
 const { values: o, positionals: pos } = parseArgs({
@@ -64,6 +66,15 @@ async function clockCheck() {
   else if (v.state === 'drift') fail(`relógio com desvio de ${v.driftSec}s vs ${v.source}: corrija antes de datar`);
   else warn(`relógio ${line} · NÃO VERIFICADO (${v.reason})`);
   return { f, v };
+}
+
+// Gate do Blog (BLOG_GOVERNANCE §5; ordem do Pai em 2026-10-15): a sessão só fecha com post publicado.
+function blogGate(r, session) {
+  const dir = blogDir(r);
+  const res = checkBlogDelivery(dir, { since: session.startedAt });
+  if (res.ok) ok(`Blog: ${res.posts.join(', ')} publicado(s) desde ${session.startedAt}, com daily`);
+  else fail(`Blog (${dir}), sessão ${session.id}:\n    ${res.problems.join('\n    ')}`);
+  return res.ok;
 }
 
 function syncInfo(r) {
@@ -106,6 +117,13 @@ const commands = {
       const { file } = logEvent(r, { type: o.type, summary: o.summary, refs: o.refs?.split(',') ?? [] });
       console.log(file);
     } else if (sub === 'end') {
+      const cur = currentSession(r);
+      if (!cur) throw new Error('nenhuma sessão aberta neste worktree');
+      if (!blogGate(r, cur)) {
+        console.log('sessão NÃO encerrada: publique o post e a daily no Blog e rode de novo');
+        process.exitCode = 1;
+        return;
+      }
       endSession(r, { summary: o.summary });
       console.log('sessão encerrada');
     } else if (sub === 'status') {
@@ -154,6 +172,13 @@ const commands = {
     } else console.log('nenhuma exclusão');
   },
 
+  'blog-check'() {
+    const r = root();
+    const s = lastSession(r);
+    if (!s) throw new Error('nenhuma sessão registrada neste worktree');
+    if (!blogGate(r, s)) process.exitCode = 1;
+  },
+
   async pre() {
     const r = root();
     console.log('ANTES');
@@ -193,6 +218,9 @@ const commands = {
     else ok(`tudo enviado a ${s.upstream}`);
     const cur = currentSession(r);
     if (cur) warn(`sessão ${cur.id} ainda aberta (encerre com bd session end ao terminar)`);
+    const last = lastSession(r);
+    if (last) blogGate(r, last);
+    else warn('nenhuma sessão registrada neste worktree: gate do Blog não se aplica');
     if (failures) process.exitCode = 1;
   },
 };

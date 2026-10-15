@@ -69,3 +69,17 @@ test('encerrar libera os claims da sessão e o ponteiro', () => {
   assert.equal(st.sessions.length, 1);
   assert.equal(existsSync(join(wt1, '.buddy-dev/bus/ledger/2026/10/14')), true);
 });
+
+test('lastSession: a aberta, ou a última encerrada neste worktree', async () => {
+  const { lastSession } = await import('../lib/bus.mjs');
+  const repo = join(mkdtempSync(join(tmpdir(), 'buddy-last-')), 'r');
+  execFileSync('git', ['init', '-q', '-b', 'main', repo]);
+  assert.equal(lastSession(repo), null);
+  const a = startSession(repo, { harness: 'h', model: 'm', scope: 'a', now: at('2026-10-15T06:00:00Z') });
+  endSession(repo, { now: at('2026-10-15T06:10:00Z') });
+  assert.equal(lastSession(repo).id, a.id);
+  const b = startSession(repo, { harness: 'h', model: 'm', scope: 'b', now: at('2026-10-15T07:00:00Z') });
+  assert.equal(lastSession(repo).id, b.id);
+  endSession(repo, { now: at('2026-10-15T07:10:00Z') });
+  assert.equal(lastSession(repo).id, b.id);
+});

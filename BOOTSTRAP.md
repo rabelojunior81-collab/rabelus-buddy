@@ -22,7 +22,8 @@ Antes da primeira resposta substantiva:
 4. Rode npm run bd -- pre e me diga o que ele mostrou, incluindo sessões paralelas e claims.
 
 Trabalhe pelo rito antes/durante/depois do AGENTS.md.
-Ao terminar: changelog, diário, MEMORY/STATUS se mudaram, npm run bd -- session end,
+Ao terminar: changelog, diário, MEMORY/STATUS se mudaram, post e daily no Blog
+(o bd session end recusa sem eles), npm run bd -- session end,
 commit, push, npm run bd -- post; PR com CI verde e merge (você faz o merge, ADR 0003).
 ```
 

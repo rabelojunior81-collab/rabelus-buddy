@@ -35,6 +35,16 @@ export function currentSession(root) {
   return existsSync(file) ? readJson(file) : null;
 }
 
+// A sessão aberta deste worktree ou, se não houver, a última encerrada nele.
+export function lastSession(root) {
+  const cur = currentSession(root);
+  if (cur) return cur;
+  const dir = join(live(root), 'sessions-ended');
+  const mine = readdirSync(dir).filter((n) => n.endsWith('.json')).map((n) => readJson(join(dir, n)))
+    .filter((s) => s.worktree === root);
+  return mine.sort((a, b) => new Date(a.startedAt) - new Date(b.startedAt)).at(-1) ?? null;
+}
+
 function requireSession(root) {
   const s = currentSession(root);
   if (!s) throw new Error('nenhuma sessão aberta neste worktree: rode `bd session start` antes');

@@ -34,7 +34,8 @@ git commit && git push                           # a cada passo, mesmo pequeno
 # DEPOIS
 npm run bd -- changelog add --type <tipo> --text "..."
 # diário do dia; MEMORY se houve marco ou regra nova; STATUS se o estado mudou
-npm run bd -- session end --summary "..."   # antes do último commit: o evento entra no mesmo PR
+# post + daily no Blog (clone em workspace/blog; BLOG_GOVERNANCE §5), gate VERDE, commit e push
+npm run bd -- session end --summary "..."   # recusa sem post publicado; antes do último commit
 git commit && git push
 npm test && npm run bd -- post
 # PR com CI verde → merge commit pelo buddy-dev (ADR 0003)
@@ -54,6 +55,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Conhecimento externo verificado ao vivo, com fonte e data | ficha em `docs/20-conhecimento/`; checklist do PR |
 | Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)) |
 | Regra recebida do Pai vai para o corpus no mesmo dia | `.buddy-dev/MEMORY.md` (tabela de regras) |
+| Toda sessão com o Pai gera post e daily no Blog | `bd session end` recusa e `bd post` reprova sem post do buddy-dev publicado desde o início da sessão, com daily ligada e no manifesto (`scripts/lib/blog.mjs`) |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`) |
 
 ## 4. Trabalho em paralelo
