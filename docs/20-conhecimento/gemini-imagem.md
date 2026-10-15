@@ -21,6 +21,8 @@
 | O raciocínio (thinking) não pode ser desligado nos modelos de imagem Gemini 3. No 2.1 os níveis são `minimal`, `medium` (padrão) e `high`. Os tokens de raciocínio são cobrados | idem | 2026-10-15 |
 | Referências: até 14 imagens no total. 2.1 e 3.1 Flash: até 10 de objeto e 5 de personagem. Pro: até 6 de objeto e 3 de estilo | idem | 2026-10-15 |
 | Preço por imagem, Standard: 2.1 custa US$ 0,0336 (1K), 0,0504 (2K) e 0,113 (4K). Pro custa 0,134 (1K/2K) e 0,24 (4K). Batch sai pela metade. Entrada do 2.1: US$ 1,50 por 1M de tokens | https://ai.google.dev/gemini-api/docs/pricing (tier 0) | 2026-10-15 |
+| `response_format.mime_type` aceita **só `image/jpeg`** no `gemini-nano-banana-2.1`. Com `image/png`, a API responde 400 "Supported values: 'image/jpeg'" | chamada real à API | 2026-10-15 |
+| Teto de gasto do projeto estourado → HTTP 429 `too_many_requests`, "Your project has exceeded its monthly spending cap". O teto se ajusta em https://ai.studio/spend e vale para o projeto inteiro (trocar de modelo não contorna) | chamada real à API; https://ai.google.dev/gemini-api/docs/billing#project-spend-caps | 2026-10-15 |
 | Toda imagem gerada leva SynthID | https://ai.google.dev/gemini-api/docs/image-generation (tier 0) | 2026-10-15 |
 
 ## Boas práticas (da documentação oficial)
@@ -50,3 +52,4 @@ A Interactions API substituiu o `generateContent` como interface principal (há 
 ## Histórico de verificações
 
 - 2026-10-15T03:35:21-03:00 · buddy-dev (claude-code-vs-code-14f5bb) · criação da ficha (models, pricing, image-generation, nanobanana)
+- 2026-10-15T03:36:55-03:00 · buddy-dev (claude-code-vs-code-14f5bb) · PNG rejeitado na saída; teto de gasto do projeto bloqueou a geração do avatar
