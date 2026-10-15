@@ -1,13 +1,13 @@
 # Roadmap vivo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-15T04:24:23-03:00 · **Por:** buddy-dev (claude-code-vs-code-438d04)
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-15T04:30:34-03:00 · **Por:** buddy-dev (claude-code-vs-code-438d04)
 **Estado:** aprovado pelo Pai em 2026-10-15. **Base:** [Revisão 0.2](../10-pesquisa/rev-0.2/RELATORIO.md) e ADRs [0008](../60-decisoes/0008-orcamento-por-assinaturas.md)–[0012](../60-decisoes/0012-canais-globais-rede-e-buzz.md). A ordem dos marcos foi aceita pelo Pai ([ADR 0010](../60-decisoes/0010-nucleo-governado-e-composicao.md)); o conteúdo detalhado de cada marco é proposta e vira SPEC quando o marco começar.
 
 Onde estamos e para onde vamos. Sem datas: o esforço real começa a ser medido no M0 (pelo ledger) e o roadmap é recalibrado ao fim de cada marco.
 
 ## Agora
 
-**M0 — Núcleo governado** · SPEC em preparação, para aprovação do Pai. A Fase 0 foi fechada em 2026-10-15 ([plano](./fase-0/PLANO.md)).
+**M0 — Núcleo governado** · SPEC [0001](../40-specs/0001-nucleo-governado/SPEC.md) em rascunho, aguardando a aprovação do Pai. A Fase 0 foi fechada em 2026-10-15 ([plano](./fase-0/PLANO.md)).
 
 ## Princípio
 

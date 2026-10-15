@@ -2,24 +2,24 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T04:24:23-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-438d04
+**Atualizado em:** 2026-10-15T04:30:34-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-438d04
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Próximo: SPEC do M0** (spike do banco e do IPC já medido, resultados a registrar).
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: SPEC do M0 em rascunho** ([0001](../docs/40-specs/0001-nucleo-governado/SPEC.md)), aguardando o Pai responder 4 dúvidas bloqueantes e aprovar.
 
-**M0 — Núcleo governado:** SPEC em preparação. **Retomar pelo handoff:** [`docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md`](../docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md). A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
+**M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) em rascunho (aguarda o Pai). **Retomar pelo handoff:** [`docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md`](../docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md). A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
 
 ## Repositório
 
 | Item | Valor |
 |---|---|
-| `main` | `e30b83b` (Merge #15), CI verde |
-| PRs mergeados | #1–#15, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `12ebc8d` (Merge #16), CI verde |
+| PRs mergeados | #1–#16, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
-| Blog | `rabelus-lab-blog` em `b5c6e37`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
+| Blog | `rabelus-lab-blog` em `9987b85`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-15)
 
@@ -47,7 +47,7 @@
 | Pendência | Tipo | Dono |
 |---|---|---|
 | Aceite do METODO.md e da ADR 0005 | feito: aceitos pelo Pai em 2026-10-15 | — |
-| SPEC do M0 | ordem-dada; em andamento (2026-10-15) | buddy-dev |
+| SPEC do M0 | rascunho entregue (2026-10-15): provedor e chave, teto de API, convenção de código e dependências | aguarda-Pai |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
 | Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); aplicado no Blog com nome, cor e emojis (`rabelus-lab-blog` `6ae9895`, governança v2.6) | — |
 | Emojis e cor de autoria | feito: 🔥 🖤 🧱 📜 e verdete `#3fb8a8` (2026-10-15), aplicados no Blog | — |

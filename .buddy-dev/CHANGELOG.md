@@ -115,3 +115,7 @@ Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en c
 ### #0027 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · ferramenta
 
 bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.
+
+### #0028 · 2026-10-15T043158-0300 · claude-code-vs-code-438d04 · doc
+
+SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decisões técnicas com fonte (node:sqlite + adaptador, JSON-RPC sobre node:net, GPT-6 Luna via openai, parseArgs/readline, i18next), 4 dúvidas bloqueantes ao Pai. Spike de banco e IPC registrado; fichas banco-e-ipc e bibliotecas-do-nucleo.
