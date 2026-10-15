@@ -1,7 +1,7 @@
 # Plano — Fase 0: Organizar a Casa
 
 **SPEC:** o pedido do Pai de 2026-10-14 e as respostas às 7 perguntas (registrados em `.buddy-dev/MEMORY.md` e nas ADRs 0001–0007). Tamanho: fase. A Fase 0 é a que cria o mecanismo de SPEC; por isso a sua SPEC é o próprio pedido, aceito por escrito.
-**Estado:** em execução · **Atualizado em:** 2026-10-14T10:40:00-03:00
+**Estado:** **concluída em 2026-10-15** (PRs #1–#7 mergeados; Roadmap v2 aprovado) · **Atualizado em:** 2026-10-14T10:40:00-03:00
 
 ## Objetivo
 
@@ -21,7 +21,7 @@ Começar o desenvolvimento do Rabelus Buddy com a casa arrumada: repositório p�
 
 ## Dependências e bloqueios
 
-- Merge dos PRs é do Pai; os PRs estão empilhados (#1 → #2 → #3 → #4).
+- Os PRs foram empilhados (#1 → #7) enquanto o merge esperava; mergeados pelo buddy-dev em 2026-10-15, com autorização do Pai.
 - F0.8 depende da F0.7 aprovada.
 
 ## Paralelismo
@@ -30,6 +30,6 @@ F0.6 (CI), F0.7 (pesquisa) e o Blog são independentes e podem correr em worktre
 
 ## Fechamento
 
-- [ ] Testes verdes e `bd post` sem falhas na `main`
+- [x] Testes verdes e `bd post` sem falhas na `main` (397ea0d; CI verde)
 - [x] Retrospectiva da Fase 0 em `docs/registros/2026-10-14T120505-0300-retrospectiva-da-fase-0.md`
-- [ ] ROADMAP, STATUS e MEMORY atualizados
+- [x] ROADMAP, STATUS e MEMORY atualizados
