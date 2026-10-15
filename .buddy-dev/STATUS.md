@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-14T10:40:00-03:00 · **Por:** claude-code-c33594
+**Atualizado em:** 2026-10-14T11:45:00-03:00 · **Por:** claude-code-5c038b
 
 ## Fase atual
 
@@ -17,6 +17,7 @@
 | #3 | `feat/f0-4-corpus-e-bootstrap` | Corpus do buddy-dev, AGENTS, BOOTSTRAP, pontes | aguarda #2 |
 | #4 | `feat/f0-5-governanca-e-roadmap` | Método, convenções, templates, roadmap, plano macro, plano da Fase 0 | aguarda #3 |
 | #5 | `feat/f0-6-ci` | CI: testes, nomes, guarda, gitleaks (verde) | aguarda #4 |
+| #6 | `feat/f0-7-revisao-pesquisa` | Revisão 0.2 da pesquisa (R1–R7) | aguarda #5 |
 
 ## Ambiente medido (2026-10-14)
 
@@ -42,12 +43,13 @@
 
 | Pendência | Tipo | Dono |
 |---|---|---|
-| Merge dos PRs #1, #2, #3, #4 | aguarda-Pai | Pai |
 | Aceite das ADRs 0003 e 0005 e do METODO.md | aguarda-Pai | Pai |
 | Sobrenome, avatar, emojis do buddy-dev | aguarda-Pai | Pai |
 | Canal dedicado de denúncia e segurança antes de tornar público | aguarda-Pai | Pai |
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |
-| Revisão 0.2 da pesquisa (Fase 0.7) | ordem-dada | buddy-dev |
+| Revisão 0.2 da pesquisa (Fase 0.7) | feita, aguarda aceite | Pai |
+| F0.8 Roadmap e Plano Macro sobre a 0.2 | bloqueada pelas decisões | buddy-dev |
 | Espaço do buddy-dev no Blog | feito: blog `2e10964` (ficha, cards pt/en, §4 v2.5) | buddy-dev |
 | Cor de autoria no Blog | aguarda-Pai | Pai |
-| Merge do PR #5 (CI) | aguarda-Pai | Pai |
+| Merge dos PRs #1–#6 (em 2026-10-14 11:08 os PRs #1–#5 seguiam abertos no GitHub, apesar da mensagem de merge) | aguarda-Pai | Pai |
+| 5 decisões da Revisão 0.2 (orçamento, aprovações, estratégia, binário, pendências do briefing) | aguarda-Pai | Pai |

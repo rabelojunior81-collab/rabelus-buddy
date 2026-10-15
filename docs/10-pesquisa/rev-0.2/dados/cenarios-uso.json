@@ -1,0 +1,58 @@
+{
+  "notas": [
+    "Tarefa = N chamadas; prefixo = sistema + ferramentas + identidade; delta = tokens novos por chamada (resultados de ferramenta, mensagens, saída anterior); saída inclui raciocínio (thinking é cobrado como saída e não pode ser desligado nos modelos 5.5 da Anthropic)",
+    "Sem compactação de contexto: contextos longos são o pior caso",
+    "22 dias úteis por mês"
+  ],
+  "modes": [
+    "none",
+    "prefix",
+    "history"
+  ],
+  "scenarios": [
+    {
+      "name": "leve: 3 tarefas/dia, 20 chamadas",
+      "tasksPerDay": 3,
+      "days": 22,
+      "shape": {
+        "prefix": 20000,
+        "deltaPerCall": 3000,
+        "outputPerCall": 1500,
+        "calls": 20
+      }
+    },
+    {
+      "name": "medio: 6 tarefas/dia, 30 chamadas",
+      "tasksPerDay": 6,
+      "days": 22,
+      "shape": {
+        "prefix": 25000,
+        "deltaPerCall": 4000,
+        "outputPerCall": 2000,
+        "calls": 30
+      }
+    },
+    {
+      "name": "pesado: 10 tarefas/dia, 40 chamadas",
+      "tasksPerDay": 10,
+      "days": 22,
+      "shape": {
+        "prefix": 30000,
+        "deltaPerCall": 5000,
+        "outputPerCall": 3000,
+        "calls": 40
+      }
+    },
+    {
+      "name": "premissa da 0.1: 1.000 chamadas/mes de 30k+2k",
+      "tasksPerDay": 45.45454545454545,
+      "days": 22,
+      "shape": {
+        "prefix": 30000,
+        "deltaPerCall": 0,
+        "outputPerCall": 2000,
+        "calls": 1
+      }
+    }
+  ]
+}

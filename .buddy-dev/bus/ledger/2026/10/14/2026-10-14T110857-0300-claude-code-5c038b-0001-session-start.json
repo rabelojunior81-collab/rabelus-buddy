@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T110857-0300-claude-code-5c038b-0001",
+  "ts": "2026-10-14T11:08:57-03:00",
+  "utc": "2026-10-14T14:08:57.262Z",
+  "session": "claude-code-5c038b",
+  "seq": 1,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-7-revisao-pesquisa",
+  "type": "session-start",
+  "summary": "F0.7 Revisão 0.2 da pesquisa (empilhada sobre #5; PRs #1-#5 ainda abertos)",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-14T112027-0300-claude-code-5c038b-0006",
+  "ts": "2026-10-14T11:20:27-03:00",
+  "utc": "2026-10-14T14:20:27.665Z",
+  "session": "claude-code-5c038b",
+  "seq": 6,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-7-revisao-pesquisa",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-14T14:25:27.665Z",
+    "tookOverFrom": null
+  }
+}

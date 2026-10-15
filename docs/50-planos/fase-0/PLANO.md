@@ -15,7 +15,7 @@ Começar o desenvolvimento do Rabelus Buddy com a casa arrumada: repositório p�
 - [x] **F0.4 Corpus e bootstrap** — `.buddy-dev/`, `AGENTS.md`, `BOOTSTRAP.md`, pontes — PR #3
 - [x] **F0.5 Governança e roadmap** — METODO, CONVENCOES, templates, ROADMAP, PLANO-MACRO, este plano — PR #4
 - [x] **F0.6 CI** — testes, nomes, guarda, gitleaks; verde no Node 24 — PR #5
-- [ ] **F0.7 Revisão 0.2 da pesquisa** — plano de sub-fase próprio em `fase-0/f0-7-revisao-pesquisa/PLANO.md`; corrige os 9 limites de `docs/00-proveniencia/README.md`
+- [x] **F0.7 Revisão 0.2 da pesquisa** (aguarda aceite; 5 decisões do Pai em `docs/10-pesquisa/rev-0.2/RELATORIO.md`) — plano de sub-fase próprio em `fase-0/f0-7-revisao-pesquisa/PLANO.md`; corrige os 9 limites de `docs/00-proveniencia/README.md`
 - [ ] **F0.8 Roadmap e Plano Macro aprovados** — reescritos sobre a Revisão 0.2; aprovação do Pai libera a SPEC do M0
 - [x] **Blog** — ficha de autor, cards pt/en, governança v2.5 — blog `2e10964`
 

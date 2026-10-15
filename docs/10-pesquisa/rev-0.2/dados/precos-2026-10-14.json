@@ -1,0 +1,102 @@
+{
+  "fonte": {
+    "anthropic": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "openai": "https://developers.openai.com/api/docs/pricing",
+    "google": "https://ai.google.dev/gemini-api/docs/pricing"
+  },
+  "acessoEm": "2026-10-14",
+  "notas": [
+    "US$ por milhão de tokens; preço padrão (sem batch, sem roteamento regional)",
+    "Gemini não cobra escrita de cache separada (cache implícito): cacheWrite = preço de entrada",
+    "gpt-5.1 e gpt-5-nano não listam escrita de cache: cacheWrite = preço de entrada",
+    "Haiku 5.5: o preço muda para o pedido inteiro acima de 100 mil tokens",
+    "Sonnet 5.5 x1,3: sensibilidade ao tokenizador novo (~30% mais tokens que o anterior da própria Anthropic); não é comparação medida contra outros provedores"
+  ],
+  "models": {
+    "Claude Haiku 5.5 (<=100k)": {
+      "input": 0.1,
+      "output": 0.5,
+      "cacheRead": 0.01,
+      "cacheWrite": 0.125
+    },
+    "Claude Haiku 5.5 (>100k)": {
+      "input": 0.5,
+      "output": 2.5,
+      "cacheRead": 0.05,
+      "cacheWrite": 0.625
+    },
+    "Claude Sonnet 5.5": {
+      "input": 2,
+      "output": 10,
+      "cacheRead": 0.1,
+      "cacheWrite": 2.5
+    },
+    "Claude Sonnet 5.5 x1,3": {
+      "input": 2,
+      "output": 10,
+      "cacheRead": 0.1,
+      "cacheWrite": 2.5,
+      "tokenizerFactor": 1.3
+    },
+    "Claude Opus 5.5": {
+      "input": 4,
+      "output": 20,
+      "cacheRead": 0.2,
+      "cacheWrite": 5
+    },
+    "gpt-5-nano": {
+      "input": 0.05,
+      "output": 0.4,
+      "cacheRead": 0.005,
+      "cacheWrite": 0.05
+    },
+    "gpt-6-luna": {
+      "input": 0.1,
+      "output": 0.5,
+      "cacheRead": 0.01,
+      "cacheWrite": 0.125
+    },
+    "gpt-5.1": {
+      "input": 1.25,
+      "output": 10,
+      "cacheRead": 0.125,
+      "cacheWrite": 1.25
+    },
+    "gpt-6.1-sol": {
+      "input": 2,
+      "output": 10,
+      "cacheRead": 0.1,
+      "cacheWrite": 2.5
+    },
+    "Gemini 3.5 Flash-Lite": {
+      "input": 0.3,
+      "output": 2.5,
+      "cacheRead": 0.03,
+      "cacheWrite": 0.3
+    },
+    "Gemini 3.8 Flash (ate 31/12/2026)": {
+      "input": 0.75,
+      "output": 3.75,
+      "cacheRead": 0.075,
+      "cacheWrite": 0.75
+    },
+    "Gemini 3.8 Flash (a partir de 01/01/2027)": {
+      "input": 1.5,
+      "output": 7.5,
+      "cacheRead": 0.15,
+      "cacheWrite": 1.5
+    },
+    "Gemini 4 Argon (ate 30/11/2026)": {
+      "input": 2,
+      "output": 10,
+      "cacheRead": 0.1,
+      "cacheWrite": 2
+    },
+    "Gemini 4 Argon (a partir de 01/12/2026)": {
+      "input": 4,
+      "output": 20,
+      "cacheRead": 0.2,
+      "cacheWrite": 4
+    }
+  }
+}

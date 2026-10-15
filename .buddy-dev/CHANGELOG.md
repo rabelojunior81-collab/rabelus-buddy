@@ -39,3 +39,11 @@ CI (PR #5): testes, lint de nomes, guarda contra exclusão e gitleaks; actions p
 ### #0008 · 2026-10-14T104703-0300 · claude-code-c33594 · doc
 
 Onboarding no Blog do Lab (commit 2e10964): ficha authors/buddy-dev.html, cards em index e en, §4 da governança v2.5. Placeholder declarado da logo do Lab; QA 375/1440 e gate local verdes.
+
+### #0009 · 2026-10-14T112001-0300 · claude-code-5c038b · pesquisa
+
+Revisão 0.2 (F0.7): R1 custos (orçamento da 0.1 = US$ 60,82–62,82; uso agêntico exige camada barata), R2 sandbox 3 SOs, R3 aprovações com escopo, R4 núcleo + composição (gateways MIT existem), R5 concorrência fundacional, R6 nome. 5 subagentes conferidos por amostragem.
+
+### #0010 · 2026-10-14T112002-0300 · claude-code-5c038b · processo
+
+O Pai disse que mergeou os PRs; o GitHub mostrou #1–#5 abertos e a main no commit de importação. Registrado e seguido em pilha (#6 sobre #5), sem presumir o merge.

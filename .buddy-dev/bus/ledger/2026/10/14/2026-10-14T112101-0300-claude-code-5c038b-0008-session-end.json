@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T112101-0300-claude-code-5c038b-0008",
+  "ts": "2026-10-14T11:21:01-03:00",
+  "utc": "2026-10-14T14:21:01.425Z",
+  "session": "claude-code-5c038b",
+  "seq": 8,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-7-revisao-pesquisa",
+  "type": "session-end",
+  "summary": "F0.7 concluída: Revisão 0.2 no PR #6 (CI verde); 5 decisões e merges #1-#6 aguardam o Pai",
+  "refs": [],
+  "data": {}
+}
