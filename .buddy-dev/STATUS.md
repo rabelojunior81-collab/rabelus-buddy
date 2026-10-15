@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T17:16:41-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-7ebb05
+**Atualizado em:** 2026-10-15T17:20:52-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-7ebb05
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,10 +16,10 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `dfb5746` (Merge #19: `bd deps --latest`), CI verde; PR #17 (SPEC 0001) aberto, aguardando o Pai |
-| PRs mergeados | #1–#16, #18 e #19, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `975a9f6` (Merge #17: SPEC 0001 aprovada), CI verde |
+| PRs mergeados | #1–#19, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
-| Blog | `rabelus-lab-blog` em `fdebad4`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
+| Blog | `rabelus-lab-blog` em `9671988`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-15)
 

@@ -146,3 +146,7 @@ Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR
 ### #0033 · 2026-10-15T171930-0300 · claude-code-vs-code-7ebb05 · decisao
 
 SPEC 0001 aprovada pelo Pai (rev. 3, decisão 8 = A) e mergeada; ADR 0015: ordem de provedores OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga); typescript e @types/node aprovados no registro. Regra: aprovado é mergeado na hora. Ficha pi-agent para a pergunta de forkar o Pi.
+
+### #0034 · 2026-10-15T172109-0300 · claude-code-vs-code-7ebb05 · processo
+
+Sessão claude-code-vs-code-7ebb05: SPEC 0001 aprovada e mergeada (PR #17), branches locais mergeadas removidas, ADR 0015, ficha do Pi com recomendação de compor no M1 (não forkar). Post: Forkar Não É Economizar.
