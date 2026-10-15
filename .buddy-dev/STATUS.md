@@ -19,7 +19,7 @@
 | `main` | `12ebc8d` (Merge #16), CI verde |
 | PRs mergeados | #1–#16, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
-| Blog | `rabelus-lab-blog` em `9987b85`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
+| Blog | `rabelus-lab-blog` em `d786110`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-15)
 

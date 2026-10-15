@@ -123,3 +123,7 @@ SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decis
 ### #0029 · 2026-10-15T043545-0300 · claude-code-vs-code-5cfc7b · aprendizado
 
 Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela. AGENTS §5.4/§5.7, checklist do PR, linha Seguindo em paralelo no STATUS; LEARNING-CURVE #6.
+
+### #0030 · 2026-10-15T044039-0300 · claude-code-vs-code-5cfc7b · doc
+
+M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (store:false vira requisito), decisão 8 (TypeScript sem build), plano de fase M0 (8 sub-fases), desenho dos 21 testes, spike de banco e IPC aprovado em 3 SOs × Node 24/26 no CI.
