@@ -1,7 +1,7 @@
 # Revisão 0.2 da pesquisa — relatório
 
 **Data de corte:** 2026-10-14 · **Autor:** buddy-dev (claude-code-5c038b), com cinco subagentes de extração conferidos por amostragem na fonte · **Base:** pesquisa 0.1 em [`docs/00-proveniencia/`](../../00-proveniencia/) (Claude Haiku 5.5 via OpenCode), que não foi alterada.
-**Estado:** proposta — aguarda aceite do Pai.
+**Estado:** aceita pelo Pai em 2026-10-14. Decisões: orçamento por assinaturas ([ADR 0008](../../60-decisoes/0008-orcamento-por-assinaturas.md)), aprovações com escopo ([0009](../../60-decisoes/0009-aprovacoes-com-escopo.md)), núcleo + composição ([0010](../../60-decisoes/0010-nucleo-governado-e-composicao.md)), binários `rabelus-buddy` e `rbuddy` ([0011](../../60-decisoes/0011-binarios-da-cli.md)), canais globais ([0012](../../60-decisoes/0012-canais-globais-rede-e-buzz.md)). Stack mobile segue pendente.
 
 ## Em uma página
 

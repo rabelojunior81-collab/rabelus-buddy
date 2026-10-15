@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-14T120553-0300-claude-code-671f81-0006",
+  "ts": "2026-10-14T12:05:53-03:00",
+  "utc": "2026-10-14T15:05:53.353Z",
+  "session": "claude-code-671f81",
+  "seq": 6,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-8-roadmap-e-plano-macro",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-14T15:15:53.353Z",
+    "tookOverFrom": null
+  }
+}

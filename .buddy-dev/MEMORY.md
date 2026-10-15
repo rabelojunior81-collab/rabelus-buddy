@@ -19,6 +19,11 @@
 | 2026-10-14 | Nome público "Rabelus Buddy"; "buddy" na intimidade | ADR 0007 |
 | 2026-10-14 | Open source completo (Apache-2.0); repositório privado por enquanto | ADR 0001 |
 | 2026-10-14 | Corpus do buddy-dev dentro do repositório | ADR 0006 |
+| 2026-10-14 | Orçamento US$ 50: trabalho via ChatGPT Plus (US$ 20) e OpenCode Go (US$ 10), modelos de baixo custo | ADR 0008; cliente ACP no M1 |
+| 2026-10-14 | Aprovações com escopo (integração do worktree; comandos livres no sandbox) | ADR 0009 |
+| 2026-10-14 | Núcleo governado + composição; roadmap M0–M5 | ADR 0010; ROADMAP |
+| 2026-10-14 | Binários `rabelus-buddy` e `rbuddy` | ADR 0011 |
+| 2026-10-14 | Canais globais; web = rede; no Buzz só mensagens endereçadas | ADR 0012 |
 
 ## Fatos que não posso esquecer
 

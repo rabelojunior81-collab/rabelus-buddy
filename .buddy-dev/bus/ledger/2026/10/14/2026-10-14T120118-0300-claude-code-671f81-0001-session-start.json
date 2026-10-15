@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-14T120118-0300-claude-code-671f81-0001",
+  "ts": "2026-10-14T12:01:18-03:00",
+  "utc": "2026-10-14T15:01:18.353Z",
+  "session": "claude-code-671f81",
+  "seq": 1,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/f0-8-roadmap-e-plano-macro",
+  "type": "session-start",
+  "summary": "Decisões do Pai sobre a 0.2 → ADRs; F0.8 Roadmap e Plano Macro; fechamento da Fase 0",
+  "refs": [],
+  "data": {}
+}
