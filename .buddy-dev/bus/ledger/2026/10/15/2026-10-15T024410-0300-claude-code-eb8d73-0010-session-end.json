@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T024410-0300-claude-code-eb8d73-0010",
+  "ts": "2026-10-15T02:44:10-03:00",
+  "utc": "2026-10-15T05:44:10.642Z",
+  "session": "claude-code-eb8d73",
+  "seq": 10,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-end",
+  "summary": "Merges #1–#8 feitos; ADR 0003 aceita (merge é do buddy-dev); Fase 0 concluída; próximo: SPEC do M0",
+  "refs": [],
+  "data": {}
+}
