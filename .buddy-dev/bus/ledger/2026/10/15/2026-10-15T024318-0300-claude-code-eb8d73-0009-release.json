@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T024318-0300-claude-code-eb8d73-0009",
+  "ts": "2026-10-15T02:43:18-03:00",
+  "utc": "2026-10-15T05:43:18.341Z",
+  "session": "claude-code-eb8d73",
+  "seq": 9,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/f0-fechamento",
+  "type": "release",
+  "summary": "docs/50-planos/PLANO-MACRO.md",
+  "refs": [],
+  "data": {}
+}
