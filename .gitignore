@@ -19,3 +19,6 @@ Thumbs.db
 
 # Rascunho local sem garantia de preservação
 workspace/
+
+# Artefatos do Playwright MCP (gravados na raiz do diretório de trabalho)
+.playwright-mcp/

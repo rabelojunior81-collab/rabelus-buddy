@@ -2,13 +2,13 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T03:56:30-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-14f5bb
+**Atualizado em:** 2026-10-15T04:03:33-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-7e2404
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada, [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) proposta e aguardando o Pai. **Próximo: SPEC do M0.**
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada, [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) proposta e aguardando o Pai. Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). **Próximo: SPEC do M0.**
 
 **M0 — Núcleo governado:** SPEC em preparação. **Retomar pelo handoff:** [`docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md`](../docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md). A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
 
@@ -16,8 +16,9 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `fad6f02` (Merge #12), CI verde; o PR da stack mobile é mergeado ao fim desta sessão |
-| PRs mergeados | #1–#12, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `fd8f91d` (Merge #13), CI verde; o PR do gate do Blog é mergeado ao fim desta sessão |
+| PRs mergeados | #1–#13, por merge commit, pelo buddy-dev (ADR 0003) |
+| Blog | `rabelus-lab-blog` em `b5c6e37`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-14)
 
