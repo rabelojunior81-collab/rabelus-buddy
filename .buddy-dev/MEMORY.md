@@ -18,6 +18,7 @@
 | 2026-10-15 | Canal de segurança e denúncia: rabelo.work@gmail.com | `SECURITY.md`, Código de Conduta |
 | 2026-10-15 | Stack mobile: pesquisar cenários para iOS e Android nativos e WebUI responsiva, com recomendação | missão em `STATUS.md` |
 | 2026-10-15 | Ordem do dia: decisões → avatar → stack mobile → SPEC do M0 | `STATUS.md` (Fase atual) |
+| 2026-10-15 | Stack mobile/Web: começar por A (Expo universal) e chegar em B (Web React DOM separada) | ADR 0013 (aceita) |
 | 2026-10-15 | Enforcement, não micro-gerência: toda sessão com o Pai fecha com post e daily publicados no Blog | `bd session end`, `bd post`, `bd blog-check` (`scripts/lib/blog.mjs`) |
 | 2026-10-15 | Bloqueio do harness se reporta como bloqueio do harness, nunca como regra do Lab | LEARNING-CURVE 2026-10-15 #4 |
 | 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |

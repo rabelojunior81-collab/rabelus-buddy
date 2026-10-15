@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T041530-0300-claude-code-vs-code-438d04-0012",
+  "ts": "2026-10-15T04:15:30-03:00",
+  "utc": "2026-10-15T07:15:30.930Z",
+  "session": "claude-code-vs-code-438d04",
+  "seq": 12,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/adr-0013-aceita",
+  "type": "erro",
+  "summary": "Editei AGENTS.md (linha do gate) sem claim antes; sem sessões paralelas, sem conflito. Registrado",
+  "refs": [],
+  "data": {}
+}

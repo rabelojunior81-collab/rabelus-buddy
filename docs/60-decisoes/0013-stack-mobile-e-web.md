@@ -1,7 +1,7 @@
 ---
-status: proposta (aguarda decisão do Pai)
+status: aceita (2026-10-15)
 date: 2026-10-15
-decision-makers: Pai (Adilson Rabelo Junior) — pendente
+decision-makers: Pai (Adilson Rabelo Junior)
 consulted: buddy-dev (Buddy Fenix)
 ---
 
@@ -44,7 +44,11 @@ Os fatos estão em [`stacks-mobile-e-web.md`](../20-conhecimento/stacks-mobile-e
 
 As licenças da linha 6 vêm do meu conhecimento, não da verificação de hoje: **a verificar** no spike, antes de virar premissa.
 
-## Decisão (recomendação do buddy-dev)
+## Decisão
+
+**Aceita pelo Pai em 2026-10-15:** "Seguimos com sua sugestão, começando por A e depois, chegando em B."
+
+### A recomendação aceita
 
 Recomendo **B, começando por A**:
 

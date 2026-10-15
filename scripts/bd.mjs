@@ -218,9 +218,18 @@ const commands = {
     else ok(`tudo enviado a ${s.upstream}`);
     const cur = currentSession(r);
     if (cur) warn(`sessão ${cur.id} ainda aberta (encerre com bd session end ao terminar)`);
-    const last = lastSession(r);
-    if (last) blogGate(r, last);
-    else warn('nenhuma sessão registrada neste worktree: gate do Blog não se aplica');
+    // Com sessão aberta, o gate é cobrado no `session end` (que recusa sem post), e
+    // `session start` não abre outra enquanto esta existir: aqui só avisa, para não
+    // travar os PRs intermediários da sessão. Sem sessão aberta, reprova a última.
+    if (cur) {
+      const res = checkBlogDelivery(blogDir(r), { since: cur.startedAt });
+      if (res.ok) ok(`Blog: ${res.posts.join(', ')} publicado(s) nesta sessão`);
+      else warn('Blog: post e daily desta sessão ainda pendentes (o bd session end vai cobrar)');
+    } else {
+      const last = lastSession(r);
+      if (last) blogGate(r, last);
+      else warn('nenhuma sessão registrada neste worktree: gate do Blog não se aplica');
+    }
     if (failures) process.exitCode = 1;
   },
 };
