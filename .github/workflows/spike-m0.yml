@@ -1,0 +1,35 @@
+# Spike do M0 (registro 2026-10-15T042718-0300): banco e IPC nos 3 SOs e nas linhas 24 e 26 do Node.
+# Branch de evidência; não vai para a main.
+name: Spike M0 banco e IPC
+
+on:
+  push:
+    branches: [spike/m0-banco-ipc-3-sos]
+
+permissions:
+  contents: read
+
+jobs:
+  spike:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [24, 26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Rodar spike
+        shell: bash
+        run: |
+          D=docs/registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0
+          mkdir -p /tmp/spike 2>/dev/null || true
+          W="$RUNNER_TEMP/spike"; mkdir -p "$W"
+          for f in dono carga serial; do cp "$D/$f.mjs.txt" "$W/$f.mjs"; done
+          cd "$W"
+          node --version
+          node carga.mjs 2>&1 | grep -v -i "warning"
+          node serial.mjs 2>&1 | grep -v -i "warning"
