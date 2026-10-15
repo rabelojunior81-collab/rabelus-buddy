@@ -79,3 +79,11 @@ Identidade visual do Buddy Fenix por autoria própria: conceito (construtor nasc
 ### #0018 · 2026-10-15T033730-0300 · claude-code-vs-code-14f5bb · aprendizado
 
 A geração do avatar parou em HTTP 429: o projeto da chave Gemini estourou o teto de gasto mensal; não se contorna trocando de modelo. O 2.1 também recusa PNG na saída (só JPEG). Chave válida não é chave com saldo: conferir o teto antes de planejar geração.
+
+### #0019 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · decisao
+
+Avatar do Buddy Fenix: v3-b, escolhido pelo Pai. Retrato na linguagem da família, gerado com Nano Banana 2.1 usando o avatar do Killian como referência; proveniência com prompt, id, custo (cerca de US$ 0,25) e sha256.
+
+### #0020 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · aprendizado
+
+Duas tentativas recusadas (canteiro; nave estelar) antes do v3: eu li o meu próprio texto e o acervo errado em vez do artefato irmão. Lição 1 de 2026-10-15 na LEARNING-CURVE: referência é o artefato do mesmo tipo, enviado como imagem, e mostro ao Pai antes de commitar.

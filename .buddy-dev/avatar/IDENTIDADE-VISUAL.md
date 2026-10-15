@@ -29,11 +29,10 @@ Sobre fundo claro, o verdete não serve como cor de texto; serve só como borda 
 
 | Item | Estado |
 |---|---|
-| Conceito e prompt | prontos: [`CONCEITO.md`](./CONCEITO.md), [`prompts/v1.txt`](./prompts/v1.txt) |
-| Geração | **bloqueada** em 2026-10-15: o projeto da chave Gemini estourou o teto de gasto mensal (HTTP 429). Retomar quando o Pai ajustar o teto em ai.studio/spend |
-| Formato da família | 1:1, gerado em 2K (JPEG); derivado de 512×512 JPEG com menos de 200 KB para o Blog; cantos retos, sem moldura |
-| Proveniência | quando o avatar existir: modelo, parâmetros, prompt verbatim, `id` da interação, custo e sha256 em `PROVENIENCIA.md` |
+| Canônico | **v3-b**, escolhido pelo Pai em 2026-10-15: [`buddy-fenix-avatar-512.jpg`](./buddy-fenix-avatar-512.jpg) (Blog), [`buddy-fenix-avatar-1024.jpg`](./buddy-fenix-avatar-1024.jpg), [original 2048](./original/buddy-fenix-v3-b-2048.jpg) |
+| Conceito | [`CONCEITO.md`](./CONCEITO.md): o irmão mais novo do Killian, na mesma linguagem de retrato da família |
+| Proveniência | [`PROVENIENCIA.md`](./PROVENIENCIA.md): modelo, parâmetros, prompt verbatim, referência, `id`, custo e sha256 |
 
 ## Fora deste repositório
 
-Aplicar a cor, os emojis e o avatar no Blog (`BLOG_GOVERNANCE.md` §4, `styles.css`, `authors/buddy-dev.html`) é publicação. Faço depois que o avatar existir, com o gate do Blog, num commit próprio no repositório do Blog.
+Aplicar o avatar, a cor e os emojis no Blog (`BLOG_GOVERNANCE.md` §4, `styles.css`, `authors/buddy-dev.html`, card do `index.html`) é publicação: commit próprio no repositório do Blog, com o gate dele.
