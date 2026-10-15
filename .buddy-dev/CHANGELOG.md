@@ -107,3 +107,11 @@ Regra sem mecanismo eu esqueci (post no Blog); bloqueio do harness relatado como
 ### #0025 · 2026-10-15T041437-0300 · claude-code-vs-code-438d04 · decisao
 
 ADR 0013 aceita pelo Pai: stack mobile e Web começa por A (Expo universal sobre pacote de cliente TS) e chega em B (Web UI React DOM separada); spike no M5.
+
+### #0026 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · correcao
+
+Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en com Fase 0 e sem mapa em inglês, STATUS com ADR 0013 proposta, USER com merge do Pai, fichas do Node e do GitHub, carimbos de ROADMAP/PLANO-MACRO/Fase 0, AGENTS, BOOTSTRAP, PR template, CHANGELOG da raiz, 40-specs, pendência da convenção de código). Plano da conta GitHub medido: Free.
+
+### #0027 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · ferramenta
+
+bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.

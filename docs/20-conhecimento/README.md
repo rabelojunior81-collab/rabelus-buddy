@@ -32,9 +32,9 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | Ficha | Tema | Última verificação |
 |---|---|---|
 | [relogio-e-fuso.md](./relogio-e-fuso.md) | Hora de Curitiba, tzdata, fontes de relógio | 2026-10-14 |
-| [node-runtime.md](./node-runtime.md) | Versões do Node.js | 2026-10-14 |
+| [node-runtime.md](./node-runtime.md) | Versões do Node.js e estado do `node:sqlite` | 2026-10-15 |
 | [padroes-comunidade-oss.md](./padroes-comunidade-oss.md) | Licença, código de conduta, changelog, commits, ADR | 2026-10-14 |
-| [github-plataforma.md](./github-plataforma.md) | Plano, proteções de branch, segurança | 2026-10-14 |
+| [github-plataforma.md](./github-plataforma.md) | Plano (Free, medido), proteções de branch, segurança | 2026-10-15 |
 | [bmad-method.md](./bmad-method.md) | BMad Method: versões, caminhos, artefatos | 2026-10-14 (reverificar após 16/10) |
 | [ci-github-actions.md](./ci-github-actions.md) | Actions fixadas por SHA, gitleaks | 2026-10-14 |
 | [precos-llm.md](./precos-llm.md) | Preços de Anthropic, OpenAI e Google | 2026-10-14 (reverificar antes de 30/11) |

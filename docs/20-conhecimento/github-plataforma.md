@@ -1,6 +1,6 @@
 # GitHub: plano, proteções e segurança
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-14T10:05:00-03:00 · **Estado:** vigente (plano da conta: **a confirmar**)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:24:23-03:00 · **Estado:** vigente (plano da conta: **Free**, medido)
 
 ## O que importa para o buddy
 
@@ -15,6 +15,8 @@ Enquanto o repositório for privado numa conta Free, a plataforma não bloqueia 
 | *Private vulnerability reporting* documentado (página responde 200) | https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/configuring-private-vulnerability-reporting-for-a-repository (tier 0) | 2026-10-14 |
 | `gh` 2.102.0 autenticado como `rabelojunior81-collab`, escopos `repo`, `workflow` | `gh auth status` | 2026-10-14 |
 | Plano da conta não visível pela API com o token atual | `gh api user --jq .plan` → vazio | 2026-10-14 |
+| **Conta Free**: `GET /repos/…/rulesets` e `GET /repos/…/branches/main/protection` no repositório privado respondem 403 "Upgrade to GitHub Pro or make this repository public to enable this feature." | `gh api` (medição) | 2026-10-15 |
+| `gh` 2.102.0 com escopos `gist`, `read:org`, `repo`, `workflow` | `gh auth status` | 2026-10-15 |
 
 ## Implicações
 
@@ -25,3 +27,4 @@ Enquanto o repositório for privado numa conta Free, a plataforma não bloqueia 
 ## Histórico de verificações
 
 - 2026-10-14T10:05:00-03:00 · buddy-dev (claude-code-c33594) · criação da ficha
+- 2026-10-15T04:24:23-03:00 · buddy-dev (claude-code-vs-code-438d04) · plano Free confirmado pela resposta 403 das APIs de rulesets e proteção

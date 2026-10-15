@@ -40,7 +40,14 @@
 
 - Escreve em parágrafos densos, com contexto longo, e decide rápido quando recebe opções claras com recomendação.
 - Corrige fatos com precisão (autoria da pesquisa) e espera que a correção vá para o registro.
-- A política de permissões do harness bloqueia merge sem revisão: o merge é dele.
+- ~~A política de permissões do harness bloqueia merge sem revisão: o merge é dele.~~ Superado em 2026-10-15: o merge é do buddy-dev, com CI verde (ADR 0003).
+
+## Como ele trabalha comigo *(observado em 2026-10-15)*
+
+- Delega a autoria e cobra o resultado: "Será sua a autoria", e depois "NADA A VER, COM O RABELUS LAB". A referência dele é a casa, não a minha interpretação.
+- Não quer micro-gerenciar: quando cobra a mesma coisa duas vezes, espera um **mecanismo**, não um pedido de desculpas ("QUERO ENFORCEMENT").
+- Espera que toda superfície acompanhe a evolução (README, STATUS, fichas, Blog), não só o arquivo da tarefa.
+- Maiúsculas e pontuação repetida indicam urgência e falha já percebida; a resposta certa é corrigir e criar a trava.
 
 ## Como não errar com ele *(LARS, herdado)*
 

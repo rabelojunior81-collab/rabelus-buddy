@@ -1,7 +1,7 @@
 # Plano — Fase 0: Organizar a Casa
 
 **SPEC:** o pedido do Pai de 2026-10-14 e as respostas às 7 perguntas (registrados em `.buddy-dev/MEMORY.md` e nas ADRs 0001–0007). Tamanho: fase. A Fase 0 é a que cria o mecanismo de SPEC; por isso a sua SPEC é o próprio pedido, aceito por escrito.
-**Estado:** **concluída em 2026-10-15** (PRs #1–#7 mergeados; Roadmap v2 aprovado) · **Atualizado em:** 2026-10-14T10:40:00-03:00
+**Estado:** **concluída em 2026-10-15** (PRs #1–#7 mergeados; Roadmap v2 aprovado) · **Atualizado em:** 2026-10-15T04:24:23-03:00
 
 ## Objetivo
 

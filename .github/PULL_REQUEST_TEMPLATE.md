@@ -12,6 +12,8 @@ SPEC / plano:
 - [ ] Nada apagado: o que saiu de uso foi para `archive/` com lápide
 - [ ] Conhecimento novo verificado ao vivo e registrado em `docs/20-conhecimento/` (fonte + data)
 - [ ] Superfície pública alterada? Espelho `.en.md` atualizado
+- [ ] Superfícies do evento atualizadas ([`SUPERFICIES.md`](../docs/30-governanca/SUPERFICIES.md)); `bd surfaces` verde
+- [ ] Sessão do buddy-dev: post e daily publicados no Blog (o `bd session end` confere)
 
 ## Evidência
 

@@ -56,6 +56,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)) |
 | Regra recebida do Pai vai para o corpus no mesmo dia | `.buddy-dev/MEMORY.md` (tabela de regras) |
 | Toda sessão com o Pai gera post e daily no Blog | `bd session end` recusa sem post do buddy-dev publicado desde o início da sessão, com daily ligada e no manifesto; `session start` não abre outra sessão antes; `bd post` avisa com sessão aberta e reprova a última encerrada (`scripts/lib/blog.mjs`) |
+| Toda evolução atualiza as superfícies que afirmam o fato | `bd surfaces` no `bd post` e na CI; mapa evento → superfícies em [`SUPERFICIES.md`](./docs/30-governanca/SUPERFICIES.md) |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`) |
 
 ## 4. Trabalho em paralelo
@@ -81,12 +82,13 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 
 | Caminho | Classe |
 |---|---|
-| `.buddy-dev/SOUL.md` `IDENTITY.md` `USER.md` | ALMA |
+| `.buddy-dev/SOUL.md` `IDENTITY.md` `USER.md` `avatar/` | ALMA |
 | `AGENTS.md` `docs/30-governanca/` | CÂNONE |
 | `.buddy-dev/STATUS.md` | ESTADO (única morada de versões e pendências) |
 | `.buddy-dev/MEMORY.md` `diario/` `CHANGELOG.md` `LEARNING-CURVE.md` | MEMÓRIA |
 | `.buddy-dev/bus/ledger/` `docs/registros/` | REGISTRO |
 | `.buddy-dev/GENESIS.md` `docs/00-proveniencia/` | PROVENIÊNCIA |
 | `archive/` | ARQUEOLOGIA |
+| `workspace/` (fora do git) | RASCUNHO LOCAL: clone do Blog em `workspace/blog`, exigido pelo gate |
 | `docs/20-conhecimento/` | CONHECIMENTO |
 | `docs/40-specs/` `docs/50-planos/` `docs/60-decisoes/` | CONTRATO, PLANO, DECISÃO |

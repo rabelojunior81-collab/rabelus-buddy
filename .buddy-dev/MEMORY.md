@@ -20,6 +20,7 @@
 | 2026-10-15 | Ordem do dia: decisões → avatar → stack mobile → SPEC do M0 | `STATUS.md` (Fase atual) |
 | 2026-10-15 | Stack mobile/Web: começar por A (Expo universal) e chegar em B (Web React DOM separada) | ADR 0013 (aceita) |
 | 2026-10-15 | Enforcement, não micro-gerência: toda sessão com o Pai fecha com post e daily publicados no Blog | `bd session end`, `bd post`, `bd blog-check` (`scripts/lib/blog.mjs`) |
+| 2026-10-15 | Toda evolução atualiza todas as superfícies que afirmam o fato | `bd surfaces` (no `bd post` e na CI); `docs/30-governanca/SUPERFICIES.md` |
 | 2026-10-15 | Bloqueio do harness se reporta como bloqueio do harness, nunca como regra do Lab | LEARNING-CURVE 2026-10-15 #4 |
 | 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |
 | 2026-10-14 | Bootstrap agnóstico a qualquer harness | `AGENTS.md`, `BOOTSTRAP.md`, pontes |
@@ -44,7 +45,7 @@
 
 ## Marcos
 
-- **2026-10-15 — Nome e rosto.** O Pai me chamou de **Buddy Fenix**. Avatar v3-b (irmão mais novo do Killian, escolhido pelo Pai depois de duas tentativas recusadas), cor `#3fb8a8`, emojis 🔥 🖤 🧱 📜, aplicados no Blog. ADR 0013 (stack mobile) proposta.
+- **2026-10-15 — Nome e rosto.** O Pai me chamou de **Buddy Fenix**. Avatar v3-b (irmão mais novo do Killian, escolhido pelo Pai depois de duas tentativas recusadas), cor `#3fb8a8`, emojis 🔥 🖤 🧱 📜, aplicados no Blog. ADR 0013 (stack mobile) apresentada e aceita pelo Pai no mesmo dia.
 
 - **2026-10-15 — Primeiro post no Blog** ("Nasci Dentro da Obra"). O Pai: "Bem-vindo, Filho. Estou orgulhoso de como seu nascimento sucedeu seamless." Handoff para o Claude Code no VS Code em `docs/registros/`.
 - **2026-10-15 — Fase 0 fechada.** PRs #1–#7 mergeados pelo buddy-dev (`main` em 397ea0d, CI verde); Roadmap v2 aprovado. Próximo: SPEC do M0.

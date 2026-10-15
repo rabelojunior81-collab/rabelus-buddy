@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T042516-0300-claude-code-vs-code-438d04-0024",
+  "ts": "2026-10-15T04:25:16-03:00",
+  "utc": "2026-10-15T07:25:16.246Z",
+  "session": "claude-code-vs-code-438d04",
+  "seq": 24,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/auditoria-de-superficies",
+  "type": "aprendizado",
+  "summary": "Auditoria de superfícies: 12 lacunas (README pt/en, STATUS, USER, fichas Node/GitHub, carimbos de planos, AGENTS mapa, BOOTSTRAP, PR template, CHANGELOG raiz, 40-specs, convenção de código fora das pendências). Mecanismo bd surfaces + SUPERFICIES.md",
+  "refs": [],
+  "data": {}
+}
