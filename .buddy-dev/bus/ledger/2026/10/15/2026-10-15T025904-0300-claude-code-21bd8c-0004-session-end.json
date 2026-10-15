@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-15T025904-0300-claude-code-21bd8c-0004",
+  "ts": "2026-10-15T02:59:04-03:00",
+  "utc": "2026-10-15T05:59:04.813Z",
+  "session": "claude-code-21bd8c",
+  "seq": 4,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/handoff-e-encerramento",
+  "type": "session-end",
+  "summary": "Handoff para o VS Code, rito corrigido, primeiro post no Blog publicado e no ar; sessão de nascimento encerrada",
+  "refs": [],
+  "data": {}
+}

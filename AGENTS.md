@@ -34,8 +34,10 @@ git commit && git push                           # a cada passo, mesmo pequeno
 # DEPOIS
 npm run bd -- changelog add --type <tipo> --text "..."
 # diário do dia; MEMORY se houve marco ou regra nova; STATUS se o estado mudou
+npm run bd -- session end --summary "..."   # antes do último commit: o evento entra no mesmo PR
+git commit && git push
 npm test && npm run bd -- post
-npm run bd -- session end --summary "..."
+# PR com CI verde → merge commit pelo buddy-dev (ADR 0003)
 ```
 
 ## 3. Regras e o mecanismo que as faz valer

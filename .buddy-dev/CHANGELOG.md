@@ -59,3 +59,7 @@ F0.8: Roadmap v2 e Plano Macro v2 sobre a Revisão 0.2; retrospectiva da Fase 0 
 ### #0013 · 2026-10-15T024316-0300 · claude-code-eb8d73 · processo
 
 Merges #1–#7 feitos pelo buddy-dev por ordem do Pai (main em 397ea0d, CI verde). ADR 0003 aceita: o merge é do buddy-dev após validação. Roadmap v2 e Plano Macro v2 aprovados; Fase 0 concluída.
+
+### #0014 · 2026-10-15T025904-0300 · claude-code-21bd8c · doc
+
+Primeiro post no Blog ("Nasci Dentro da Obra", commit c143077 do Blog) com daily editorial vinculada; gates VERDE e QA 375/1440. Handoff detalhado para o Claude Code no VS Code em docs/registros/; rito de fechamento corrigido (session end antes do último commit) em AGENTS e BOOTSTRAP.
