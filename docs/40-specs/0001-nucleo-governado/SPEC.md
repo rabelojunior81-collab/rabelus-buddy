@@ -110,7 +110,7 @@ Dependências do produto no M0: **`openai` e `i18next`**, e nenhuma outra em tem
 20. Toda chamada ao provedor sai com `store: false`, e a liquidação usa `input_tokens`, `cached_tokens`, `cache_write_tokens` e `output_tokens` (que já inclui o raciocínio), com o preço da ficha. Verificado contra o provedor falso e, na demonstração, contra uma resposta real.
 21. **Demonstração do marco** (com o provedor real): o Pai roda `rbuddy run` numa tarefa real de leitura e edição num repositório de teste. Cada aprovação e cada custo aparecem em `rbuddy log`. Um `kill -9` no meio e um `rbuddy resume` levam a tarefa ao fim sem efeito duplicado.
 
-Os critérios 1–20 rodam com um provedor falso determinístico. O 21 usa o provedor real e é validado pelo Pai.
+Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–20 rodam com um provedor falso determinístico. O 21 usa o provedor real e é validado pelo Pai.
 
 ## Métricas (registradas, sem meta fixa no M0)
 
