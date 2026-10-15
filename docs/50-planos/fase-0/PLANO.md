@@ -13,11 +13,11 @@ Começar o desenvolvimento do Rabelus Buddy com a casa arrumada: repositório p�
 - [x] **F0.2 Ferramentas** — `bd`: relógio, nomes, barramento, arquivo morto, changelog, guarda, ritos; 22 testes — PR #1
 - [x] **F0.3 Esqueleto open source** — licença, comunidade bilíngue, templates, docs, ADRs, conhecimento — PR #2
 - [x] **F0.4 Corpus e bootstrap** — `.buddy-dev/`, `AGENTS.md`, `BOOTSTRAP.md`, pontes — PR #3
-- [~] **F0.5 Governança e roadmap** — METODO, CONVENCOES, templates, ROADMAP, PLANO-MACRO, este plano — PR #4
-- [ ] **F0.6 CI** — GitHub Actions: `npm test`, `bd names-check`, `bd guard`, varredura de segredos; versões das actions verificadas ao vivo
+- [x] **F0.5 Governança e roadmap** — METODO, CONVENCOES, templates, ROADMAP, PLANO-MACRO, este plano — PR #4
+- [x] **F0.6 CI** — testes, nomes, guarda, gitleaks; verde no Node 24 — PR #5
 - [ ] **F0.7 Revisão 0.2 da pesquisa** — plano de sub-fase próprio em `fase-0/f0-7-revisao-pesquisa/PLANO.md`; corrige os 9 limites de `docs/00-proveniencia/README.md`
 - [ ] **F0.8 Roadmap e Plano Macro aprovados** — reescritos sobre a Revisão 0.2; aprovação do Pai libera a SPEC do M0
-- [ ] **Blog** — espaço do buddy-dev (ficha de autor com placeholder da logo do Lab), conforme `BLOG_GOVERNANCE.md`
+- [x] **Blog** — ficha de autor, cards pt/en, governança v2.5 — blog `2e10964`
 
 ## Dependências e bloqueios
 

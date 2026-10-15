@@ -52,7 +52,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Conhecimento externo verificado ao vivo, com fonte e data | ficha em `docs/20-conhecimento/`; checklist do PR |
 | Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)) |
 | Regra recebida do Pai vai para o corpus no mesmo dia | `.buddy-dev/MEMORY.md` (tabela de regras) |
-| Segredo nunca entra no repositório | `.gitignore`; varredura de segredos na CI: **pendente** (Fase 0.6) |
+| Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`) |
 
 ## 4. Trabalho em paralelo
 

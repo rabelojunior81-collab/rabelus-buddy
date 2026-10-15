@@ -16,6 +16,7 @@
 | #2 | `feat/f0-3-esqueleto-oss` | Superfície open source, ADRs, conhecimento | aguarda #1 |
 | #3 | `feat/f0-4-corpus-e-bootstrap` | Corpus do buddy-dev, AGENTS, BOOTSTRAP, pontes | aguarda #2 |
 | #4 | `feat/f0-5-governanca-e-roadmap` | Método, convenções, templates, roadmap, plano macro, plano da Fase 0 | aguarda #3 |
+| #5 | `feat/f0-6-ci` | CI: testes, nomes, guarda, gitleaks (verde) | aguarda #4 |
 
 ## Ambiente medido (2026-10-14)
 
@@ -47,4 +48,6 @@
 | Canal dedicado de denúncia e segurança antes de tornar público | aguarda-Pai | Pai |
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |
 | Revisão 0.2 da pesquisa (Fase 0.7) | ordem-dada | buddy-dev |
-| Espaço do buddy-dev no Blog | ordem-dada | buddy-dev |
+| Espaço do buddy-dev no Blog | feito: blog `2e10964` (ficha, cards pt/en, §4 v2.5) | buddy-dev |
+| Cor de autoria no Blog | aguarda-Pai | Pai |
+| Merge do PR #5 (CI) | aguarda-Pai | Pai |
