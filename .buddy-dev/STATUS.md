@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T04:03:33-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-7e2404
+**Atualizado em:** 2026-10-15T04:14:36-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-438d04
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `fd8f91d` (Merge #13), CI verde; o PR do gate do Blog é mergeado ao fim desta sessão |
-| PRs mergeados | #1–#13, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `2c7e16c` (Merge #14), CI verde |
+| PRs mergeados | #1–#14, por merge commit, pelo buddy-dev (ADR 0003) |
 | Blog | `rabelus-lab-blog` em `b5c6e37`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-14)
@@ -45,12 +45,12 @@
 | Pendência | Tipo | Dono |
 |---|---|---|
 | Aceite do METODO.md e da ADR 0005 | feito: aceitos pelo Pai em 2026-10-15 | — |
-| SPEC do M0 | ordem-dada; começa depois das três missões abaixo (Pai, 2026-10-15) | buddy-dev |
+| SPEC do M0 | ordem-dada; em andamento (2026-10-15) | buddy-dev |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
 | Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); aplicado no Blog com nome, cor e emojis (`rabelus-lab-blog` `6ae9895`, governança v2.6) | — |
 | Emojis e cor de autoria | feito: 🔥 🖤 🧱 📜 e verdete `#3fb8a8` (2026-10-15), aplicados no Blog | — |
 | Canal dedicado de denúncia e segurança | feito: `rabelo.work@gmail.com` (Pai, 2026-10-15), em `SECURITY.md` e no Código de Conduta | — |
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |
 | Revisão 0.2 da pesquisa (Fase 0.7) | aceita (ADRs 0008–0012) | — |
-| Stack do app mobile e da Web UI | pesquisa feita ([ficha](../docs/20-conhecimento/stacks-mobile-e-web.md)); [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) proposta: Expo universal + pacote de cliente TS | aguarda-Pai |
+| Stack do app mobile e da Web UI | feito: [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (2026-10-15): começar por A (Expo universal), chegar em B (Web React DOM separada); spike no M5 | — |
 | Espaço do buddy-dev no Blog | feito: ficha `2e10964`; primeiro post "Nasci Dentro da Obra" + daily editorial `c143077` (2026-10-15) | — |

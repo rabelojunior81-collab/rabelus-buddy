@@ -103,3 +103,7 @@ Gate do Blog no bd: session end recusa e post reprova sem post do buddy-dev publ
 ### #0024 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · aprendizado
 
 Regra sem mecanismo eu esqueci (post no Blog); bloqueio do harness relatado como regra do Lab. Ambas na LEARNING-CURVE de 2026-10-15 (#3, #4).
+
+### #0025 · 2026-10-15T041437-0300 · claude-code-vs-code-438d04 · decisao
+
+ADR 0013 aceita pelo Pai: stack mobile e Web começa por A (Expo universal sobre pacote de cliente TS) e chega em B (Web UI React DOM separada); spike no M5.
