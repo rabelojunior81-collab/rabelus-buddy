@@ -32,3 +32,22 @@ Saídas brutas: [`resultado-carga.jsonl`](./resultado-carga.jsonl), [`resultado-
 - **CONFIRMADO, neste host:** um dono com `node:sqlite` em WAL e IPC por named pipe atende aos critérios observáveis dos requisitos 1 e 7, com folga de desempenho para um usuário.
 - **NÃO medido:** Linux e macOS (socket Unix); Node 24 LTS (o piso do projeto), onde a classe se chama `DatabaseSync`; `better-sqlite3` (instalar exigiria autorização); falta de energia real (`kill -9` não simula perda de cache de disco).
 - O critério de aceite da SPEC repete estes testes nos três sistemas, na CI.
+
+## Adendo — matriz 3 SOs × Node 24/26 (2026-10-15T04:39:19-03:00)
+
+Rodado no GitHub Actions (run [38700033340](https://github.com/rabelojunior81-collab/rabelus-buddy/actions/runs/38700033340), branch `spike/m0-banco-ipc-3-sos`, que não vai para a `main`). Saídas brutas: [`resultado-matriz-ci.jsonl`](./resultado-matriz-ci.jsonl).
+
+| SO | Node | SQLite | R5-1: erros / BUSY / buracos | Vazão em rajada (ev/s) | Ida e volta p50 / p99 (ms) | R5-7: integridade / efeito | Retomada |
+|---|---|---|---|---|---|---|---|
+| Linux | 24.21.0 | 3.53.4 | 0 / 0 / 0 | 2.182 | 0,080 / 0,325 | ok / pendente | contínua |
+| Linux | 26.12.0 | 3.54.0 | 0 / 0 / 0 | 8.810 | 0,148 / 0,511 | ok / pendente | contínua |
+| macOS | 24.20.0 | 3.53.4 | 0 / 0 / 0 | 28.938 | 0,078 / 0,238 | ok / pendente | contínua |
+| macOS | 26.12.0 | 3.54.0 | 0 / 0 / 0 | 24.485 | 0,069 / 0,244 | ok / pendente | contínua |
+| Windows | 24.21.0 | 3.53.4 | 0 / 0 / 0 | **331** | 0,194 / 2,240 | ok / pendente | contínua |
+| Windows | 26.12.0 | 3.54.0 | 0 / 0 / 0 | 2.941 | 0,190 / 0,440 | ok / pendente | contínua |
+
+**Leitura:**
+- **CONFIRMADO:** os critérios dos requisitos 1 e 7 passam nos três SOs e nas duas linhas do Node, inclusive o Node 24, que é o piso, com a classe `DatabaseSync`.
+- **Observação:** a vazão em rajada varia quase 100 vezes entre os runners. O pior caso é o Windows com Node 24 (331 eventos/s). A latência de um pedido por vez fica abaixo de 0,2 ms em todos.
+- **HIPÓTESE:** a diferença vem do disco do runner com `fsync` por transação (`synchronous=NORMAL` no WAL) e do SQLite mais antigo no Node 24. Não medi a causa.
+- Para um usuário humano, mesmo 331 eventos/s sobra. A SPEC registra o risco, e a M0.2 mede a vazão como métrica.

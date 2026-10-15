@@ -1,6 +1,6 @@
 # Banco embarcado e IPC local (núcleo do M0)
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:27:18-03:00 · **Estado:** vigente (reverificar quando o `node:sqlite` sair de Release candidate)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:39:19-03:00 · **Estado:** vigente (reverificar quando o `node:sqlite` sair de Release candidate)
 
 ## O que importa para o buddy
 
@@ -19,6 +19,7 @@
 | No WAL, um escritor por vez; todos os processos no mesmo host; checkpoint automático a 1.000 páginas | https://sqlite.org/wal.html (via R5, tier 0) | 2026-10-14 |
 | `better-sqlite3` 13.0.3, MIT, Node ≥ 22 (módulo nativo) | registro npm (tier 1) | 2026-10-15 |
 | `node:net`: "On Windows, the local domain is implemented using a named pipe. The path must refer to an entry in `\\?\pipe\` or `\\.\pipe\`"; pipes somem quando o dono sai; socket Unix até 107 bytes (Linux) e 103 (macOS) de caminho e precisa de `unlink` depois de queda; `readableAll`/`writableAll` desligados por padrão | https://nodejs.org/api/net.html (tier 0) | 2026-10-15 |
+| Matriz no GitHub Actions (Linux, macOS, Windows × Node 24.2x e 26.12.0): requisitos 1 e 7 passam em todas; vazão em rajada de 331 (Windows, Node 24) a 28.938 eventos/s (macOS, Node 24); ida e volta p50 entre 0,069 e 0,194 ms; o Node 26.12.0 embarca SQLite 3.54.0 | [adendo do spike](../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) | 2026-10-15 |
 | Spike no Windows (Node 26.11.1): 8 clientes × 1.000 comandos, 0 `SQLITE_BUSY`, sem buraco; ida e volta p50 0,081 ms; `kill -9` com banco íntegro e efeito "pendente" | [registro do spike](../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) | 2026-10-15 |
 
 ## Explicação
@@ -36,3 +37,4 @@ Socket Unix e named pipe servem ao mesmo uso com a mesma API do `node:net`. Muda
 ## Histórico de verificações
 
 - 2026-10-15T04:27:18-03:00 · buddy-dev (claude-code-vs-code-438d04) · criação da ficha, com o spike
+- 2026-10-15T04:39:19-03:00 · buddy-dev (claude-code-vs-code-5cfc7b) · matriz 3 SOs × Node 24/26 no CI

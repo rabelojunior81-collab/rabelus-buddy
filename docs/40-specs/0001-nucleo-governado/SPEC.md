@@ -61,7 +61,7 @@ O M0 entrega o **núcleo governado mínimo**: um processo local dono do estado, 
 
 | # | Pergunta do handoff | Proposta | Por quê | Fonte |
 |---|---|---|---|---|
-| 1 | Banco | `node:sqlite` (RC) atrás de adaptador; `better-sqlite3` como plano B documentado | zero dependência nativa; spike atendeu R5-1 e R5-7 no Windows | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md), [spike](../../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) |
+| 1 | Banco | `node:sqlite` (RC) atrás de adaptador; `better-sqlite3` como plano B documentado | zero dependência nativa; spike atendeu R5-1 e R5-7 em Windows, Linux e macOS, Node 24 e 26 | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md), [spike](../../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) |
 | 2 | IPC | JSON-RPC 2.0 por linhas sobre `node:net` (pipe e socket) | mesma API nos três SOs; mesmo modelo de mensagem do ACP (M1) | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md) |
 | 3 | Provedor do plano B | **GPT-6 Luna** pelo SDK `openai` 7.x (Apache-2.0); Claude Haiku 5.5 como alternativa | mesmo preço que o Haiku, sem a faixa cara acima de 100k e sem o tokenizador +30%; é o modelo do Plus e do Go no M1 | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md), [precos-llm](../../20-conhecimento/precos-llm.md), [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md) |
 | 4 | CLI e TUI | `parseArgs` + despacho próprio; `readline` para aprovações; sem TUI no M0 | menos dependências e superfície de ataque; `ink` (React) entra quando houver telas interativas | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
@@ -140,6 +140,7 @@ O M0 é onde o lore vira produto:
 | `node:sqlite` ainda é Release candidate e já renomeou a classe entre o 24 e o 26 | adaptador fino; testes nas duas linhas na CI; `better-sqlite3` como plano B |
 | Mudança nos campos de uso da Responses API (verificados nos tipos do SDK 7.34.0 em 2026-10-15) | o provedor falso implementa o mesmo contrato; teste de contrato contra o tipo do SDK na versão fixada |
 | Estimativa de custo antes da chamada (reserva) acima ou abaixo do real | reserva pelo máximo (`max_output_tokens` × preço); liquidação devolve a diferença |
+| Vazão em rajada baixa em alguns ambientes (331 eventos/s no runner Windows com Node 24, contra 28.938 no macOS; [adendo do spike](../../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md)) | sobra para um usuário; a M0.2 mede a vazão como métrica e testa `synchronous` e lotes de transação se cair abaixo de 100 eventos/s |
 | Permissões de named pipe no Windows | teste de acesso por outro usuário marcado como manual no M0, automatizado no M2 |
 | Custo real da demonstração | teto do M0 abaixo do saldo de API (ver dúvida 3) |
 
