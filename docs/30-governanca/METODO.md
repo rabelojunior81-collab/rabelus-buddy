@@ -17,9 +17,9 @@ O Roadmap diz **onde estamos e para onde vamos**. O Plano Macro é o **TODO de t
 
 | Tamanho | Exemplo | O que é obrigatório | Quem aprova |
 |---|---|---|---|
-| Trivial | corrigir um link, um typo | PR com o template | Pai (merge) |
-| Sessão | uma ferramenta, um documento | SPEC curta na descrição do PR + testes | Pai (merge) |
-| Fase | um marco do roadmap | SPEC em `docs/40-specs/` + plano da fase + retrospectiva | Pai (SPEC, plano, merge) |
+| Trivial | corrigir um link, um typo | PR com o template | CI verde (buddy-dev mergeia) |
+| Sessão | uma ferramenta, um documento | SPEC curta na descrição do PR + testes | CI verde (buddy-dev mergeia) |
+| Fase | um marco do roadmap | SPEC em `docs/40-specs/` + plano da fase + retrospectiva | Pai (SPEC, plano); CI verde (merge) |
 | Projeto | o produto inteiro | Roadmap + Plano Macro + contratos compartilhados (produto, arquitetura) | Pai |
 
 Na dúvida sobre o tamanho, pergunta-se ao Pai.
@@ -50,7 +50,7 @@ O jeito de desenvolver é matéria-prima do Rabelus Buddy. Cada mecanismo daqui 
 | Arquivo morto com lápide e hashes | Retenção governada: nada some sem trilha |
 | CHANGELOG com teto + LEARNING-CURVE | Memória com compactação e destilação aprovada |
 | Fichas de conhecimento com fonte e data | Memória de conhecimento com proveniência e expiração |
-| Merge feito pelo Pai | Aprovação humana para ações de alto impacto |
+| Decisões do Pai em SPEC e plano; merge só com validação | Aprovação humana para ações de alto impacto, com execução autônoma do resto |
 | Relógio verificado | Carimbo confiável em eventos e auditoria |
 
 ## 5. O que não fazemos

@@ -55,3 +55,7 @@ Decisões do Pai sobre a 0.2 viraram ADRs 0008–0012: orçamento US$ 50 com tra
 ### #0012 · 2026-10-14T120554-0300 · claude-code-671f81 · doc
 
 F0.8: Roadmap v2 e Plano Macro v2 sobre a Revisão 0.2; retrospectiva da Fase 0 (75 commits, 27 testes, 12 ADRs, 10 fichas). PR #7.
+
+### #0013 · 2026-10-15T024316-0300 · claude-code-eb8d73 · processo
+
+Merges #1–#7 feitos pelo buddy-dev por ordem do Pai (main em 397ea0d, CI verde). ADR 0003 aceita: o merge é do buddy-dev após validação. Roadmap v2 e Plano Macro v2 aprovados; Fase 0 concluída.
