@@ -67,9 +67,10 @@ O M0 entrega o **núcleo governado mínimo**: um processo local dono do estado, 
 | 4 | CLI e TUI | `parseArgs` + despacho próprio; `readline` para aprovações; sem TUI no M0 | menos dependências e superfície de ataque; `ink` (React) entra quando houver telas interativas | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 5 | i18n | i18next 26.x; catálogos JSON por domínio, plurais `_one`/`_other` | o mesmo catálogo serve à CLI, à Web e ao app Expo (ADR 0013) | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 6 | Orçamento antes do M1 | dólares por API com reserva/liquidação; tipo "janela" já no modelo (unidade, capacidade, período), alimentado no M1; cabeçalhos `x-ratelimit-*` registrados como observação | ADR 0008 exige medir janelas; o M0 só tem API | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md), [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md) |
+| 8 | Linguagem e build (surgiu ao derivar o plano) | **TypeScript só com sintaxe apagável, executado direto pelo Node** (type stripping, estável no 24.12+ e no 26), sem etapa de build; `tsc --noEmit` na CI para checar tipos; monorepo com npm workspaces: `packages/core`, `packages/client` (`@rabelus-buddy/client`, o pacote compartilhado da ADR 0013) e `packages/cli` | tipos no protocolo compartilhado com Web e app; zero build; o que o Node não executa (`enum`, decorators) fica proibido por regra do `tsconfig` | [node-runtime](../../20-conhecimento/node-runtime.md), [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md), ADR 0013 |
 | 7 | Fora do M0 | ver "Fora" acima; comandos sempre em `ask` | ADR 0009 (até o M2), ADR 0010 | ROADMAP |
 
-Dependências do produto no M0: **`openai` e `i18next`**, e nenhuma outra em tempo de execução. Cada dependência nova exige revisão desta SPEC.
+Dependências do produto no M0: **`openai` e `i18next`**, e nenhuma outra em tempo de execução. Só para desenvolvimento: `typescript` e `@types/node`. Cada dependência nova exige revisão desta SPEC.
 
 ## Critérios de aceitação (observáveis; cada um vira teste)
 
@@ -151,4 +152,6 @@ Sem resposta do Pai, esta SPEC não pode ser aprovada:
 1. **Provedor e chave:** GPT-6 Luna por API (recomendado) exige uma chave da OpenAI com crédito. O tier Build pede US$ 5 em créditos. Se preferir o Claude Haiku 5.5, é uma chave da Anthropic. Qual, e onde a chave vai ficar (variável de ambiente, como a do Gemini em `.buddy-dev/.env.local`)?
 2. **Teto de API do M0:** proposta de **US$ 10/mês**, dentro dos cerca de US$ 20 que a ADR 0008 deixa para API, VPS e backup.
 3. **Convenção de código** (`CONVENCOES.md` §Idiomas, pendente desde 2026-10-14): identificadores em inglês, comentários e mensagens de desenvolvimento em pt-BR, strings do produto pelo catálogo. Aceita?
-4. **Dependências de produto:** só `openai` e `i18next` em tempo de execução. Aceita?
+4. **Dependências e linguagem:** só `openai` e `i18next` em tempo de execução; `typescript` e `@types/node` só no desenvolvimento; código em TypeScript apagável, sem build (decisão 8). Aceita?
+
+**Enquanto isso, segue sem as respostas** (AGENTS §5.4): o [plano de fase do M0](../../50-planos/m0/PLANO.md), a verificação dos fatos em aberto e o desenho dos testes de cada critério. Código do produto só depois da aprovação.

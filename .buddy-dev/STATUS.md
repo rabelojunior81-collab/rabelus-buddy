@@ -2,13 +2,13 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T04:30:34-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-438d04
+**Atualizado em:** 2026-10-15T04:37:18-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-5cfc7b
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: SPEC do M0 em rascunho** ([0001](../docs/40-specs/0001-nucleo-governado/SPEC.md)), aguardando o Pai responder 4 dúvidas bloqueantes e aprovar. **Seguindo em paralelo:** fatos em aberto verificados (`usage` da Responses API); plano de fase do M0 derivado da SPEC; o que não depende das respostas.
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: SPEC do M0 em rascunho** ([0001](../docs/40-specs/0001-nucleo-governado/SPEC.md)), aguardando o Pai responder 4 dúvidas bloqueantes e aprovar. **Seguindo em paralelo:** fatos em aberto verificados (`usage` da Responses API; type stripping estável → decisão 8, TypeScript sem build); [plano de fase do M0](../docs/50-planos/m0/PLANO.md) proposto; próximo: desenho dos testes de cada critério.
 
 **M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) em rascunho (aguarda o Pai). **Retomar pelo handoff:** [`docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md`](../docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md). A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
 

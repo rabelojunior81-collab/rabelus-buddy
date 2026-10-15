@@ -23,6 +23,8 @@
 | `zod` | 4.6.7 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `openai` | 7.34.0 | Apache-2.0 | ≥ 22.0.0 | registro npm (tier 1) | 2026-10-15 |
 | `@anthropic-ai/sdk` | 0.134.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
+| `typescript` (só desenvolvimento: `tsc --noEmit`) | 7.0.2 | Apache-2.0 | ≥ 16.20.0 | registro npm (tier 1) | 2026-10-15 |
+| `@types/node` (só desenvolvimento) | 24.19.2 (linha 24) | MIT | — | registro npm (tier 1) | 2026-10-15 |
 
 | Fato | Fonte | Verificado em |
 |---|---|---|
