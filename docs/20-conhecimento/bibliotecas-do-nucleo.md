@@ -1,6 +1,6 @@
 # Bibliotecas candidatas do núcleo (CLI, TUI, i18n, provedor)
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:35:12-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:50:26-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
 
 ## O que importa para o buddy
 
@@ -23,6 +23,8 @@
 | `zod` | 4.6.7 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `openai` | 7.34.0 | Apache-2.0 | ≥ 22.0.0 | registro npm (tier 1) | 2026-10-15 |
 | `@anthropic-ai/sdk` | 0.134.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
+| `@google/genai` | 2.30.0 | Apache-2.0 | ≥ 20.0.0 | registro npm (tier 1) | 2026-10-15 |
+| `@opencode-ai/sdk` (M1: cliente do servidor do OpenCode) | 1.19.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `typescript` (só desenvolvimento: `tsc --noEmit`) | 7.0.2 | Apache-2.0 | ≥ 16.20.0 | registro npm (tier 1) | 2026-10-15 |
 | `@types/node` (só desenvolvimento) | 24.19.2 (linha 24) | MIT | — | registro npm (tier 1) | 2026-10-15 |
 
@@ -59,3 +61,4 @@ Para i18n, o ponto não é a CLI sozinha, e sim o **catálogo compartilhado**. O
 
 - 2026-10-15T04:27:18-03:00 · buddy-dev (claude-code-vs-code-438d04) · criação da ficha
 - 2026-10-15T04:35:12-03:00 · buddy-dev (claude-code-vs-code-5cfc7b) · campos de `usage`, `max_output_tokens` e `store` verificados nos tipos do SDK 7.34.0
+- 2026-10-15T04:50:26-03:00 · buddy-dev (claude-code-vs-code-3a6e29) · SDKs do Google e do OpenCode

@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** proposto (junto com a SPEC) · **Aprovado por:** pendente
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-15T04:37:18-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-15T04:54:12-03:00
 
 ## Objetivo
 
@@ -16,7 +16,8 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - catálogos i18next (`locales/pt-BR`, `locales/en`) e o teste de chaves nos dois idiomas;
   - CI em matriz 3 SOs × Node 24/26;
   - binários `rabelus-buddy`/`rbuddy` que só respondem `--version` e `--help` pelo catálogo.
-  - Critérios: 19 (base), infraestrutura do 1.
+  - `bd deps` e `bd test-guard` já valendo (entregues antes do M0, a pedido do Pai).
+  - Critérios: 23 (base), 24, 25, infraestrutura do 1.
 - [ ] **M0.2 Log de eventos e dono**:
   - adaptador `node:sqlite` (`DatabaseSync` no 24, `Database` no 26+);
   - esquema de eventos e projeções;
@@ -40,35 +41,38 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - teto mensal;
   - tipo "janela" no modelo;
   - fórmula de liquidação com os campos verificados de `usage`.
+  - janelas por assinatura (Go por modelo: mês, semana, 5 h; teto semanal do SIWC; US$ 20 da API paga).
   - Critérios: 14, 15, 16.
-- [ ] **M0.6 Provedor e loop do agente**:
-  - interface de provedor e provedor falso determinístico;
-  - adaptador OpenAI (Responses API, `store: false`) **ou** Anthropic, conforme a dúvida 1;
+- [ ] **M0.6 Provedores e loop do agente** (ADR 0014):
+  - interface de provedor e provedores falsos (`fakeGo`, `fakeOpenAI`, `fakeAuth`);
+  - **M0.6a OpenCode Go**: rotas `/responses`, `/chat/completions` e `/messages` e rota Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`; `User-Agent` próprio e `x-opencode-session`;
+  - **M0.6b ChatGPT por SIWC**: `rbuddy login chatgpt` (PKCE, callback em 127.0.0.1, refresh rotativo), contrato da prévia;
+  - **M0.6c API paga** (reserva, teto US$ 20);
   - compactação abaixo de 100k tokens;
   - ferramentas `read_file`, `list_dir`, `write_file`, `run_command`.
-  - Critérios: 17, 20.
+  - Critérios: 16–21.
 - [ ] **M0.7 CLI completa e auditoria**:
   - `run`, `status`, `approvals`, `approve`/`deny`, `budget`, `log`, `resume`, `daemon`;
   - aprovações por `readline`;
   - `--lang`/`RBUDDY_LANG`;
   - teste de vazamento de segredos em todos os artefatos.
-  - Critérios: 18, 19.
+  - Critérios: 22, 23.
 - [ ] **M0.8 Demonstração e fechamento**:
   - tarefa real com o provedor real, `kill -9` e `resume`, validada pelo Pai;
   - métricas registradas;
   - retrospectiva.
-  - Critério: 21.
+  - Critério: 26.
 
 ## Dependências e bloqueios
 
 | Sub-fase | Depende de | Bloqueada por resposta do Pai |
 |---|---|---|
-| M0.1 | aprovação da SPEC | dúvidas 3 (convenção) e 4 (dependências e linguagem) |
+| M0.1 | aprovação da SPEC | decisão 8 (linguagem e execução sem build) |
 | M0.2 | M0.1 | — |
-| M0.3, M0.4, M0.5 | M0.2 | M0.5: dúvida 2 (teto padrão) |
-| M0.6 | M0.2, M0.4, M0.5 | dúvida 1 (provedor e chave) só para o adaptador real; o provedor falso não espera |
+| M0.3, M0.4, M0.5 | M0.2 | — |
+| M0.6 | M0.2, M0.4, M0.5 | nada para os falsos; a chave do Go e a conta ChatGPT só para testes reais |
 | M0.7 | M0.3–M0.6 | — |
-| M0.8 | tudo | dúvidas 1 e 2 |
+| M0.8 | tudo | chave do Go e conta ChatGPT Plus |
 
 **Enquanto a SPEC aguarda o Pai** (AGENTS §5.4): este plano, os fatos em aberto (`usage` verificado em 2026-10-15) e o desenho dos testes de cada critério. Nenhum código de produto antes da aprovação.
 
@@ -82,8 +86,8 @@ Depois da M0.2, as sub-fases M0.3, M0.4 e M0.5 tocam módulos diferentes do `cor
 
 ## Fechamento
 
-- [ ] Critérios 1–20 verdes na CI em Windows, Linux e macOS, nas linhas 24 e 26 do Node
-- [ ] Critério 21 validado pelo Pai
+- [ ] Critérios 1–25 verdes na CI em Windows, Linux e macOS, nas linhas 24 e 26 do Node
+- [ ] Critério 26 validado pelo Pai
 - [ ] `bd post` sem falhas; `bd surfaces` verde
 - [ ] Retrospectiva em `docs/registros/`
 - [ ] ROADMAP, PLANO-MACRO, STATUS, MEMORY, README (Estado) e Blog atualizados ([SUPERFICIES.md](../../30-governanca/SUPERFICIES.md))

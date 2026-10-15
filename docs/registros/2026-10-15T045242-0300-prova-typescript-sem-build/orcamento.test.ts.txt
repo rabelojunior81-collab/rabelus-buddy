@@ -1,0 +1,12 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { reservar, type Reserva } from './orcamento.ts';
+
+test('reserva dentro do saldo', () => {
+  const r: Reserva | null = reservar(10, 3);
+  assert.deepEqual(r, { id: 'r1', usd: 3 });
+});
+
+test('acima do saldo não reserva (este teste foi escrito para reprovar o código errado)', () => {
+  assert.equal(reservar(1, 3), null);
+});

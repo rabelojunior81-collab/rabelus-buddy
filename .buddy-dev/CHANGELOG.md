@@ -127,3 +127,7 @@ Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; d
 ### #0030 · 2026-10-15T044039-0300 · claude-code-vs-code-5cfc7b · doc
 
 M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (store:false vira requisito), decisão 8 (TypeScript sem build), plano de fase M0 (8 sub-fases), desenho dos 21 testes, spike de banco e IPC aprovado em 3 SOs × Node 24/26 no CI.
+
+### #0031 · 2026-10-15T045425-0300 · claude-code-vs-code-3a6e29 · decisao
+
+Respostas do Pai à SPEC 0001 aplicadas: ADR 0014 (OpenCode Go primeiro, ChatGPT por Sign in with ChatGPT, API paga como reserva), teto US$ 20, convenção de código aceita, SDKs OpenAI/Anthropic/Gemini (+OpenCode no M1). SPEC revisão 2 com 26 critérios; explicação de build e testes com prova executada.
