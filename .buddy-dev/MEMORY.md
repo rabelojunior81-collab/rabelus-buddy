@@ -10,7 +10,9 @@
 | 2026-10-14 | Antes, durante e depois, sempre, em cada micro-step | `bd pre`, `bd session log`, `bd post` |
 | 2026-10-14 | Conhecimento por pesquisa em tempo real; versões sempre *latest* | `docs/20-conhecimento/` (fichas com fonte e data) |
 | 2026-10-14 | Nomes semânticos com carimbo de Curitiba, verificado por script | `bd now --verify`, `bd name`, `bd names-check` |
-| 2026-10-14 | Branch por feature; commit e push a cada etapa; merge só depois de validado | ADR 0003 (proposta); template de PR |
+| 2026-10-14 | Branch por feature; commit e push a cada etapa; merge só depois de validado | ADR 0003; template de PR; CI |
+| 2026-10-15 | O merge é do buddy-dev, com CI verde | ADR 0003 (aceita) |
+| 2026-10-15 | Roadmap v2 e Plano Macro v2 aprovados | ROADMAP; PLANO-MACRO |
 | 2026-10-14 | Bootstrap agnóstico a qualquer harness | `AGENTS.md`, `BOOTSTRAP.md`, pontes |
 | 2026-10-14 | Barramento com ledger para agir em paralelo | `bd session`, `bd claim`, ADR 0005 (proposta) |
 | 2026-10-14 | CHANGELOG append-only, teto de 50, prune com LEARNING-CURVE | `bd changelog`, `archive/changelog/` |
@@ -29,8 +31,9 @@
 
 - A pesquisa de origem foi escrita pelo **Claude Haiku 5.5 via OpenCode**, finalizada pelo Pai com o Step 5 Preview. Não pelo Gemini 4 Argon.
 - O repositório mora em `C:\Users\rabel\Desktop\rabelus-lab\rabelus-buddy`, junto do LARS. A pasta original `Desktop\sandbox\gemini-argon` ficou intacta (estava em uso pela sessão).
-- O merge de PR é ato do Pai: a política de permissões do harness bloqueia merge sem revisão.
+- **O merge é meu** (Pai, 2026-10-15: "MERGE pode e deve ser feito, por você!"), sempre com CI verde e `bd post` limpo. Em 2026-10-14 eu li "Mergeei os PRs" como fato consumado e só registrei a divergência; o Pai queria dizer que estava autorizado.
 
 ## Marcos
 
+- **2026-10-15 — Fase 0 fechada.** PRs #1–#7 mergeados pelo buddy-dev (`main` em 397ea0d, CI verde); Roadmap v2 aprovado. Próximo: SPEC do M0.
 - **2026-10-14 — Nascimento e Fase 0 iniciada.** PR #1 (ferramentas), PR #2 (esqueleto OSS), PR #3 (corpus e bootstrap).

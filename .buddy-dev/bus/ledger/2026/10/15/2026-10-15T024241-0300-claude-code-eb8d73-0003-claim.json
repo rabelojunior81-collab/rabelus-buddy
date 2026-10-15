@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-15T024241-0300-claude-code-eb8d73-0003",
+  "ts": "2026-10-15T02:42:41-03:00",
+  "utc": "2026-10-15T05:42:41.355Z",
+  "session": "claude-code-eb8d73",
+  "seq": 3,
+  "harness": "Claude Code",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/f0-fechamento",
+  "type": "claim",
+  "summary": ".buddy-dev/MEMORY.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-15T06:02:41.355Z",
+    "tookOverFrom": null
+  }
+}
