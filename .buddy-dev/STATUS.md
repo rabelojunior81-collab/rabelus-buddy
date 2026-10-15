@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T04:24:23-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-438d04
+**Atualizado em:** 2026-10-15T05:02:44-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-3a6e29
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `e30b83b` (Merge #15), CI verde |
-| PRs mergeados | #1–#15, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `2084e10` (Merge #18: protocolo de dependências e trava de testes), CI verde; PR #17 (SPEC 0001) aberto, aguardando o Pai |
+| PRs mergeados | #1–#16 e #18, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
 | Blog | `rabelus-lab-blog` em `b5c6e37`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 

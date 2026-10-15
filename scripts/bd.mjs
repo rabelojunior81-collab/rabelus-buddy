@@ -48,6 +48,7 @@ const { values: o, positionals: pos } = parseArgs({
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
+    latest: { type: 'boolean' },
     help: { type: 'boolean', short: 'h' },
   },
 });
