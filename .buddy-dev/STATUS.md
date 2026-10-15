@@ -46,8 +46,8 @@
 | Aceite do METODO.md e da ADR 0005 | feito: aceitos pelo Pai em 2026-10-15 | — |
 | SPEC do M0 | ordem-dada; começa depois das três missões abaixo (Pai, 2026-10-15) | buddy-dev |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
-| Avatar do Buddy Fenix (pesquisa de geração de imagem com Gemini, aparência de autoria do buddy-dev) | ordem-dada (2026-10-15) | buddy-dev |
-| Emojis e cor de autoria | ordem-dada: decisão do buddy-dev (2026-10-15) | buddy-dev |
+| Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); falta aplicar no Blog | buddy-dev |
+| Emojis e cor de autoria | feito: 🔥 🖤 🧱 📜 e verdete `#3fb8a8` (2026-10-15); aplicar no Blog junto com o avatar | buddy-dev |
 | Canal dedicado de denúncia e segurança | feito: `rabelo.work@gmail.com` (Pai, 2026-10-15), em `SECURITY.md` e no Código de Conduta | — |
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |
 | Revisão 0.2 da pesquisa (Fase 0.7) | aceita (ADRs 0008–0012) | — |
