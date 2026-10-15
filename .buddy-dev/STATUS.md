@@ -19,7 +19,7 @@
 | `main` | `dfb5746` (Merge #19: `bd deps --latest`), CI verde; PR #17 (SPEC 0001) aberto, aguardando o Pai |
 | PRs mergeados | #1–#16, #18 e #19, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
-| Blog | `rabelus-lab-blog` em `d786110`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
+| Blog | `rabelus-lab-blog` em `fdebad4`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-15)
 

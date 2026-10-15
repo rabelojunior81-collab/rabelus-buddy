@@ -138,3 +138,7 @@ bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 
 ### #0029 · 2026-10-15T050153-0300 · claude-code-vs-code-3a6e29 · correcao
 
 bd deps --latest não era aceito pelo parser (opção documentada, não declarada; já na main pelo PR #18). Corrigido, com teste que exige que toda opção da ajuda seja aceita (LEARNING-CURVE #7).
+
+### #0032 · 2026-10-15T050534-0300 · claude-code-vs-code-3a6e29 · processo
+
+Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR 0014), bd deps e bd test-guard (PR #18), --latest corrigido (PR #19), registro de dependências preenchido, explicação de build e testes com prova. Post: A Pista Estava Quase Certa.
