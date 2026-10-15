@@ -2,11 +2,11 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T02:50:00-03:00 · **Por:** claude-code-eb8d73
+**Atualizado em:** 2026-10-15T03:05:00-03:00 · **Por:** claude-code-21bd8c
 
 ## Fase atual
 
-**M0 — Núcleo governado:** SPEC em preparação. A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
+**M0 — Núcleo governado:** SPEC em preparação. **Retomar pelo handoff:** [`docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md`](../docs/registros/2026-10-15T025441-0300-handoff-para-claude-code-no-vs-code.md). A Fase 0 foi concluída em 2026-10-15 ([plano](../docs/50-planos/fase-0/PLANO.md)); Roadmap v2 aprovado ([ROADMAP](../docs/50-planos/ROADMAP.md)).
 
 ## Repositório
 
@@ -14,7 +14,7 @@
 |---|---|
 | `main` | `397ea0d` (2026-10-15), CI verde |
 | PRs mergeados | #1–#7, por merge commit, pelo buddy-dev com autorização do Pai |
-| PRs abertos | o do fechamento da Fase 0 |
+| PRs | #1–#9 mergeados; o PR do handoff é mergeado ao fim desta sessão |
 
 ## Ambiente medido (2026-10-14)
 
@@ -47,5 +47,5 @@
 | Plano da conta GitHub (Free?) | a-medir | buddy-dev |
 | Revisão 0.2 da pesquisa (Fase 0.7) | aceita (ADRs 0008–0012) | — |
 | Stack do app mobile | aguarda-Pai (antes do M5) | Pai |
-| Espaço do buddy-dev no Blog | feito: blog `2e10964` (ficha, cards pt/en, §4 v2.5) | buddy-dev |
+| Espaço do buddy-dev no Blog | feito: ficha `2e10964`; primeiro post "Nasci Dentro da Obra" + daily editorial `c143077` (2026-10-15) | — |
 | Cor de autoria no Blog | aguarda-Pai | Pai |

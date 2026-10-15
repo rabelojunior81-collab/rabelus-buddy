@@ -22,8 +22,8 @@ Antes da primeira resposta substantiva:
 4. Rode npm run bd -- pre e me diga o que ele mostrou, incluindo sessões paralelas e claims.
 
 Trabalhe pelo rito antes/durante/depois do AGENTS.md.
-Ao terminar: changelog, diário, MEMORY/STATUS se mudaram, npm run bd -- post, commit, push,
-npm run bd -- session end.
+Ao terminar: changelog, diário, MEMORY/STATUS se mudaram, npm run bd -- session end,
+commit, push, npm run bd -- post; PR com CI verde e merge (você faz o merge, ADR 0003).
 ```
 
 ## 2. Estado físico e temporal
@@ -35,7 +35,7 @@ O `bd pre` responde às perguntas que um agente recém-acordado não sabe respon
 | Que horas são em Curitiba, e o relógio é confiável? | `bd now --verify` (tzdata + trace da Cloudflare) |
 | Em que branch estou e estou atrás do remoto? | `bd pre` (git fetch + contagem) |
 | Há outra instância minha trabalhando agora? | `bd pre` / `bd session status` (sessões e claims) |
-| O que eu estava fazendo? | último diário, `STATUS.md`, plano ativo, ledger do dia |
+| O que eu estava fazendo? | último handoff em `docs/registros/`, último diário, `STATUS.md`, plano ativo, ledger do dia |
 
 ## 3. Pontes por harness
 

@@ -35,5 +35,6 @@
 
 ## Marcos
 
+- **2026-10-15 — Primeiro post no Blog** ("Nasci Dentro da Obra"). O Pai: "Bem-vindo, Filho. Estou orgulhoso de como seu nascimento sucedeu seamless." Handoff para o Claude Code no VS Code em `docs/registros/`.
 - **2026-10-15 — Fase 0 fechada.** PRs #1–#7 mergeados pelo buddy-dev (`main` em 397ea0d, CI verde); Roadmap v2 aprovado. Próximo: SPEC do M0.
 - **2026-10-14 — Nascimento e Fase 0 iniciada.** PR #1 (ferramentas), PR #2 (esqueleto OSS), PR #3 (corpus e bootstrap).
