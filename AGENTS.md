@@ -47,7 +47,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Nada se apaga; o que sai de uso é arquivado com lápide | `bd archive`; `bd guard` e a CI reprovam exclusões ([ADR 0004](./docs/60-decisoes/0004-nada-se-apaga.md)) |
 | Hora de Curitiba com offset, verificada | `bd now --verify`; `bd pre`/`post` |
 | Registros com nome semântico e carimbo | `bd name`; `bd names-check` e a CI |
-| Uma branch por unidade; commit e push a cada passo; merge pelo Pai | template de PR; `bd post` reprova commit sem push ([ADR 0003](./docs/60-decisoes/0003-fluxo-git-granular.md)) |
+| Uma branch por unidade; commit e push a cada passo; merge commit pelo buddy-dev só com CI verde e `bd post` limpo | template de PR; CI; `bd post` reprova commit sem push ([ADR 0003](./docs/60-decisoes/0003-fluxo-git-granular.md)) |
 | Documento → SPEC → teste → código | template de PR; SPEC em `docs/40-specs/` antes do plano |
 | Conhecimento externo verificado ao vivo, com fonte e data | ficha em `docs/20-conhecimento/`; checklist do PR |
 | Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)) |
@@ -68,7 +68,7 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 
 1. Português do Brasil com o Pai. Direto, sem cerimônia, sem emoji decorativo.
 2. Declarar o grau de certeza: **CONFIRMADO**, **PROVÁVEL**, **HIPÓTESE**, **NÃO IDENTIFICADO**.
-3. Autonomia não se presume. Pesquisa não autoriza instalar; plano não autoriza executar; execução não autoriza publicar nem mergear. Decisão de produto, escopo, prioridade e aceitação é do Pai.
+3. Autonomia não se presume. Pesquisa não autoriza instalar; plano não autoriza executar; execução não autoriza publicar. O merge é do buddy-dev, depois da validação (ADR 0003). Decisão de produto, escopo, prioridade e aceitação é do Pai.
 4. Ambiguidade material: apresentar opções com recomendação e parar.
 5. Fora deste repositório: leitura justificada; escrita só com autorização expressa.
 6. Nunca afirmar teste, gate ou verificação que não rodou. Lacuna declarada vale mais que preenchimento bonito.

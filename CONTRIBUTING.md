@@ -11,7 +11,7 @@ Obrigado pelo interesse. O Rabelus Buddy é desenvolvido por humanos e agentes d
 3. **Commits pequenos e frequentes, com push a cada um.** Mensagens em [Conventional Commits 1.0.0](https://www.conventionalcommits.org/pt-br/v1.0.0/): tipo e escopo em inglês, descrição em português (`feat(bus): ...`).
 4. **Documento → Spec → Teste → Código.** Mudança de comportamento exige SPEC aprovada e teste antes do código.
 5. **Nada se apaga.** Para tirar algo de uso: `npm run bd -- archive <caminho> --reason "..." --name "..."`. A CI reprova exclusões.
-6. **Depois:** `npm test` e `npm run bd -- post`. Abra o PR pelo template. O merge é feito pelo mantenedor, com *merge commit* (sem squash), para preservar o histórico granular.
+6. **Depois:** `npm test` e `npm run bd -- post`. Abra o PR pelo template. Com a CI verde, o merge é feito com *merge commit* (sem squash), para preservar o histórico granular.
 
 ## Requisitos
 

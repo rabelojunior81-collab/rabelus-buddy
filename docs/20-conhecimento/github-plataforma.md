@@ -4,7 +4,7 @@
 
 ## O que importa para o buddy
 
-Enquanto o repositório for privado numa conta Free, a plataforma não bloqueia push direto na `main`: o fluxo branch → PR → merge é garantido por convenção, CI e pela regra de que o merge é do Pai. Ao tornar público, ativar rulesets e *private vulnerability reporting*.
+Enquanto o repositório for privado numa conta Free, a plataforma não bloqueia push direto na `main`: o fluxo branch → PR → merge é garantido por convenção, CI e pela regra de que só se mergeia com CI verde (ADR 0003). Ao tornar público, ativar rulesets e *private vulnerability reporting*.
 
 ## Fatos verificados
 
@@ -19,7 +19,7 @@ Enquanto o repositório for privado numa conta Free, a plataforma não bloqueia 
 ## Implicações
 
 - Merge sempre por *merge commit* (sem squash), para preservar o histórico granular.
-- O merge é ato do Pai: a política de permissões do harness do buddy-dev bloqueia merge sem revisão (medido em 2026-10-14, PR #1).
+- Em 2026-10-14 a política de permissões do harness bloqueou um merge do buddy-dev sem autorização explícita; em 2026-10-15, com a ordem do Pai, os merges #1–#7 passaram. O merge é do buddy-dev após validação (ADR 0003).
 - Checklist de abertura pública: rulesets na `main`, PVR ligado, Dependabot, CodeQL (a verificar na época).
 
 ## Histórico de verificações

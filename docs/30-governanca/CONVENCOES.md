@@ -30,7 +30,7 @@ Tudo aqui é conferido por ferramenta (`bd names-check`, `bd guard`, `bd post`, 
 - Commits: [Conventional Commits 1.0.0](https://www.conventionalcommits.org/pt-br/v1.0.0/). Tipo e escopo em inglês (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`); descrição em pt-BR. Mensagens longas por `git commit -F -`.
 - Commit com IA leva o trailer `Co-Authored-By: <modelo> <noreply@…>`.
 - Um commit, uma mudança coerente; push logo depois.
-- PR pelo template; merge por *merge commit*, feito pelo Pai.
+- PR pelo template; com CI verde e `bd post` limpo, o buddy-dev faz o merge por *merge commit* (ADR 0003).
 
 ## Fim de linha
 
