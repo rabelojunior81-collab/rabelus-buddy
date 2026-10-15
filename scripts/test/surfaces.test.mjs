@@ -47,7 +47,7 @@ test('ADR aceita citada como proposta em documento vivo é lacuna; registros e d
   const r = repo({
     'docs/60-decisoes/0013-m.md': '---\nstatus: aceita (2026-10-15)\n---',
     'docs/50-planos/ROADMAP.md': 'Web UI (stack: ADR 0013, proposta)',
-    '.buddy-dev/STATUS.md': '[ADR 0013](x) proposta: Expo',
+    '.buddy-dev/STATUS.md': '(3) stack mobile, [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) proposta e aguardando o Pai',
     'docs/registros/2026-10-15T010101-0300-x.md': 'ADR 0013 proposta',
     '.buddy-dev/diario/2026-10-15.md': 'ADR 0013 (proposta)',
   });

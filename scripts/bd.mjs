@@ -8,6 +8,7 @@ import { formats, verifyClock, isKnownZone, ZONE } from './lib/time.mjs';
 import { stampedName, checkPath } from './lib/names.mjs';
 import { startSession, logEvent, endSession, status, claim, release, currentSession, lastSession } from './lib/bus.mjs';
 import { checkBlogDelivery, blogDir } from './lib/blog.mjs';
+import { surfaceGaps } from './lib/surfaces.mjs';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
 import { findDeletions } from './lib/guard.mjs';
@@ -32,6 +33,7 @@ const HELP = `bd — buddy-dev
   pre                                rito ANTES: relógio, git, sessão, claims
   post                               rito DEPOIS: nomes, exclusões, push, sessão, Blog
   blog-check                         post e daily da sessão publicados no Blog?
+  surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
 `;
 
 const { values: o, positionals: pos } = parseArgs({
@@ -172,6 +174,15 @@ const commands = {
     } else console.log('nenhuma exclusão');
   },
 
+  surfaces() {
+    const gaps = surfaceGaps(root(), { base: o.base ?? 'origin/main' });
+    gaps.forEach((g) => console.log(`  ✖ ${g}`));
+    if (gaps.length) {
+      console.log('superfícies desatualizadas: veja docs/30-governanca/SUPERFICIES.md');
+      process.exitCode = 1;
+    } else console.log('superfícies coerentes');
+  },
+
   'blog-check'() {
     const r = root();
     const s = lastSession(r);
@@ -210,6 +221,9 @@ const commands = {
     const d = findDeletions(r, { base: o.base ?? 'origin/main' });
     if (d.length) fail(`exclusões proibidas: ${d.join(', ')}`);
     else ok('nenhuma exclusão');
+    const gaps = surfaceGaps(r, { base: o.base ?? 'origin/main' });
+    if (gaps.length) fail(`superfícies desatualizadas (docs/30-governanca/SUPERFICIES.md):\n    ${gaps.join('\n    ')}`);
+    else ok('superfícies coerentes');
     const s = syncInfo(r);
     if (s.dirty) fail(`alterações não commitadas:\n${s.dirty}`);
     else ok('árvore limpa');
