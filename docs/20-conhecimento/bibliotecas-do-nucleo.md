@@ -1,6 +1,6 @@
 # Bibliotecas candidatas do núcleo (CLI, TUI, i18n, provedor)
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:27:18-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:35:12-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
 
 ## O que importa para o buddy
 
@@ -31,7 +31,11 @@
 | OpenAI: cabeçalhos `x-ratelimit-limit-requests`, `-limit-tokens`, `-remaining-requests`, `-remaining-tokens`, `-reset-requests`, `-reset-tokens` (e `-project-tokens` quando há limite por projeto); `Retry-After` nos erros temporários; tiers Free (US$ 100/mês de uso), Build (US$ 5 em créditos; US$ 500/mês), Launch, Grow | https://developers.openai.com/api/docs/guides/rate-limits (tier 0) | 2026-10-15 |
 | Preços por 1M tokens (entrada / saída / cache lido): Claude Haiku 5.5 0,10 / 0,50 / 0,01 até 100k (acima: 0,50 / 2,50 / 0,05); GPT-6 Luna 0,10 / 0,50 / 0,01 (escrita de cache 0,125) | [precos-llm.md](./precos-llm.md) (tier 0, 2026-10-14) | 2026-10-14 |
 
-**Não verificado:** o nome exato dos campos do objeto `usage` na Responses API (a página de referência tem 500 mil caracteres e o trecho lido não chegou lá). A medição de custo do M0 depende disso; verificar no início do plano.
+| Fato | Fonte | Verificado em |
+|---|---|---|
+| Responses API, `ResponseUsage`: `input_tokens`, `input_tokens_details.cached_tokens`, `input_tokens_details.cache_write_tokens`, `output_tokens`, `output_tokens_details.reasoning_tokens`, `total_tokens` | `openai@7.34.0`, `resources/responses/responses.d.ts` (https://unpkg.com/openai@7.34.0/resources/responses/responses.d.ts, tier 1) | 2026-10-15 |
+| `max_output_tokens`: "An upper bound for the number of tokens that can be generated for a response, including visible output tokens and reasoning tokens" | idem | 2026-10-15 |
+| `store`: "Defaults to true when omitted. If set to true, response data will be stored for at least 30 days" | idem | 2026-10-15 |
 
 ## Explicação
 
@@ -44,9 +48,12 @@ Para i18n, o ponto não é a CLI sozinha, e sim o **catálogo compartilhado**. O
 ## Implicações
 
 - **SPEC 0001:** CLI com `parseArgs` e despacho próprio; aprovações com `node:readline`; i18next com catálogos em `locales/pt-BR/*.json` e `locales/en/*.json`. `ink` e `@clack/prompts` ficam fora do M0.
+- **Privacidade:** toda chamada do núcleo à Responses API leva `store: false`; o padrão guarda a resposta por 30 dias no provedor.
+- **Liquidação:** custo = (`input_tokens` − `cached_tokens` − `cache_write_tokens`) × entrada + `cached_tokens` × cache lido + `cache_write_tokens` × escrita de cache + `output_tokens` × saída (o raciocínio já está dentro de `output_tokens`); a reserva usa `max_output_tokens` como teto.
 - **Provedor do plano B:** GPT-6 Luna pelo SDK `openai` (mesmo modelo do ChatGPT Plus e do OpenCode Go no M1; sem a faixa cara acima de 100k do Haiku). O Haiku 5.5 fica como alternativa documentada.
 - **M5 (Expo):** polyfill de `Intl.PluralRules` no Hermes, se ainda for necessário.
 
 ## Histórico de verificações
 
 - 2026-10-15T04:27:18-03:00 · buddy-dev (claude-code-vs-code-438d04) · criação da ficha
+- 2026-10-15T04:35:12-03:00 · buddy-dev (claude-code-vs-code-5cfc7b) · campos de `usage`, `max_output_tokens` e `store` verificados nos tipos do SDK 7.34.0

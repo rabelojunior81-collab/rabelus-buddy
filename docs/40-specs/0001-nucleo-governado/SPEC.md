@@ -39,9 +39,10 @@ O M0 entrega o **núcleo governado mínimo**: um processo local dono do estado, 
 8. **Efeitos externos com identidade** (R5-5): toda chamada ao provedor e todo comando é uma intenção com id. Timeout ou queda deixa o efeito em estado **desconhecido**, que exige reconciliação antes de nova tentativa.
 9. **Loop de agente** com um provedor da camada barata por API e **compactação de contexto** (R1): nenhuma chamada sai com mais de 100k tokens de entrada.
 10. **Retomada** (R5-7): ao reiniciar, o dono reprojeta o estado do log. Execuções interrompidas aparecem como interrompidas, aprovações pendentes continuam pendentes, e efeitos sem recibo ficam "desconhecidos".
-11. **Auditoria append-only sem conteúdo sensível:** chave de API, conteúdo de `.env*` e valores de segredos nunca entram no log nem na saída.
-12. **i18n desde a primeira string** (ADR 0002): toda mensagem ao usuário sai de catálogo i18next em `locales/pt-BR/` e `locales/en/` ([ficha](../../20-conhecimento/bibliotecas-do-nucleo.md)).
-13. **CLI:**
+11. **Privacidade no provedor:** toda chamada sai com `store: false` (o padrão da Responses API guarda a resposta por 30 dias).
+12. **Auditoria append-only sem conteúdo sensível:** chave de API, conteúdo de `.env*` e valores de segredos nunca entram no log nem na saída.
+13. **i18n desde a primeira string** (ADR 0002): toda mensagem ao usuário sai de catálogo i18next em `locales/pt-BR/` e `locales/en/` ([ficha](../../20-conhecimento/bibliotecas-do-nucleo.md)).
+14. **CLI:**
     - comandos `run "<tarefa>"`, `status`, `approvals`, `approve`/`deny`, `budget`, `log`, `resume`, `daemon start|stop|status`;
     - binários `rabelus-buddy` e `rbuddy` (ADR 0011);
     - argumentos com `node:util` `parseArgs`;
@@ -105,9 +106,10 @@ Dependências do produto no M0: **`openai` e `i18next`**, e nenhuma outra em tem
 17. Nenhuma chamada ao provedor sai com mais de 100k tokens de entrada estimados: acima do limiar, o histórico é compactado, e a compactação vira evento.
 18. Em toda a suíte, a chave de API e qualquer valor lido de `.env*` não aparecem no log, na auditoria nem na saída (busca pelo valor nos artefatos de teste).
 19. Toda string mostrada pela CLI vem do catálogo: as chaves existem em `pt-BR` e `en`, e a troca de idioma (`--lang` ou `RBUDDY_LANG`) muda a saída.
-20. **Demonstração do marco** (com o provedor real): o Pai roda `rbuddy run` numa tarefa real de leitura e edição num repositório de teste. Cada aprovação e cada custo aparecem em `rbuddy log`. Um `kill -9` no meio e um `rbuddy resume` levam a tarefa ao fim sem efeito duplicado.
+20. Toda chamada ao provedor sai com `store: false`, e a liquidação usa `input_tokens`, `cached_tokens`, `cache_write_tokens` e `output_tokens` (que já inclui o raciocínio), com o preço da ficha. Verificado contra o provedor falso e, na demonstração, contra uma resposta real.
+21. **Demonstração do marco** (com o provedor real): o Pai roda `rbuddy run` numa tarefa real de leitura e edição num repositório de teste. Cada aprovação e cada custo aparecem em `rbuddy log`. Um `kill -9` no meio e um `rbuddy resume` levam a tarefa ao fim sem efeito duplicado.
 
-Os critérios 1–19 rodam com um provedor falso determinístico. O 20 usa o provedor real e é validado pelo Pai.
+Os critérios 1–20 rodam com um provedor falso determinístico. O 21 usa o provedor real e é validado pelo Pai.
 
 ## Métricas (registradas, sem meta fixa no M0)
 
@@ -135,7 +137,7 @@ O M0 é onde o lore vira produto:
 | Risco | Mitigação |
 |---|---|
 | `node:sqlite` ainda é Release candidate e já renomeou a classe entre o 24 e o 26 | adaptador fino; testes nas duas linhas na CI; `better-sqlite3` como plano B |
-| Campos de uso da Responses API não verificados (pesam na liquidação) | verificar no início do plano; o provedor falso define o contrato que o real precisa cumprir |
+| Mudança nos campos de uso da Responses API (verificados nos tipos do SDK 7.34.0 em 2026-10-15) | o provedor falso implementa o mesmo contrato; teste de contrato contra o tipo do SDK na versão fixada |
 | Estimativa de custo antes da chamada (reserva) acima ou abaixo do real | reserva pelo máximo (`max_output_tokens` × preço); liquidação devolve a diferença |
 | Permissões de named pipe no Windows | teste de acesso por outro usuário marcado como manual no M0, automatizado no M2 |
 | Custo real da demonstração | teto do M0 abaixo do saldo de API (ver dúvida 3) |
