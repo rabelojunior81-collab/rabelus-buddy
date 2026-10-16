@@ -186,3 +186,7 @@ M0.5: orçamento atômico por janela (Go por modelo 5h/semana/mês, ChatGPT pelo
 ### #0043 · 2026-10-16T014212-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.6a: provedores OpenCode Go (Responses, Chat, Messages, Google), Ollama Cloud e OpenRouter com os SDKs aprovados; sonda e chamada real mínima por rota OK; Node passou a somar os certificados do sistema (cadeia do OpenRouter); npm audit na CI e scripts de instalação sob o protocolo.
+
+### #0044 · 2026-10-16T020142-0300 · claude-code-vs-code-fe93fb · feat
+
+M0.6b: ChatGPT por Sign in with ChatGPT (rbuddy login/logout chatgpt; PKCE, ID token pelo JWKS, credenciais 0600, refresh rotativo serializado; inferência em stream no contrato da prévia). Critérios 18 e 19 verdes contra servidores falsos; login real aguarda o Pai.

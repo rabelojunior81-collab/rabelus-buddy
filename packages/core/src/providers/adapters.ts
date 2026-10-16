@@ -25,7 +25,7 @@ function mapError(id: string, e: unknown): never {
   throw e;
 }
 
-const systemOf = (msgs: ChatMessage[]): string => msgs.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
+export const systemOf = (msgs: ChatMessage[]): string => msgs.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
 const parseArgs = (a: string): Record<string, unknown> => { try { return JSON.parse(a || '{}') as Record<string, unknown>; } catch { return {}; } };
 
 // ---------- OpenAI Chat Completions (Go chat, Ollama Cloud, OpenRouter) ----------

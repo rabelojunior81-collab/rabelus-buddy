@@ -12,7 +12,10 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
     req.setEncoding('utf8');
     req.on('data', (c: string) => { raw += c; });
     req.on('end', () => {
-      const cap: Captured = { method: req.method ?? '', path: req.url ?? '', headers: req.headers, body: raw ? (JSON.parse(raw) as Record<string, unknown>) : {} };
+      // Formulário (OAuth) ou JSON (APIs de modelo).
+      const form = String(req.headers['content-type'] ?? '').includes('application/x-www-form-urlencoded');
+      const body = !raw ? {} : form ? Object.fromEntries(new URLSearchParams(raw)) : (JSON.parse(raw) as Record<string, unknown>);
+      const cap: Captured = { method: req.method ?? '', path: req.url ?? '', headers: req.headers, body };
       requests.push(cap);
       const out = responder(cap);
       if (out.sse) {
@@ -30,5 +33,5 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
   });
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', () => r()));
   const { port } = server.address() as AddressInfo;
-  return { url: `http://127.0.0.1:${port}`, requests, close: () => new Promise((r) => server.close(() => r())) };
+  return { url: `http://127.0.0.1:${port}`, requests, close: () => new Promise((r) => { server.close(() => r()); server.closeAllConnections(); }) };
 }

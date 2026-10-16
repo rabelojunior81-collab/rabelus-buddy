@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-16T014424-0300-claude-code-vs-code-fe93fb-0031",
+  "ts": "2026-10-16T01:44:24-03:00",
+  "utc": "2026-10-16T04:44:24.203Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 31,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #28: feat(m0.6a): provedores OpenCode Go, Ollama Cloud e OpenRouter",
+  "refs": [
+    "#28"
+  ],
+  "data": {}
+}

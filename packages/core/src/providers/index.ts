@@ -1,30 +1,17 @@
 // Fábricas dos provedores na ordem da ADR 0015: OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter.
 
-import tls from 'node:tls';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { anthropicAdapter, googleAdapter, openaiChatAdapter, openaiResponsesAdapter } from './adapters.ts';
+import { trustSystemCAs, USER_AGENT } from './identity.ts';
 import type { CallContext, ModelRequest, ModelResponse, Provider } from './types.ts';
 
-export { ProviderLimitError, ProviderUnknownError } from './types.ts';
+export { ProviderLimitError, ProviderRejectedError, ProviderUnknownError } from './types.ts';
 export type { Provider, ModelRequest, ModelResponse, ChatMessage, ToolCall, ToolSpec, CallContext } from './types.ts';
-
-const version = (JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', 'package.json'), 'utf8')) as { version: string }).version;
-// Termos do Go: o cliente se identifica com user agent próprio (ficha assinaturas-de-agentes).
-export const USER_AGENT = `rabelus-buddy/${version}`;
+export { trustSystemCAs, USER_AGENT } from './identity.ts';
+export { createChatGptProvider, startLogin, logout, SiwcAuth, SiwcAuthError, loadCredentials, credentialsPath, SIWC_ENDPOINTS, type ChatGptCredentials, type SiwcEndpoints } from './siwc.ts';
 
 export const GO_BASE = 'https://opencode.ai/inference/go/v1';
 export const OLLAMA_BASE = 'https://ollama.com/v1';
 export const OPENROUTER_BASE = 'https://openrouter.ai/api/v1';
-
-// Certificados do sistema somados aos embutidos no Node (registro 2026-10-16: o Node 26.11 recusava a
-// cadeia do OpenRouter). Nunca desliga a verificação; só amplia a confiança ao repositório do sistema.
-let trusted = false;
-export function trustSystemCAs(): void {
-  if (trusted) return;
-  tls.setDefaultCACertificates([...tls.getCACertificates('default'), ...tls.getCACertificates('system')]);
-  trusted = true;
-}
 
 // Rota de cada modelo no OpenCode Go (ficha assinaturas-de-agentes, página oficial em 2026-10-15).
 const GO_RESPONSES = new Set(['gpt-6-luna', 'gpt-5.6-luna', 'grok-4.7', 'grok-4.6', 'muse-spark-1.3-contributor', 'muse-spark-1.2-contributor']);

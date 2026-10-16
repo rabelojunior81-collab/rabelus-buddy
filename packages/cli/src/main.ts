@@ -1,18 +1,72 @@
 // Entrada da CLI do Rabelus Buddy (SPEC 0001, escopo 16; ADR 0011).
-// M0.1: --help, --version, --lang. M0.2: daemon start|status|stop.
+// M0.1: --help, --version, --lang. M0.2: daemon start|status|stop. M0.6b: login|logout chatgpt.
 
 import { parseArgs } from 'node:util';
+import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createI18n, resolveLang, type I18n } from '@rabelus-buddy/client/i18n';
 import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
-import { startOwner, AlreadyRunningError, stateHome, endpointFor } from '@rabelus-buddy/core';
+import { startOwner, AlreadyRunningError, stateHome, endpointFor, startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints } from '@rabelus-buddy/core';
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as { version: string };
 
 export interface Io {
   out: (text: string) => void;
   err: (text: string) => void;
+}
+
+// Dependências trocáveis nos testes: servidor OAuth falso, porta livre, navegador simulado.
+export interface Deps { siwcEndpoints?: SiwcEndpoints; loginPort?: number; openUrl?: (url: string) => void }
+
+// Abre a URL no navegador padrão; se falhar, a URL já está na tela.
+function openBrowser(url: string): void {
+  const [cmd, args] = process.platform === 'win32' ? ['rundll32', ['url.dll,FileProtocolHandler', url]]
+    : process.platform === 'darwin' ? ['open', [url]] : ['xdg-open', [url]];
+  try {
+    const child = spawn(cmd as string, args as string[], { detached: true, stdio: 'ignore' });
+    child.on('error', () => {});
+    child.unref();
+  } catch { /* sem navegador: segue com a URL impressa */ }
+}
+
+async function login(provider: string | undefined, noBrowser: boolean, env: NodeJS.ProcessEnv, io: Io, { t }: I18n, deps: Deps): Promise<number> {
+  if (provider !== 'chatgpt') {
+    io.err(t('login.usage'));
+    return 1;
+  }
+  const pending = await startLogin({
+    home: stateHome(env),
+    endpoints: deps.siwcEndpoints ?? SIWC_ENDPOINTS,
+    ...(deps.loginPort !== undefined ? { port: deps.loginPort } : {}),
+    page: { ok: t('login.pageOk'), fail: t('login.pageFail') },
+  });
+  io.out(t('login.openUrl', { url: pending.url }));
+  if (!noBrowser) (deps.openUrl ?? openBrowser)(pending.url);
+  io.out(t('login.waiting'));
+  try {
+    const c = await pending.done;
+    io.out(t(c.planEnabled ? 'login.done' : 'login.planDisabled', { email: c.email ?? c.sub ?? '?' }));
+    return 0;
+  } catch (e) {
+    io.err(t('login.failed', { code: e instanceof SiwcAuthError ? e.code : (e as Error).message }));
+    return 1;
+  }
+}
+
+async function signOut(provider: string | undefined, env: NodeJS.ProcessEnv, io: Io, { t }: I18n, deps: Deps): Promise<number> {
+  if (provider !== 'chatgpt') {
+    io.err(t('login.usage'));
+    return 1;
+  }
+  const home = stateHome(env);
+  if (!loadCredentials(home)?.refreshToken) {
+    io.out(t('login.logoutNone'));
+    return 0;
+  }
+  const { revoked } = await logout(home, deps.siwcEndpoints ?? SIWC_ENDPOINTS);
+  io.out(t(revoked ? 'login.logoutDone' : 'login.logoutUnconfirmed'));
+  return 0;
 }
 
 interface OwnerStatus { pid: number; startedAt: string; sessions: number; events: number; endpoint: string }
@@ -116,7 +170,7 @@ async function budget(env: NodeJS.ProcessEnv, io: Io, i18n: I18n): Promise<numbe
   return 0;
 }
 
-export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promise<number> {
+export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io, deps: Deps = {}): Promise<number> {
   // O idioma vem antes de tudo, para que até o erro de opção saia no idioma pedido.
   const langIdx = argv.indexOf('--lang');
   const i18n = createI18n(resolveLang({ flag: langIdx >= 0 ? argv[langIdx + 1] : undefined, env: env.RBUDDY_LANG }));
@@ -131,6 +185,7 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promi
         help: { type: 'boolean', short: 'h' },
         version: { type: 'boolean', short: 'v' },
         lang: { type: 'string' },
+        'no-browser': { type: 'boolean' },
       },
     });
   } catch (e) {
@@ -150,6 +205,8 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promi
     return 0;
   }
   if (command === 'daemon') return daemon(positionals[1], env, io, i18n);
+  if (command === 'login') return login(positionals[1], values['no-browser'] === true, env, io, i18n, deps);
+  if (command === 'logout') return signOut(positionals[1], env, io, i18n, deps);
   if (command === 'approvals') return approvals(env, io, i18n);
   if (command === 'budget') return budget(env, io, i18n);
   if (command === 'approve' || command === 'deny') return resolve(command, positionals[1], env, io, i18n);
