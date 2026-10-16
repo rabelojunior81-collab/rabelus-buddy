@@ -8,15 +8,15 @@ export const BIN = join(import.meta.dirname, '..', '..', 'cli', 'bin', 'rbuddy.m
 
 export const tempHome = (): string => mkdtempSync(join(tmpdir(), 'rbuddy-'));
 
-export function envFor(home: string): NodeJS.ProcessEnv {
-  const e: NodeJS.ProcessEnv = { ...process.env, RBUDDY_HOME: home };
+export function envFor(home: string, extra: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
+  const e: NodeJS.ProcessEnv = { ...process.env, RBUDDY_HOME: home, ...extra };
   delete e.RBUDDY_LANG;
   return e;
 }
 
-export function spawnOwner(home: string): Promise<ChildProcess> {
+export function spawnOwner(home: string, extra: NodeJS.ProcessEnv = {}): Promise<ChildProcess> {
   return new Promise((resolve, reject) => {
-    const p = spawn(process.execPath, [BIN, 'daemon', 'start'], { env: envFor(home) });
+    const p = spawn(process.execPath, [BIN, 'daemon', 'start'], { env: envFor(home, extra) });
     let out = '';
     p.stdout.setEncoding('utf8');
     p.stdout.on('data', (d: string) => { out += d; if (out.includes('\n')) resolve(p); });
