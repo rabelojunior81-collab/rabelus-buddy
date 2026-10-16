@@ -1,8 +1,8 @@
 # SPEC — M0: Núcleo governado
 
-**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 3 · **Estado:** aprovada
+**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 4 · **Estado:** aprovada
 **Autor:** buddy-dev (Buddy Fenix), sessões `claude-code-vs-code-438d04`, `-5cfc7b`, `-3a6e29` · **Criada em:** 2026-10-15T04:29:18-03:00 · **Aprovada por:** Pai, 2026-10-15 ("Aprovada, DEVE Mergear"), com a decisão 8 = A
-**Revisões anteriores:** revisão 1 (rascunho), commit `6083ac2`; revisão 2 (rascunho), commit `1213bd2`. A revisão 3 é a 2 aprovada pelo Pai, com a ordem de provedores da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md) e a decisão 8 resolvida (A). A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
+**Revisões anteriores:** revisão 1 (rascunho), commit `6083ac2`; revisão 2 (rascunho), commit `1213bd2`. A revisão 3 é a 2 aprovada pelo Pai, com a ordem de provedores da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md) e a decisão 8 resolvida (A). A revisão 4 (2026-10-16) só ajusta o "Fora": a biblioteca da TUI passa a estar em avaliação, `ink` × `pi-tui` ([ADR 0016](../../60-decisoes/0016-pi-por-composicao-e-tui-em-avaliacao.md)), e o Pi entra no M1 como agente plugável. O escopo do M0 não muda. A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
 
 ## Problema e resultado
 
@@ -82,11 +82,11 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 
 **Fora** (com o marco que entrega):
 
-- Agentes externos por ACP e o `@opencode-ai/sdk` (cliente do servidor do OpenCode): **M1**.
+- Agentes externos por ACP, o `@opencode-ai/sdk` (cliente do servidor do OpenCode) e o Pi como agente plugável com extensão de governança (ADR 0016): **M1**.
 - Sandbox, worktree por sessão, aprovação na integração, comandos livres no workspace, rede por lista de domínios: **M2**.
 - Memória de longo prazo e identidade versionada do agente do usuário: **M3**.
 - Gateway, canais e entrada por mensagem (R5-2): **M4**.
-- Web UI, desktop, mobile (ADR 0013), MCP, subagentes (C2) e TUI com `ink`: **M5+**.
+- Web UI, desktop, mobile (ADR 0013), MCP e subagentes (C2): **M5+**. TUI: depois do M0, com biblioteca escolhida entre `ink` e `pi-tui` (ADR 0016).
 - Instaladores e publicação no npm: **M5+**. No M0 a CLI roda do repositório.
 
 ## Decisões técnicas (cada uma com fonte)
@@ -96,7 +96,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 | 1 | Banco | `node:sqlite` (RC) atrás de adaptador; `better-sqlite3` como plano B documentado | zero dependência nativa; spike atendeu R5-1 e R5-7 em Windows, Linux e macOS, Node 24 e 26 | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md), [spike](../../registros/2026-10-15T042718-0300-spike-banco-e-ipc-do-m0/README.md) |
 | 2 | IPC | JSON-RPC 2.0 por linhas sobre `node:net` | mesma API nos três SOs; mesmo modelo de mensagem do ACP (M1) | [banco-e-ipc](../../20-conhecimento/banco-e-ipc.md) |
 | 3 | Provedores | **Decidido pelo Pai** ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md), ordem da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md)): Go → Ollama Cloud → ChatGPT (SIWC) → OpenRouter (pago) | trabalho dentro dos US$ 30 das assinaturas | [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md) |
-| 4 | CLI e TUI | `parseArgs` + despacho próprio; `readline`; sem TUI no M0 | menos dependências; `ink` quando houver telas interativas | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
+| 4 | CLI e TUI | `parseArgs` + despacho próprio; `readline`; sem TUI no M0 | menos dependências; TUI depois, com `ink` ou `pi-tui` em avaliação (ADR 0016) | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 5 | i18n | i18next 26.x; JSON por domínio | o mesmo catálogo serve à CLI, à Web e ao app (ADR 0013) | [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 6 | Orçamento | reserva por estimativa e liquidação pelo `usage`; janelas por assinatura como recurso; erro de limite do provedor é fonte de verdade | o SIWC proíbe `max_output_tokens` e nenhuma assinatura informa preço por chamada | [assinaturas](../../20-conhecimento/assinaturas-de-agentes.md), [bibliotecas-do-nucleo](../../20-conhecimento/bibliotecas-do-nucleo.md) |
 | 7 | Fora do M0 | ver "Fora"; comandos sempre em `ask` | ADR 0009 (até o M2), ADR 0010 | ROADMAP |

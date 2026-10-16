@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-16T001812-0300-claude-code-vs-code-6265a4-0001",
+  "ts": "2026-10-16T00:18:12-03:00",
+  "utc": "2026-10-16T03:18:12.488Z",
+  "session": "claude-code-vs-code-6265a4",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "Pi: compor no M1 (ADR 0016), TUI ink x pi-tui em avaliação; governança: bd prune, bd merge, registro de validações; prune das branches; M0.1 fundação do código",
+  "refs": [],
+  "data": {}
+}
