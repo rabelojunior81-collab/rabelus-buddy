@@ -2,13 +2,13 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-16T01:14:19-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-fe93fb
+**Atualizado em:** 2026-10-16T01:21:51-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-fe93fb
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** M0.1 feita (PR #23); **M0.2 feita** (PR #24, critérios 1–3); **M0.3 feita** (efeitos, retomada, aprovações; critérios 4–6). Próximo: **M0.4** (motor de política) e **M0.5** (orçamento atômico). Ordem de provedores na ADR 0015; Pi por composição no M1 (ADR 0016).
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** M0.1 feita (PR #23); **M0.2 feita** (PR #24, critérios 1–3); **M0.3 feita** (PR #25, critérios 4–6); **M0.4 feita** (motor de política; critérios 7–13 e 20). Próximo: **M0.5** (orçamento atômico por janela). Ordem de provedores na ADR 0015; Pi por composição no M1 (ADR 0016).
 
 **M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) **aprovada**; plano [aprovado](../docs/50-planos/m0/PLANO.md).
 
@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `9e0f16a` (Merge #24: M0.2), CI verde |
-| PRs mergeados | #1–#24, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `a70037e` (Merge #25: M0.3), CI verde |
+| PRs mergeados | #1–#25, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `97651a4`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 

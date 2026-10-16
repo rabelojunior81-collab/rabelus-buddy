@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:14:19-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:21:51-03:00
 
 ## Objetivo
 
@@ -30,7 +30,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - reprojeção na partida;
   - testes de `kill -9` com processo filho.
   - Critérios: 4, 5, 6.
-- [ ] **M0.4 Motor de política**:
+- [x] **M0.4 Motor de política** — branch `feat/m0-4-politica`, critérios 7–13 e 20 verdes (o comando ainda não vira efeito com identidade; isso entra quando o loop executar ferramentas, na M0.6):
   - deny → ask → allow, caminhos protegidos e escopos (uma vez, sessão, projeto);
   - `ask` sem interação vira `deny`; detecção de laço;
   - escrita com compare-and-set pelo hash da leitura;

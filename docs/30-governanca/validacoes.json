@@ -143,6 +143,19 @@
       "origem": "SPEC 0001 critérios 4–6; R5-5, R5-7"
     },
     {
+      "id": "politica-do-agente",
+      "descricao": "deny → ask → allow; caminhos protegidos; ask sem terminal vira deny; escopos de concessão; laço pausa; escrita com compare-and-set; run_command só com aprovação explícita; modelos que treinam só com concessão de projeto",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI (3 SOs × Node 24/26)"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/politica.test.ts"
+      },
+      "origem": "SPEC 0001 critérios 7–13 e 20; ADR 0009; R3"
+    },
+    {
       "id": "nomes",
       "descricao": "Nomes semânticos e carimbos na convenção",
       "quem": "maquina",

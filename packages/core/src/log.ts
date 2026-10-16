@@ -5,6 +5,7 @@
 import { createHash } from 'node:crypto';
 import { transaction, type Database } from './db.ts';
 import { DOMAIN_SCHEMA, DOMAIN_PROJECTIONS, projectDomain, validateDomainEvent } from './domain.ts';
+import { POLICY_SCHEMA, POLICY_PROJECTIONS, projectPolicy, validatePolicyEvent } from './policy.ts';
 
 export interface LogEvent {
   id: number;
@@ -51,6 +52,7 @@ export class EventLog {
     this.db = db;
     db.exec(SCHEMA);
     db.exec(DOMAIN_SCHEMA);
+    db.exec(POLICY_SCHEMA);
   }
 
   append(session: string, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
@@ -66,6 +68,7 @@ export class EventLog {
   // Inserção crua (sem transação própria): usada pelo append e pelos testes de integridade.
   insertRaw(session: string, seq: number, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
     validateDomainEvent(kind, (payload ?? {}) as Record<string, unknown>);
+    validatePolicyEvent(kind, (payload ?? {}) as Record<string, unknown>);
     const body = JSON.stringify(payload ?? null);
     const res = this.db.prepare('INSERT INTO events (session, seq, kind, payload, ts) VALUES (?, ?, ?, ?, ?)').run(session, seq, kind, body, ts);
     this.project({ session, seq, kind, ts, payload });
@@ -78,6 +81,7 @@ export class EventLog {
       ON CONFLICT (id) DO UPDATE SET last_seq = excluded.last_seq, last_kind = excluded.last_kind, event_count = event_count + 1
     `).run(e.session, e.ts, e.seq, e.kind);
     projectDomain(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>);
+    projectPolicy(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>);
   }
 
   events(session: string): LogEvent[] {
@@ -95,7 +99,7 @@ export class EventLog {
   }
 
   dropProjections(): void {
-    for (const t of ['proj_sessions', ...DOMAIN_PROJECTIONS]) this.db.exec(`DELETE FROM ${t}`);
+    for (const t of ['proj_sessions', ...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS]) this.db.exec(`DELETE FROM ${t}`);
   }
 
   rebuildProjections(): void {
@@ -107,7 +111,7 @@ export class EventLog {
   }
 
   projectionHash(): string {
-    const domain = DOMAIN_PROJECTIONS.map((t) => this.db.prepare(`SELECT * FROM ${t} ORDER BY id`).all());
+    const domain = [...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS].map((t) => this.db.prepare(`SELECT * FROM ${t} ORDER BY rowid`).all());
     return createHash('sha256').update(JSON.stringify([this.sessions(), domain])).digest('hex');
   }
 }
