@@ -1,6 +1,6 @@
 {
   "login": {
-    "usage": "Uso: rbuddy login chatgpt [--no-browser]   ·   rbuddy logout chatgpt",
+    "usage": "Uso: rbuddy login chatgpt [--no-browser] | opencode-go | ollama-cloud | openrouter   ·   rbuddy logout <provedor>",
     "openUrl": "Para entrar com o ChatGPT, abra no navegador:\n{{url}}",
     "waiting": "Esperando o retorno do navegador (até 5 minutos)…",
     "done": "Login no ChatGPT concluído ({{email}}). O plano entra na ordem de provedores.",

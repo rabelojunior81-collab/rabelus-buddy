@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "header": "Ordem de provedores (ADR 0015):",
+    "ready": "{{n}}. {{route}} — pronto",
+    "missing": "{{n}}. {{route}} — sem credencial"
+  },
+  "keys": {
+    "prompt": "Chave de API de {{provider}}: ",
+    "saved": "Chave de {{provider}} guardada, só para o seu usuário.",
+    "removed": "Chave de {{provider}} removida.",
+    "none": "Nenhuma chave de {{provider}} guardada.",
+    "empty": "Nenhuma chave informada."
+  }
+}

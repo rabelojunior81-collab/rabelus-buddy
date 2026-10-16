@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "header": "Provider order (ADR 0015):",
+    "ready": "{{n}}. {{route}} — ready",
+    "missing": "{{n}}. {{route}} — no credentials"
+  },
+  "keys": {
+    "prompt": "{{provider}} API key: ",
+    "saved": "{{provider}} key stored, for your user only.",
+    "removed": "{{provider}} key removed.",
+    "none": "No {{provider}} key stored.",
+    "empty": "No key given."
+  }
+}

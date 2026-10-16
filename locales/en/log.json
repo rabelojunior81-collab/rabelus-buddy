@@ -1,0 +1,23 @@
+{
+  "log": {
+    "usage": "Usage: rbuddy log <session|run>",
+    "empty": "No events in session {{session}}.",
+    "runStarted": "run {{run}} started",
+    "runFinished": "run {{run}} done",
+    "runStopped": "run {{run}} stopped: {{reason}}",
+    "runInterrupted": "run {{run}} interrupted",
+    "runResumed": "run {{run}} resumed",
+    "step": "step {{step}} via {{route}}: {{input}} input tokens, {{output}} output",
+    "settled": "spent US$ {{amount}} on {{route}}",
+    "switched": "switched from {{from}} to {{to}} ({{reason}})",
+    "approvalRequested": "approval requested: {{action}}",
+    "approvalResolved": "approval {{decision}}",
+    "approved": "granted",
+    "denied": "denied",
+    "fileWritten": "file written: {{path}}",
+    "commandRan": "command ran: {{command}} (code {{code}})",
+    "effectUnknown": "effect {{effect}} unknown",
+    "reconciled": "effect {{effect}} reconciled: {{outcome}}",
+    "compacted": "context compacted: {{before}} → {{after}} tokens"
+  }
+}

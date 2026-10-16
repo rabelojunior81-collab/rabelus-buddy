@@ -2,8 +2,9 @@
 // config.json no diretório de estado escolhe modelos e, nos testes, endereços; as chaves vêm de
 // credentials/keys.json (gravado pelo login, só do dono) ou de variáveis de ambiente.
 
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { randomBytes } from 'node:crypto';
+import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import type { Route } from './agent.ts';
 import { createGoProvider, createOllamaProvider, createOpenRouterProvider } from './providers/index.ts';
 import { createChatGptProvider, loadCredentials } from './providers/siwc.ts';
@@ -60,4 +61,30 @@ export function buildRoutes(home: string, config: Config, env: NodeJS.ProcessEnv
     routes.push({ provider, model: r.model });
   }
   return routes;
+}
+
+// Chave guardada pelo login: arquivo só do dono, escrita atômica (mesma guarda das credenciais OAuth).
+export function saveKey(home: string, provider: string, key: string): void {
+  writeOwnerOnly(keysPath(home), { ...loadKeys(home), [provider]: key });
+}
+
+export function removeKey(home: string, provider: string): boolean {
+  const keys = loadKeys(home);
+  if (!(provider in keys)) return false;
+  delete keys[provider];
+  writeOwnerOnly(keysPath(home), keys);
+  return true;
+}
+
+export function hasCredential(home: string, provider: ProviderId, env: NodeJS.ProcessEnv = process.env): boolean {
+  if (provider === 'chatgpt') return Boolean(loadCredentials(home)?.refreshToken);
+  return Boolean(loadKeys(home)[provider] ?? env[ENV_KEYS[provider]]);
+}
+
+function writeOwnerOnly(p: string, data: unknown): void {
+  mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
+  const tmp = `${p}.${process.pid}.${randomBytes(4).toString('hex')}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(data, null, 2)}\n`, { mode: 0o600 });
+  renameSync(tmp, p);
+  chmodSync(p, 0o600);
 }

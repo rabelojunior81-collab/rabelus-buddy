@@ -1,5 +1,5 @@
 // Entrada da CLI do Rabelus Buddy (SPEC 0001, escopo 16; ADR 0011).
-// M0.1: --help, --version, --lang. M0.2: daemon start|status|stop. M0.6b: login|logout chatgpt.
+// M0.1: --help, --version, --lang. M0.2: daemon start|status|stop. M0.6b: login|logout chatgpt. M0.7b: run, resume, status, log, providers, login por chave.
 
 import { parseArgs } from 'node:util';
 import { spawn } from 'node:child_process';
@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createI18n, resolveLang, type I18n } from '@rabelus-buddy/client/i18n';
 import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
+import { runCmd, resumeCmd, statusCmd, logCmd, providersCmd, keyLogin, keyLogout, isKeyProvider, type Prompt } from './agente.ts';
 import { startOwner, AlreadyRunningError, stateHome, endpointFor, startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints } from '@rabelus-buddy/core';
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as { version: string };
@@ -17,7 +18,7 @@ export interface Io {
 }
 
 // Dependências trocáveis nos testes: servidor OAuth falso, porta livre, navegador simulado.
-export interface Deps { siwcEndpoints?: SiwcEndpoints; loginPort?: number; openUrl?: (url: string) => void }
+export interface Deps { siwcEndpoints?: SiwcEndpoints; loginPort?: number; openUrl?: (url: string) => void; cwd?: string; interactive?: boolean; prompt?: Prompt }
 
 // Abre a URL no navegador padrão; se falhar, a URL já está na tela.
 function openBrowser(url: string): void {
@@ -205,8 +206,13 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io, deps: 
     return 0;
   }
   if (command === 'daemon') return daemon(positionals[1], env, io, i18n);
-  if (command === 'login') return login(positionals[1], values['no-browser'] === true, env, io, i18n, deps);
-  if (command === 'logout') return signOut(positionals[1], env, io, i18n, deps);
+  if (command === 'login') return isKeyProvider(positionals[1]) ? keyLogin(positionals[1], env, io, i18n, deps) : login(positionals[1], values['no-browser'] === true, env, io, i18n, deps);
+  if (command === 'logout') return isKeyProvider(positionals[1]) ? keyLogout(positionals[1], env, io, i18n) : signOut(positionals[1], env, io, i18n, deps);
+  if (command === 'run') return runCmd(positionals.slice(1).join(' ') || undefined, env, io, i18n, deps);
+  if (command === 'resume') return resumeCmd(positionals[1], env, io, i18n, deps);
+  if (command === 'status') return statusCmd(env, io, i18n);
+  if (command === 'log') return logCmd(positionals[1], env, io, i18n);
+  if (command === 'providers') return providersCmd(env, io, i18n);
   if (command === 'approvals') return approvals(env, io, i18n);
   if (command === 'budget') return budget(env, io, i18n);
   if (command === 'approve' || command === 'deny') return resolve(command, positionals[1], env, io, i18n);
