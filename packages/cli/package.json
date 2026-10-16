@@ -10,6 +10,7 @@
     "rbuddy": "./bin/rbuddy.mjs"
   },
   "dependencies": {
-    "@rabelus-buddy/client": "0.0.0"
+    "@rabelus-buddy/client": "0.0.0",
+    "@rabelus-buddy/core": "0.0.0"
   }
 }

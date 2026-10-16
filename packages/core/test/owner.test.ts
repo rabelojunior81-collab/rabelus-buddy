@@ -15,7 +15,7 @@ const children: ChildProcess[] = [];
 after(() => { for (const c of children) c.kill(); });
 
 function env(home: string) {
-  const e = { ...process.env, RBUDDY_HOME: home };
+  const e: NodeJS.ProcessEnv = { ...process.env, RBUDDY_HOME: home };
   delete e.RBUDDY_LANG;
   return e;
 }

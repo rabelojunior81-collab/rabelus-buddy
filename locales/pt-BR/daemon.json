@@ -1,0 +1,10 @@
+{
+  "daemon": {
+    "started": "Dono do núcleo no ar em {{endpoint}} (pid {{pid}}). Ctrl+C ou `rbuddy daemon stop` para encerrar.",
+    "alreadyRunning": "Já existe um dono do núcleo no ar em {{endpoint}}.",
+    "notRunning": "Nenhum dono do núcleo no ar.",
+    "status": "Dono no ar: pid {{pid}}, desde {{startedAt}}; {{sessions}} sessões, {{events}} eventos. Endpoint: {{endpoint}}",
+    "stopped": "Dono do núcleo encerrado.",
+    "usage": "Uso: rbuddy daemon <start|status|stop>"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "daemon": {
+    "started": "Core owner running at {{endpoint}} (pid {{pid}}). Ctrl+C or `rbuddy daemon stop` to stop.",
+    "alreadyRunning": "A core owner is already running at {{endpoint}}.",
+    "notRunning": "No core owner is running.",
+    "status": "Owner running: pid {{pid}}, since {{startedAt}}; {{sessions}} sessions, {{events}} events. Endpoint: {{endpoint}}",
+    "stopped": "Core owner stopped.",
+    "usage": "Usage: rbuddy daemon <start|status|stop>"
+  }
+}
