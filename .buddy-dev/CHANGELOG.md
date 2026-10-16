@@ -194,3 +194,7 @@ M0.6b: ChatGPT por Sign in with ChatGPT (rbuddy login/logout chatgpt; PKCE, ID t
 ### #0045 · 2026-10-16T020831-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.6e: loop do agente (ordem de provedores com política e orçamento, chamada de modelo e escrita/comando como efeitos com identidade, troca ao esgotar janela, escrita uma vez, aprovação humana, compactação abaixo de 100k tokens). M0.6 completa.
+
+### #0046 · 2026-10-16T021524-0300 · claude-code-vs-code-fe93fb · feat
+
+M0.7a: retomada do loop (conversa no log, reconciliação por tipo de efeito) e o dono executando o agente (agent.run/agent.resume, aprovação pelo IPC, rotas e credenciais configuradas); kill -9 + resume sem escrita duplicada contra provedor falso.
