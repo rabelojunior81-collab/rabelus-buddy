@@ -7,7 +7,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSy
 import { dirname, join } from 'node:path';
 import type { Route } from './agent.ts';
 import { createGoProvider, createOllamaProvider, createOpenRouterProvider } from './providers/index.ts';
-import { createChatGptProvider, loadCredentials } from './providers/siwc.ts';
+import { createChatGptProvider, loadCredentials, SIWC_ENDPOINTS } from './providers/siwc.ts';
 
 export type ProviderId = 'opencode-go' | 'ollama-cloud' | 'chatgpt' | 'openrouter';
 export interface RouteConfig { provider: ProviderId; model: string; baseURL?: string }
@@ -49,7 +49,7 @@ export function buildRoutes(home: string, config: Config, env: NodeJS.ProcessEnv
   for (const r of config.routes) {
     if (r.provider === 'chatgpt') {
       if (!loadCredentials(home)?.refreshToken) continue;
-      routes.push({ provider: createChatGptProvider({ home }), model: r.model });
+      routes.push({ provider: createChatGptProvider({ home, ...(r.baseURL ? { endpoints: { ...SIWC_ENDPOINTS, api: r.baseURL } } : {}) }), model: r.model });
       continue;
     }
     const apiKey = keys[r.provider] ?? env[ENV_KEYS[r.provider]];

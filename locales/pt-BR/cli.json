@@ -5,6 +5,7 @@
     "unknownCommand": "Comando desconhecido: {{command}}. Veja: rbuddy --help",
     "unknownOption": "Opção desconhecida: {{option}}. Veja: rbuddy --help",
     "approvalsPending_one": "{{count}} aprovação pendente",
-    "approvalsPending_other": "{{count}} aprovações pendentes"
+    "approvalsPending_other": "{{count}} aprovações pendentes",
+    "rpcError": "O núcleo recusou o pedido (código {{code}})."
   }
 }
