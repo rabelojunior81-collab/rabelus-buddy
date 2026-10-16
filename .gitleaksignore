@@ -1,0 +1,6 @@
+# Achados do gitleaks conferidos à mão como falso positivo (formato: commit:arquivo:regra:linha).
+# Cada linha precisa de justificativa logo acima. Nunca ignorar por regra ou arquivo inteiro.
+
+# 2026-10-16 · buddy-dev: canário de teste escrito à mão ("sk-canario-0123456789") no teste do login
+# por chave; não é chave de nenhum serviço. O teste passou a gerar o canário na hora (PR #32).
+a23b46abc53ef1819f2e1390e4548244dca83eab:packages/cli/test/run.test.ts:generic-api-key:132

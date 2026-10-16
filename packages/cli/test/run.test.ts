@@ -3,6 +3,7 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { run, type Io } from '../src/main.ts';
@@ -129,7 +130,7 @@ test('rbuddy login opencode-go: a chave entra pelo prompt sem eco, fica só do d
   delete env.RBUDDY_LANG;
   for (const k of ['OPENCODE_GO_API_KEY', 'OLLAMA_CLOUD_API_KEY', 'OPENROUTER_API_KEY']) delete env[k];
   const io = capture();
-  const secret = 'sk-canario-0123456789';
+  const secret = `canario-${randomBytes(8).toString('hex')}`; // gerado na hora: literal com cara de chave dispara o gitleaks
   let hidden: boolean | undefined;
   assert.equal(await run(['login', 'opencode-go'], env, io, { prompt: async (_q, opts) => { hidden = opts?.hidden; return secret; } }), 0);
   assert.equal(hidden, true, 'a chave é lida sem eco');
