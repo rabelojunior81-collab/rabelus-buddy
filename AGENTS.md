@@ -38,7 +38,7 @@ npm run bd -- changelog add --type <tipo> --text "..."
 npm run bd -- session end --summary "..."   # recusa sem post publicado; antes do último commit
 git commit && git push
 npm test && npm run bd -- post
-# PR com CI verde → merge commit pelo buddy-dev (ADR 0003)
+npm run bd -- merge <PR>                  # CI verde + bd post limpo → merge commit, main atualizada, prune
 ```
 
 ## 3. Regras e o mecanismo que as faz valer
@@ -59,6 +59,8 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Toda evolução atualiza as superfícies que afirmam o fato | `bd surfaces` no `bd post` e na CI; mapa evento → superfícies em [`SUPERFICIES.md`](./docs/30-governanca/SUPERFICIES.md) |
 | Dependência só entra registrada, com versão exata, licença permitida, ficha e aprovação do Pai; reverificada a cada 30 dias | `bd deps` no `bd post` e na CI; rotina semanal `dependencias.yml`; [`DEPENDENCIAS.md`](./docs/30-governanca/DEPENDENCIAS.md) |
 | Teste reprovado se corrige no código, nunca afrouxando o teste | `bd test-guard` no `bd post` e na CI: a suíte não perde testes nem asserções; sem `skip`/`todo`/`only` |
+| Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
+| Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`) |
 
 ## 4. Trabalho em paralelo

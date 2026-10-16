@@ -154,3 +154,7 @@ Sessão claude-code-vs-code-7ebb05: SPEC 0001 aprovada e mergeada (PR #17), bran
 ### #0035 · 2026-10-16T002021-0300 · claude-code-vs-code-6265a4 · decisao
 
 ADR 0016: Pi por composição (agente plugável no M1, com extensão de governança), sem fork; TUI em avaliação (ink × pi-tui, com referências visuais ao Pai no momento pertinente); M0 sem TUI. SPEC 0001 rev. 4; pi-tui e ink no registro como proposta.
+
+### #0036 · 2026-10-16T002655-0300 · claude-code-vs-code-6265a4 · ferramenta
+
+bd merge (CI verde e bd post limpo → merge commit → prune), bd prune (mergeadas removidas, abandonadas arquivadas em tag anotada), bd validacoes (registro de 23 validações com dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão). GitHub: auto-delete de branches e só merge commit. 88 testes.

@@ -41,7 +41,7 @@ Método completo: [`docs/30-governanca/METODO.md`](./docs/30-governanca/METODO.m
 | `docs/40-specs/` · `docs/50-planos/` · `docs/60-decisoes/` | SPECs, roadmap e planos, ADRs |
 | `docs/registros/` | Registros datados (auditorias, incidentes, evidências) |
 | `archive/` | Arquivo morto: entra com lápide, nunca sai |
-| `scripts/` | Ferramentas `bd` (relógio, nomes, barramento, arquivo, guarda, gate do Blog, superfícies, dependências, trava de testes) |
+| `scripts/` | Ferramentas `bd` (relógio, nomes, barramento, arquivo, guarda, gate do Blog, superfícies, dependências, trava de testes, merge e prune, validações) |
 
 ## Contribuir
 

@@ -11,6 +11,9 @@ import { checkBlogDelivery, blogDir } from './lib/blog.mjs';
 import { surfaceGaps } from './lib/surfaces.mjs';
 import { checkDeps, latestVersions } from './lib/deps.mjs';
 import { testGuard } from './lib/testguard.mjs';
+import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
+import { checkValidations } from './lib/validacoes.mjs';
+import { execFileSync } from 'node:child_process';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
 import { findDeletions } from './lib/guard.mjs';
@@ -38,6 +41,9 @@ const HELP = `bd — buddy-dev
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
   test-guard [--base origin/main]    a suíte não perde testes nem asserções; sem skip/todo/only
+  prune [--dry-run] [--arquivar a,b] remove branches mergeadas; arquiva (tag) as abandonadas
+  merge <PR>                         CI verde + bd post limpo → merge commit, main atualizada, prune
+  validacoes                         registro de validações: mecanismos ligados; o que aguarda o Pai
 `;
 
 const { values: o, positionals: pos } = parseArgs({
@@ -48,7 +54,7 @@ const { values: o, positionals: pos } = parseArgs({
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
-    latest: { type: 'boolean' },
+    latest: { type: 'boolean' }, 'dry-run': { type: 'boolean' }, arquivar: { type: 'string' },
     help: { type: 'boolean', short: 'h' },
   },
 });
@@ -82,6 +88,17 @@ function blogGate(r, session) {
   if (res.ok) ok(`Blog: ${res.posts.join(', ')} publicado(s) desde ${session.startedAt}, com daily`);
   else fail(`Blog (${dir}), sessão ${session.id}:\n    ${res.problems.join('\n    ')}`);
   return res.ok;
+}
+
+// Heads dos PRs abertos (para o prune nunca tocar trabalho com PR). Sem gh, vazio e avisado.
+function openPrHeads(r) {
+  try {
+    const out = execFileSync('gh', ['pr', 'list', '--state', 'open', '--json', 'headRefName', '--limit', '200'], { cwd: r, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    return new Set(JSON.parse(out).map((p) => p.headRefName));
+  } catch {
+    warn('gh indisponível: PRs abertos não consultados (o prune só remove o que já está mergeado)');
+    return new Set();
+  }
 }
 
 function syncInfo(r) {
@@ -194,6 +211,52 @@ const commands = {
     }
   },
 
+  prune() {
+    const r = root();
+    tryGit(r, 'fetch', '-q', '--prune', 'origin');
+    const list = classifyBranches(r, { openPrHeads: openPrHeads(r), archive: new Set((o.arquivar ?? '').split(',').filter(Boolean)) });
+    const report = pruneBranches(r, list, { stamp: formats().stamp, reason: `prune pelo bd (sessão ${sessionId(r)})`, dryRun: o['dry-run'] });
+    const prefix = o['dry-run'] ? '(simulação) ' : '';
+    for (const n of report.removed) console.log(`  ${prefix}removida: ${n}`);
+    for (const a of report.archived) console.log(`  ${prefix}arquivada: ${a.name} → tag ${a.tag} (${a.sha.slice(0, 7)})`);
+    for (const b of list.filter((x) => x.action === 'manter')) console.log(`  mantida: ${b.name} (${b.reason})`);
+    if (!o['dry-run'] && (report.removed.length || report.archived.length) && currentSession(r)) {
+      logEvent(r, { type: 'prune', summary: `${report.removed.length} removida(s), ${report.archived.length} arquivada(s)`, data: report });
+    }
+  },
+
+  async merge() {
+    const r = root();
+    const n = pos[1];
+    if (!/^\d+$/.test(n ?? '')) throw new Error('use: bd merge <número do PR>');
+    const pr = JSON.parse(execFileSync('gh', ['pr', 'view', n, '--json', 'state,mergeable,mergeStateStatus,statusCheckRollup,headRefName,title'], { cwd: r, encoding: 'utf8' }));
+    const notReady = mergeReadiness(pr);
+    if (currentBranch(r) !== pr.headRefName) notReady.push(`a branch atual (${currentBranch(r)}) não é a do PR (${pr.headRefName}); o bd post precisa rodar nela`);
+    if (!notReady.length) {
+      await commands.post();
+      if (failures) notReady.push('o bd post tem falhas');
+    }
+    if (notReady.length) {
+      notReady.forEach((p) => console.log(`  ✖ ${p}`));
+      process.exitCode = 1;
+      return;
+    }
+    execFileSync('gh', ['pr', 'merge', n, '--merge', '--subject', `Merge #${n}: ${pr.title} (CI verde)`], { cwd: r, stdio: 'inherit' });
+    git(r, 'checkout', '-q', 'main');
+    git(r, 'pull', '-q', '--ff-only');
+    if (currentSession(r)) logEvent(r, { type: 'merge', summary: `PR #${n}: ${pr.title}`, refs: [`#${n}`] });
+    console.log(`mergeado: PR #${n} → main ${git(r, 'rev-parse', '--short', 'HEAD')}`);
+    await commands.prune();
+  },
+
+  validacoes() {
+    const { problems, aguardaPai, total } = checkValidations(root());
+    problems.forEach((p) => console.log(`  ✖ ${p}`));
+    for (const v of aguardaPai) console.log(`  ⏳ aguarda o Pai: ${v.id} — ${v.descricao}`);
+    if (problems.length) process.exitCode = 1;
+    else console.log(`${total} validações registradas, mecanismos ligados`);
+  },
+
   'test-guard'() {
     const problems = testGuard(root(), { base: o.base ?? 'origin/main' });
     problems.forEach((p) => console.log(`  ✖ ${p}`));
@@ -237,6 +300,12 @@ const commands = {
     const others = st.sessions.filter((x) => x.id !== cur?.id);
     if (others.length) warn(`sessões paralelas: ${others.map((x) => `${x.id} [${x.scope}]`).join(', ')}`);
     for (const c of st.claims.filter((c) => !c.expired)) warn(`claim ativo: ${c.resource} → ${c.session}`);
+    // Nenhuma branch sobrevive ao merge (Pai, 2026-10-16): sessão não começa com branch para podar.
+    const toPrune = classifyBranches(r, { openPrHeads: openPrHeads(r) }).filter((b) => b.action !== 'manter');
+    if (toPrune.length) fail(`branches que já deviam ter saído (rode bd prune): ${toPrune.map((b) => `${b.name} [${b.reason}]`).join(', ')}`);
+    else ok('nenhuma branch para podar');
+    const { aguardaPai } = checkValidations(r);
+    for (const v of aguardaPai) warn(`aguarda o Pai: ${v.id} — ${v.descricao}`);
     if (failures) process.exitCode = 1;
   },
 
@@ -259,6 +328,9 @@ const commands = {
     const weakened = testGuard(r, { base: o.base ?? 'origin/main' });
     if (weakened.length) fail(`suíte de testes enfraquecida:\n    ${weakened.join('\n    ')}`);
     else ok('suíte de testes íntegra contra a base');
+    const val = checkValidations(r);
+    if (val.problems.length) fail(`registro de validações com problema (docs/30-governanca/VALIDACOES.md):\n    ${val.problems.join('\n    ')}`);
+    else ok(`${val.total} validações com mecanismo ligado`);
     const s = syncInfo(r);
     if (s.dirty) fail(`alterações não commitadas:\n${s.dirty}`);
     else ok('árvore limpa');

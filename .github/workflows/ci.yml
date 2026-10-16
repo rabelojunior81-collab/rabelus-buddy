@@ -38,6 +38,9 @@ jobs:
       - name: Dependências conforme o protocolo (DEPENDENCIAS.md)
         run: node scripts/bd.mjs deps
 
+      - name: Registro de validações com mecanismos ligados (VALIDACOES.md)
+        run: node scripts/bd.mjs validacoes
+
       - name: Testes não se afrouxam (teste reprovado se corrige no código)
         env:
           BASE_REF: ${{ github.base_ref }}

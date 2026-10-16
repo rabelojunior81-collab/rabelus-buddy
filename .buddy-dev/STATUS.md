@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-16T00:19:54-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-6265a4
+**Atualizado em:** 2026-10-16T00:26:30-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-6265a4
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,9 +16,9 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `975a9f6` (Merge #17: SPEC 0001 aprovada), CI verde |
-| PRs mergeados | #1–#19, por merge commit, pelo buddy-dev (ADR 0003) |
-| Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro") |
+| `main` | `7abbc0f` (Merge #21: ADR 0016), CI verde |
+| PRs mergeados | #1–#21, por merge commit, pelo buddy-dev (ADR 0003) |
+| Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `9671988`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
 ## Ambiente medido (2026-10-15)
@@ -51,7 +51,7 @@
 | Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud | feito: em `.buddy-dev/.env.local` (Pai, 2026-10-15); conta ChatGPT Plus entra na demonstração | — |
 | Forkar o Pi como CLI/TUI? | feito: não forkar; compor no M1 (ADR 0016, Pai, 2026-10-16) | — |
 | Biblioteca da TUI: `ink` × `pi-tui` | em avaliação; levar ao Pai as referências visuais das duas e a avaliação quando a TUI entrar (ADR 0016) | buddy-dev → Pai |
-| Alertas do Dependabot no repositório (a API respondeu 404: desligados) | proposta; ligar é configuração do repositório | Pai |
+| Alertas do Dependabot no repositório (a API respondeu 404: desligados) | proposta; registrada em `validacoes.json` como validação do Pai | Pai |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
 | Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); aplicado no Blog com nome, cor e emojis (`rabelus-lab-blog` `6ae9895`, governança v2.6) | — |
 | Emojis e cor de autoria | feito: 🔥 🖤 🧱 📜 e verdete `#3fb8a8` (2026-10-15), aplicados no Blog | — |
