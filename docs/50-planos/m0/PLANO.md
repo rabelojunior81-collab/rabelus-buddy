@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T00:35:50-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T00:40:22-03:00
 
 ## Objetivo
 
@@ -11,7 +11,7 @@ Entregar o núcleo governado da SPEC 0001: dono do log, IPC, política, orçamen
 
 Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde em Windows, Linux e macOS (Node 24 e 26), merge. Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito (com commit) · `[-]` cancelado (com motivo).
 
-- [~] **M0.1 Fundação do código** (branch `feat/m0-1-fundacao`; `core` nasce na M0.2, com o primeiro código dele):
+- [x] **M0.1 Fundação do código** — PR #23, CI verde em 3 SOs × Node 24/26 (`core` nasce na M0.2, com o primeiro código dele):
   - npm workspaces (`packages/core`, `packages/client`, `packages/cli`) e TypeScript apagável com `tsc --noEmit`;
   - catálogos i18next (`locales/pt-BR`, `locales/en`) e o teste de chaves nos dois idiomas;
   - CI em matriz 3 SOs × Node 24/26;
