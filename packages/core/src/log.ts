@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { transaction, type Database } from './db.ts';
 import { DOMAIN_SCHEMA, DOMAIN_PROJECTIONS, projectDomain, validateDomainEvent } from './domain.ts';
 import { POLICY_SCHEMA, POLICY_PROJECTIONS, projectPolicy, validatePolicyEvent } from './policy.ts';
+import { BUDGET_SCHEMA, BUDGET_PROJECTIONS, projectBudget, validateBudgetEvent } from './budget.ts';
 
 export interface LogEvent {
   id: number;
@@ -53,6 +54,7 @@ export class EventLog {
     db.exec(SCHEMA);
     db.exec(DOMAIN_SCHEMA);
     db.exec(POLICY_SCHEMA);
+    db.exec(BUDGET_SCHEMA);
   }
 
   append(session: string, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
@@ -69,6 +71,7 @@ export class EventLog {
   insertRaw(session: string, seq: number, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
     validateDomainEvent(kind, (payload ?? {}) as Record<string, unknown>);
     validatePolicyEvent(kind, (payload ?? {}) as Record<string, unknown>);
+    validateBudgetEvent(kind, (payload ?? {}) as Record<string, unknown>);
     const body = JSON.stringify(payload ?? null);
     const res = this.db.prepare('INSERT INTO events (session, seq, kind, payload, ts) VALUES (?, ?, ?, ?, ?)').run(session, seq, kind, body, ts);
     this.project({ session, seq, kind, ts, payload });
@@ -82,6 +85,7 @@ export class EventLog {
     `).run(e.session, e.ts, e.seq, e.kind);
     projectDomain(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>);
     projectPolicy(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>);
+    projectBudget(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>, e.ts);
   }
 
   events(session: string): LogEvent[] {
@@ -99,7 +103,7 @@ export class EventLog {
   }
 
   dropProjections(): void {
-    for (const t of ['proj_sessions', ...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS]) this.db.exec(`DELETE FROM ${t}`);
+    for (const t of ['proj_sessions', ...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS, ...BUDGET_PROJECTIONS]) this.db.exec(`DELETE FROM ${t}`);
   }
 
   rebuildProjections(): void {
@@ -111,7 +115,7 @@ export class EventLog {
   }
 
   projectionHash(): string {
-    const domain = [...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS].map((t) => this.db.prepare(`SELECT * FROM ${t} ORDER BY rowid`).all());
+    const domain = [...DOMAIN_PROJECTIONS, ...POLICY_PROJECTIONS, ...BUDGET_PROJECTIONS].map((t) => this.db.prepare(`SELECT * FROM ${t} ORDER BY rowid`).all());
     return createHash('sha256').update(JSON.stringify([this.sessions(), domain])).digest('hex');
   }
 }

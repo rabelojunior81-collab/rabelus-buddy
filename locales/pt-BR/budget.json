@@ -1,0 +1,8 @@
+{
+  "budget": {
+    "header": "Orçamento por janela (consumo / teto):",
+    "item": "  {{id}}  US$ {{used}} / {{capacity}}  (últimas {{hours}} h)",
+    "itemNoCap": "  {{id}}  US$ {{used}}  (teto informado pelo provedor; últimas {{hours}} h)",
+    "exhausted": "  {{id}}  esgotada até {{until}}"
+  }
+}

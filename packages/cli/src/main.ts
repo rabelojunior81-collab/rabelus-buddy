@@ -99,6 +99,23 @@ async function resolve(decision: 'approve' | 'deny', id: string | undefined, env
   return 1;
 }
 
+interface WindowStatus { id: string; capacity: number | null; periodHours: number; used: number; exhaustedUntil: string | null }
+
+async function budget(env: NodeJS.ProcessEnv, io: Io, i18n: I18n): Promise<number> {
+  const { t } = i18n;
+  const r = await owner(env, io, i18n, 'budget.status', {});
+  if (!r.ok) return 1;
+  const lines = (r.value as WindowStatus[]).map((w) => {
+    if (w.exhaustedUntil) return t('budget.exhausted', { id: w.id, until: w.exhaustedUntil });
+    const used = w.used.toFixed(4);
+    return w.capacity === null
+      ? t('budget.itemNoCap', { id: w.id, used, hours: w.periodHours })
+      : t('budget.item', { id: w.id, used, capacity: w.capacity.toFixed(2), hours: w.periodHours });
+  });
+  io.out([t('budget.header'), ...lines].join('\n'));
+  return 0;
+}
+
 export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promise<number> {
   // O idioma vem antes de tudo, para que até o erro de opção saia no idioma pedido.
   const langIdx = argv.indexOf('--lang');
@@ -134,6 +151,7 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promi
   }
   if (command === 'daemon') return daemon(positionals[1], env, io, i18n);
   if (command === 'approvals') return approvals(env, io, i18n);
+  if (command === 'budget') return budget(env, io, i18n);
   if (command === 'approve' || command === 'deny') return resolve(command, positionals[1], env, io, i18n);
   io.err(t('cli.unknownCommand', { command }));
   return 1;

@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:21:51-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:28:43-03:00
 
 ## Objetivo
 
@@ -36,7 +36,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - escrita com compare-and-set pelo hash da leitura;
   - `run_command` sempre `ask`.
   - Critérios: 7–13.
-- [ ] **M0.5 Orçamento atômico**:
+- [x] **M0.5 Orçamento atômico** — branch `feat/m0-5-orcamento`, critérios 14–16 verdes (a troca de provedor ao esgotar a janela, parte do 16, entra com os provedores na M0.6):
   - reserva e liquidação em transação;
   - teto mensal;
   - tipo "janela" no modelo;

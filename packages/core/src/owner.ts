@@ -3,12 +3,21 @@
 // endpoint: se alguém responde nele, já existe um dono.
 
 import net from 'node:net';
-import { existsSync, mkdirSync, unlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs';
+import { join } from 'node:path';
 import { call } from '@rabelus-buddy/client/ipc';
 import { openDatabase } from './db.ts';
 import { EventLog } from './log.ts';
 import { Domain, DomainError } from './domain.ts';
+import { Budget, defaultWindows, type WindowDef } from './budget.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
+
+// Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
+function loadWindows(home: string): WindowDef[] {
+  const file = join(home, 'budget.json');
+  if (!existsSync(file)) return defaultWindows();
+  return (JSON.parse(readFileSync(file, 'utf8')) as { windows: WindowDef[] }).windows;
+}
 
 export class AlreadyRunningError extends Error {
   readonly endpoint: string;
@@ -46,6 +55,7 @@ export async function startOwner(home: string): Promise<Owner> {
   const log = new EventLog(openDatabase(dbPathFor(home)));
   const domain = new Domain(log);
   const recovered = domain.recover();
+  const budget = new Budget(log, { windows: loadWindows(home) });
   const startedAt = new Date().toISOString();
   let resolveClosed: () => void = () => {};
   const closed = new Promise<void>((r) => { resolveClosed = r; });
@@ -73,6 +83,11 @@ export async function startOwner(home: string): Promise<Owner> {
     'approval.resolve': (p) => domain.resolveApproval(String(p.id), p.decision === 'approve' ? 'approve' : 'deny'),
     'approval.get': (p) => domain.getApproval(String(p.id)),
     'approval.list': () => domain.pendingApprovals(),
+    'budget.reserve': (p) => ({ reservation: budget.reserve(String(p.session), { provider: String(p.provider), model: String(p.model), estimateUsd: Number(p.estimateUsd) }) }),
+    'budget.settle': (p) => ({ actual: budget.settle(String(p.reservation), (p.usage ?? null) as never, p.actualUsd === undefined ? undefined : Number(p.actualUsd)) }),
+    'budget.release': (p) => { budget.release(String(p.reservation), String(p.reason ?? '')); return { released: true }; },
+    'budget.exhausted': (p) => { budget.markExhausted(String(p.provider), p.model ? String(p.model) : null, Number(p.until), String(p.reason ?? '')); return { ok: true }; },
+    'budget.status': () => budget.status(),
   };
 
   const sockets = new Set<net.Socket>();

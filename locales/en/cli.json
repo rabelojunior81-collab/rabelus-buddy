@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": "rabelus-buddy {{version}}",
-    "help": "Rabelus Buddy — a governed AI agent harness.\n\nUsage: rbuddy <command> [options]   (also: rabelus-buddy)\n\nCommands:\n  daemon start     start the core owner (sole writer of the log)\n  daemon status    show the running owner\n  daemon stop      stop the owner\n  approvals        list pending approvals\n  approve <id>     approve\n  deny <id>        deny\n\nOptions:\n  --help           show this help\n  --version        show the version\n  --lang <lang>    pt-BR or en (default: pt-BR; also via the RBUDDY_LANG variable)\n\nThe other commands (run, status, budget, log, resume, login) arrive in the next M0 steps.",
+    "help": "Rabelus Buddy — a governed AI agent harness.\n\nUsage: rbuddy <command> [options]   (also: rabelus-buddy)\n\nCommands:\n  daemon start     start the core owner (sole writer of the log)\n  daemon status    show the running owner\n  daemon stop      stop the owner\n  approvals        list pending approvals\n  approve <id>     approve\n  deny <id>        deny\n  budget           show usage of each budget window\n\nOptions:\n  --help           show this help\n  --version        show the version\n  --lang <lang>    pt-BR or en (default: pt-BR; also via the RBUDDY_LANG variable)\n\nThe other commands (run, status, log, resume, login) arrive in the next M0 steps.",
     "unknownCommand": "Unknown command: {{command}}. See: rbuddy --help",
     "unknownOption": "Unknown option: {{option}}. See: rbuddy --help",
     "approvalsPending_one": "{{count}} pending approval",

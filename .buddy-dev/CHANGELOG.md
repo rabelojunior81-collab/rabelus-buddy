@@ -178,3 +178,7 @@ M0.3: execuções, efeitos com identidade e aprovações como eventos; retomada 
 ### #0041 · 2026-10-16T012153-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.4: motor de política com auditoria em eventos, FsTools com compare-and-set e CommandTool só com aprovação explícita de uma vez; critérios 7–13 e 20; rebuild das projeções cobre a política (teste novo).
+
+### #0042 · 2026-10-16T012845-0300 · claude-code-vs-code-fe93fb · ferramenta
+
+M0.5: orçamento atômico por janela (Go por modelo 5h/semana/mês, ChatGPT pelo provedor, OpenRouter US$20/mês), reserva → liquidação pelo usage ou liberação, esgotamento por erro do provedor, rbuddy budget; critérios 14–16.
