@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-16T023036-0300-claude-code-vs-code-fe93fb-0043",
+  "ts": "2026-10-16T02:30:36-03:00",
+  "utc": "2026-10-16T05:30:36.148Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 43,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m0-7b-cli",
+  "type": "erro",
+  "summary": "gitleaks reprovou o PR #32: canário literal com cara de chave (sk-canario-…) no teste do login por chave. Corrigido sem reescrever histórico: canário gerado na hora e impressão digital exata no .gitleaksignore com justificativa; AGENTS §3 passa a dizer como se trata falso positivo",
+  "refs": [],
+  "data": {}
+}

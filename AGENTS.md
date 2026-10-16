@@ -61,7 +61,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Teste reprovado se corrige no código, nunca afrouxando o teste | `bd test-guard` no `bd post` e na CI: a suíte não perde testes nem asserções; sem `skip`/`todo`/`only` |
 | Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
 | Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
-| Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`) |
+| Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`); falso positivo só por impressão digital exata no `.gitleaksignore`, com justificativa (nunca por regra ou arquivo); canário de teste gerado na hora |
 
 ## 4. Trabalho em paralelo
 
