@@ -39,7 +39,7 @@ test('pt-BR e en têm os mesmos arquivos e as mesmas chaves', () => {
 test('toda chave usada no código existe nos dois idiomas', () => {
   const used = new Set<string>();
   for (const f of sources(join(ROOT, 'packages'))) {
-    for (const m of readFileSync(f, 'utf8').matchAll(/\bt\(\s*'([\w.:-]+)'/g)) used.add(m[1]);
+    for (const m of readFileSync(f, 'utf8').matchAll(/\bt\(\s*'([\w.:-]+)'/g)) if (m[1]) used.add(m[1]);
   }
   assert.ok(used.size > 0, 'nenhuma chave de catálogo usada no código');
   for (const lang of SUPPORTED_LANGS) {

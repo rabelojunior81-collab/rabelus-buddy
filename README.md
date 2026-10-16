@@ -9,7 +9,7 @@
 
 </div>
 
-> **Estado:** Fase 0 ("Organizar a Casa") concluída em 2026-10-15. Em preparação: a SPEC do **M0 — Núcleo governado** ([roadmap](./docs/50-planos/ROADMAP.md)). Ainda não há produto executável; existem a pesquisa, a governança de desenvolvimento e as ferramentas que a fazem valer.
+> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)). A CLI `rbuddy` já responde a `--help`, `--version` e `--lang`; os comandos do núcleo chegam nas próximas sub-fases.
 
 ## O que é
 
@@ -41,6 +41,8 @@ Método completo: [`docs/30-governanca/METODO.md`](./docs/30-governanca/METODO.m
 | `docs/40-specs/` · `docs/50-planos/` · `docs/60-decisoes/` | SPECs, roadmap e planos, ADRs |
 | `docs/registros/` | Registros datados (auditorias, incidentes, evidências) |
 | `archive/` | Arquivo morto: entra com lápide, nunca sai |
+| `packages/` | Código do produto em TypeScript sem build: `client` (i18n e cliente compartilhado), `cli` (`rabelus-buddy`/`rbuddy`); `core` nasce na M0.2 |
+| `locales/` | Catálogos de tradução pt-BR e en |
 | `scripts/` | Ferramentas `bd` (relógio, nomes, barramento, arquivo, guarda, gate do Blog, superfícies, dependências, trava de testes, merge e prune, validações) |
 
 ## Contribuir

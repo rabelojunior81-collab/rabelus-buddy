@@ -1,0 +1,10 @@
+{
+  "cli": {
+    "version": "rabelus-buddy {{version}}",
+    "help": "Rabelus Buddy — a governed AI agent harness.\n\nUsage: rbuddy <command> [options]   (also: rabelus-buddy)\n\nOptions:\n  --help           show this help\n  --version        show the version\n  --lang <lang>    pt-BR or en (default: pt-BR; also via the RBUDDY_LANG variable)\n\nThe core commands (run, status, approvals, budget, log, resume, login, daemon) arrive in the next M0 steps.",
+    "unknownCommand": "Unknown command: {{command}}. See: rbuddy --help",
+    "unknownOption": "Unknown option: {{option}}. See: rbuddy --help",
+    "approvalsPending_one": "{{count}} pending approval",
+    "approvalsPending_other": "{{count}} pending approvals"
+  }
+}

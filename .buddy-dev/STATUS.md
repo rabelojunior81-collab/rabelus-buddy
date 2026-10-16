@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-16T00:26:30-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-6265a4
+**Atualizado em:** 2026-10-16T00:35:50-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-6265a4
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `7abbc0f` (Merge #21: ADR 0016), CI verde |
-| PRs mergeados | #1–#21, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `d56dc5c` (Merge #22: merge governado, prune, validações), CI verde |
+| PRs mergeados | #1–#22, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `9671988`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
@@ -26,7 +26,7 @@
 | Item | Valor |
 |---|---|
 | Host | Windows 11 Pro 10.0.26300, fuso E. South America Standard Time |
-| Node | v26.11.1 local (piso do projeto: >=24); publicadas em 2026-10-14: v26.12.0 (Current) e v24.22.0 (LTS) — [ficha](../docs/20-conhecimento/node-runtime.md) |
+| Node | v26.11.1 local (piso do projeto: >=24.12, type stripping estável); publicadas em 2026-10-14: v26.12.0 (Current) e v24.22.0 (LTS) — [ficha](../docs/20-conhecimento/node-runtime.md) |
 | git | 2.56.0.windows.2 |
 | gh | 2.102.0, conta `rabelojunior81-collab` |
 | Python | 3.12.10 (não usado pelas ferramentas) |

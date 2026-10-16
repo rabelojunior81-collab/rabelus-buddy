@@ -17,7 +17,7 @@ Obrigado pelo interesse. O Rabelus Buddy é desenvolvido por humanos e agentes d
 
 ## Requisitos
 
-- Node.js **≥ 24** (LTS). As ferramentas não têm dependências externas.
+- Node.js **≥ 24.12** (LTS), que executa TypeScript sem build. Depois de clonar: `npm ci`. Antes do PR: `npm test` e `npm run typecheck`.
 - Git com suporte a worktrees (para trabalho em paralelo).
 
 ## Nomes de arquivos
