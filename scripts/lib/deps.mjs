@@ -76,6 +76,14 @@ export function checkDeps(root, { now = new Date() } = {}) {
     }
   }
   if (installed && !existsSync(join(root, 'package-lock.json'))) problems.push('há dependências instaladas sem package-lock.json versionado');
+
+  // Scripts de instalação ficam bloqueados (padrão do npm); liberar exige aprovação no registro.
+  const rootPkg = readJson(join(root, 'package.json'));
+  for (const [name, allowed] of Object.entries(rootPkg.allowScripts ?? {})) {
+    if (allowed === true && byName.get(name)?.installScripts !== 'aprovado') {
+      problems.push(`package.json: ${name} com script de instalação liberado sem aprovação no registro (installScripts: "aprovado")`);
+    }
+  }
   return problems;
 }
 

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-16T013716-0300-claude-code-vs-code-fe93fb-0027",
+  "ts": "2026-10-16T01:37:16-03:00",
+  "utc": "2026-10-16T04:37:16.752Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 27,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m0-6-provedores",
+  "type": "pesquisa",
+  "summary": "Sonda real: Go 37, Ollama 20, OpenRouter 465 modelos; Node recusava cadeia GlobalSign do OpenRouter, resolvido somando CAs do sistema; @google/genai preinstall no-op negado; npm audit 0 vulnerabilidades; anthropic sdk 0.135.0",
+  "refs": [],
+  "data": {}
+}

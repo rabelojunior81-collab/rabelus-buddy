@@ -1,6 +1,13 @@
 {
   "reverifyDays": 30,
-  "licenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "0BSD"],
+  "licenses": [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "0BSD"
+  ],
   "dependencies": [
     {
       "name": "openai",
@@ -11,19 +18,19 @@
       "purpose": "SDK das rotas OpenAI: Responses e Chat Completions do OpenCode Go; Sign in with ChatGPT; API paga de reserva",
       "phase": "M0",
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
-      "verifiedAt": "2026-10-15",
+      "verifiedAt": "2026-10-16",
       "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
     },
     {
       "name": "@anthropic-ai/sdk",
-      "version": "0.134.0",
+      "version": "0.135.0",
       "license": "MIT",
       "kind": "runtime",
       "status": "aprovada",
       "purpose": "SDK da rota Messages (Anthropic) do OpenCode Go; API paga de reserva",
       "phase": "M0",
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
-      "verifiedAt": "2026-10-15",
+      "verifiedAt": "2026-10-16",
       "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
     },
     {
@@ -35,7 +42,7 @@
       "purpose": "SDK da rota Google do OpenCode Go; API paga de reserva",
       "phase": "M0",
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
-      "verifiedAt": "2026-10-15",
+      "verifiedAt": "2026-10-16",
       "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
     },
     {

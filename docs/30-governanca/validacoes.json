@@ -226,6 +226,18 @@
       "origem": "Pai, 2026-10-15"
     },
     {
+      "id": "vulnerabilidades",
+      "descricao": "Nenhuma vulnerabilidade alta ou crítica na árvore de dependências (inclui transitivas)",
+      "quem": "maquina",
+      "onde": [
+        "CI"
+      ],
+      "mecanismo": {
+        "ci": "npm audit --audit-level=high"
+      },
+      "origem": "Protocolo de dependências (Pai, 2026-10-15)"
+    },
+    {
       "id": "segredos",
       "descricao": "Nenhum segredo no histórico",
       "quem": "maquina",

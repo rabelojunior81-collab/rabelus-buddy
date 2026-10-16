@@ -9,6 +9,9 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@rabelus-buddy/client": "0.0.0"
+    "@rabelus-buddy/client": "0.0.0",
+    "openai": "7.34.0",
+    "@anthropic-ai/sdk": "0.135.0",
+    "@google/genai": "2.30.0"
   }
 }
