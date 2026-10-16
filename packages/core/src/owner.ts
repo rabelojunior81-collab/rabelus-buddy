@@ -10,6 +10,11 @@ import { openDatabase } from './db.ts';
 import { EventLog } from './log.ts';
 import { Domain, DomainError } from './domain.ts';
 import { Budget, defaultWindows, type WindowDef } from './budget.ts';
+import { Policy, type Scope, type Tool } from './policy.ts';
+import { FsTools } from './tools/fs.ts';
+import { CommandTool } from './tools/command.ts';
+import { Agent, type AgentResult } from './agent.ts';
+import { buildRoutes, loadConfig } from './config.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
@@ -66,7 +71,52 @@ export async function startOwner(home: string): Promise<Owner> {
     for (const s of sockets) s.destroy();
   });
 
+  // Aprovação pelo IPC: o agente espera até alguém (CLI, outro terminal) resolver.
+  const awaitApproval = async (a: { id: string }): Promise<'approve' | 'deny'> => {
+    for (;;) {
+      const st = domain.getApproval(a.id).state;
+      if (st !== 'pending') return st === 'approved' ? 'approve' : 'deny';
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  };
+  // Um agente por pedido: workspace e credenciais podem mudar entre tarefas.
+  const agentFor = (p: Record<string, unknown>): Agent => {
+    const workspace = String(p.workspace ?? '');
+    if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
+    const policy = new Policy(log, { workspace });
+    return new Agent({
+      log, domain, policy, budget,
+      fs: new FsTools(policy, { workspace }),
+      cmd: new CommandTool(policy, { workspace }),
+      routes: buildRoutes(home, loadConfig(home)),
+      interactive: p.interactive === true,
+      awaitApproval,
+    });
+  };
+  // Falha inesperada no laço: a execução para com motivo, sem mensagem de erro (pode carregar dados).
+  const watch = (session: string, run: string, done: Promise<AgentResult>): void => {
+    done.catch((e: unknown) => {
+      log.append(session, 'run.error', { run, error: (e as Error)?.name ?? 'Error' });
+      if (domain.getRun(run).state === 'running') domain.stopRun(run, 'internalError');
+    });
+  };
+
   const methods: Record<string, Handler> = {
+    'agent.run': (p) => {
+      const session = String(p.session);
+      const { run, done } = agentFor(p).begin(session, String(p.task));
+      watch(session, run, done);
+      return { run };
+    },
+    'agent.resume': (p) => {
+      const run = String(p.run);
+      const r = domain.getRun(run);
+      if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(-32004, `execução ${run} está ${r.state}: só se retoma interrompida ou parada`, { id: run, state: r.state });
+      watch(r.session, run, agentFor(p).resume(r.session, run));
+      return { run };
+    },
+    'run.list': () => domain.listRuns(),
+    'policy.grant': (p) => ({ grant: new Policy(log, { workspace: home }).grant(String(p.scope) as Scope, { tool: String(p.tool) as Tool, pattern: String(p.pattern) }, { session: String(p.session) }) }),
     'daemon.status': () => ({ pid: process.pid, endpoint, startedAt, sessions: log.sessions().length, events: log.totalEvents(), recovered }),
     'daemon.stop': () => { setImmediate(() => { void close(); }); return { stopping: true }; },
     'event.append': (p) => log.append(String(p.session), String(p.kind), p.payload),

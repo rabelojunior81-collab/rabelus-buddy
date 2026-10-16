@@ -152,6 +152,10 @@ export class Domain {
     return this.getRun(id);
   }
 
+  listRuns(): Run[] {
+    return this.db.prepare('SELECT * FROM proj_runs ORDER BY rowid').all() as unknown as Run[];
+  }
+
   // Efeitos desconhecidos de uma execução, na ordem em que nasceram.
   unknownEffects(run: string): Effect[] {
     return this.db.prepare("SELECT * FROM proj_effects WHERE run = ? AND state = 'unknown' ORDER BY rowid").all(run) as unknown as Effect[];

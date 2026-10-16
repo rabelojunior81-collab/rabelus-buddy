@@ -15,6 +15,7 @@ import type { CommandTool } from './tools/command.ts';
 import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
+export const SYSTEM_PROMPT = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.';
 // Modelos de raciocínio gastam saída antes do texto: teto generoso (registro 2026-10-16 da sonda real).
 export const DEFAULT_MAX_OUTPUT = 16_000;
 const DEFAULT_MAX_STEPS = 50;
@@ -108,12 +109,17 @@ export class Agent {
       .map((e) => (e.payload as { message: ChatMessage }).message);
   }
 
-  async run(session: string, task: string, { system = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.' }: { system?: string } = {}): Promise<AgentResult> {
+  run(session: string, task: string, opts: { system?: string } = {}): Promise<AgentResult> {
+    return this.begin(session, task, opts).done;
+  }
+
+  // Cria a execução já (o id volta na hora para quem chamou) e segue o laço em segundo plano.
+  begin(session: string, task: string, { system = SYSTEM_PROMPT }: { system?: string } = {}): { run: string; done: Promise<AgentResult> } {
     const run = this.o.domain.startRun(session, task).id;
     const messages: ChatMessage[] = [];
     this.push(session, run, messages, { role: 'system', content: system });
     this.push(session, run, messages, { role: 'user', content: task });
-    return this.loop(session, run, messages, 1);
+    return { run, done: this.loop(session, run, messages, 1) };
   }
 
   // Retomada depois de queda ou parada: reconcilia os efeitos desconhecidos, completa as ferramentas
