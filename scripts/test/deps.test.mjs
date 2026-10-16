@@ -97,3 +97,12 @@ test('pacote interno do monorepo: aceito só com a versão exata do workspace', 
   const wrong = base({ workspaces: ['packages/*'] }, [entry()], { ...files, 'packages/cli/package.json': { name: '@x/cli', dependencies: { '@x/client': '^0.1.0' } } });
   assert.match(checkDeps(wrong, { now: NOW }).join('\n'), /@x\/client.*versão exata do workspace \(0\.1\.0\)/);
 });
+
+test('script de instalação liberado sem aprovação no registro: reprova; negado: aprova', () => {
+  const liberado = base({ dependencies: { openai: '7.34.0' }, allowScripts: { openai: true } }, [entry()], { 'package-lock.json': '{}' });
+  assert.match(checkDeps(liberado, { now: NOW }).join('\n'), /openai.*script de instalação liberado sem aprovação/);
+  const aprovado = base({ dependencies: { openai: '7.34.0' }, allowScripts: { openai: true } }, [entry({ installScripts: 'aprovado' })], { 'package-lock.json': '{}' });
+  assert.deepEqual(checkDeps(aprovado, { now: NOW }), []);
+  const negado = base({ dependencies: { openai: '7.34.0' }, allowScripts: { openai: false } }, [entry()], { 'package-lock.json': '{}' });
+  assert.deepEqual(checkDeps(negado, { now: NOW }), []);
+});

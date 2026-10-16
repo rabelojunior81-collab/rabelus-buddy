@@ -1,0 +1,23 @@
+// Sonda os endpoints de listagem de modelos (sem gerar tokens). Imprime status e contagem, nunca as chaves.
+// Uso: node sonda-modelos.mjs <arquivo .env.local>
+import { readFileSync } from 'node:fs';
+import tls from 'node:tls';
+tls.setDefaultCACertificates([...tls.getCACertificates('default'), ...tls.getCACertificates('system')]);
+
+const env = Object.fromEntries(readFileSync(process.argv[2], 'utf8').split(/\r?\n/).filter((l) => l.includes('=')).map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]));
+const UA = 'rabelus-buddy/0.0.0 (sonda de modelos)';
+const probes = [
+  { name: 'opencode-go', url: 'https://opencode.ai/inference/go/v1/models', key: env.OPENCODE_GO_API_KEY, want: ['gpt-6-luna', 'claude-haiku-5-5', 'kimi-k3'] },
+  { name: 'ollama-cloud', url: 'https://ollama.com/v1/models', key: env.OLLAMA_CLOUD_API_KEY, want: [] },
+  { name: 'openrouter', url: 'https://openrouter.ai/api/v1/models', key: env.OPENROUTER_API_KEY, want: [] },
+];
+for (const p of probes) {
+  try {
+    const res = await fetch(p.url, { headers: { Authorization: `Bearer ${p.key}`, 'User-Agent': UA } });
+    const body = await res.json().catch(() => ({}));
+    const ids = (body.data ?? body.models ?? []).map((m) => m.id ?? m.name ?? m.slug).filter(Boolean);
+    console.log(JSON.stringify({ provedor: p.name, status: res.status, modelos: ids.length, exemplos: ids.slice(0, 6), esperadosPresentes: p.want.filter((w) => ids.includes(w)) }));
+  } catch (e) {
+    console.log(JSON.stringify({ provedor: p.name, erro: e.message }));
+  }
+}

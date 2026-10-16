@@ -1,6 +1,6 @@
 # Assinaturas de agentes: ChatGPT (Codex) e OpenCode Go
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T17:18:32-03:00 · **Estado:** vigente · **Reverificar:** a cada marco (listas de modelos e limites mudam sem aviso)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-16T01:36:40-03:00 · **Estado:** vigente · **Reverificar:** a cada marco (listas de modelos e limites mudam sem aviso)
 
 ## O que importa para o buddy
 
@@ -27,6 +27,9 @@ Por decisão do Pai ([ADR 0008](../60-decisoes/0008-orcamento-por-assinaturas.md
 | SIWC, limitações da prévia: proibidos `max_output_tokens`, `metadata`, `temperature`, `top_p`, `truncation`, `user`, `background`, `conversation`, `previous_response_id` (HTTP), item `system`; ferramentas `function`/`custom` aceitas; sem image generation, file search, code interpreter, MCP hospedado, `tool_search` | …/siwc/token-sharing-open-source/preview-limitations (tier 0) | 2026-10-15 |
 | O texto que o Pai trouxe (gerado por outro modelo) acertou o fluxo e o `dynamic_agent_client`, mas **errou o escopo**: não é `with.chatgpt.tokens.use.direct`, é `chatgpt.tokens.use.direct` (com `offline_access resource.invoke`) | comparação com a fonte oficial acima | 2026-10-15 |
 | **Ollama Cloud:** API em `https://ollama.com/api` (`/api/chat`, `/api/tags`), `Authorization: Bearer $OLLAMA_API_KEY`; clientes OpenAI e Anthropic aceitos num "subset of the original API"; "We do not use them to train models"; preços, limites e retenção não estão na página (ver ollama.com/pricing e /privacy) | https://docs.ollama.com/cloud (tier 0) | 2026-10-15 |
+| **Ollama Cloud, rota compatível:** base `https://ollama.com/v1`; `/v1/chat/completions`, `/v1/responses` (sem estado; "Added in Ollama v0.13.3"), `/v1/models`; streaming com `stream_options.include_usage`; sem `tool_choice`, `logprobs`, `user`, `n`; a página não cita `/v1/messages` | https://docs.ollama.com/api/openai-compatibility (tier 0) | 2026-10-16 |
+| **Ollama Cloud, planos:** Free (créditos), Pro US$ 20/mês com US$ 60 de créditos, Max US$ 100/mês com US$ 300; uso por tokens ao preço de cada modelo; créditos renovam no dia da assinatura; concorrência 1/3/10; "Prompt or response data is never logged or trained on" | https://ollama.com/pricing (tier 0) | 2026-10-16 |
+| **Sonda real (sem gerar tokens):** Go 200 com 37 modelos (inclui `gpt-6-luna`, `claude-haiku-5-5`, `kimi-k3`); Ollama Cloud 200 com 20; OpenRouter 200 com 465 | [registro](../registros/2026-10-16T013440-0300-sonda-dos-provedores-reais/README.md) | 2026-10-16 |
 | **OpenRouter:** base `https://openrouter.ai/api/v1`, `Authorization: Bearer <OPENROUTER_API_KEY>`, "drop-in replacement" do SDK da OpenAI (`baseURL`); cabeçalhos opcionais `HTTP-Referer` e `X-OpenRouter-Title`; política de dados não está na página de início | https://openrouter.ai/docs/quickstart (tier 0) | 2026-10-15 |
 | `@opencode-ai/sdk` 1.19.0 (MIT): "Type-safe JS client for opencode server"; controla sessões de agente do OpenCode (`createOpencode`, `session.prompt`), não chama modelos diretamente | https://opencode.ai/docs/sdk/ (tier 0); registro npm (tier 1) | 2026-10-15 |
 | Privacidade no Go: Gemini 4 Argon Contributor e Muse Spark podem usar prompts e respostas para treino; não são ZDR | idem | 2026-10-14 |
@@ -52,3 +55,4 @@ Por decisão do Pai ([ADR 0008](../60-decisoes/0008-orcamento-por-assinaturas.md
 - 2026-10-14T12:05:00-03:00 · buddy-dev (claude-code-671f81) · criação da ficha
 - 2026-10-15T04:50:26-03:00 · buddy-dev (claude-code-vs-code-3a6e29) · endpoints oficiais do Go, Sign in with ChatGPT (fluxo de código aberto e limitações), SDK do OpenCode; pista externa conferida e corrigida
 - 2026-10-15T17:18:32-03:00 · buddy-dev (claude-code-vs-code-7ebb05) · Ollama Cloud e OpenRouter (ADR 0015)
+- 2026-10-16T01:36:40-03:00 · buddy-dev (claude-code-vs-code-fe93fb) · Ollama Cloud (rota compatível, planos, privacidade) e sonda real dos três provedores

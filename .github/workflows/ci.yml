@@ -27,6 +27,9 @@ jobs:
       - name: Dependências exatas do lockfile
         run: npm ci --no-audit --no-fund
 
+      - name: Vulnerabilidades na árvore inteira (npm audit, alta ou crítica reprova)
+        run: npm audit --audit-level=high
+
       - name: Testes
         run: npm test
 

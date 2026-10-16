@@ -1,0 +1,27 @@
+// Chamada mínima e real por rota (M0.6). Imprime texto, usage e erro; nunca as chaves.
+// Uso: node workspace/smoke-provedores.ts   (lê .buddy-dev/.env.local)
+import { readFileSync } from 'node:fs';
+import { createGoProvider, createOllamaProvider, createOpenRouterProvider } from '../packages/core/src/providers/index.ts';
+import type { ModelRequest, Provider } from '../packages/core/src/providers/types.ts';
+
+const env = Object.fromEntries(readFileSync('.buddy-dev/.env.local', 'utf8').split(/\r?\n/).filter((l) => l.includes('=')).map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]));
+const req = (model: string): ModelRequest => ({ model, messages: [{ role: 'system', content: 'Responda apenas com a palavra ok.' }, { role: 'user', content: 'Diga ok.' }], maxOutputTokens: Number(process.env.MAX_OUT ?? 64) });
+
+const go = createGoProvider({ apiKey: env.OPENCODE_GO_API_KEY ?? '' });
+const cases: [string, Provider, string][] = [
+  ['go/responses', go, 'gpt-6-luna'],
+  ['go/chat', go, 'kimi-k3'],
+  ['go/messages', go, 'claude-haiku-5-5'],
+  ['ollama-cloud', createOllamaProvider({ apiKey: env.OLLAMA_CLOUD_API_KEY ?? '' }), process.argv[2] ?? 'gpt-oss:20b'],
+  ['openrouter (:free)', createOpenRouterProvider({ apiKey: env.OPENROUTER_API_KEY ?? '' }), process.argv[3] ?? 'nvidia/nemotron-3.5-super-vl:free'],
+];
+for (const [name, p, model] of cases) {
+  const t0 = Date.now();
+  try {
+    const r = await p.call(req(model), { session: 'smoke-m0-6' });
+    console.log(JSON.stringify({ rota: name, modelo: model, ms: Date.now() - t0, texto: r.text.slice(0, 40), finish: r.finish, usage: r.usage }));
+  } catch (e) {
+    const err = e as { status?: number; message?: string; constructor: { name: string } };
+    console.log(JSON.stringify({ rota: name, modelo: model, ms: Date.now() - t0, erro: err.constructor.name, status: err.status, mensagem: String(err.message).slice(0, 160) }));
+  }
+}

@@ -1,6 +1,6 @@
 # Bibliotecas candidatas do núcleo (CLI, TUI, i18n, provedor)
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-15T04:50:26-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-16T01:42:10-03:00 · **Estado:** vigente (reverificar versões no início da implementação do M0)
 
 ## O que importa para o buddy
 
@@ -22,7 +22,7 @@
 | `messageformat` (MF2) | 4.1.0 | Apache-2.0 | ^20.19 ‖ ^22.12 ‖ ≥ 24 | registro npm (tier 1) | 2026-10-15 |
 | `zod` | 4.6.7 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `openai` | 7.34.0 | Apache-2.0 | ≥ 22.0.0 | registro npm (tier 1) | 2026-10-15 |
-| `@anthropic-ai/sdk` | 0.134.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
+| `@anthropic-ai/sdk` | 0.135.0 (era 0.134.0 em 2026-10-15) | MIT | — | registro npm (tier 1) | 2026-10-16 |
 | `@google/genai` | 2.30.0 | Apache-2.0 | ≥ 20.0.0 | registro npm (tier 1) | 2026-10-15 |
 | `@opencode-ai/sdk` (M1: cliente do servidor do OpenCode) | 1.19.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `typescript` (só desenvolvimento: `tsc --noEmit`) | 7.0.2 | Apache-2.0 | ≥ 16.20.0 | registro npm (tier 1) | 2026-10-15 |
@@ -38,6 +38,8 @@
 | Fato | Fonte | Verificado em |
 |---|---|---|
 | Responses API, `ResponseUsage`: `input_tokens`, `input_tokens_details.cached_tokens`, `input_tokens_details.cache_write_tokens`, `output_tokens`, `output_tokens_details.reasoning_tokens`, `total_tokens` | `openai@7.34.0`, `resources/responses/responses.d.ts` (https://unpkg.com/openai@7.34.0/resources/responses/responses.d.ts, tier 1) | 2026-10-15 |
+| Normalização do usage por rota (tipos dos SDKs instalados): Chat Completions `prompt_tokens` (inclui `prompt_tokens_details.cached_tokens`) e `completion_tokens`; Anthropic "Total input tokens … is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`"; Gemini `promptTokenCount`, `cachedContentTokenCount`, saída = `candidatesTokenCount` + `thoughtsTokenCount` | `openai@7.34.0`, `@anthropic-ai/sdk@0.135.0`, `@google/genai@2.30.0` (`*.d.ts`, tier 1) | 2026-10-16 |
+| Novas tentativas: `maxRetries` (OpenAI e Anthropic) e `httpOptions.retryOptions.attempts` (Google); o núcleo usa 0/1 tentativa, porque a repetição é decisão dele (efeitos com identidade) | idem | 2026-10-16 |
 | `max_output_tokens`: "An upper bound for the number of tokens that can be generated for a response, including visible output tokens and reasoning tokens" | idem | 2026-10-15 |
 | `store`: "Defaults to true when omitted. If set to true, response data will be stored for at least 30 days" | idem | 2026-10-15 |
 
@@ -62,3 +64,4 @@ Para i18n, o ponto não é a CLI sozinha, e sim o **catálogo compartilhado**. O
 - 2026-10-15T04:27:18-03:00 · buddy-dev (claude-code-vs-code-438d04) · criação da ficha
 - 2026-10-15T04:35:12-03:00 · buddy-dev (claude-code-vs-code-5cfc7b) · campos de `usage`, `max_output_tokens` e `store` verificados nos tipos do SDK 7.34.0
 - 2026-10-15T04:50:26-03:00 · buddy-dev (claude-code-vs-code-3a6e29) · SDKs do Google e do OpenCode
+- 2026-10-16T01:42:10-03:00 · buddy-dev (claude-code-vs-code-fe93fb) · normalização de usage e novas tentativas nos três SDKs

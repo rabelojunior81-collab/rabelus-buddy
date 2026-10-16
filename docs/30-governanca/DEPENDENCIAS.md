@@ -29,6 +29,7 @@ Toda dependência, de produção ou de desenvolvimento, em qualquer `package.jso
 6. Entrada sem algum campo, ou com ficha inexistente.
 7. `verifiedAt` mais velho que `reverifyDays` (30 dias): a dependência precisa ser reverificada.
 8. Dependências instaladas sem `package-lock.json` versionado.
+9. Script de instalação liberado (`allowScripts`) sem `installScripts: "aprovado"` no registro.
 
 ## Adicionar uma dependência (sempre nesta ordem)
 
@@ -37,6 +38,11 @@ Toda dependência, de produção ou de desenvolvimento, em qualquer `package.jso
 3. **Aprovação do Pai** pela SPEC ou pelo PR. Só então `status: aprovada` e `approvedBy`.
 4. **Instalação** com versão exata (`npm install --save-exact`), com o `package-lock.json` no mesmo commit.
 5. `bd deps` verde.
+
+## Dependências transitivas e scripts de instalação
+
+- **Transitivas:** o registro lista as diretas; as transitivas (57 pacotes na árvore em 2026-10-16) ficam **fixadas pelo `package-lock.json`** e são conferidas na CI por `npm audit --audit-level=high` (alta ou crítica reprova). Atualizar uma direta atualiza o lockfile no mesmo PR.
+- **Scripts de instalação:** ficam bloqueados (padrão do npm). Quando um pacote pede script, a decisão fica explícita em `allowScripts` no `package.json`: `false` (negado) por padrão; `true` só com `installScripts: "aprovado"` no registro, depois de ler o script. Em 2026-10-16, `@google/genai` pediu um `preinstall` que só faz `echo`; negado.
 
 ## Rotina de atualização
 

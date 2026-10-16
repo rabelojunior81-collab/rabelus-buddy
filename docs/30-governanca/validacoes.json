@@ -169,6 +169,19 @@
       "origem": "SPEC 0001 critérios 14–16; R5-6; ADRs 0008, 0014, 0015"
     },
     {
+      "id": "provedores-contrato",
+      "descricao": "Cada modelo pela rota e SDK certos; User-Agent próprio e x-opencode-session no Go; store:false; usage normalizado; 429 vira esgotamento sem nova tentativa",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI (3 SOs × Node 24/26)"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/provedores.test.ts"
+      },
+      "origem": "SPEC 0001 critérios 17 e 20; ADRs 0014 e 0015"
+    },
+    {
       "id": "nomes",
       "descricao": "Nomes semânticos e carimbos na convenção",
       "quem": "maquina",
@@ -224,6 +237,18 @@
         "ci": "node scripts/bd.mjs deps"
       },
       "origem": "Pai, 2026-10-15"
+    },
+    {
+      "id": "vulnerabilidades",
+      "descricao": "Nenhuma vulnerabilidade alta ou crítica na árvore de dependências (inclui transitivas)",
+      "quem": "maquina",
+      "onde": [
+        "CI"
+      ],
+      "mecanismo": {
+        "ci": "npm audit --audit-level=high"
+      },
+      "origem": "Protocolo de dependências (Pai, 2026-10-15)"
     },
     {
       "id": "segredos",
