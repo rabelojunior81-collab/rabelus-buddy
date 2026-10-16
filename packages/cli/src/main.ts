@@ -1,10 +1,12 @@
 // Entrada da CLI do Rabelus Buddy (SPEC 0001, escopo 16; ADR 0011).
-// No M0.1: --help, --version e --lang. Os comandos do núcleo chegam nas sub-fases seguintes.
+// M0.1: --help, --version, --lang. M0.2: daemon start|status|stop.
 
 import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createI18n, resolveLang } from '@rabelus-buddy/client/i18n';
+import { createI18n, resolveLang, type I18n } from '@rabelus-buddy/client/i18n';
+import { call } from '@rabelus-buddy/client/ipc';
+import { startOwner, AlreadyRunningError, stateHome, endpointFor } from '@rabelus-buddy/core';
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as { version: string };
 
@@ -13,10 +15,53 @@ export interface Io {
   err: (text: string) => void;
 }
 
-export function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): number {
+interface OwnerStatus { pid: number; startedAt: string; sessions: number; events: number; endpoint: string }
+
+async function daemon(sub: string | undefined, env: NodeJS.ProcessEnv, io: Io, { t }: I18n): Promise<number> {
+  const home = stateHome(env);
+  const endpoint = endpointFor(home);
+  if (sub === 'start') {
+    try {
+      const owner = await startOwner(home);
+      io.out(t('daemon.started', { endpoint: owner.endpoint, pid: owner.pid }));
+      const stop = () => { void owner.close(); };
+      process.once('SIGINT', stop);
+      process.once('SIGTERM', stop);
+      await owner.closed;
+      return 0;
+    } catch (e) {
+      if (e instanceof AlreadyRunningError) {
+        io.err(t('daemon.alreadyRunning', { endpoint: e.endpoint }));
+        return 1;
+      }
+      throw e;
+    }
+  }
+  if (sub === 'status' || sub === 'stop') {
+    let status: OwnerStatus;
+    try {
+      status = (await call(endpoint, 'daemon.status', {})) as OwnerStatus;
+    } catch {
+      io.err(t('daemon.notRunning'));
+      return 1;
+    }
+    if (sub === 'status') {
+      io.out(t('daemon.status', { ...status }));
+      return 0;
+    }
+    await call(endpoint, 'daemon.stop', {});
+    io.out(t('daemon.stopped'));
+    return 0;
+  }
+  io.err(t('daemon.usage'));
+  return 1;
+}
+
+export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promise<number> {
   // O idioma vem antes de tudo, para que até o erro de opção saia no idioma pedido.
   const langIdx = argv.indexOf('--lang');
-  const { t } = createI18n(resolveLang({ flag: langIdx >= 0 ? argv[langIdx + 1] : undefined, env: env.RBUDDY_LANG }));
+  const i18n = createI18n(resolveLang({ flag: langIdx >= 0 ? argv[langIdx + 1] : undefined, env: env.RBUDDY_LANG }));
+  const { t } = i18n;
 
   let parsed;
   try {
@@ -45,6 +90,7 @@ export function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): number {
     io.out(t('cli.help'));
     return 0;
   }
+  if (command === 'daemon') return daemon(positionals[1], env, io, i18n);
   io.err(t('cli.unknownCommand', { command }));
   return 1;
 }

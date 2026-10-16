@@ -1,0 +1,14 @@
+{
+  "name": "@rabelus-buddy/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Núcleo governado do Rabelus Buddy: dono do log de eventos, política, orçamento e efeitos",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@rabelus-buddy/client": "0.0.0"
+  }
+}

@@ -166,3 +166,7 @@ M0.1 fundação: packages/client (i18n) e packages/cli (rabelus-buddy/rbuddy com
 ### #0038 · 2026-10-16T004022-0300 · claude-code-vs-code-6265a4 · processo
 
 Sessão claude-code-vs-code-6265a4: ADR 0016 (PR #21); bd merge, bd prune, bd validacoes e GitHub com auto-delete e só merge commit (PR #22, 21 branches podadas, spike arquivado em tag); M0.1 fundação do código (PR #23, matriz 3 SOs × Node 24/26 verde). Post: Nenhuma Branch Sobrevive ao Merge.
+
+### #0039 · 2026-10-16T010554-0300 · claude-code-vs-code-fe93fb · ferramenta
+
+M0.2: log de eventos em SQLite com projeções reconstruíveis, dono único com JSON-RPC por named pipe/socket Unix, cliente IPC, rbuddy daemon start|status|stop. Critérios 1–3 da SPEC 0001 com teste (2 CLIs × 1.000 comandos sem SQLITE_BUSY e sem buraco).

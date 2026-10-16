@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T00:40:22-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:05:52-03:00
 
 ## Objetivo
 
@@ -18,7 +18,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - binários `rabelus-buddy`/`rbuddy` que só respondem `--version` e `--help` pelo catálogo.
   - `bd deps` e `bd test-guard` já valendo (entregues antes do M0, a pedido do Pai).
   - Critérios: 23 (base), 24, 25, infraestrutura do 1.
-- [ ] **M0.2 Log de eventos e dono**:
+- [x] **M0.2 Log de eventos e dono** — branch `feat/m0-2-log-e-dono`, critérios 1–3 verdes:
   - adaptador `node:sqlite` (`DatabaseSync` no 24, `Database` no 26+);
   - esquema de eventos e projeções;
   - `rbuddy daemon` com instância única;

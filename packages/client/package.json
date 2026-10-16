@@ -6,7 +6,8 @@
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
-    "./i18n": "./src/i18n.ts"
+    "./i18n": "./src/i18n.ts",
+    "./ipc": "./src/ipc.ts"
   },
   "dependencies": {
     "i18next": "26.4.5"
