@@ -28,5 +28,16 @@ export class ProviderLimitError extends Error {
   }
 }
 
+// Recusa conclusiva do provedor (permissão, elegibilidade, corpo inválido): não se repete igual.
+export class ProviderRejectedError extends Error {
+  readonly provider: string;
+  readonly code: string;
+  constructor(provider: string, code: string, message: string) {
+    super(message);
+    this.provider = provider;
+    this.code = code;
+  }
+}
+
 // Falha sem resposta conclusiva (queda, stream interrompido): o efeito fica desconhecido.
 export class ProviderUnknownError extends Error {}

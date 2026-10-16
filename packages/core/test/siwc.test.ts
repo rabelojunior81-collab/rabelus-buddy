@@ -1,78 +1,20 @@
 // Critérios 18 e 19 da SPEC 0001: ChatGPT por Sign in with ChatGPT (SIWC), contra servidores falsos locais.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash, generateKeyPairSync, sign, type KeyObject } from 'node:crypto';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fakeHttp, type Captured } from './fake-http.ts';
+import { browse, fakeAuth } from './fake-auth.ts';
 import { tempHome } from './helpers.ts';
 import { openDatabase } from '../src/db.ts';
 import { EventLog } from '../src/log.ts';
 import { Budget, defaultWindows } from '../src/budget.ts';
 import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError } from '../src/providers/index.ts';
 import {
-  createChatGptProvider, credentialsPath, FORBIDDEN_FIELDS, loadCredentials, saveCredentials, SiwcAuth, SiwcAuthError,
+  createChatGptProvider, credentialsPath, FORBIDDEN_FIELDS, loadCredentials, logout, saveCredentials, SiwcAuth, SiwcAuthError,
   SIWC_RESOURCE, SIWC_SCOPE, startLogin, type SiwcEndpoints,
 } from '../src/providers/siwc.ts';
 import type { ModelRequest } from '../src/providers/types.ts';
-
-const b64url = (b: Buffer | string): string => Buffer.from(b).toString('base64url');
-
-// Servidor OAuth falso: JWKS, troca de código (confere PKCE) e refresh.
-async function fakeAuth() {
-  const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
-  const otherKey = generateKeyPairSync('rsa', { modulusLength: 2048 }).privateKey;
-  const st = {
-    challenge: '' as string,
-    nonce: '' as string,
-    idNonce: null as string | null, // força outro nonce no ID token
-    badSig: false, // assina o ID token com chave fora do JWKS
-    scope: SIWC_SCOPE,
-    refreshResponder: null as null | ((c: Captured) => { status: number; json: unknown }),
-    refreshCount: 0,
-    accessSeq: 0,
-  };
-  let fake: Awaited<ReturnType<typeof fakeHttp>>;
-  const idToken = (aud: string, nonce: string, key: KeyObject = privateKey): string => {
-    const h = b64url(JSON.stringify({ alg: 'RS256', kid: 'k1', typ: 'JWT' }));
-    const now = Math.floor(Date.now() / 1000);
-    const p = b64url(JSON.stringify({ iss: fake.url, aud, sub: 'conta-1', email: 'pai@example.com', nonce, iat: now, exp: now + 3600 }));
-    return `${h}.${p}.${b64url(sign('RSA-SHA256', Buffer.from(`${h}.${p}`), key))}`;
-  };
-  fake = await fakeHttp((c) => {
-    if (c.method === 'GET' && c.path === '/jwks.json') return { json: { keys: [{ ...publicKey.export({ format: 'jwk' }), kid: 'k1', alg: 'RS256', use: 'sig' }] } };
-    if (c.path === '/token' && c.body.grant_type === 'authorization_code') {
-      const pkceOk = b64url(createHash('sha256').update(String(c.body.code_verifier)).digest()) === st.challenge;
-      if (!pkceOk) return { status: 400, json: { error: 'invalid_grant' } };
-      st.accessSeq += 1;
-      return { json: { access_token: `a${st.accessSeq}`, refresh_token: `r${st.accessSeq}`, id_token: idToken(String(c.body.client_id), st.idNonce ?? st.nonce, st.badSig ? otherKey : privateKey), token_type: 'Bearer', expires_in: 3600, scope: st.scope } };
-    }
-    if (c.path === '/token' && c.body.grant_type === 'refresh_token') {
-      st.refreshCount += 1;
-      if (st.refreshResponder) return st.refreshResponder(c);
-      st.accessSeq += 1;
-      return { json: { access_token: `a${st.accessSeq}`, refresh_token: `r${st.accessSeq}`, token_type: 'Bearer', expires_in: 3600, scope: st.scope } };
-    }
-    if (c.path === '/revoke') return { status: 200, json: {} };
-    return { status: 404, json: { error: 'rota desconhecida' } };
-  });
-  const endpoints: SiwcEndpoints = { issuer: fake.url, authorize: `${fake.url}/authorize`, token: `${fake.url}/token`, revoke: `${fake.url}/revoke`, jwks: `${fake.url}/jwks.json`, api: `${fake.url}/v1` };
-  return { fake, st, endpoints };
-}
-
-// O "navegador": lê a URL de autorização, guarda desafio e nonce no servidor falso e chama o callback.
-async function browse(url: string, st: { challenge: string; nonce: string }, extra: Record<string, string> = {}, { keepState = true } = {}) {
-  const u = new URL(url);
-  const q = u.searchParams;
-  st.challenge = q.get('code_challenge') ?? '';
-  st.nonce = q.get('nonce') ?? '';
-  const cb = new URL(q.get('redirect_uri') ?? '');
-  const params = { code: 'codigo-1', ...(keepState ? { state: q.get('state') ?? '' } : {}), ...extra };
-  for (const [k, v] of Object.entries(params)) cb.searchParams.set(k, v);
-  const r = await fetch(cb);
-  await r.text();
-  return { q, status: r.status };
-}
 
 test('siwc: login oauth — PKCE S256, callback em 127.0.0.1, state/nonce novos, host id estável, client id emitido (critério 19)', async () => {
   const { fake, st, endpoints } = await fakeAuth();
@@ -247,6 +189,9 @@ const req = (): ModelRequest => ({
 
 const completed = { id: 'resp_1', object: 'response', status: 'completed', output: [{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: 'olá (siwc)' }] }], usage: { input_tokens: 80, input_tokens_details: { cached_tokens: 20 }, output_tokens: 10, total_tokens: 90 } };
 
+// Inferência com token válido não fala com o OAuth: endpoints de autorização inertes.
+const inert: SiwcEndpoints = { issuer: 'http://127.0.0.1:9', authorize: 'http://127.0.0.1:9/authorize', token: 'http://127.0.0.1:9/token', revoke: 'http://127.0.0.1:9/revoke', jwks: 'http://127.0.0.1:9/jwks.json', api: '' };
+
 async function fakeApi(events: unknown[] | ((c: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[] })) {
   return fakeHttp((c) => (typeof events === 'function' ? events(c) : { sse: events }));
 }
@@ -259,7 +204,7 @@ test('siwc: contrato da prévia — store:false, stream:true, sem campos proibid
     { type: 'response.completed', response: completed },
   ]);
   const home = savedHome(false);
-  const p = createChatGptProvider({ home, endpoints: { ...(await fakeAuth()).endpoints, api: `${api.url}/v1` } });
+  const p = createChatGptProvider({ home, endpoints: { ...inert, api: `${api.url}/v1` } });
   assert.equal(p.id, 'chatgpt');
   const r = await p.call(req(), { session: 's' });
   const sent = api.requests[0]!;
@@ -280,7 +225,7 @@ test('siwc: contrato da prévia — store:false, stream:true, sem campos proibid
 test('siwc: stream interrompido sem response.completed fica desconhecido; response.incomplete não é sucesso', async () => {
   const cut = await fakeApi([{ type: 'response.output_text.delta', delta: 'olá' }]);
   const home = savedHome(false);
-  const { endpoints } = await fakeAuth();
+  const endpoints = inert;
   await assert.rejects(createChatGptProvider({ home, endpoints: { ...endpoints, api: `${cut.url}/v1` } }).call(req(), { session: 's' }), (e: unknown) => e instanceof ProviderUnknownError);
   await cut.close();
 
@@ -291,7 +236,7 @@ test('siwc: stream interrompido sem response.completed fica desconhecido; respon
 });
 
 test('siwc: response.failed com usage_limit_exceeded esgota a janela do ChatGPT; outros códigos viram recusa sem nova tentativa (critério 18)', async () => {
-  const { endpoints } = await fakeAuth();
+  const endpoints = inert;
   const home = savedHome(false);
   const failed = (code: string) => [{ type: 'response.failed', response: { id: 'resp_x', status: 'failed', error: { code, message: code } } }];
 
@@ -322,7 +267,7 @@ test('siwc: response.failed com usage_limit_exceeded esgota a janela do ChatGPT;
 });
 
 test('siwc: HTTP 429 antes do stream esgota; 401 recusa sem apagar credenciais', async () => {
-  const { endpoints } = await fakeAuth();
+  const endpoints = inert;
   const home = savedHome(false);
   const h429 = await fakeApi(() => ({ status: 429, headers: { 'retry-after': '60' }, json: { error: { code: 'subscription_sharing_usage_limit_exceeded', message: 'limite' } } }));
   await assert.rejects(createChatGptProvider({ home, endpoints: { ...endpoints, api: `${h429.url}/v1` } }).call(req(), { session: 's' }), (e: unknown) => e instanceof ProviderLimitError && e.provider === 'chatgpt');
@@ -336,7 +281,7 @@ test('siwc: HTTP 429 antes do stream esgota; 401 recusa sem apagar credenciais',
 });
 
 test('siwc: credenciais nunca aparecem no corpo nem em texto de erro', async () => {
-  const { endpoints } = await fakeAuth();
+  const endpoints = inert;
   const home = savedHome(false);
   const f = await fakeApi(() => ({ status: 401, json: { error: { message: 'negado' } } }));
   await assert.rejects(createChatGptProvider({ home, endpoints: { ...endpoints, api: `${f.url}/v1` } }).call(req(), { session: 's' }), (e: unknown) => {
@@ -347,4 +292,25 @@ test('siwc: credenciais nunca aparecem no corpo nem em texto de erro', async () 
   assert.equal(JSON.stringify(f.requests[0]?.body).includes('r0'), false);
   assert.equal(readFileSync(credentialsPath(home), 'utf8').includes('"refreshToken"'), true);
   await f.close();
+});
+
+test('siwc: logout revoga o refresh token e apaga os tokens locais, guardando host id e client id', async () => {
+  const { fake, endpoints } = await fakeAuth();
+  const home = savedHome(false);
+  assert.deepEqual(await logout(home, endpoints), { revoked: true });
+  const rv = fake.requests.find((r) => r.path === '/revoke');
+  assert.equal(rv?.body.token, 'r0');
+  assert.equal(rv?.body.token_type_hint, 'refresh_token');
+  assert.equal(rv?.body.client_id, 'oaiapp_123');
+  const c = loadCredentials(home);
+  assert.equal(c?.accessToken, undefined);
+  assert.equal(c?.refreshToken, undefined);
+  assert.equal(c?.clientId, 'oaiapp_123');
+  assert.equal(c?.hostId, 'host-fixo-0123456789');
+  await fake.close();
+
+  // Sem confirmação do servidor: apaga local do mesmo jeito e informa.
+  const home2 = savedHome(false);
+  assert.deepEqual(await logout(home2, inert), { revoked: false });
+  assert.equal(loadCredentials(home2)?.refreshToken, undefined);
 });

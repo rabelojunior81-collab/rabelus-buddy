@@ -1,0 +1,15 @@
+{
+  "login": {
+    "usage": "Uso: rbuddy login chatgpt [--no-browser]   ·   rbuddy logout chatgpt",
+    "openUrl": "Para entrar com o ChatGPT, abra no navegador:\n{{url}}",
+    "waiting": "Esperando o retorno do navegador (até 5 minutos)…",
+    "done": "Login no ChatGPT concluído ({{email}}). O plano entra na ordem de provedores.",
+    "planDisabled": "Login concluído ({{email}}), mas a conta não concedeu o uso do plano (chatgpt.tokens.use.direct). O ChatGPT fica fora da ordem de provedores.",
+    "failed": "Login não concluído: {{code}}.",
+    "pageOk": "Rabelus Buddy: login concluído. Pode fechar esta aba.",
+    "pageFail": "Rabelus Buddy: login não concluído. Volte ao terminal.",
+    "logoutDone": "Saiu do ChatGPT; o servidor confirmou a revogação.",
+    "logoutUnconfirmed": "Tokens locais apagados; o servidor não confirmou a revogação.",
+    "logoutNone": "Nenhum login do ChatGPT neste computador."
+  }
+}

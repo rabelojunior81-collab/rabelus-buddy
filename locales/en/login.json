@@ -1,0 +1,15 @@
+{
+  "login": {
+    "usage": "Usage: rbuddy login chatgpt [--no-browser]   ·   rbuddy logout chatgpt",
+    "openUrl": "To sign in with ChatGPT, open in your browser:\n{{url}}",
+    "waiting": "Waiting for the browser to return (up to 5 minutes)…",
+    "done": "ChatGPT sign-in complete ({{email}}). The plan joins the provider order.",
+    "planDisabled": "Sign-in complete ({{email}}), but the account did not grant plan usage (chatgpt.tokens.use.direct). ChatGPT stays out of the provider order.",
+    "failed": "Sign-in not completed: {{code}}.",
+    "pageOk": "Rabelus Buddy: sign-in complete. You can close this tab.",
+    "pageFail": "Rabelus Buddy: sign-in not completed. Go back to the terminal.",
+    "logoutDone": "Signed out of ChatGPT; the server confirmed the revocation.",
+    "logoutUnconfirmed": "Local tokens erased; the server did not confirm the revocation.",
+    "logoutNone": "No ChatGPT sign-in on this computer."
+  }
+}

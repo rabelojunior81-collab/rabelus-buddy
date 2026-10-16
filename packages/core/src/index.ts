@@ -9,3 +9,4 @@ export { Budget, BudgetError, costOf, defaultWindows, type WindowDef, type Usage
 export { PRICES, type Price } from './prices.ts';
 export { FsTools } from './tools/fs.ts';
 export { CommandTool } from './tools/command.ts';
+export { startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints, type ChatGptCredentials } from './providers/siwc.ts';
