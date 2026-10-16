@@ -51,3 +51,5 @@ Rodado no GitHub Actions (run [38700033340](https://github.com/rabelojunior81-co
 - **Observação:** a vazão em rajada varia quase 100 vezes entre os runners. O pior caso é o Windows com Node 24 (331 eventos/s). A latência de um pedido por vez fica abaixo de 0,2 ms em todos.
 - **HIPÓTESE:** a diferença vem do disco do runner com `fsync` por transação (`synchronous=NORMAL` no WAL) e do SQLite mais antigo no Node 24. Não medi a causa.
 - Para um usuário humano, mesmo 331 eventos/s sobra. A SPEC registra o risco, e a M0.2 mede a vazão como métrica.
+
+**Adendo (2026-10-16):** a branch `spike/m0-banco-ipc-3-sos` foi arquivada pelo `bd prune` na tag anotada `archive/spike/m0-banco-ipc-3-sos-2026-10-16T002854-0300`, que preserva o commit `77160c5` (workflow do spike). A branch não existe mais; a tag está no remoto.
