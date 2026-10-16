@@ -1,0 +1,257 @@
+// Loop do agente (SPEC 0001, escopos 6, 10 e 11; critérios 5, 16, 20 e 21).
+// Cada passo: compacta o contexto se preciso, escolhe o provedor pela ordem (política e orçamento),
+// chama o modelo como efeito com identidade e executa as ferramentas pedidas pela política.
+
+import type { EventLog } from './log.ts';
+import { DomainError, ERR, type Approval, type Domain } from './domain.ts';
+import type { Policy, Tool } from './policy.ts';
+import { BudgetError, costOf, type Budget, type Usage } from './budget.ts';
+import { PRICES, type Price } from './prices.ts';
+import type { FsTools } from './tools/fs.ts';
+import type { CommandTool } from './tools/command.ts';
+import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
+
+export const CONTEXT_LIMIT = 100_000;
+// Modelos de raciocínio gastam saída antes do texto: teto generoso (registro 2026-10-16 da sonda real).
+export const DEFAULT_MAX_OUTPUT = 16_000;
+const DEFAULT_MAX_STEPS = 50;
+// Preço conservador para modelo da API paga sem preço na tabela: superestima, nunca fura o teto.
+export const CONSERVATIVE_PRICE: Price = { input: 15, cachedInput: 15, cacheWrite: 15, output: 75 };
+const PAID = new Set(['openrouter']);
+
+export interface Route { provider: Provider; model: string }
+
+export interface AgentOptions {
+  log: EventLog;
+  domain: Domain;
+  policy: Policy;
+  budget: Budget;
+  fs: FsTools;
+  cmd: CommandTool;
+  routes: Route[];
+  interactive: boolean;
+  awaitApproval?: (a: Approval) => Promise<'approve' | 'deny'>;
+  maxSteps?: number;
+  contextLimit?: number;
+  maxOutputTokens?: number;
+}
+
+export interface AgentResult { run: string; outcome: 'done' | 'stopped'; reason?: string; text: string; steps: number }
+
+export const AGENT_TOOLS: ToolSpec[] = [
+  { name: 'read_file', description: 'Lê um arquivo de texto do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
+  { name: 'list_dir', description: 'Lista as entradas de um diretório do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
+  { name: 'write_file', description: 'Escreve um arquivo no workspace (leia antes, se ele já existir).', parameters: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
+  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana a cada vez.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
+];
+
+// ---------- Contexto ----------
+
+// Estimativa simples e conservadora: ~4 caracteres por token, mais o envelope de cada mensagem.
+export function estimateTokens(msgs: ChatMessage[]): number {
+  let chars = 0;
+  for (const m of msgs) chars += m.content.length + (m.toolCalls ?? []).reduce((a, t) => a + t.name.length + t.arguments.length, 0) + 16;
+  return Math.ceil(chars / 4);
+}
+
+// Compactação mecânica: mantém sistema e tarefa intactos; descarta grupos antigos inteiros (assistente
+// e seus resultados de ferramenta), sempre guardando o último, e avisa numa nota logo depois da tarefa;
+// se ainda passar, trunca o maior conteúdo.
+export function compact(msgs: ChatMessage[], limit: number): { messages: ChatMessage[]; dropped: number } {
+  const head = msgs.slice(0, 2);
+  const groups: ChatMessage[][] = [];
+  for (const m of msgs.slice(2)) {
+    if (m.role === 'tool' && groups.length) groups.at(-1)!.push(m);
+    else groups.push([m]);
+  }
+  let dropped = 0;
+  const flat = () => [...head, ...groups.flat()];
+  while (groups.length > 1 && estimateTokens(flat()) > limit) dropped += groups.shift()!.length;
+  if (dropped) head.push({ role: 'user', content: `[contexto compactado: ${dropped} mensagens antigas removidas]` });
+  let out = flat();
+  while (estimateTokens(out) > limit) {
+    const big = out.reduce((bi, m, i) => (m.role !== 'system' && m.content.length > (out[bi]?.content.length ?? 0) ? i : bi), 1);
+    const m = out[big]!;
+    const excess = (estimateTokens(out) - limit) * 4 + 64;
+    if (m.content.length <= excess) break;
+    out = out.map((x, i) => (i === big ? { ...x, content: `${x.content.slice(0, x.content.length - excess)}\n[truncado]` } : x));
+  }
+  return { messages: out, dropped };
+}
+
+// ---------- Loop ----------
+
+type ToolOut = Record<string, unknown> & { ok: boolean };
+const parse = (a: string): Record<string, unknown> => { try { return JSON.parse(a || '{}') as Record<string, unknown>; } catch { return {}; } };
+
+export class Agent {
+  private readonly o: AgentOptions;
+  constructor(o: AgentOptions) { this.o = o; }
+
+  private priceFor(r: Route): Price | null {
+    return PRICES[r.model] ?? (PAID.has(r.provider.id) ? CONSERVATIVE_PRICE : null);
+  }
+
+  async run(session: string, task: string, { system = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.' }: { system?: string } = {}): Promise<AgentResult> {
+    const { domain, log, policy } = this.o;
+    const run = domain.startRun(session, task).id;
+    let messages: ChatMessage[] = [{ role: 'system', content: system }, { role: 'user', content: task }];
+    const rejected = new Set<string>();
+    const limit = this.o.contextLimit ?? CONTEXT_LIMIT;
+    const stop = (reason: string, steps: number, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps }; };
+
+    for (let step = 1; step <= (this.o.maxSteps ?? DEFAULT_MAX_STEPS); step++) {
+      if (policy.isPaused(session)) return stop('sessionPaused', step - 1);
+      const before = estimateTokens(messages);
+      if (before > limit) {
+        const c = compact(messages, limit);
+        messages = c.messages;
+        log.append(session, 'context.compacted', { run, step, before, after: estimateTokens(messages), dropped: c.dropped });
+      }
+      const call = await this.callModel(session, run, step, messages, rejected);
+      if ('stop' in call) return stop(call.stop, step - 1);
+      const res = call.response;
+      log.append(session, 'agent.step', { run, step, route: call.route, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
+      messages.push({ role: 'assistant', content: res.text, ...(res.toolCalls.length ? { toolCalls: res.toolCalls } : {}) });
+      if (!res.toolCalls.length) {
+        domain.finishRun(run);
+        return { run, outcome: 'done', text: res.text, steps: step };
+      }
+      for (const tc of res.toolCalls) messages.push({ role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+    }
+    return stop('maxSteps', this.o.maxSteps ?? DEFAULT_MAX_STEPS);
+  }
+
+  // Percorre a ordem de provedores; cada tentativa é um efeito com identidade e uma reserva.
+  private async callModel(session: string, run: string, step: number, messages: ChatMessage[], rejected: Set<string>): Promise<{ response: ModelResponse; route: string } | { stop: string }> {
+    const { domain, budget, policy, log, routes } = this.o;
+    const maxOut = this.o.maxOutputTokens ?? DEFAULT_MAX_OUTPUT;
+    let budgetBlocked = false;
+    for (let i = 0; i < routes.length; i++) {
+      const r = routes[i]!;
+      const name = `${r.provider.id}/${r.model}`;
+      const next = routes[i + 1];
+      const skip = (reason: string) => { if (next) log.append(session, 'provider.switched', { from: name, to: `${next.provider.id}/${next.model}`, reason }); };
+      if (rejected.has(r.provider.id)) { skip('rejected'); continue; }
+      if (policy.decide({ session, tool: 'model.use', target: r.model }, { interactive: false }).effect !== 'allow') { skip('policy'); continue; }
+
+      const price = this.priceFor(r);
+      const estimate = price ? costOf({ input_tokens: estimateTokens(messages), cached_tokens: 0, cache_write_tokens: 0, output_tokens: maxOut }, price) : 0;
+      let reservation: string;
+      try {
+        reservation = budget.reserve(session, { provider: r.provider.id, model: r.model, estimateUsd: estimate });
+      } catch (e) {
+        if (!(e instanceof BudgetError)) throw e;
+        budgetBlocked = true;
+        skip(e.reason);
+        continue;
+      }
+
+      const effect = domain.beginEffect(session, run, 'model.call', `${run}:step${step}:${name}`, name).id;
+      const req: ModelRequest = { model: r.model, messages, tools: AGENT_TOOLS, maxOutputTokens: maxOut };
+      try {
+        const response = await r.provider.call(req, { session });
+        domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
+        budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
+        return { response, route: name };
+      } catch (e) {
+        if (e instanceof ProviderLimitError) {
+          domain.failEffect(effect, 'providerLimit');
+          budget.release(reservation, 'providerLimit');
+          budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' ? r.model : null, e.until, 'providerLimit');
+          budgetBlocked = true;
+          skip('windowExhausted');
+          continue;
+        }
+        if (e instanceof ProviderRejectedError) {
+          domain.failEffect(effect, e.code);
+          budget.release(reservation, e.code);
+          rejected.add(r.provider.id);
+          skip('rejected');
+          continue;
+        }
+        // Sem resposta conclusiva: o consumo é incerto (liquida pela estimativa) e repetir exige reconciliação.
+        domain.markUnknown(effect);
+        budget.settle(reservation, null, estimate);
+        if (!(e instanceof ProviderUnknownError)) log.append(session, 'provider.error', { route: name, error: (e as Error).name });
+        return { stop: 'effect.unknown' };
+      }
+    }
+    return { stop: budgetBlocked ? 'budget.windowExhausted' : 'provider.unavailable' };
+  }
+
+  // Executa uma chamada de ferramenta e devolve o resultado (JSON) para o modelo.
+  async executeTool(session: string, run: string, tc: ToolCall): Promise<string> {
+    const a = parse(tc.arguments);
+    const ctx = { interactive: this.o.interactive };
+    const str = (v: unknown) => (typeof v === 'string' ? v : '');
+    const out = (o: ToolOut) => JSON.stringify(o);
+    try {
+      switch (tc.name) {
+        case 'read_file': {
+          const r = this.o.fs.readFile(session, str(a.path), ctx);
+          return out(r.ok ? { ok: true, content: r.content } : { ok: false, reason: r.reason });
+        }
+        case 'list_dir': {
+          const r = this.o.fs.listDir(session, str(a.path) || '.', ctx);
+          return out(r.ok ? { ok: true, entries: r.entries } : { ok: false, reason: r.reason });
+        }
+        case 'write_file': {
+          const path = str(a.path);
+          const target = this.o.policy.relative(path) ?? path;
+          return out(await this.effect(session, run, tc, 'file.write', target, 'write_file', () => {
+            const r = this.o.fs.writeFile(session, path, str(a.content), ctx);
+            return r.ok ? { ok: true, hash: r.hash } : { ok: false, reason: r.reason };
+          }));
+        }
+        case 'run_command': {
+          const command = str(a.command);
+          return out(await this.effect(session, run, tc, 'command', command, 'run_command', () => {
+            const r = this.o.cmd.run(session, command, ctx);
+            return r.ok ? { ok: true, ...r.result } : { ok: false, reason: r.reason };
+          }));
+        }
+        default:
+          return out({ ok: false, reason: 'unknownTool', tool: tc.name });
+      }
+    } catch (e) {
+      const code = (e as NodeJS.ErrnoException).code;
+      return out({ ok: false, reason: code === 'ENOENT' ? 'notFound' : code === 'EISDIR' ? 'isDirectory' : 'toolError' });
+    }
+  }
+
+  // Efeito com identidade (run + id da chamada): feito uma vez, repete o recibo; desconhecido exige reconciliação.
+  private async effect(session: string, run: string, tc: ToolCall, kind: string, target: string, tool: Tool, exec: () => ToolOut): Promise<ToolOut> {
+    const { domain, policy } = this.o;
+    const key = `${run}:${tc.id}`;
+    const prev = domain.effectByKey(key);
+    if (prev?.state === 'done') return { ...(domain.receiptOf(prev.id) as ToolOut), replayed: true };
+    let effect: string;
+    try {
+      effect = domain.beginEffect(session, run, kind, key, target).id;
+    } catch (e) {
+      if (e instanceof DomainError && e.code === ERR.needsReconciliation) return { ok: false, reason: 'needsReconciliation', effect: e.data.effect };
+      throw e;
+    }
+    let r = exec();
+    if (!r.ok && r.reason === 'needsApproval') {
+      const decision = await this.approve(session, `${tool} ${target}`);
+      if (decision === 'approve') {
+        policy.grant('once', { tool, pattern: target }, { session });
+        r = exec();
+      } else r = { ok: false, reason: 'deniedByHuman' };
+    }
+    if (r.ok) domain.completeEffect(effect, r);
+    else domain.failEffect(effect, String(r.reason));
+    return r;
+  }
+
+  private async approve(session: string, action: string): Promise<'approve' | 'deny'> {
+    const { domain } = this.o;
+    const ap = domain.requestApproval(session, action);
+    if (!this.o.awaitApproval) return 'deny';
+    const decision = await this.o.awaitApproval(ap);
+    if (domain.getApproval(ap.id).state === 'pending') domain.resolveApproval(ap.id, decision);
+    return domain.getApproval(ap.id).state === 'approved' ? 'approve' : 'deny';
+  }
+}

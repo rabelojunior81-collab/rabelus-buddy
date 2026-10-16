@@ -30,7 +30,7 @@ export class DomainError extends Error {
   }
 }
 
-export interface Run { id: string; session: string; task: string; state: 'running' | 'done' | 'interrupted' }
+export interface Run { id: string; session: string; task: string; state: 'running' | 'done' | 'interrupted' | 'stopped' }
 export interface Effect { id: string; session: string; run: string; kind: string; key: string; target: string; state: 'pending' | 'attempting' | 'done' | 'unknown' | 'failed' }
 export interface Approval { id: string; session: string; action: string; state: 'pending' | 'approved' | 'denied' }
 
@@ -42,10 +42,12 @@ const REQUIRED: Record<string, string[]> = {
   'run.started': ['run', 'task'],
   'run.finished': ['run'],
   'run.interrupted': ['run'],
+  'run.stopped': ['run', 'reason'],
   'effect.intent': ['effect', 'run', 'kind', 'key', 'target'],
   'effect.attempt': ['effect'],
   'effect.receipt': ['effect'],
   'effect.unknown': ['effect'],
+  'effect.failed': ['effect', 'reason'],
   'effect.reconciled': ['effect', 'outcome'],
   'approval.requested': ['approval', 'action'],
   'approval.resolved': ['approval', 'decision'],
@@ -64,7 +66,8 @@ export function projectDomain(db: Database, session: string, kind: string, paylo
       break;
     case 'run.finished':
     case 'run.interrupted':
-      db.prepare('UPDATE proj_runs SET state = ? WHERE id = ?').run(kind === 'run.finished' ? 'done' : 'interrupted', s(payload.run));
+    case 'run.stopped':
+      db.prepare('UPDATE proj_runs SET state = ? WHERE id = ?').run({ 'run.finished': 'done', 'run.interrupted': 'interrupted', 'run.stopped': 'stopped' }[kind], s(payload.run));
       break;
     case 'effect.intent':
       db.prepare('INSERT INTO proj_effects (id, session, run, kind, key, target, state) VALUES (?, ?, ?, ?, ?, ?, ?)')
@@ -72,8 +75,9 @@ export function projectDomain(db: Database, session: string, kind: string, paylo
       break;
     case 'effect.attempt':
     case 'effect.receipt':
-    case 'effect.unknown': {
-      const state = { 'effect.attempt': 'attempting', 'effect.receipt': 'done', 'effect.unknown': 'unknown' }[kind];
+    case 'effect.unknown':
+    case 'effect.failed': {
+      const state = { 'effect.attempt': 'attempting', 'effect.receipt': 'done', 'effect.unknown': 'unknown', 'effect.failed': 'failed' }[kind];
       db.prepare('UPDATE proj_effects SET state = ? WHERE id = ?').run(state, s(payload.effect));
       break;
     }
@@ -129,6 +133,39 @@ export class Domain {
     const r = this.getRun(id);
     this.log.append(r.session, 'run.finished', { run: id });
     return this.getRun(id);
+  }
+
+  // Parada com motivo (orçamento, efeito desconhecido, sessão pausada): não é conclusão nem queda.
+  stopRun(id: string, reason: string): Run {
+    const r = this.getRun(id);
+    this.log.append(r.session, 'run.stopped', { run: id, reason });
+    return this.getRun(id);
+  }
+
+  // Último efeito com a identidade dada, se houver.
+  effectByKey(key: string): Effect | null {
+    return (this.db.prepare('SELECT * FROM proj_effects WHERE key = ? ORDER BY rowid DESC LIMIT 1').get(key) as Effect | undefined) ?? null;
+  }
+
+  // Recibo guardado no log para o efeito (resultado da primeira e única execução).
+  receiptOf(id: string): unknown {
+    const e = this.getEffect(id);
+    const ev = this.log.events(e.session).filter((x) => x.kind === 'effect.receipt' && (x.payload as { effect?: string }).effect === id).at(-1);
+    return ev ? (ev.payload as { result?: unknown }).result : undefined;
+  }
+
+  // Sem resposta conclusiva (stream cortado, queda de rede): exige reconciliação antes de repetir.
+  markUnknown(id: string): Effect {
+    const e = this.getEffect(id);
+    this.log.append(e.session, 'effect.unknown', { effect: id });
+    return this.getEffect(id);
+  }
+
+  // Resposta conclusiva de que o efeito não aconteceu (recusa, limite).
+  failEffect(id: string, reason: string): Effect {
+    const e = this.getEffect(id);
+    this.log.append(e.session, 'effect.failed', { effect: id, reason });
+    return this.getEffect(id);
   }
 
   beginEffect(session: string, run: string, kind: string, key: string, target: string): Effect {

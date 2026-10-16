@@ -89,7 +89,8 @@ test('janela esgotada por erro de limite troca para o próximo provedor da ordem
   const ev = log.events('s2');
   const sw = ev.find((e) => e.kind === 'provider.switched');
   assert.deepEqual(sw?.payload, { from: 'opencode-go/kimi-k3', to: 'chatgpt/gpt-6.1-sol', reason: 'windowExhausted' });
-  assert.ok(ev.some((e) => e.kind === 'budget.exhausted'));
+  // O esgotamento mora na sessão do orçamento (M0.5), com o provedor e o modelo.
+  assert.ok(log.events('budget').some((e) => e.kind === 'budget.exhausted' && (e.payload as { provider: string; model: string }).provider === 'opencode-go' && (e.payload as { model: string }).model === 'kimi-k3'));
   assert.equal(ev.filter((e) => e.kind === 'budget.released').length, 1, 'reserva do Go devolvida');
   // A janela continua esgotada: a próxima tarefa nem tenta o Go.
   const r2 = await setupReuse(budget, log, [{ provider: go, model: 'kimi-k3' }, { provider: scripted('chatgpt', [say('de novo')]), model: 'gpt-6.1-sol' }]).run('s3', 'outra');
@@ -206,7 +207,7 @@ test('run_command: efeito com identidade, só com aprovação de uma vez; sem te
   const r = await agent.run('s9', 'testar');
   assert.equal(r.outcome, 'done');
   assert.equal(ran, 1);
-  const eff = log.db.prepare("SELECT state, key FROM proj_effects WHERE run = ? AND kind = 'command'").all(r.run) as { state: string; key: string }[];
+  const eff = (log.db.prepare("SELECT state, key FROM proj_effects WHERE run = ? AND kind = 'command'").all(r.run) as { state: string; key: string }[]).map((e) => ({ ...e }));
   assert.deepEqual(eff, [{ state: 'done', key: `${r.run}:c1` }]);
 
   const p2 = scripted('opencode-go', [tool('c1', 'run_command', { command: 'npm test' }), say('fim')]);
@@ -249,4 +250,18 @@ test('compactação: nenhuma chamada sai acima de 100k tokens estimados; pares c
   assert.ok(ev, 'compactação vira evento');
   const pl = ev.payload as { before: number; after: number; dropped: number };
   assert.ok(pl.before > CONTEXT_LIMIT && pl.after <= CONTEXT_LIMIT && pl.dropped > 0);
+});
+
+test('compactação: um resultado sozinho acima do limite é truncado até caber, sem perder a tarefa', () => {
+  const msgs: ChatMessage[] = [
+    { role: 'system', content: 'sistema' },
+    { role: 'user', content: 'tarefa' },
+    { role: 'assistant', content: '', toolCalls: [{ id: 't', name: 'read_file', arguments: '{}' }] },
+    { role: 'tool', content: 'z'.repeat(150_000 * 4), toolCallId: 't' },
+  ];
+  const c = compact(msgs, CONTEXT_LIMIT);
+  assert.ok(estimateTokens(c.messages) <= CONTEXT_LIMIT);
+  assert.equal(c.messages[1]?.content, 'tarefa');
+  assert.match(c.messages.at(-1)?.content ?? '', /\[truncado\]$/);
+  assert.equal(c.messages.at(-1)?.toolCallId, 't');
 });
