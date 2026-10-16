@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-16T00:19:54-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-16T00:35:50-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -26,7 +26,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [ ] Efeitos externos com identidade estável e estado "desconhecido" [R5-5]
 - [ ] Compactação de contexto abaixo de 100k tokens [R1]
 - [ ] 1 provedor da camada barata por API (plano B das assinaturas) [ADR 0008]
-- [ ] CLI `rabelus-buddy` / `rbuddy`, strings via catálogo pt-BR/en [ADR 0011; ADR 0002]
+- [~] CLI `rabelus-buddy` / `rbuddy`, strings via catálogo pt-BR/en [ADR 0011; ADR 0002] — base na M0.1
 - [ ] Auditoria append-only sem conteúdo sensível [§8]
 
 ## M1 — Agentes por ACP

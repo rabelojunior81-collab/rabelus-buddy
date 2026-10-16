@@ -17,7 +17,7 @@ Thanks for your interest. Rabelus Buddy is developed by humans and AI agents und
 
 ## Requirements
 
-- Node.js **≥ 24** (LTS). The tools have no external dependencies.
+- Node.js **≥ 24.12** (LTS), which runs TypeScript with no build step. After cloning: `npm ci`. Before a PR: `npm test` and `npm run typecheck`.
 - Git with worktree support (for parallel work).
 
 ## AI agents

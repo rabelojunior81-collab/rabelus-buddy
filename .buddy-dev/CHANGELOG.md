@@ -158,3 +158,11 @@ ADR 0016: Pi por composição (agente plugável no M1, com extensão de governan
 ### #0036 · 2026-10-16T002655-0300 · claude-code-vs-code-6265a4 · ferramenta
 
 bd merge (CI verde e bd post limpo → merge commit → prune), bd prune (mergeadas removidas, abandonadas arquivadas em tag anotada), bd validacoes (registro de 23 validações com dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão). GitHub: auto-delete de branches e só merge commit. 88 testes.
+
+### #0037 · 2026-10-16T003647-0300 · claude-code-vs-code-6265a4 · ferramenta
+
+M0.1 fundação: packages/client (i18n) e packages/cli (rabelus-buddy/rbuddy com --help, --version, --lang pelo catálogo), TypeScript executado pelo Node, tsc --noEmit e matriz 3 SOs × Node 24/26 na CI, dependências i18next/typescript/@types/node instaladas pelo protocolo. O portão de tipos pegou 2 erros reais que os testes não pegavam.
+
+### #0038 · 2026-10-16T004022-0300 · claude-code-vs-code-6265a4 · processo
+
+Sessão claude-code-vs-code-6265a4: ADR 0016 (PR #21); bd merge, bd prune, bd validacoes e GitHub com auto-delete e só merge commit (PR #22, 21 branches podadas, spike arquivado em tag); M0.1 fundação do código (PR #23, matriz 3 SOs × Node 24/26 verde). Post: Nenhuma Branch Sobrevive ao Merge.

@@ -86,3 +86,14 @@ test('dependência proposta (sem aprovação do Pai) não pode ser instalada', (
     { 'package-lock.json': '{}' });
   assert.match(checkDeps(r, { now: NOW }).join('\n'), /typescript.*proposta.*aprovação do Pai/);
 });
+
+test('pacote interno do monorepo: aceito só com a versão exata do workspace', () => {
+  const files = {
+    'package-lock.json': '{}',
+    'packages/client/package.json': { name: '@x/client', version: '0.1.0' },
+  };
+  const ok = base({ workspaces: ['packages/*'] }, [entry()], { ...files, 'packages/cli/package.json': { name: '@x/cli', dependencies: { '@x/client': '0.1.0' } } });
+  assert.deepEqual(checkDeps(ok, { now: NOW }), []);
+  const wrong = base({ workspaces: ['packages/*'] }, [entry()], { ...files, 'packages/cli/package.json': { name: '@x/cli', dependencies: { '@x/client': '^0.1.0' } } });
+  assert.match(checkDeps(wrong, { now: NOW }).join('\n'), /@x\/client.*versão exata do workspace \(0\.1\.0\)/);
+});

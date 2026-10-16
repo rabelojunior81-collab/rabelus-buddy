@@ -9,7 +9,7 @@
 
 </div>
 
-> **Status:** Phase 0 ("Setting the house in order") completed on 2026-10-15. In preparation: the SPEC for **M0 — Governed core** ([roadmap](./docs/50-planos/ROADMAP.md)). There is no runnable product yet; what exists is the research, the development governance, and the tools that enforce it.
+> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)). The `rbuddy` CLI already answers `--help`, `--version` and `--lang`; the core commands arrive in the next sub-phases.
 
 > Portuguese (pt-BR) is the project's primary language. Public-facing files are mirrored in English; internal documentation is in Portuguese and translated on demand.
 
@@ -41,6 +41,8 @@ The project is written by Adilson Rabelo Junior together with **Buddy Fenix** (`
 | `docs/40-specs/` · `docs/50-planos/` · `docs/60-decisoes/` | SPECs, roadmap and plans, ADRs |
 | `docs/registros/` | Dated records (audits, incidents, evidence) |
 | `archive/` | Dead archive: things go in with a tombstone and never leave |
+| `packages/` | Product code in TypeScript with no build step: `client` (i18n and shared client), `cli` (`rabelus-buddy`/`rbuddy`); `core` arrives in M0.2 |
+| `locales/` | Translation catalogs, pt-BR and en |
 | `scripts/` | `bd` tools (clock, names, event bus, archive, guard, Blog gate, surfaces, dependencies, test guard, merge and prune, validations) |
 
 Internal documentation is in Portuguese (ADR 0002).

@@ -1,0 +1,10 @@
+{
+  "cli": {
+    "version": "rabelus-buddy {{version}}",
+    "help": "Rabelus Buddy — harness de agentes de IA, governado.\n\nUso: rbuddy <comando> [opções]   (também: rabelus-buddy)\n\nOpções:\n  --help           mostra esta ajuda\n  --version        mostra a versão\n  --lang <idioma>  pt-BR ou en (padrão: pt-BR; também pela variável RBUDDY_LANG)\n\nOs comandos do núcleo (run, status, approvals, budget, log, resume, login, daemon) chegam nas próximas etapas do M0.",
+    "unknownCommand": "Comando desconhecido: {{command}}. Veja: rbuddy --help",
+    "unknownOption": "Opção desconhecida: {{option}}. Veja: rbuddy --help",
+    "approvalsPending_one": "{{count}} aprovação pendente",
+    "approvalsPending_other": "{{count}} aprovações pendentes"
+  }
+}

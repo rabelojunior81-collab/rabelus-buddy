@@ -1,0 +1,15 @@
+{
+  "name": "@rabelus-buddy/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CLI do Rabelus Buddy: rabelus-buddy e rbuddy",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "rabelus-buddy": "./bin/rbuddy.mjs",
+    "rbuddy": "./bin/rbuddy.mjs"
+  },
+  "dependencies": {
+    "@rabelus-buddy/client": "0.0.0"
+  }
+}

@@ -24,7 +24,7 @@ Linhas pares do Node viram LTS; a Current recebe novidades primeiro. Fixar `engi
 
 ## Implicações
 
-- `package.json`: `"engines": { "node": ">=24" }`.
+- `package.json`: `"engines": { "node": ">=24.12.0" }` desde 2026-10-16 (o type stripping ficou estável no 24.12; consequência da decisão 8 da SPEC 0001, aprovada pelo Pai; antes era `>=24`).
 - Reverificar quando a linha 26 entrar em LTS e decidir se o piso sobe (decisão registrada em ADR).
 
 ## Histórico de verificações

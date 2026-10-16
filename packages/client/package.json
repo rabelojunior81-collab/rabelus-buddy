@@ -1,0 +1,14 @@
+{
+  "name": "@rabelus-buddy/client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Cliente compartilhado do Rabelus Buddy (CLI, Web e app): i18n, protocolo e cliente do núcleo",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    "./i18n": "./src/i18n.ts"
+  },
+  "dependencies": {
+    "i18next": "26.4.5"
+  }
+}

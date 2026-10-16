@@ -1,27 +1,327 @@
 {
   "validacoes": [
-    { "id": "relogio", "descricao": "Hora de Curitiba com offset, verificada contra a rede", "quem": "maquina", "onde": ["bd pre", "bd post"], "mecanismo": { "bd": "now" }, "origem": "Pai, 2026-10-14" },
-    { "id": "sessao", "descricao": "Toda sessão aberta no barramento antes de agir", "quem": "maquina", "onde": ["bd pre"], "mecanismo": { "bd": "session" }, "origem": "Pai, 2026-10-14 (antes, durante e depois)" },
-    { "id": "claims", "descricao": "Documento vivo compartilhado só se edita com claim", "quem": "maquina", "onde": ["bd claim", "bd pre"], "mecanismo": { "bd": "claim" }, "origem": "ADR 0005" },
-    { "id": "testes", "descricao": "Toda a suíte verde", "quem": "maquina", "onde": ["npm test", "CI"], "mecanismo": { "ci": "run: npm test" }, "origem": "METODO §3" },
-    { "id": "testes-nao-afrouxam", "descricao": "A suíte não perde testes nem asserções; sem skip/todo/only", "quem": "maquina", "onde": ["bd post", "CI"], "mecanismo": { "bd": "test-guard", "ci": "node scripts/bd.mjs test-guard" }, "origem": "Pai, 2026-10-15" },
-    { "id": "opcoes-da-cli", "descricao": "Toda opção anunciada na ajuda do bd é aceita pelo parser", "quem": "maquina", "onde": ["npm test", "CI"], "mecanismo": { "teste": "scripts/test/cli-opcoes.test.mjs" }, "origem": "LEARNING-CURVE 2026-10-15 #7" },
-    { "id": "nomes", "descricao": "Nomes semânticos e carimbos na convenção", "quem": "maquina", "onde": ["bd post", "CI"], "mecanismo": { "bd": "names-check", "ci": "node scripts/bd.mjs names-check" }, "origem": "Pai, 2026-10-14" },
-    { "id": "nada-se-apaga", "descricao": "Nenhum arquivo versionado é apagado; o que sai vai para archive/ com lápide", "quem": "maquina", "onde": ["bd post", "CI"], "mecanismo": { "bd": "guard", "ci": "node scripts/bd.mjs guard --base" }, "origem": "Pai, 2026-10-14; ADR 0004" },
-    { "id": "superficies", "descricao": "Índices completos, ADR aceita não citada como proposta, carimbos em dia, main do STATUS atual", "quem": "maquina", "onde": ["bd post", "CI"], "mecanismo": { "bd": "surfaces", "ci": "node scripts/bd.mjs surfaces" }, "origem": "Pai, 2026-10-15" },
-    { "id": "dependencias", "descricao": "Toda dependência registrada, com versão exata, licença permitida, ficha, aprovação e verificação em dia", "quem": "maquina", "onde": ["bd post", "CI", "rotina semanal"], "mecanismo": { "bd": "deps", "ci": "node scripts/bd.mjs deps" }, "origem": "Pai, 2026-10-15" },
-    { "id": "segredos", "descricao": "Nenhum segredo no histórico", "quem": "maquina", "onde": ["CI"], "mecanismo": { "ci": "gitleaks" }, "origem": "AGENTS §3" },
-    { "id": "tudo-enviado", "descricao": "Nada sem commit e nada sem push ao fim de cada passo", "quem": "maquina", "onde": ["bd post"], "mecanismo": { "bd": "post" }, "origem": "Pai, 2026-10-14; ADR 0003" },
-    { "id": "post-no-blog", "descricao": "Sessão só termina com post e daily publicados no Blog", "quem": "maquina", "onde": ["bd session end", "bd post"], "mecanismo": { "bd": "blog-check" }, "origem": "Pai, 2026-10-15; BLOG_GOVERNANCE §5" },
-    { "id": "merge-governado", "descricao": "Aprovado é mergeado na hora, só com CI verde e bd post limpo", "quem": "maquina", "onde": ["bd merge"], "mecanismo": { "bd": "merge" }, "origem": "Pai, 2026-10-15 e 2026-10-16; ADR 0003" },
-    { "id": "prune", "descricao": "Nenhuma branch sobrevive ao merge; abandonadas viram tag de arquivo", "quem": "maquina", "onde": ["bd merge", "bd pre"], "mecanismo": { "bd": "prune" }, "origem": "Pai, 2026-10-16" },
-    { "id": "registro-de-validacoes", "descricao": "Toda validação de máquina com mecanismo ligado", "quem": "maquina", "onde": ["bd post", "CI"], "mecanismo": { "bd": "validacoes", "ci": "node scripts/bd.mjs validacoes" }, "origem": "Pai, 2026-10-16" },
-    { "id": "qa-visual-do-blog", "descricao": "Post conferido em 375 e 1440 px antes de publicar", "quem": "buddy", "onde": ["publicação no Blog"], "mecanismo": {}, "origem": "BLOG_GOVERNANCE §5" },
-    { "id": "conhecimento-ao-vivo", "descricao": "Fato externo vira ficha com fonte e data antes de virar premissa", "quem": "buddy", "onde": ["checklist do PR"], "mecanismo": {}, "origem": "Pai, 2026-10-14" },
-    { "id": "superficies-nao-mecanicas", "descricao": "Superfícies do evento atualizadas conforme SUPERFICIES.md", "quem": "buddy", "onde": ["checklist do PR"], "mecanismo": {}, "origem": "Pai, 2026-10-15" },
-    { "id": "spec-de-fase", "descricao": "SPEC e plano de fase aprovados pelo Pai antes do código", "quem": "pai", "onde": ["início de cada marco"], "mecanismo": {}, "estado": "recorrente", "origem": "METODO §2" },
-    { "id": "escolha-da-tui", "descricao": "Escolher a biblioteca da TUI (ink × pi-tui) com referências visuais e a avaliação do buddy-dev", "quem": "pai", "onde": ["quando a TUI entrar"], "mecanismo": {}, "estado": "pendente", "origem": "ADR 0016" },
-    { "id": "demonstracao-m0", "descricao": "Tarefa real na assinatura do Go, kill -9 e resume, um passo pelo ChatGPT (critério 26)", "quem": "pai", "onde": ["M0.8"], "mecanismo": {}, "estado": "pendente", "origem": "SPEC 0001" },
-    { "id": "alertas-dependabot", "descricao": "Ligar (ou não) os alertas do Dependabot no repositório", "quem": "pai", "onde": ["configuração do GitHub"], "mecanismo": {}, "estado": "pendente", "origem": "DEPENDENCIAS.md" }
+    {
+      "id": "relogio",
+      "descricao": "Hora de Curitiba com offset, verificada contra a rede",
+      "quem": "maquina",
+      "onde": [
+        "bd pre",
+        "bd post"
+      ],
+      "mecanismo": {
+        "bd": "now"
+      },
+      "origem": "Pai, 2026-10-14"
+    },
+    {
+      "id": "sessao",
+      "descricao": "Toda sessão aberta no barramento antes de agir",
+      "quem": "maquina",
+      "onde": [
+        "bd pre"
+      ],
+      "mecanismo": {
+        "bd": "session"
+      },
+      "origem": "Pai, 2026-10-14 (antes, durante e depois)"
+    },
+    {
+      "id": "claims",
+      "descricao": "Documento vivo compartilhado só se edita com claim",
+      "quem": "maquina",
+      "onde": [
+        "bd claim",
+        "bd pre"
+      ],
+      "mecanismo": {
+        "bd": "claim"
+      },
+      "origem": "ADR 0005"
+    },
+    {
+      "id": "testes",
+      "descricao": "Toda a suíte verde",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "ci": "run: npm test"
+      },
+      "origem": "METODO §3"
+    },
+    {
+      "id": "testes-nao-afrouxam",
+      "descricao": "A suíte não perde testes nem asserções; sem skip/todo/only",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "test-guard",
+        "ci": "node scripts/bd.mjs test-guard"
+      },
+      "origem": "Pai, 2026-10-15"
+    },
+    {
+      "id": "opcoes-da-cli",
+      "descricao": "Toda opção anunciada na ajuda do bd é aceita pelo parser",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "scripts/test/cli-opcoes.test.mjs"
+      },
+      "origem": "LEARNING-CURVE 2026-10-15 #7"
+    },
+    {
+      "id": "tipos",
+      "descricao": "Nenhum erro de tipo (tsc --noEmit, modo estrito, só sintaxe apagável)",
+      "quem": "maquina",
+      "onde": [
+        "CI",
+        "npm run typecheck"
+      ],
+      "mecanismo": {
+        "ci": "npm run typecheck"
+      },
+      "origem": "Pai, 2026-10-15 (decisão 8 = A)"
+    },
+    {
+      "id": "catalogos-i18n",
+      "descricao": "pt-BR e en com as mesmas chaves; toda chave usada no código existe nos dois",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/client/test/i18n.test.ts"
+      },
+      "origem": "ADR 0002; SPEC 0001 critério 23"
+    },
+    {
+      "id": "matriz-de-plataformas",
+      "descricao": "Testes e tipos em Windows, Linux e macOS, com Node 24 e 26",
+      "quem": "maquina",
+      "onde": [
+        "CI"
+      ],
+      "mecanismo": {
+        "ci": "os: [ubuntu-latest, macos-latest, windows-latest]"
+      },
+      "origem": "SPEC 0001 (critérios 1–25)"
+    },
+    {
+      "id": "nomes",
+      "descricao": "Nomes semânticos e carimbos na convenção",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "names-check",
+        "ci": "node scripts/bd.mjs names-check"
+      },
+      "origem": "Pai, 2026-10-14"
+    },
+    {
+      "id": "nada-se-apaga",
+      "descricao": "Nenhum arquivo versionado é apagado; o que sai vai para archive/ com lápide",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "guard",
+        "ci": "node scripts/bd.mjs guard --base"
+      },
+      "origem": "Pai, 2026-10-14; ADR 0004"
+    },
+    {
+      "id": "superficies",
+      "descricao": "Índices completos, ADR aceita não citada como proposta, carimbos em dia, main do STATUS atual",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "surfaces",
+        "ci": "node scripts/bd.mjs surfaces"
+      },
+      "origem": "Pai, 2026-10-15"
+    },
+    {
+      "id": "dependencias",
+      "descricao": "Toda dependência registrada, com versão exata, licença permitida, ficha, aprovação e verificação em dia",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI",
+        "rotina semanal"
+      ],
+      "mecanismo": {
+        "bd": "deps",
+        "ci": "node scripts/bd.mjs deps"
+      },
+      "origem": "Pai, 2026-10-15"
+    },
+    {
+      "id": "segredos",
+      "descricao": "Nenhum segredo no histórico",
+      "quem": "maquina",
+      "onde": [
+        "CI"
+      ],
+      "mecanismo": {
+        "ci": "gitleaks"
+      },
+      "origem": "AGENTS §3"
+    },
+    {
+      "id": "tudo-enviado",
+      "descricao": "Nada sem commit e nada sem push ao fim de cada passo",
+      "quem": "maquina",
+      "onde": [
+        "bd post"
+      ],
+      "mecanismo": {
+        "bd": "post"
+      },
+      "origem": "Pai, 2026-10-14; ADR 0003"
+    },
+    {
+      "id": "post-no-blog",
+      "descricao": "Sessão só termina com post e daily publicados no Blog",
+      "quem": "maquina",
+      "onde": [
+        "bd session end",
+        "bd post"
+      ],
+      "mecanismo": {
+        "bd": "blog-check"
+      },
+      "origem": "Pai, 2026-10-15; BLOG_GOVERNANCE §5"
+    },
+    {
+      "id": "merge-governado",
+      "descricao": "Aprovado é mergeado na hora, só com CI verde e bd post limpo",
+      "quem": "maquina",
+      "onde": [
+        "bd merge"
+      ],
+      "mecanismo": {
+        "bd": "merge"
+      },
+      "origem": "Pai, 2026-10-15 e 2026-10-16; ADR 0003"
+    },
+    {
+      "id": "prune",
+      "descricao": "Nenhuma branch sobrevive ao merge; abandonadas viram tag de arquivo",
+      "quem": "maquina",
+      "onde": [
+        "bd merge",
+        "bd pre"
+      ],
+      "mecanismo": {
+        "bd": "prune"
+      },
+      "origem": "Pai, 2026-10-16"
+    },
+    {
+      "id": "registro-de-validacoes",
+      "descricao": "Toda validação de máquina com mecanismo ligado",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "validacoes",
+        "ci": "node scripts/bd.mjs validacoes"
+      },
+      "origem": "Pai, 2026-10-16"
+    },
+    {
+      "id": "qa-visual-do-blog",
+      "descricao": "Post conferido em 375 e 1440 px antes de publicar",
+      "quem": "buddy",
+      "onde": [
+        "publicação no Blog"
+      ],
+      "mecanismo": {},
+      "origem": "BLOG_GOVERNANCE §5"
+    },
+    {
+      "id": "conhecimento-ao-vivo",
+      "descricao": "Fato externo vira ficha com fonte e data antes de virar premissa",
+      "quem": "buddy",
+      "onde": [
+        "checklist do PR"
+      ],
+      "mecanismo": {},
+      "origem": "Pai, 2026-10-14"
+    },
+    {
+      "id": "superficies-nao-mecanicas",
+      "descricao": "Superfícies do evento atualizadas conforme SUPERFICIES.md",
+      "quem": "buddy",
+      "onde": [
+        "checklist do PR"
+      ],
+      "mecanismo": {},
+      "origem": "Pai, 2026-10-15"
+    },
+    {
+      "id": "spec-de-fase",
+      "descricao": "SPEC e plano de fase aprovados pelo Pai antes do código",
+      "quem": "pai",
+      "onde": [
+        "início de cada marco"
+      ],
+      "mecanismo": {},
+      "estado": "recorrente",
+      "origem": "METODO §2"
+    },
+    {
+      "id": "escolha-da-tui",
+      "descricao": "Escolher a biblioteca da TUI (ink × pi-tui) com referências visuais e a avaliação do buddy-dev",
+      "quem": "pai",
+      "onde": [
+        "quando a TUI entrar"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "ADR 0016"
+    },
+    {
+      "id": "demonstracao-m0",
+      "descricao": "Tarefa real na assinatura do Go, kill -9 e resume, um passo pelo ChatGPT (critério 26)",
+      "quem": "pai",
+      "onde": [
+        "M0.8"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "SPEC 0001"
+    },
+    {
+      "id": "alertas-dependabot",
+      "descricao": "Ligar (ou não) os alertas do Dependabot no repositório",
+      "quem": "pai",
+      "onde": [
+        "configuração do GitHub"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "DEPENDENCIAS.md"
+    }
   ]
 }
