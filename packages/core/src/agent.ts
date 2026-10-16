@@ -2,6 +2,9 @@
 // Cada passo: compacta o contexto se preciso, escolhe o provedor pela ordem (política e orçamento),
 // chama o modelo como efeito com identidade e executa as ferramentas pedidas pela política.
 
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import type { EventLog } from './log.ts';
 import { DomainError, ERR, type Approval, type Domain } from './domain.ts';
 import type { Policy, Tool } from './policy.ts';
@@ -12,6 +15,7 @@ import type { CommandTool } from './tools/command.ts';
 import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
+export const SYSTEM_PROMPT = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.';
 // Modelos de raciocínio gastam saída antes do texto: teto generoso (registro 2026-10-16 da sonda real).
 export const DEFAULT_MAX_OUTPUT = 16_000;
 const DEFAULT_MAX_STEPS = 50;
@@ -82,6 +86,7 @@ export function compact(msgs: ChatMessage[], limit: number): { messages: ChatMes
 // ---------- Loop ----------
 
 type ToolOut = Record<string, unknown> & { ok: boolean };
+const sha = (s: string): string => createHash('sha256').update(s).digest('hex');
 const parse = (a: string): Record<string, unknown> => { try { return JSON.parse(a || '{}') as Record<string, unknown>; } catch { return {}; } };
 
 export class Agent {
@@ -92,34 +97,91 @@ export class Agent {
     return PRICES[r.model] ?? (PAID.has(r.provider.id) ? CONSERVATIVE_PRICE : null);
   }
 
-  async run(session: string, task: string, { system = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.' }: { system?: string } = {}): Promise<AgentResult> {
+  // A conversa é evento: cada mensagem entra no log, e a retomada a reconstrói.
+  private push(session: string, run: string, messages: ChatMessage[], m: ChatMessage): void {
+    this.o.log.append(session, 'agent.message', { run, message: m });
+    messages.push(m);
+  }
+
+  transcript(session: string, run: string): ChatMessage[] {
+    return this.o.log.events(session)
+      .filter((e) => e.kind === 'agent.message' && (e.payload as { run?: string }).run === run)
+      .map((e) => (e.payload as { message: ChatMessage }).message);
+  }
+
+  run(session: string, task: string, opts: { system?: string } = {}): Promise<AgentResult> {
+    return this.begin(session, task, opts).done;
+  }
+
+  // Cria a execução já (o id volta na hora para quem chamou) e segue o laço em segundo plano.
+  begin(session: string, task: string, { system = SYSTEM_PROMPT }: { system?: string } = {}): { run: string; done: Promise<AgentResult> } {
+    const run = this.o.domain.startRun(session, task).id;
+    const messages: ChatMessage[] = [];
+    this.push(session, run, messages, { role: 'system', content: system });
+    this.push(session, run, messages, { role: 'user', content: task });
+    return { run, done: this.loop(session, run, messages, 1) };
+  }
+
+  // Retomada depois de queda ou parada: reconcilia os efeitos desconhecidos, completa as ferramentas
+  // pendentes do último passo e segue o laço com a conversa do log.
+  async resume(session: string, run: string): Promise<AgentResult> {
+    const { domain } = this.o;
+    domain.resumeRun(run);
+    const messages = this.transcript(session, run);
+    const calls = new Map(messages.flatMap((m) => m.toolCalls ?? []).map((t) => [`${run}:${t.id}`, t]));
+    for (const e of domain.unknownEffects(run)) {
+      if (e.kind === 'model.call') { domain.reconcileEffect(e.id, 'not-done'); continue; } // sem efeito no workspace
+      if (e.kind === 'file.write') {
+        const args = parse(calls.get(e.key)?.arguments ?? '');
+        const abs = resolve(this.o.policy.workspace, e.target);
+        const same = typeof args.content === 'string' && existsSync(abs) && sha(readFileSync(abs, 'utf8')) === sha(args.content);
+        domain.reconcileEffect(e.id, same ? 'done' : 'not-done');
+        continue;
+      }
+      // Comando: só o humano sabe se rodou. Aprovar = rodar de novo; negar = considerar feito.
+      if (!this.o.interactive || !this.o.awaitApproval) return this.stop(run, 'needsReconciliation', 0);
+      const d = await this.approve(session, `reconcile run_command ${e.target}`);
+      domain.reconcileEffect(e.id, d === 'approve' ? 'not-done' : 'done');
+    }
+    const last = messages.at(-1);
+    if (last?.role === 'assistant' && last.toolCalls?.length) {
+      for (const tc of last.toolCalls) this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+    }
+    return this.loop(session, run, messages, messages.filter((m) => m.role === 'assistant').length + 1);
+  }
+
+  private stop(run: string, reason: string, steps: number, text = ''): AgentResult {
+    this.o.domain.stopRun(run, reason);
+    return { run, outcome: 'stopped', reason, text, steps };
+  }
+
+  private async loop(session: string, run: string, messages: ChatMessage[], first: number): Promise<AgentResult> {
     const { domain, log, policy } = this.o;
-    const run = domain.startRun(session, task).id;
-    let messages: ChatMessage[] = [{ role: 'system', content: system }, { role: 'user', content: task }];
     const rejected = new Set<string>();
     const limit = this.o.contextLimit ?? CONTEXT_LIMIT;
-    const stop = (reason: string, steps: number, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps }; };
-
-    for (let step = 1; step <= (this.o.maxSteps ?? DEFAULT_MAX_STEPS); step++) {
-      if (policy.isPaused(session)) return stop('sessionPaused', step - 1);
+    const max = first - 1 + (this.o.maxSteps ?? DEFAULT_MAX_STEPS);
+    for (let step = first; step <= max; step++) {
+      if (policy.isPaused(session)) return this.stop(run, 'sessionPaused', step - 1);
+      // A compactação vale para a chamada; a conversa completa continua no log.
+      let sent = messages;
       const before = estimateTokens(messages);
       if (before > limit) {
         const c = compact(messages, limit);
-        messages = c.messages;
-        log.append(session, 'context.compacted', { run, step, before, after: estimateTokens(messages), dropped: c.dropped });
+        sent = c.messages;
+        log.append(session, 'context.compacted', { run, step, before, after: estimateTokens(sent), dropped: c.dropped });
       }
-      const call = await this.callModel(session, run, step, messages, rejected);
-      if ('stop' in call) return stop(call.stop, step - 1);
+      const call = await this.callModel(session, run, step, sent, rejected);
+      if ('stop' in call) return this.stop(run, call.stop, step - 1);
       const res = call.response;
       log.append(session, 'agent.step', { run, step, route: call.route, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
-      messages.push({ role: 'assistant', content: res.text, ...(res.toolCalls.length ? { toolCalls: res.toolCalls } : {}) });
+      this.push(session, run, messages, { role: 'assistant', content: res.text, ...(res.toolCalls.length ? { toolCalls: res.toolCalls } : {}) });
       if (!res.toolCalls.length) {
         domain.finishRun(run);
         return { run, outcome: 'done', text: res.text, steps: step };
       }
-      for (const tc of res.toolCalls) messages.push({ role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+      for (const tc of res.toolCalls) this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
     }
-    return stop('maxSteps', this.o.maxSteps ?? DEFAULT_MAX_STEPS);
+    return this.stop(run, 'maxSteps', max);
   }
 
   // Percorre a ordem de provedores; cada tentativa é um efeito com identidade e uma reserva.
@@ -225,7 +287,8 @@ export class Agent {
     const { domain, policy } = this.o;
     const key = `${run}:${tc.id}`;
     const prev = domain.effectByKey(key);
-    if (prev?.state === 'done') return { ...(domain.receiptOf(prev.id) as ToolOut), replayed: true };
+    // Reconciliado como feito não tem recibo: o resultado é só o sucesso.
+    if (prev?.state === 'done') return { ok: true, ...(domain.receiptOf(prev.id) as ToolOut | undefined), replayed: true };
     let effect: string;
     try {
       effect = domain.beginEffect(session, run, kind, key, target).id;

@@ -3,7 +3,8 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 
 export interface Captured { method: string; path: string; headers: http.IncomingHttpHeaders; body: Record<string, unknown> }
-export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[] };
+// hang: a requisição fica sem resposta (o provedor "some" no meio da chamada).
+export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[]; hang?: boolean };
 
 export async function fakeHttp(responder: Responder): Promise<{ url: string; requests: Captured[]; close: () => Promise<void> }> {
   const requests: Captured[] = [];
@@ -18,6 +19,7 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
       const cap: Captured = { method: req.method ?? '', path: req.url ?? '', headers: req.headers, body };
       requests.push(cap);
       const out = responder(cap);
+      if (out.hang) return;
       if (out.sse) {
         res.writeHead(out.status ?? 200, { 'content-type': 'text/event-stream', ...out.headers });
         for (const ev of out.sse) {

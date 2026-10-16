@@ -43,6 +43,7 @@ const REQUIRED: Record<string, string[]> = {
   'run.finished': ['run'],
   'run.interrupted': ['run'],
   'run.stopped': ['run', 'reason'],
+  'run.resumed': ['run'],
   'effect.intent': ['effect', 'run', 'kind', 'key', 'target'],
   'effect.attempt': ['effect'],
   'effect.receipt': ['effect'],
@@ -67,7 +68,8 @@ export function projectDomain(db: Database, session: string, kind: string, paylo
     case 'run.finished':
     case 'run.interrupted':
     case 'run.stopped':
-      db.prepare('UPDATE proj_runs SET state = ? WHERE id = ?').run({ 'run.finished': 'done', 'run.interrupted': 'interrupted', 'run.stopped': 'stopped' }[kind], s(payload.run));
+    case 'run.resumed':
+      db.prepare('UPDATE proj_runs SET state = ? WHERE id = ?').run({ 'run.finished': 'done', 'run.interrupted': 'interrupted', 'run.stopped': 'stopped', 'run.resumed': 'running' }[kind], s(payload.run));
       break;
     case 'effect.intent':
       db.prepare('INSERT INTO proj_effects (id, session, run, kind, key, target, state) VALUES (?, ?, ?, ?, ?, ?, ?)')
@@ -140,6 +142,23 @@ export class Domain {
     const r = this.getRun(id);
     this.log.append(r.session, 'run.stopped', { run: id, reason });
     return this.getRun(id);
+  }
+
+  // Retomada: só execução interrompida (queda) ou parada (motivo resolvível) volta a rodar.
+  resumeRun(id: string): Run {
+    const r = this.getRun(id);
+    if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(ERR.alreadyResolved, `execução ${id} está ${r.state}: só se retoma interrompida ou parada`, { id, state: r.state });
+    this.log.append(r.session, 'run.resumed', { run: id });
+    return this.getRun(id);
+  }
+
+  listRuns(): Run[] {
+    return this.db.prepare('SELECT * FROM proj_runs ORDER BY rowid').all() as unknown as Run[];
+  }
+
+  // Efeitos desconhecidos de uma execução, na ordem em que nasceram.
+  unknownEffects(run: string): Effect[] {
+    return this.db.prepare("SELECT * FROM proj_effects WHERE run = ? AND state = 'unknown' ORDER BY rowid").all(run) as unknown as Effect[];
   }
 
   // Último efeito com a identidade dada, se houver.
