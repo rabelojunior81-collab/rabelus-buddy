@@ -1,0 +1,267 @@
+// Loop do agente (SPEC 0001, escopos 6, 10 e 11; critérios 5, 16, 20 e 21), com provedores roteirizados.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { openDatabase } from '../src/db.ts';
+import { EventLog } from '../src/log.ts';
+import { Domain } from '../src/domain.ts';
+import { Policy } from '../src/policy.ts';
+import { Budget, type WindowDef } from '../src/budget.ts';
+import { FsTools } from '../src/tools/fs.ts';
+import { CommandTool, type Exec } from '../src/tools/command.ts';
+import { Agent, AGENT_TOOLS, compact, estimateTokens, CONTEXT_LIMIT, type Route } from '../src/agent.ts';
+import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider } from '../src/providers/types.ts';
+
+const usage = { input_tokens: 100, cached_tokens: 0, cache_write_tokens: 0, output_tokens: 10 };
+const say = (text: string): ModelResponse => ({ text, toolCalls: [], usage, finish: 'stop' });
+const tool = (id: string, name: string, args: Record<string, unknown>): ModelResponse => ({ text: '', toolCalls: [{ id, name, arguments: JSON.stringify(args) }], usage, finish: 'tool_calls' });
+
+// Provedor roteirizado: cada chamada consome um passo (resposta ou erro) e guarda a requisição.
+function scripted(id: string, steps: (ModelResponse | Error)[]): Provider & { seen: ModelRequest[] } {
+  const seen: ModelRequest[] = [];
+  return {
+    id,
+    seen,
+    async call(req) {
+      seen.push(structuredClone(req));
+      const s = steps.shift();
+      if (!s) throw new Error(`${id}: roteiro acabou`);
+      if (s instanceof Error) throw s;
+      return s;
+    },
+  };
+}
+
+function setup({ routes, windows = [], interactive = false, exec, awaitApproval }: { routes: Route[]; windows?: WindowDef[]; interactive?: boolean; exec?: Exec; awaitApproval?: ConstructorParameters<typeof Agent>[0]['awaitApproval'] }) {
+  const dir = mkdtempSync(join(tmpdir(), 'rbuddy-agente-'));
+  const workspace = join(dir, 'ws');
+  const log = new EventLog(openDatabase(join(dir, 'nucleo.db')));
+  const domain = new Domain(log);
+  const policy = new Policy(log, { workspace });
+  const budget = new Budget(log, { windows });
+  const fs = new FsTools(policy, { workspace });
+  const cmd = new CommandTool(policy, { workspace, ...(exec ? { exec } : {}) });
+  writeFileSync(join(dir, '.keep'), '');
+  const agent = new Agent({ log, domain, policy, budget, fs, cmd, routes, interactive, ...(awaitApproval ? { awaitApproval } : {}) });
+  return { dir, workspace, log, domain, policy, budget, agent };
+}
+
+const kinds = (log: EventLog, session: string): string[] => log.events(session).map((e) => e.kind);
+
+test('loop: lê, escreve com concessão e termina; cada chamada de modelo e cada escrita é efeito com identidade e recibo', async () => {
+  const p = scripted('opencode-go', [
+    tool('c1', 'list_dir', { path: '.' }),
+    tool('c2', 'write_file', { path: 'nota.txt', content: 'olá' }),
+    say('pronto'),
+  ]);
+  const { log, domain, policy, agent, workspace } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  policy.grant('project', { tool: 'write_file', pattern: '*.txt' }, { session: 's1' });
+  const r = await agent.run('s1', 'escreva uma nota');
+  assert.equal(r.outcome, 'done');
+  assert.equal(r.text, 'pronto');
+  assert.equal(r.steps, 3);
+  assert.equal(readFileSync(join(workspace, 'nota.txt'), 'utf8'), 'olá');
+  assert.equal(domain.getRun(r.run).state, 'done');
+
+  const effects = log.db.prepare('SELECT kind, state FROM proj_effects WHERE run = ?').all(r.run) as { kind: string; state: string }[];
+  assert.deepEqual(effects.filter((e) => e.kind === 'model.call').map((e) => e.state), ['done', 'done', 'done']);
+  assert.deepEqual(effects.filter((e) => e.kind === 'file.write').map((e) => e.state), ['done']);
+  // Reserva e liquidação por chamada.
+  const k = kinds(log, 's1');
+  assert.equal(k.filter((x) => x === 'budget.reserved').length, 3);
+  assert.equal(k.filter((x) => x === 'budget.settled').length, 3);
+  // As ferramentas do agente vão em toda chamada; o resultado da ferramenta volta ligado ao id.
+  assert.deepEqual(p.seen[0]?.tools?.map((t) => t.name), AGENT_TOOLS.map((t) => t.name));
+  const toolMsg = p.seen[1]?.messages.find((m) => m.role === 'tool');
+  assert.equal(toolMsg?.toolCallId, 'c1');
+});
+
+test('janela esgotada por erro de limite troca para o próximo provedor da ordem e registra a troca (critério 16)', async () => {
+  const go = scripted('opencode-go', [new ProviderLimitError('opencode-go', Date.now() + 3_600_000, '429')]);
+  const chatgpt = scripted('chatgpt', [say('feito pelo ChatGPT')]);
+  const { log, budget, agent } = setup({ routes: [{ provider: go, model: 'kimi-k3' }, { provider: chatgpt, model: 'gpt-6.1-sol' }] });
+  const r = await agent.run('s2', 'tarefa');
+  assert.equal(r.outcome, 'done');
+  assert.equal(r.text, 'feito pelo ChatGPT');
+  const ev = log.events('s2');
+  const sw = ev.find((e) => e.kind === 'provider.switched');
+  assert.deepEqual(sw?.payload, { from: 'opencode-go/kimi-k3', to: 'chatgpt/gpt-6.1-sol', reason: 'windowExhausted' });
+  // O esgotamento mora na sessão do orçamento (M0.5), com o provedor e o modelo.
+  assert.ok(log.events('budget').some((e) => e.kind === 'budget.exhausted' && (e.payload as { provider: string; model: string }).provider === 'opencode-go' && (e.payload as { model: string }).model === 'kimi-k3'));
+  assert.equal(ev.filter((e) => e.kind === 'budget.released').length, 1, 'reserva do Go devolvida');
+  // A janela continua esgotada: a próxima tarefa nem tenta o Go.
+  const r2 = await setupReuse(budget, log, [{ provider: go, model: 'kimi-k3' }, { provider: scripted('chatgpt', [say('de novo')]), model: 'gpt-6.1-sol' }]).run('s3', 'outra');
+  assert.equal(r2.text, 'de novo');
+  assert.equal(go.seen.length, 1, 'Go esgotado não é chamado de novo');
+});
+
+function setupReuse(budget: Budget, log: EventLog, routes: Route[]): Agent {
+  const workspace = mkdtempSync(join(tmpdir(), 'rbuddy-agente-ws-'));
+  const policy = new Policy(log, { workspace });
+  return new Agent({ log, domain: new Domain(log), policy, budget, fs: new FsTools(policy, { workspace }), cmd: new CommandTool(policy, { workspace }), routes, interactive: false });
+}
+
+test('janela própria sem saldo também troca; sem provedor disponível a execução para com budget.windowExhausted (critério 16)', async () => {
+  const windows: WindowDef[] = [
+    { id: 'go/gpt-6-luna/5h', provider: 'opencode-go', model: 'gpt-6-luna', capacity: 0, periodHours: 5 },
+    { id: 'openrouter/mes', provider: 'openrouter', model: null, capacity: 0, periodHours: 720 },
+  ];
+  const go = scripted('opencode-go', [say('não deveria')]);
+  const or = scripted('openrouter', [say('não deveria')]);
+  const { log, domain, agent } = setup({ routes: [{ provider: go, model: 'gpt-6-luna' }, { provider: or, model: 'openai/gpt-6-luna' }], windows });
+  // Go com preço conhecido e OpenRouter sem preço na tabela (vale o preço conservador): estimativa positiva,
+  // e a janela de capacidade 0 recusa antes de qualquer consumo.
+  const r = await agent.run('s4', 'tarefa');
+  assert.equal(r.outcome, 'stopped');
+  assert.equal(r.reason, 'budget.windowExhausted');
+  assert.equal(go.seen.length + or.seen.length, 0, 'nenhuma chamada sai sem saldo');
+  assert.equal(domain.getRun(r.run).state, 'stopped');
+  assert.ok(log.events('s4').some((e) => e.kind === 'run.stopped'));
+});
+
+test('modelo que treina com os dados é pulado sem concessão de projeto (critério 20); recusa do provedor pula para o próximo', async () => {
+  const gem = scripted('opencode-go', [say('não deveria')]);
+  const rej = scripted('chatgpt', [new ProviderRejectedError('chatgpt', 'subscription_sharing_user_not_eligible', 'não elegível')]);
+  const ok = scripted('openrouter', [say('ok')]);
+  const { log, agent } = setup({ routes: [{ provider: gem, model: 'gemini-4-argon-contributor' }, { provider: rej, model: 'gpt-6.1-sol' }, { provider: ok, model: 'openai/gpt-6-luna' }] });
+  const r = await agent.run('s5', 'tarefa');
+  assert.equal(r.text, 'ok');
+  assert.equal(gem.seen.length, 0);
+  const sw = log.events('s5').filter((e) => e.kind === 'provider.switched').map((e) => (e.payload as { reason: string }).reason);
+  assert.deepEqual(sw, ['policy', 'rejected']);
+});
+
+test('stream interrompido deixa a chamada desconhecida e para a execução; a nova tentativa espera reconciliação (critério 6 no loop)', async () => {
+  const p = scripted('chatgpt', [new ProviderUnknownError('cortado')]);
+  const { log, domain, agent } = setup({ routes: [{ provider: p, model: 'gpt-6.1-sol' }] });
+  const r = await agent.run('s6', 'tarefa');
+  assert.equal(r.outcome, 'stopped');
+  assert.equal(r.reason, 'effect.unknown');
+  const eff = log.db.prepare("SELECT state FROM proj_effects WHERE run = ? AND kind = 'model.call'").get(r.run) as { state: string };
+  assert.equal(eff.state, 'unknown');
+  assert.equal(domain.getRun(r.run).state, 'stopped');
+  // Consumo incerto: liquidado pela estimativa, nunca devolvido.
+  assert.equal(log.events('s6').filter((e) => e.kind === 'budget.released').length, 0);
+});
+
+test('a escrita acontece uma vez: o mesmo pedido de escrita (mesma identidade) não escreve de novo; desconhecido bloqueia até reconciliar (critério 5)', async () => {
+  const { log, domain, policy, agent, workspace } = setup({ routes: [] });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  policy.grant('project', { tool: 'write_file', pattern: '*.txt' }, { session: 's7' });
+  const run = domain.startRun('s7', 'escrever').id;
+  const call = { id: 'w1', name: 'write_file', arguments: JSON.stringify({ path: 'a.txt', content: 'um' }) };
+  const first = JSON.parse(await agent.executeTool('s7', run, call)) as { ok: boolean };
+  assert.equal(first.ok, true);
+  writeFileSync(join(workspace, 'a.txt'), 'mexido por humano');
+  const again = JSON.parse(await agent.executeTool('s7', run, call)) as { ok: boolean; replayed?: boolean };
+  assert.equal(again.ok, true);
+  assert.equal(again.replayed, true);
+  assert.equal(readFileSync(join(workspace, 'a.txt'), 'utf8'), 'mexido por humano', 'não escreveu de novo');
+  assert.equal(kinds(log, 's7').filter((k) => k === 'file.written').length, 1);
+
+  // Queda no meio de outra escrita: o efeito fica desconhecido e bloqueia a repetição.
+  const call2 = { id: 'w2', name: 'write_file', arguments: JSON.stringify({ path: 'b.txt', content: 'dois' }) };
+  const eff = domain.beginEffect('s7', run, 'file.write', `${run}:w2`, 'b.txt');
+  domain.recover();
+  assert.equal(domain.getEffect(eff.id).state, 'unknown');
+  const blocked = JSON.parse(await agent.executeTool('s7', run, call2)) as { ok: boolean; reason?: string };
+  assert.deepEqual(blocked, { ok: false, reason: 'needsReconciliation', effect: eff.id });
+  domain.reconcileEffect(eff.id, 'not-done');
+  const after = JSON.parse(await agent.executeTool('s7', run, call2)) as { ok: boolean };
+  assert.equal(after.ok, true);
+  assert.equal(readFileSync(join(workspace, 'b.txt'), 'utf8'), 'dois');
+});
+
+test('aprovação humana: write_file pede, o humano aprova uma vez e a escrita acontece; negar devolve a recusa ao modelo', async () => {
+  const decisions: ('approve' | 'deny')[] = ['approve', 'deny'];
+  const asked: string[] = [];
+  const p = scripted('opencode-go', [
+    tool('c1', 'write_file', { path: 'x.txt', content: '1' }),
+    tool('c2', 'write_file', { path: 'y.txt', content: '2' }),
+    say('fim'),
+  ]);
+  const { workspace, agent, log } = setup({
+    routes: [{ provider: p, model: 'kimi-k3' }],
+    interactive: true,
+    awaitApproval: async (a) => { asked.push(a.action); return decisions.shift() ?? 'deny'; },
+  });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  const r = await agent.run('s8', 'duas escritas');
+  assert.equal(r.outcome, 'done');
+  assert.deepEqual(asked, ['write_file x.txt', 'write_file y.txt']);
+  assert.equal(readFileSync(join(workspace, 'x.txt'), 'utf8'), '1');
+  assert.throws(() => readFileSync(join(workspace, 'y.txt'), 'utf8'));
+  const denied = p.seen[2]?.messages.find((m) => m.role === 'tool' && m.toolCallId === 'c2');
+  assert.match(denied?.content ?? '', /"reason":"deniedByHuman"/);
+  assert.equal(kinds(log, 's8').filter((k) => k === 'approval.resolved').length, 2);
+});
+
+test('run_command: efeito com identidade, só com aprovação de uma vez; sem terminal é negado', async () => {
+  let ran = 0;
+  const exec: Exec = () => { ran++; return { code: 0, stdout: 'ok', stderr: '' }; };
+  const p = scripted('opencode-go', [tool('c1', 'run_command', { command: 'npm test' }), say('fim')]);
+  const { agent, log } = setup({ routes: [{ provider: p, model: 'kimi-k3' }], interactive: true, exec, awaitApproval: async () => 'approve' });
+  const r = await agent.run('s9', 'testar');
+  assert.equal(r.outcome, 'done');
+  assert.equal(ran, 1);
+  const eff = (log.db.prepare("SELECT state, key FROM proj_effects WHERE run = ? AND kind = 'command'").all(r.run) as { state: string; key: string }[]).map((e) => ({ ...e }));
+  assert.deepEqual(eff, [{ state: 'done', key: `${r.run}:c1` }]);
+
+  const p2 = scripted('opencode-go', [tool('c1', 'run_command', { command: 'npm test' }), say('fim')]);
+  let ran2 = 0;
+  const s2 = setup({ routes: [{ provider: p2, model: 'kimi-k3' }], interactive: false, exec: () => { ran2++; return { code: 0, stdout: '', stderr: '' }; } });
+  await s2.agent.run('s10', 'testar');
+  assert.equal(ran2, 0);
+  assert.match(p2.seen[1]?.messages.find((m) => m.role === 'tool')?.content ?? '', /nonInteractive/);
+});
+
+test('compactação: nenhuma chamada sai acima de 100k tokens estimados; pares chamada/resultado preservados; vira evento (critério 21)', async () => {
+  assert.equal(CONTEXT_LIMIT, 100_000);
+  const big = 'x'.repeat(60_000 * 4); // ~60k tokens por resultado
+  const msgs: ChatMessage[] = [
+    { role: 'system', content: 'sistema' },
+    { role: 'user', content: 'tarefa original' },
+  ];
+  for (let i = 0; i < 4; i++) {
+    msgs.push({ role: 'assistant', content: '', toolCalls: [{ id: `t${i}`, name: 'read_file', arguments: '{}' }] });
+    msgs.push({ role: 'tool', content: big, toolCallId: `t${i}` });
+  }
+  assert.ok(estimateTokens(msgs) > CONTEXT_LIMIT);
+  const c = compact(msgs, CONTEXT_LIMIT);
+  assert.ok(estimateTokens(c.messages) <= CONTEXT_LIMIT, `depois: ${estimateTokens(c.messages)}`);
+  assert.equal(c.messages[0]?.content, 'sistema');
+  assert.equal(c.messages[1]?.content, 'tarefa original');
+  assert.ok(c.dropped > 0);
+  const ids = new Set(c.messages.flatMap((m) => m.toolCalls?.map((t) => t.id) ?? []));
+  for (const m of c.messages) if (m.role === 'tool') assert.ok(ids.has(m.toolCallId ?? ''), 'resultado sem a chamada');
+
+  // No loop: o histórico cresce além do limite e a chamada seguinte sai compactada, com evento.
+  const huge = 'y'.repeat(70_000 * 4);
+  const p = scripted('opencode-go', [tool('a', 'read_file', { path: 'g.txt' }), tool('b', 'read_file', { path: 'g.txt' }), say('fim')]);
+  const { agent, log, workspace } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
+  await import('node:fs').then((f) => { f.mkdirSync(workspace, { recursive: true }); f.writeFileSync(join(workspace, 'g.txt'), huge); });
+  const r = await agent.run('s11', 'ler grande');
+  assert.equal(r.outcome, 'done');
+  for (const req of p.seen) assert.ok(estimateTokens(req.messages) <= CONTEXT_LIMIT, `chamada com ${estimateTokens(req.messages)} tokens`);
+  const ev = log.events('s11').find((e) => e.kind === 'context.compacted');
+  assert.ok(ev, 'compactação vira evento');
+  const pl = ev.payload as { before: number; after: number; dropped: number };
+  assert.ok(pl.before > CONTEXT_LIMIT && pl.after <= CONTEXT_LIMIT && pl.dropped > 0);
+});
+
+test('compactação: um resultado sozinho acima do limite é truncado até caber, sem perder a tarefa', () => {
+  const msgs: ChatMessage[] = [
+    { role: 'system', content: 'sistema' },
+    { role: 'user', content: 'tarefa' },
+    { role: 'assistant', content: '', toolCalls: [{ id: 't', name: 'read_file', arguments: '{}' }] },
+    { role: 'tool', content: 'z'.repeat(150_000 * 4), toolCallId: 't' },
+  ];
+  const c = compact(msgs, CONTEXT_LIMIT);
+  assert.ok(estimateTokens(c.messages) <= CONTEXT_LIMIT);
+  assert.equal(c.messages[1]?.content, 'tarefa');
+  assert.match(c.messages.at(-1)?.content ?? '', /\[truncado\]$/);
+  assert.equal(c.messages.at(-1)?.toolCallId, 't');
+});

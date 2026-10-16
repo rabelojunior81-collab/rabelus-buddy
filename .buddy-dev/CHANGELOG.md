@@ -190,3 +190,7 @@ M0.6a: provedores OpenCode Go (Responses, Chat, Messages, Google), Ollama Cloud 
 ### #0044 · 2026-10-16T020142-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.6b: ChatGPT por Sign in with ChatGPT (rbuddy login/logout chatgpt; PKCE, ID token pelo JWKS, credenciais 0600, refresh rotativo serializado; inferência em stream no contrato da prévia). Critérios 18 e 19 verdes contra servidores falsos; login real aguarda o Pai.
+
+### #0045 · 2026-10-16T020831-0300 · claude-code-vs-code-fe93fb · feat
+
+M0.6e: loop do agente (ordem de provedores com política e orçamento, chamada de modelo e escrita/comando como efeitos com identidade, troca ao esgotar janela, escrita uma vez, aprovação humana, compactação abaixo de 100k tokens). M0.6 completa.

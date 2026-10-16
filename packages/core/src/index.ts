@@ -10,3 +10,4 @@ export { PRICES, type Price } from './prices.ts';
 export { FsTools } from './tools/fs.ts';
 export { CommandTool } from './tools/command.ts';
 export { startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints, type ChatGptCredentials } from './providers/siwc.ts';
+export { Agent, AGENT_TOOLS, CONTEXT_LIMIT, compact, estimateTokens, type Route, type AgentOptions, type AgentResult } from './agent.ts';
