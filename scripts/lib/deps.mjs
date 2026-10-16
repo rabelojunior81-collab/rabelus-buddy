@@ -53,11 +53,18 @@ export function checkDeps(root, { now = new Date() } = {}) {
     byName.set(e.name, e);
   }
 
+  // Pacotes internos (workspaces): não vêm do npm; valem só com a versão exata do workspace.
+  const internal = new Map(manifests(root).slice(1).map((m) => readJson(join(root, m))).filter((p) => p.name).map((p) => [p.name, p.version]));
+
   let installed = 0;
   for (const m of manifests(root)) {
     const pkg = readJson(join(root, m));
     for (const [section, kind] of Object.entries(SECTIONS)) {
       for (const [name, spec] of Object.entries(pkg[section] ?? {})) {
+        if (internal.has(name)) {
+          if (spec !== internal.get(name)) problems.push(`${m}: ${name} "${spec}" precisa da versão exata do workspace (${internal.get(name)})`);
+          continue;
+        }
         installed += 1;
         const e = byName.get(name);
         if (!e) { problems.push(`${m}: ${name} fora do registro (${REGISTRY}); siga docs/30-governanca/DEPENDENCIAS.md`); continue; }
