@@ -1,0 +1,8 @@
+{
+  "budget": {
+    "header": "Budget by window (used / cap):",
+    "item": "  {{id}}  US$ {{used}} / {{capacity}}  (last {{hours}} h)",
+    "itemNoCap": "  {{id}}  US$ {{used}}  (cap reported by the provider; last {{hours}} h)",
+    "exhausted": "  {{id}}  exhausted until {{until}}"
+  }
+}

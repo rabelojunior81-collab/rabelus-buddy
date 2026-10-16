@@ -9,7 +9,7 @@
 
 </div>
 
-> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)). The `rbuddy` CLI already answers `--help`, `--version` and `--lang` runs the core owner (`rbuddy daemon start|status|stop`), the sole writer of the event log, which recovers its state after a crash; and resolves approvals (`rbuddy approvals|approve|deny`); the other commands arrive in the next sub-phases.
+> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)). The `rbuddy` CLI already answers `--help`, `--version` and `--lang` runs the core owner (`rbuddy daemon start|status|stop`), the sole writer of the event log, which recovers its state after a crash; resolves approvals (`rbuddy approvals|approve|deny`); and shows the budget by window (`rbuddy budget`); the other commands arrive in the next sub-phases.
 
 > Portuguese (pt-BR) is the project's primary language. Public-facing files are mirrored in English; internal documentation is in Portuguese and translated on demand.
 

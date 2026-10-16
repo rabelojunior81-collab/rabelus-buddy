@@ -17,7 +17,7 @@ export class RpcError extends Error {
 }
 
 // Códigos de erro de aplicação do protocolo do núcleo (espelham core/src/domain.ts).
-export const RPC_ERR = { needsReconciliation: -32001, notUnknown: -32002, notFound: -32003, alreadyResolved: -32004 } as const;
+export const RPC_ERR = { needsReconciliation: -32001, notUnknown: -32002, notFound: -32003, alreadyResolved: -32004, budget: -32005 } as const;
 
 export interface Connection {
   call: (method: string, params?: unknown) => Promise<unknown>;

@@ -156,6 +156,19 @@
       "origem": "SPEC 0001 critérios 7–13 e 20; ADR 0009; R3"
     },
     {
+      "id": "orcamento-atomico",
+      "descricao": "Reserva atômica por janela (só uma passa com saldo para uma); liquidação pelo usage real e pela fórmula; janela esgotada barra; OpenRouter nunca passa de US$ 20 no mês",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI (3 SOs × Node 24/26)"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/orcamento.test.ts"
+      },
+      "origem": "SPEC 0001 critérios 14–16; R5-6; ADRs 0008, 0014, 0015"
+    },
+    {
       "id": "nomes",
       "descricao": "Nomes semânticos e carimbos na convenção",
       "quem": "maquina",
