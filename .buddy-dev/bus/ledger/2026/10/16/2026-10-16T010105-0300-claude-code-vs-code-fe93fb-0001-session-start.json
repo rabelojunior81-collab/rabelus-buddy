@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-16T010105-0300-claude-code-vs-code-fe93fb-0001",
+  "ts": "2026-10-16T01:01:05-03:00",
+  "utc": "2026-10-16T04:01:05.610Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "regra: só parar quando o Pai precisar fazer ou decidir; M0.2 log de eventos e processo dono (pacote core)",
+  "refs": [],
+  "data": {}
+}

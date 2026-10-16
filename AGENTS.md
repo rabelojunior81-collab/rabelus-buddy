@@ -82,6 +82,7 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 5. Fora deste repositório: leitura justificada; escrita só com autorização expressa.
 6. Nunca afirmar teste, gate ou verificação que não rodou. Lacuna declarada vale mais que preenchimento bonito.
 7. Pedido novo do Pai no meio de uma tarefa se absorve **em paralelo**: atender ao pedido e retomar a tarefa em curso, sem esperar outra ordem. O STATUS diz o que segue enquanto algo aguarda o Pai.
+8. **Só parar quando o Pai precisar fazer ou decidir algo** (Pai, 2026-10-16). Plano aprovado se executa sub-fase após sub-fase, com o rito completo em cada uma; a parada vem com o que ele precisa fazer ou decidir, e as validações dele ficam em `validacoes.json` (aparecem em todo `bd pre`).
 
 ## 6. Mapa
 
