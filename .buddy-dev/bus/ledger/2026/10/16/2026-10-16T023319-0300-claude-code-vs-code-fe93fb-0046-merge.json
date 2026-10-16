@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-16T023319-0300-claude-code-vs-code-fe93fb-0046",
+  "ts": "2026-10-16T02:33:19-03:00",
+  "utc": "2026-10-16T05:33:19.760Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 46,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #32: feat(m0.7b): CLI do agente (run, resume, status, log, providers, login por chave)",
+  "refs": [
+    "#32"
+  ],
+  "data": {}
+}
