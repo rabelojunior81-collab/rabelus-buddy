@@ -9,7 +9,7 @@
 
 </div>
 
-> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)). A CLI `rbuddy` já responde a `--help`, `--version` e `--lang` sobe o dono do núcleo (`rbuddy daemon start|status|stop`), único escritor do log de eventos, que retoma o estado depois de uma queda; resolve aprovações (`rbuddy approvals|approve|deny`); e mostra o orçamento por janela (`rbuddy budget`); os demais comandos chegam nas próximas sub-fases.
+> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)), com a **M0.7b** feita: `rbuddy run "<tarefa>"` roda o agente nas assinaturas (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), com política, aprovações no terminal, orçamento por janela e retomada depois de queda (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` e `daemon` completam a CLI. Falta a auditoria de segredos e do catálogo (M0.7c) e a demonstração com o Pai (M0.8).
 
 ## O que é
 

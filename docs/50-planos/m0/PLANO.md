@@ -58,7 +58,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - teste de vazamento de segredos em todos os artefatos.
   - Critérios: 22, 23.
   - [x] **M0.7a Retomada e dono executando o agente**: a conversa vira evento (`agent.message`); `resume` reconcilia efeitos desconhecidos (chamada de modelo: não feita; escrita: pelo hash do conteúdo; comando: o humano decide); o dono roda `agent.run`/`agent.resume` em segundo plano, com aprovação pelo IPC; rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente. `kill -9` com a chamada em curso e `resume` levam a tarefa ao fim sem escrita duplicada, com provedor HTTP falso;
-  - **M0.7b CLI**: `run` (dono sob demanda, acompanhamento, aprovação por `readline`), `status`, `log`, `resume`, `login opencode-go`, `providers`;
+  - [x] **M0.7b CLI**: `run` (dono sob demanda, acompanhamento pelo catálogo, aprovação no terminal), `status`, `log` (sem a conversa), `resume`, `providers`, `login`/`logout` por chave (sem eco, só do dono); testada em processo com provedor HTTP falso;
   - **M0.7c Auditoria**: vazamento de segredos (critério 22) e catálogo completo (critério 23).
 - [ ] **M0.8 Demonstração e fechamento**:
   - tarefa real com o provedor real, `kill -9` e `resume`, validada pelo Pai;

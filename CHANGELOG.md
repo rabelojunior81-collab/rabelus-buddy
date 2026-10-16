@@ -10,7 +10,15 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
-- Provedores (M0.6a): OpenCode Go em quatro rotas (Responses, Chat Completions, Messages e Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`), Ollama Cloud e OpenRouter; identificação própria, `store: false`, uso normalizado, limite do provedor como esgotamento de janela; certificados do sistema somados aos embutidos. Testado contra servidor falso e com uma chamada real mínima por rota.
+- CLI do agente (M0.7b): `rbuddy run "<tarefa>"` sobe o dono quando preciso, acompanha a execução pelo catálogo e pergunta cada aprovação no terminal; `resume`, `status`, `log` (aprovações, consumo, escritas; nunca a conversa) e `providers` (ordem e credenciais); `login`/`logout` de `opencode-go`, `ollama-cloud` e `openrouter` com a chave lida sem eco e guardada só para o usuário.
+
+- Retomada (M0.7a): a conversa do agente fica no log; depois de uma queda, `resume` reconcilia cada efeito desconhecido (chamada de modelo refeita; escrita pelo hash do conteúdo pedido; comando, só com o humano) e leva a tarefa ao fim sem efeito duplicado. O dono executa o agente em segundo plano, com aprovação pelo IPC, rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente.
+
+- Loop do agente (M0.6e; com ele, a M0.6 completa): ferramentas `read_file`, `list_dir`, `write_file` e `run_command` pela política; cada chamada de modelo, escrita e comando é efeito com identidade; reserva e liquidação por chamada; troca para o próximo provedor ao esgotar a janela; modelo que treina com os dados pulado sem concessão; compactação abaixo de 100k tokens.
+
+- ChatGPT por Sign in with ChatGPT (M0.6b): `rbuddy login chatgpt` (PKCE, callback em 127.0.0.1, ID token conferido pelo JWKS, credenciais só do usuário, refresh rotativo, revogação no `logout`) e inferência em stream no contrato da prévia (`store: false`, `stream: true`, sem campos proibidos, sucesso só em `response.completed`).
+
+- Provedores (M0.6a, com a M0.6c e a M0.6d): OpenCode Go em quatro rotas (Responses, Chat Completions, Messages e Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`), Ollama Cloud e OpenRouter; identificação própria, `store: false`, uso normalizado, limite do provedor como esgotamento de janela; certificados do sistema somados aos embutidos. Testado contra servidor falso e com uma chamada real mínima por rota.
 
 - Núcleo (M0.5): orçamento atômico por janela móvel — reserva pela estimativa antes da chamada, liquidação pelo `usage` real (fórmula verificada), liberação sem custo; janelas do OpenCode Go por modelo (5 h, semana, mês), teto semanal do ChatGPT informado pelo provedor e US$ 20/mês do OpenRouter; esgotamento por erro de limite do provedor; `rbuddy budget`.
 
