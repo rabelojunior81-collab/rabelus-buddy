@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- Núcleo (M0.4): motor de política (deny → ask → allow; caminhos protegidos `.git/`, `.buddy-dev/`, `archive/`, `.env*`, `*.pem`, `*.key`; concessões de uma vez, sessão e projeto; `ask` sem terminal vira `deny`; três chamadas idênticas pausam a sessão; modelos que treinam com os dados só com concessão de projeto) e ferramentas de arquivo com compare-and-set e de comando só com aprovação explícita.
+
 - Núcleo (M0.3): execuções, efeitos externos (intenção, tentativa, recibo) e aprovações como eventos; retomada depois de `kill -9` (execução interrompida, efeito sem recibo "desconhecido" e bloqueado até a reconciliação, aprovação pendente preservada); `rbuddy approvals`, `approve` e `deny`; o log recusa evento de domínio malformado.
 
 - Núcleo (M0.2): log de eventos em SQLite com sequência contígua por sessão e projeções reconstruíveis; processo dono único (`rbuddy daemon start|status|stop`) servindo JSON-RPC 2.0 por named pipe (Windows) ou socket Unix; cliente IPC compartilhado.

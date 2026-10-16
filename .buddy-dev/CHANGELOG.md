@@ -174,3 +174,7 @@ M0.2: log de eventos em SQLite com projeções reconstruíveis, dono único com 
 ### #0040 · 2026-10-16T011421-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.3: execuções, efeitos com identidade e aprovações como eventos; retomada após kill -9 (critérios 4–6); rbuddy approvals/approve/deny. O teste do critério 3 achou um bug (evento de domínio malformado projetava id undefined); corrigido no código, com asserção nova.
+
+### #0041 · 2026-10-16T012153-0300 · claude-code-vs-code-fe93fb · ferramenta
+
+M0.4: motor de política com auditoria em eventos, FsTools com compare-and-set e CommandTool só com aprovação explícita de uma vez; critérios 7–13 e 20; rebuild das projeções cobre a política (teste novo).

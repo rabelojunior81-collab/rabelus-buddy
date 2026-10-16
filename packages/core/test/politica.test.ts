@@ -157,3 +157,19 @@ test('critério 20: modelos que treinam com os dados negados por padrão; só co
   assert.equal(policy.decide(use('gemini-4-argon-contributor'), noTty).effect, 'allow');
   assert.ok(log.events('s1').some((e) => e.kind === 'policy.grant.created' && (e.payload as { pattern: string }).pattern === 'gemini-4-argon-contributor'));
 });
+
+test('critério 3 estendido: rebuild das projeções preserva concessões, regras, pausa e leituras (hash e decisões)', () => {
+  const { policy, log, workspace } = setup();
+  const fs = new FsTools(policy, { workspace });
+  policy.addRule({ effect: 'deny', tool: 'write_file', pattern: 'src/x.ts' });
+  policy.grant('project', { tool: 'archive', pattern: 'src/**' }, { session: 's1' });
+  fs.readFile('s1', 'src/a.ts', tty);
+  for (let i = 0; i < 3; i++) policy.observeCall('s2', { tool: 'read_file', target: 'z' });
+  const before = log.projectionHash();
+  log.dropProjections();
+  log.rebuildProjections();
+  assert.equal(log.projectionHash(), before);
+  assert.equal(policy.decide(write('src/x.ts'), tty).effect, 'deny');
+  assert.equal(policy.decide({ session: 's3', tool: 'archive', target: 'src/a.ts' }, tty).effect, 'allow');
+  assert.equal(policy.isPaused('s2'), true);
+});
