@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-16T011419-0300-claude-code-vs-code-fe93fb-0012",
+  "ts": "2026-10-16T01:14:19-03:00",
+  "utc": "2026-10-16T04:14:19.161Z",
+  "session": "claude-code-vs-code-fe93fb",
+  "seq": 12,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m0-3-efeitos-e-retomada",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-16T04:44:19.161Z",
+    "tookOverFrom": null
+  }
+}

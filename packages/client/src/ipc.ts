@@ -4,15 +4,20 @@
 import net from 'node:net';
 
 export interface RpcRequest { jsonrpc: '2.0'; id: number; method: string; params: unknown }
-export interface RpcResponse { jsonrpc: '2.0'; id: number; result?: unknown; error?: { code: number; message: string } }
+export interface RpcResponse { jsonrpc: '2.0'; id: number; result?: unknown; error?: { code: number; message: string; data?: Record<string, unknown> } }
 
 export class RpcError extends Error {
   readonly code: number;
-  constructor(code: number, message: string) {
+  readonly data: Record<string, unknown>;
+  constructor(code: number, message: string, data: Record<string, unknown> = {}) {
     super(message);
     this.code = code;
+    this.data = data;
   }
 }
+
+// Códigos de erro de aplicação do protocolo do núcleo (espelham core/src/domain.ts).
+export const RPC_ERR = { needsReconciliation: -32001, notUnknown: -32002, notFound: -32003, alreadyResolved: -32004 } as const;
 
 export interface Connection {
   call: (method: string, params?: unknown) => Promise<unknown>;
@@ -36,7 +41,7 @@ export function connect(endpoint: string): Promise<Connection> {
         const p = pending.get(msg.id);
         if (!p) continue;
         pending.delete(msg.id);
-        if (msg.error) p.reject(new RpcError(msg.error.code, msg.error.message));
+        if (msg.error) p.reject(new RpcError(msg.error.code, msg.error.message, msg.error.data));
         else p.resolve(msg.result);
       }
     });

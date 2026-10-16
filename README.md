@@ -9,7 +9,7 @@
 
 </div>
 
-> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)). A CLI `rbuddy` já responde a `--help`, `--version` e `--lang` e sobe o dono do núcleo (`rbuddy daemon start|status|stop`), único escritor do log de eventos; os demais comandos chegam nas próximas sub-fases.
+> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)). A CLI `rbuddy` já responde a `--help`, `--version` e `--lang` sobe o dono do núcleo (`rbuddy daemon start|status|stop`), único escritor do log de eventos, que retoma o estado depois de uma queda; e resolve aprovações (`rbuddy approvals|approve|deny`); os demais comandos chegam nas próximas sub-fases.
 
 ## O que é
 

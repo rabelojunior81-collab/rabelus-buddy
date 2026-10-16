@@ -27,13 +27,30 @@ test('projeção de sessões acompanha o log na mesma transação', () => {
 
 test('critério 3: projeções apagadas e reconstruídas do log ficam idênticas (hash)', () => {
   const log = fresh();
-  const kinds = ['session.started', 'step', 'approval.requested', 'approval.resolved', 'effect.intent', 'effect.receipt'];
-  for (let i = 0; i < 200; i++) log.append(`s${i % 7}`, kinds[i % kinds.length] ?? 'step', { i, texto: 'ação ' + i });
+  // 200 eventos variados, com os eventos de domínio bem formados (o log recusa os malformados).
+  for (let i = 0; i < 200; i++) {
+    const s = `s${i % 7}`;
+    switch (i % 6) {
+      case 0: log.append(s, 'run.started', { run: `run-${i}`, task: `tarefa ${i}` }); break;
+      case 1: log.append(s, 'effect.intent', { effect: `eff-${i}`, run: `run-${i - 1}`, kind: 'provider.call', key: `k-${i}`, target: 'go' }); break;
+      case 2: log.append(s, 'effect.receipt', { effect: `eff-${i - 1}`, result: { ok: true } }); break;
+      case 3: log.append(s, 'approval.requested', { approval: `ap-${i}`, action: `write_file ${i}` }); break;
+      case 4: log.append(s, 'approval.resolved', { approval: `ap-${i - 1}`, decision: 'approve' }); break;
+      default: log.append(s, 'step', { i, texto: 'ação ' + i });
+    }
+  }
   const before = log.projectionHash();
   log.dropProjections();
   assert.notEqual(log.projectionHash(), before, 'projeções apagadas deveriam mudar o hash');
   log.rebuildProjections();
   assert.equal(log.projectionHash(), before);
+});
+
+test('evento de domínio malformado é recusado e não entra no log', () => {
+  const log = fresh();
+  assert.throws(() => log.append('s1', 'approval.requested', { action: 'x' }), /malformado.*approval/);
+  assert.throws(() => log.append('s1', 'effect.intent', { effect: 'e1' }), /malformado/);
+  assert.equal(log.totalEvents(), 0);
 });
 
 test('evento com sequência repetida é recusado pelo banco (UNIQUE session, seq)', () => {

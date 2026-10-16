@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-16T01:05:52-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-16T01:14:19-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -20,10 +20,10 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [x] SPEC do M0 aprovada pelo Pai (2026-10-15): [rascunho 0001](../40-specs/0001-nucleo-governado/SPEC.md) entregue em 2026-10-15, com spike de banco e IPC; [plano de fase](./m0/PLANO.md) proposto
 - [ ] Modelo de sessão, execução, passo e evento compartilhado entre interfaces [§8; R5]
 - [x] Um processo dono do banco; IPC para os demais [R5-1] — M0.2
-- [~] Log de eventos em SQLite com projeções; retomada após `kill -9` [R5-7; §8] — log e projeções na M0.2; retomada na M0.3
+- [x] Log de eventos em SQLite com projeções; retomada após `kill -9` [R5-7; §8] — M0.2 e M0.3
 - [ ] Motor de política: deny → ask → allow, escopos (uma vez, sessão, projeto), caminhos protegidos, `ask` → `deny` sem interação, detecção de laço [R3; ADR 0009]
 - [ ] Orçamento atômico: reserva e liquidação; janelas de assinatura e dólares [R1; R5-6; ADR 0008]
-- [ ] Efeitos externos com identidade estável e estado "desconhecido" [R5-5]
+- [x] Efeitos externos com identidade estável e estado "desconhecido" [R5-5] — M0.3
 - [ ] Compactação de contexto abaixo de 100k tokens [R1]
 - [ ] 1 provedor da camada barata por API (plano B das assinaturas) [ADR 0008]
 - [~] CLI `rabelus-buddy` / `rbuddy`, strings via catálogo pt-BR/en [ADR 0011; ADR 0002] — base na M0.1

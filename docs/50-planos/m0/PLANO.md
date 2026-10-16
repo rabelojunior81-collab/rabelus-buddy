@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:05:52-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:14:19-03:00
 
 ## Objetivo
 
@@ -25,7 +25,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - IPC JSON-RPC 2.0 sobre `node:net`;
   - cliente IPC em `@rabelus-buddy/client`.
   - Critérios: 1, 2, 3.
-- [ ] **M0.3 Efeitos e retomada**:
+- [x] **M0.3 Efeitos e retomada** — branch `feat/m0-3-efeitos-e-retomada`, critérios 4–6 verdes (a parte "a escrita acontece uma vez" do critério 5 fecha quando as ferramentas existirem, na M0.6):
   - intenção, tentativa e recibo; estado "desconhecido" e reconciliação;
   - reprojeção na partida;
   - testes de `kill -9` com processo filho.

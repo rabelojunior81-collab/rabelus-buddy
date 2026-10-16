@@ -4,6 +4,7 @@
 
 import { createHash } from 'node:crypto';
 import { transaction, type Database } from './db.ts';
+import { DOMAIN_SCHEMA, DOMAIN_PROJECTIONS, projectDomain, validateDomainEvent } from './domain.ts';
 
 export interface LogEvent {
   id: number;
@@ -49,28 +50,34 @@ export class EventLog {
   constructor(db: Database) {
     this.db = db;
     db.exec(SCHEMA);
+    db.exec(DOMAIN_SCHEMA);
   }
 
   append(session: string, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
-    return transaction(this.db, () => {
-      const row = this.db.prepare('SELECT COALESCE(MAX(seq), 0) + 1 AS next FROM events WHERE session = ?').get(session) as { next: number };
-      return this.insertRaw(session, row.next, kind, payload, ts);
-    });
+    return transaction(this.db, () => this.appendInTx(session, kind, payload, ts));
+  }
+
+  // Igual ao append, mas dentro de uma transação já aberta (vários eventos atômicos).
+  appendInTx(session: string, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
+    const row = this.db.prepare('SELECT COALESCE(MAX(seq), 0) + 1 AS next FROM events WHERE session = ?').get(session) as { next: number };
+    return this.insertRaw(session, row.next, kind, payload, ts);
   }
 
   // Inserção crua (sem transação própria): usada pelo append e pelos testes de integridade.
   insertRaw(session: string, seq: number, kind: string, payload: unknown, ts = new Date().toISOString()): LogEvent {
+    validateDomainEvent(kind, (payload ?? {}) as Record<string, unknown>);
     const body = JSON.stringify(payload ?? null);
     const res = this.db.prepare('INSERT INTO events (session, seq, kind, payload, ts) VALUES (?, ?, ?, ?, ?)').run(session, seq, kind, body, ts);
-    this.project({ session, seq, kind, ts });
+    this.project({ session, seq, kind, ts, payload });
     return { id: Number(res.lastInsertRowid), session, seq, kind, payload, ts };
   }
 
-  private project(e: { session: string; seq: number; kind: string; ts: string }): void {
+  private project(e: { session: string; seq: number; kind: string; ts: string; payload: unknown }): void {
     this.db.prepare(`
       INSERT INTO proj_sessions (id, created_ts, last_seq, last_kind, event_count) VALUES (?, ?, ?, ?, 1)
       ON CONFLICT (id) DO UPDATE SET last_seq = excluded.last_seq, last_kind = excluded.last_kind, event_count = event_count + 1
     `).run(e.session, e.ts, e.seq, e.kind);
+    projectDomain(this.db, e.session, e.kind, (e.payload ?? {}) as Record<string, unknown>);
   }
 
   events(session: string): LogEvent[] {
@@ -88,18 +95,19 @@ export class EventLog {
   }
 
   dropProjections(): void {
-    this.db.exec('DELETE FROM proj_sessions');
+    for (const t of ['proj_sessions', ...DOMAIN_PROJECTIONS]) this.db.exec(`DELETE FROM ${t}`);
   }
 
   rebuildProjections(): void {
     transaction(this.db, () => {
       this.dropProjections();
-      const rows = this.db.prepare('SELECT session, seq, kind, ts FROM events ORDER BY id').all() as unknown as { session: string; seq: number; kind: string; ts: string }[];
-      for (const r of rows) this.project(r);
+      const rows = this.db.prepare('SELECT session, seq, kind, ts, payload FROM events ORDER BY id').all() as unknown as { session: string; seq: number; kind: string; ts: string; payload: string }[];
+      for (const r of rows) this.project({ ...r, payload: JSON.parse(r.payload) as unknown });
     });
   }
 
   projectionHash(): string {
-    return createHash('sha256').update(JSON.stringify(this.sessions())).digest('hex');
+    const domain = DOMAIN_PROJECTIONS.map((t) => this.db.prepare(`SELECT * FROM ${t} ORDER BY id`).all());
+    return createHash('sha256').update(JSON.stringify([this.sessions(), domain])).digest('hex');
   }
 }
