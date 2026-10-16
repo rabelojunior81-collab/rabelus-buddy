@@ -16,7 +16,7 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `c748692` (Merge #27: M0.5), CI verde |
+| `main` | `090407e` (Merge #29: M0.6b), CI verde |
 | PRs mergeados | #1–#27, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `97651a4`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
