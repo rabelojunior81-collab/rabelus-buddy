@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- Provedores (M0.6a): OpenCode Go em quatro rotas (Responses, Chat Completions, Messages e Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`), Ollama Cloud e OpenRouter; identificação própria, `store: false`, uso normalizado, limite do provedor como esgotamento de janela; certificados do sistema somados aos embutidos. Testado contra servidor falso e com uma chamada real mínima por rota.
+
 - Núcleo (M0.5): orçamento atômico por janela móvel — reserva pela estimativa antes da chamada, liquidação pelo `usage` real (fórmula verificada), liberação sem custo; janelas do OpenCode Go por modelo (5 h, semana, mês), teto semanal do ChatGPT informado pelo provedor e US$ 20/mês do OpenRouter; esgotamento por erro de limite do provedor; `rbuddy budget`.
 
 - Núcleo (M0.4): motor de política (deny → ask → allow; caminhos protegidos `.git/`, `.buddy-dev/`, `archive/`, `.env*`, `*.pem`, `*.key`; concessões de uma vez, sessão e projeto; `ask` sem terminal vira `deny`; três chamadas idênticas pausam a sessão; modelos que treinam com os dados só com concessão de projeto) e ferramentas de arquivo com compare-and-set e de comando só com aprovação explícita.

@@ -182,3 +182,7 @@ M0.4: motor de política com auditoria em eventos, FsTools com compare-and-set e
 ### #0042 · 2026-10-16T012845-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.5: orçamento atômico por janela (Go por modelo 5h/semana/mês, ChatGPT pelo provedor, OpenRouter US$20/mês), reserva → liquidação pelo usage ou liberação, esgotamento por erro do provedor, rbuddy budget; critérios 14–16.
+
+### #0043 · 2026-10-16T014212-0300 · claude-code-vs-code-fe93fb · ferramenta
+
+M0.6a: provedores OpenCode Go (Responses, Chat, Messages, Google), Ollama Cloud e OpenRouter com os SDKs aprovados; sonda e chamada real mínima por rota OK; Node passou a somar os certificados do sistema (cadeia do OpenRouter); npm audit na CI e scripts de instalação sob o protocolo.
