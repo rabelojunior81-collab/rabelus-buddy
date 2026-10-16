@@ -46,11 +46,10 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
 - [ ] **M0.6 Provedores e loop do agente** (ADR 0014):
   - interface de provedor e provedores falsos (`fakeGo`, `fakeOpenAI`, `fakeAuth`);
   - [x] **M0.6a OpenCode Go** (com Ollama Cloud e OpenRouter, que reaproveitam a rota Chat Completions; chamada real mínima registrada): rotas `/responses`, `/chat/completions` e `/messages` e rota Google, com os SDKs `openai`, `@anthropic-ai/sdk` e `@google/genai`; `User-Agent` próprio e `x-opencode-session`;
-  - **M0.6b ChatGPT por SIWC** (terceiro na ordem da ADR 0015): `rbuddy login chatgpt` (PKCE, callback em 127.0.0.1, refresh rotativo), contrato da prévia;
-  - **M0.6c Ollama Cloud** (ADR 0015): rota fixada na ficha, mesmos SDKs;
-  - **M0.6d OpenRouter** como API paga (reserva, teto US$ 20, SDK `openai`);
-  - compactação abaixo de 100k tokens;
-  - ferramentas `read_file`, `list_dir`, `write_file`, `run_command`.
+  - [x] **M0.6b ChatGPT por SIWC** (terceiro na ordem da ADR 0015): `rbuddy login chatgpt` e `logout chatgpt` (PKCE S256, callback em 127.0.0.1, ID token RS256 pelo JWKS, credenciais 0600, refresh rotativo serializado, revogação), contrato da prévia em stream; critérios 18 e 19 verdes contra servidores falsos. **O login real pede o Pai no navegador** (validação `login-chatgpt-real`);
+  - [x] **M0.6c Ollama Cloud** (ADR 0015): feito junto da M0.6a (rota Chat Completions, chamada real registrada);
+  - [x] **M0.6d OpenRouter** como API paga: adaptador feito junto da M0.6a; reserva e teto de US$ 20 vêm da M0.5;
+  - **M0.6e Loop do agente**: ferramentas `read_file`, `list_dir`, `write_file`, `run_command` pela política; chamada de provedor e comando como efeitos com identidade; reserva e liquidação por chamada; troca de provedor ao esgotar a janela (critério 16); compactação abaixo de 100k tokens (critério 21); a escrita acontece uma vez (critério 5).
   - Critérios: 16–21.
 - [ ] **M0.7 CLI completa e auditoria**:
   - `run`, `status`, `approvals`, `approve`/`deny`, `budget`, `log`, `resume`, `daemon`;

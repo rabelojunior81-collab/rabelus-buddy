@@ -379,6 +379,18 @@
       "origem": "ADR 0016"
     },
     {
+      "id": "login-chatgpt-real",
+      "descricao": "Rodar rbuddy login chatgpt com a conta ChatGPT Plus no navegador e confirmar que o plano foi concedido (chatgpt.tokens.use.direct)",
+      "quem": "pai",
+      "onde": [
+        "M0.6b",
+        "M0.8"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "SPEC 0001, critério 19"
+    },
+    {
       "id": "demonstracao-m0",
       "descricao": "Tarefa real na assinatura do Go, kill -9 e resume, um passo pelo ChatGPT (critério 26)",
       "quem": "pai",
