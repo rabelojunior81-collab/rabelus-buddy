@@ -1,0 +1,14 @@
+{
+  "approvals": {
+    "none": "Nenhuma aprovação pendente.",
+    "header": "{{count}} aprovações pendentes:",
+    "header_one": "{{count}} aprovação pendente:",
+    "header_other": "{{count}} aprovações pendentes:",
+    "item": "  {{id}}  [{{session}}]  {{action}}",
+    "approved": "Aprovado: {{id}}",
+    "denied": "Negado: {{id}}",
+    "notFound": "Aprovação {{id}} não existe.",
+    "alreadyResolved": "A aprovação {{id}} já foi resolvida ({{state}}).",
+    "usage": "Uso: rbuddy approve <id>  ou  rbuddy deny <id>"
+  }
+}

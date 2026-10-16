@@ -170,3 +170,7 @@ Sessão claude-code-vs-code-6265a4: ADR 0016 (PR #21); bd merge, bd prune, bd va
 ### #0039 · 2026-10-16T010554-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.2: log de eventos em SQLite com projeções reconstruíveis, dono único com JSON-RPC por named pipe/socket Unix, cliente IPC, rbuddy daemon start|status|stop. Critérios 1–3 da SPEC 0001 com teste (2 CLIs × 1.000 comandos sem SQLITE_BUSY e sem buraco).
+
+### #0040 · 2026-10-16T011421-0300 · claude-code-vs-code-fe93fb · ferramenta
+
+M0.3: execuções, efeitos com identidade e aprovações como eventos; retomada após kill -9 (critérios 4–6); rbuddy approvals/approve/deny. O teste do critério 3 achou um bug (evento de domínio malformado projetava id undefined); corrigido no código, com asserção nova.

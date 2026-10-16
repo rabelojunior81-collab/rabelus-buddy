@@ -1,0 +1,14 @@
+{
+  "approvals": {
+    "none": "No pending approvals.",
+    "header": "{{count}} pending approvals:",
+    "header_one": "{{count}} pending approval:",
+    "header_other": "{{count}} pending approvals:",
+    "item": "  {{id}}  [{{session}}]  {{action}}",
+    "approved": "Approved: {{id}}",
+    "denied": "Denied: {{id}}",
+    "notFound": "Approval {{id}} does not exist.",
+    "alreadyResolved": "Approval {{id}} was already resolved ({{state}}).",
+    "usage": "Usage: rbuddy approve <id>  or  rbuddy deny <id>"
+  }
+}

@@ -130,6 +130,19 @@
       "origem": "SPEC 0001 critérios 1–3; R5-1"
     },
     {
+      "id": "retomada-e-efeitos",
+      "descricao": "Depois de kill -9: execução interrompida, efeito sem recibo desconhecido (nunca concluído), aprovação pendente preservada; efeito desconhecido bloqueia repetição até reconciliar",
+      "quem": "maquina",
+      "onde": [
+        "npm test",
+        "CI (3 SOs × Node 24/26)"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/retomada.test.ts"
+      },
+      "origem": "SPEC 0001 critérios 4–6; R5-5, R5-7"
+    },
+    {
       "id": "nomes",
       "descricao": "Nomes semânticos e carimbos na convenção",
       "quem": "maquina",

@@ -5,7 +5,7 @@ import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createI18n, resolveLang, type I18n } from '@rabelus-buddy/client/i18n';
-import { call } from '@rabelus-buddy/client/ipc';
+import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
 import { startOwner, AlreadyRunningError, stateHome, endpointFor } from '@rabelus-buddy/core';
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as { version: string };
@@ -57,6 +57,48 @@ async function daemon(sub: string | undefined, env: NodeJS.ProcessEnv, io: Io, {
   return 1;
 }
 
+interface Approval { id: string; session: string; action: string; state: string }
+
+// Chamada ao dono; sem dono no ar, a mensagem é a do catálogo.
+async function owner(env: NodeJS.ProcessEnv, io: Io, { t }: I18n, method: string, params: Record<string, unknown>): Promise<{ ok: true; value: unknown } | { ok: false; error?: RpcError }> {
+  try {
+    return { ok: true, value: await call(endpointFor(stateHome(env)), method, params) };
+  } catch (e) {
+    if (e instanceof RpcError) return { ok: false, error: e };
+    io.err(t('daemon.notRunning'));
+    return { ok: false };
+  }
+}
+
+async function approvals(env: NodeJS.ProcessEnv, io: Io, i18n: I18n): Promise<number> {
+  const r = await owner(env, io, i18n, 'approval.list', {});
+  if (!r.ok) return 1;
+  const list = r.value as Approval[];
+  if (!list.length) {
+    io.out(i18n.t('approvals.none'));
+    return 0;
+  }
+  io.out([i18n.t('approvals.header', { count: list.length }), ...list.map((a) => i18n.t('approvals.item', { ...a }))].join('\n'));
+  return 0;
+}
+
+async function resolve(decision: 'approve' | 'deny', id: string | undefined, env: NodeJS.ProcessEnv, io: Io, i18n: I18n): Promise<number> {
+  const { t } = i18n;
+  if (!id) {
+    io.err(t('approvals.usage'));
+    return 1;
+  }
+  const r = await owner(env, io, i18n, 'approval.resolve', { id, decision });
+  if (r.ok) {
+    io.out(t(decision === 'approve' ? 'approvals.approved' : 'approvals.denied', { id }));
+    return 0;
+  }
+  if (r.error?.code === RPC_ERR.notFound) io.err(t('approvals.notFound', { id }));
+  else if (r.error?.code === RPC_ERR.alreadyResolved) io.err(t('approvals.alreadyResolved', { id, state: String(r.error.data.state) }));
+  else if (r.error) io.err(r.error.message);
+  return 1;
+}
+
 export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promise<number> {
   // O idioma vem antes de tudo, para que até o erro de opção saia no idioma pedido.
   const langIdx = argv.indexOf('--lang');
@@ -91,6 +133,8 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io): Promi
     return 0;
   }
   if (command === 'daemon') return daemon(positionals[1], env, io, i18n);
+  if (command === 'approvals') return approvals(env, io, i18n);
+  if (command === 'approve' || command === 'deny') return resolve(command, positionals[1], env, io, i18n);
   io.err(t('cli.unknownCommand', { command }));
   return 1;
 }
