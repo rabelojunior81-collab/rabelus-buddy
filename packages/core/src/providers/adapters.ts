@@ -1,0 +1,189 @@
+// Adaptadores por rota (ficha bibliotecas-do-nucleo; SDKs aprovados na SPEC 0001, decisão 9).
+// Cada um converte o contrato único para a API da rota, desliga as novas tentativas
+// automáticas (o núcleo decide, pelos efeitos com identidade) e normaliza o usage.
+
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
+import type { Usage } from '../budget.ts';
+import { ProviderLimitError, type CallContext, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall } from './types.ts';
+
+export type HeadersFor = (ctx: CallContext) => Record<string, string>;
+export interface AdapterOptions { id: string; apiKey: string; baseURL: string; headers: HeadersFor }
+
+const DEFAULT_LIMIT_WAIT_MS = 5 * 60_000;
+
+// 429 (ou erro de limite) vira esgotamento da janela; o resto segue como erro.
+function mapError(id: string, e: unknown): never {
+  const err = e as { status?: number; headers?: Headers | Record<string, string>; message?: string };
+  if (err?.status === 429) {
+    const h = err.headers;
+    const raw = h instanceof Headers ? h.get('retry-after') : h?.['retry-after'];
+    const secs = Number(raw);
+    throw new ProviderLimitError(id, Date.now() + (Number.isFinite(secs) && secs > 0 ? secs * 1000 : DEFAULT_LIMIT_WAIT_MS), err.message ?? 'limite do provedor');
+  }
+  throw e;
+}
+
+const systemOf = (msgs: ChatMessage[]): string => msgs.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
+const parseArgs = (a: string): Record<string, unknown> => { try { return JSON.parse(a || '{}') as Record<string, unknown>; } catch { return {}; } };
+
+// ---------- OpenAI Chat Completions (Go chat, Ollama Cloud, OpenRouter) ----------
+export function openaiChatAdapter(o: AdapterOptions): Provider {
+  const client = new OpenAI({ apiKey: o.apiKey, baseURL: o.baseURL, maxRetries: 0 });
+  return {
+    id: o.id,
+    async call(req: ModelRequest, ctx: CallContext): Promise<ModelResponse> {
+      const messages = req.messages.map((m) => {
+        if (m.role === 'tool') return { role: 'tool' as const, tool_call_id: m.toolCallId ?? '', content: m.content };
+        if (m.role === 'assistant' && m.toolCalls?.length) {
+          return { role: 'assistant' as const, content: m.content || null, tool_calls: m.toolCalls.map((t) => ({ id: t.id, type: 'function' as const, function: { name: t.name, arguments: t.arguments } })) };
+        }
+        return { role: m.role, content: m.content } as { role: 'system' | 'user' | 'assistant'; content: string };
+      });
+      try {
+        const r = await client.chat.completions.create({
+          model: req.model,
+          messages,
+          ...(req.tools?.length ? { tools: req.tools.map((t) => ({ type: 'function' as const, function: { name: t.name, description: t.description, parameters: t.parameters } })) } : {}),
+          ...(req.maxOutputTokens ? { max_tokens: req.maxOutputTokens } : {}),
+        }, { headers: o.headers(ctx) });
+        const choice = r.choices[0];
+        const toolCalls: ToolCall[] = (choice?.message.tool_calls ?? []).flatMap((t) => (t.type === 'function' ? [{ id: t.id, name: t.function.name, arguments: t.function.arguments }] : []));
+        const u = r.usage;
+        const usage: Usage = { input_tokens: u?.prompt_tokens ?? 0, cached_tokens: u?.prompt_tokens_details?.cached_tokens ?? 0, cache_write_tokens: 0, output_tokens: u?.completion_tokens ?? 0 };
+        const finish = choice?.finish_reason === 'tool_calls' ? 'tool_calls' : choice?.finish_reason === 'length' ? 'length' : choice?.finish_reason === 'stop' ? 'stop' : 'other';
+        return { text: choice?.message.content ?? '', toolCalls, usage, finish };
+      } catch (e) { return mapError(o.id, e); }
+    },
+  };
+}
+
+// ---------- OpenAI Responses (Go responses; base do Sign in with ChatGPT) ----------
+export function responsesInput(msgs: ChatMessage[]): unknown[] {
+  const items: unknown[] = [];
+  for (const m of msgs) {
+    if (m.role === 'system') continue; // vai em `instructions`
+    if (m.role === 'tool') { items.push({ type: 'function_call_output', call_id: m.toolCallId ?? '', output: m.content }); continue; }
+    if (m.role === 'assistant' && m.toolCalls?.length) {
+      if (m.content) items.push({ role: 'assistant', content: m.content });
+      for (const t of m.toolCalls) items.push({ type: 'function_call', call_id: t.id, name: t.name, arguments: t.arguments });
+      continue;
+    }
+    items.push({ role: m.role, content: m.content });
+  }
+  return items;
+}
+
+export function parseResponsesOutput(r: { output?: unknown[]; usage?: Record<string, unknown> | null; status?: string }): ModelResponse {
+  let text = '';
+  const toolCalls: ToolCall[] = [];
+  for (const item of (r.output ?? []) as { type: string; content?: { type: string; text?: string }[]; call_id?: string; name?: string; arguments?: string }[]) {
+    if (item.type === 'message') text += (item.content ?? []).filter((c) => c.type === 'output_text').map((c) => c.text ?? '').join('');
+    if (item.type === 'function_call') toolCalls.push({ id: item.call_id ?? '', name: item.name ?? '', arguments: item.arguments ?? '{}' });
+  }
+  const u = (r.usage ?? {}) as { input_tokens?: number; output_tokens?: number; input_tokens_details?: { cached_tokens?: number; cache_write_tokens?: number } };
+  const usage: Usage = { input_tokens: u.input_tokens ?? 0, cached_tokens: u.input_tokens_details?.cached_tokens ?? 0, cache_write_tokens: u.input_tokens_details?.cache_write_tokens ?? 0, output_tokens: u.output_tokens ?? 0 };
+  return { text, toolCalls, usage, finish: toolCalls.length ? 'tool_calls' : r.status === 'incomplete' ? 'length' : 'stop' };
+}
+
+export const responsesTools = (req: ModelRequest): unknown[] => (req.tools ?? []).map((t) => ({ type: 'function', name: t.name, description: t.description, parameters: t.parameters, strict: false }));
+
+export function openaiResponsesAdapter(o: AdapterOptions): Provider {
+  const client = new OpenAI({ apiKey: o.apiKey, baseURL: o.baseURL, maxRetries: 0 });
+  return {
+    id: o.id,
+    async call(req: ModelRequest, ctx: CallContext): Promise<ModelResponse> {
+      try {
+        const params = {
+          model: req.model,
+          instructions: systemOf(req.messages) || undefined,
+          input: responsesInput(req.messages),
+          store: false, // a Responses API guarda 30 dias por padrão (SPEC 0001, escopo 13)
+          ...(req.tools?.length ? { tools: responsesTools(req) } : {}),
+          ...(req.maxOutputTokens ? { max_output_tokens: req.maxOutputTokens } : {}),
+        };
+        const r = await client.responses.create(params as unknown as Parameters<typeof client.responses.create>[0], { headers: o.headers(ctx) });
+        return parseResponsesOutput(r as unknown as { output?: unknown[]; usage?: Record<string, unknown> | null; status?: string });
+      } catch (e) { return mapError(o.id, e); }
+    },
+  };
+}
+
+// ---------- Anthropic Messages (Go messages) ----------
+export function anthropicAdapter(o: AdapterOptions & { maxTokens?: number }): Provider {
+  const client = new Anthropic({ apiKey: o.apiKey, baseURL: o.baseURL, maxRetries: 0 });
+  return {
+    id: o.id,
+    async call(req: ModelRequest, ctx: CallContext): Promise<ModelResponse> {
+      const messages = req.messages.filter((m) => m.role !== 'system').map((m) => {
+        if (m.role === 'tool') return { role: 'user' as const, content: [{ type: 'tool_result' as const, tool_use_id: m.toolCallId ?? '', content: m.content }] };
+        if (m.role === 'assistant' && m.toolCalls?.length) {
+          return { role: 'assistant' as const, content: [...(m.content ? [{ type: 'text' as const, text: m.content }] : []), ...m.toolCalls.map((t) => ({ type: 'tool_use' as const, id: t.id, name: t.name, input: parseArgs(t.arguments) }))] };
+        }
+        return { role: m.role as 'user' | 'assistant', content: m.content };
+      });
+      try {
+        const r = await client.messages.create({
+          model: req.model,
+          max_tokens: req.maxOutputTokens ?? o.maxTokens ?? 4096,
+          ...(systemOf(req.messages) ? { system: systemOf(req.messages) } : {}),
+          messages,
+          ...(req.tools?.length ? { tools: req.tools.map((t) => ({ name: t.name, description: t.description, input_schema: t.parameters as { type: 'object' } })) } : {}),
+        }, { headers: o.headers(ctx) });
+        let text = '';
+        const toolCalls: ToolCall[] = [];
+        for (const b of r.content) {
+          if (b.type === 'text') text += b.text;
+          if (b.type === 'tool_use') toolCalls.push({ id: b.id, name: b.name, arguments: JSON.stringify(b.input ?? {}) });
+        }
+        const u = r.usage;
+        const read = u.cache_read_input_tokens ?? 0;
+        const write = u.cache_creation_input_tokens ?? 0;
+        // "Total input tokens ... is the summation of input_tokens, cache_creation_input_tokens, and cache_read_input_tokens."
+        const usage: Usage = { input_tokens: u.input_tokens + read + write, cached_tokens: read, cache_write_tokens: write, output_tokens: u.output_tokens };
+        const finish = r.stop_reason === 'tool_use' ? 'tool_calls' : r.stop_reason === 'max_tokens' ? 'length' : r.stop_reason === 'end_turn' ? 'stop' : 'other';
+        return { text, toolCalls, usage, finish };
+      } catch (e) { return mapError(o.id, e); }
+    },
+  };
+}
+
+// ---------- Google (Go google) ----------
+export function googleAdapter(o: AdapterOptions & { apiVersion?: string }): Provider {
+  return {
+    id: o.id,
+    async call(req: ModelRequest, ctx: CallContext): Promise<ModelResponse> {
+      const ai = new GoogleGenAI({ apiKey: o.apiKey, httpOptions: { baseUrl: o.baseURL, apiVersion: o.apiVersion ?? 'v1', headers: o.headers(ctx), retryOptions: { attempts: 1 } } });
+      const names = new Map<string, string>();
+      for (const m of req.messages) for (const t of m.toolCalls ?? []) names.set(t.id, t.name);
+      const contents = req.messages.filter((m) => m.role !== 'system').map((m) => {
+        if (m.role === 'tool') return { role: 'user', parts: [{ functionResponse: { name: names.get(m.toolCallId ?? '') ?? 'tool', response: { output: m.content } } }] };
+        if (m.role === 'assistant') return { role: 'model', parts: [...(m.content ? [{ text: m.content }] : []), ...(m.toolCalls ?? []).map((t) => ({ functionCall: { name: t.name, args: parseArgs(t.arguments) } }))] };
+        return { role: 'user', parts: [{ text: m.content }] };
+      });
+      try {
+        const r = await ai.models.generateContent({
+          model: req.model,
+          contents,
+          config: {
+            ...(systemOf(req.messages) ? { systemInstruction: systemOf(req.messages) } : {}),
+            ...(req.tools?.length ? { tools: [{ functionDeclarations: req.tools.map((t) => ({ name: t.name, description: t.description, parametersJsonSchema: t.parameters })) }] } : {}),
+            ...(req.maxOutputTokens ? { maxOutputTokens: req.maxOutputTokens } : {}),
+          },
+        });
+        let text = '';
+        const toolCalls: ToolCall[] = [];
+        let i = 0;
+        for (const p of r.candidates?.[0]?.content?.parts ?? []) {
+          if (p.text) text += p.text;
+          if (p.functionCall) toolCalls.push({ id: p.functionCall.id ?? `gcall_${i++}`, name: p.functionCall.name ?? '', arguments: JSON.stringify(p.functionCall.args ?? {}) });
+        }
+        const u = r.usageMetadata;
+        const usage: Usage = { input_tokens: u?.promptTokenCount ?? 0, cached_tokens: u?.cachedContentTokenCount ?? 0, cache_write_tokens: 0, output_tokens: (u?.candidatesTokenCount ?? 0) + (u?.thoughtsTokenCount ?? 0) };
+        const fr = r.candidates?.[0]?.finishReason;
+        return { text, toolCalls, usage, finish: toolCalls.length ? 'tool_calls' : fr === 'MAX_TOKENS' ? 'length' : fr === 'STOP' ? 'stop' : 'other' };
+      } catch (e) { return mapError(o.id, e); }
+    },
+  };
+}
