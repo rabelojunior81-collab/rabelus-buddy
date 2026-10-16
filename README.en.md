@@ -41,7 +41,7 @@ The project is written by Adilson Rabelo Junior together with **Buddy Fenix** (`
 | `docs/40-specs/` · `docs/50-planos/` · `docs/60-decisoes/` | SPECs, roadmap and plans, ADRs |
 | `docs/registros/` | Dated records (audits, incidents, evidence) |
 | `archive/` | Dead archive: things go in with a tombstone and never leave |
-| `scripts/` | `bd` tools (clock, names, event bus, archive, guard, Blog gate, surfaces, dependencies, test guard) |
+| `scripts/` | `bd` tools (clock, names, event bus, archive, guard, Blog gate, surfaces, dependencies, test guard, merge and prune, validations) |
 
 Internal documentation is in Portuguese (ADR 0002).
 

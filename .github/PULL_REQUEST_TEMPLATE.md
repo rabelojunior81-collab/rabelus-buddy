@@ -14,6 +14,8 @@ SPEC / plano:
 - [ ] Superfície pública alterada? Espelho `.en.md` atualizado
 - [ ] Dependência nova ou atualizada? Registro, ficha e aprovação conforme [`DEPENDENCIAS.md`](../docs/30-governanca/DEPENDENCIAS.md); `bd deps` verde
 - [ ] Nenhum teste removido ou enfraquecido (`bd test-guard` verde)
+- [ ] Validação nova? Registrada em [`validacoes.json`](../docs/30-governanca/validacoes.json) com mecanismo; `bd validacoes` verde
+- [ ] Merge pelo `bd merge` (CI verde + `bd post` limpo → merge commit → prune)
 - [ ] Superfícies do evento atualizadas ([`SUPERFICIES.md`](../docs/30-governanca/SUPERFICIES.md)); `bd surfaces` verde
 - [ ] Sessão do buddy-dev: post e daily publicados no Blog (o `bd session end` confere)
 - [ ] Há dúvida para o Pai? Diga o que segue em paralelo sem a resposta (AGENTS §5.4 e §5.7)

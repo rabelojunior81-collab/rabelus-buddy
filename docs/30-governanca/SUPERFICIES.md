@@ -27,6 +27,7 @@ Documentos de história não entram: registros, diário, changelogs, LEARNING-CU
 | **Versão de ferramenta ou ambiente muda** | `STATUS.md` (ambiente medido); a ficha correspondente (`node-runtime.md`, `github-plataforma.md`…) |
 | **Harness novo verificado** | `STATUS.md` (Harnesses); `BOOTSTRAP.md` §3 ("Testado aqui") |
 | **Comando novo do `bd`** | ajuda do `bd`; `AGENTS.md` (rito e/ou §3); `CONTRIBUTING.md` e `.en.md` se humanos usam; `CHANGELOG.md` da raiz; mapa do `README.md`/`.en.md` |
+| **Validação nova** (regra que precisa ser conferida) | `validacoes.json` + mecanismo com teste; `AGENTS.md` §3; `VALIDACOES.md` se mudar o ciclo |
 | **Dependência nova ou atualizada** | `dependencias.json` (registro), ficha em `docs/20-conhecimento/`, `package.json` com versão exata, `package-lock.json`, SPEC que a usa (se o contrato mudar) |
 | **Identidade do buddy-dev muda** (nome, avatar, cor, emojis) | `IDENTITY.md`, `SOUL.md` (estado), `.buddy-dev/README.md`, `README.md`/`.en.md` (como é desenvolvido), Blog (`BLOG_GOVERNANCE.md` §4, ficha de autor, cards, `styles.css`) |
 | **Superfície pública muda** (README, CONTRIBUTING, SECURITY, Código de Conduta) | o espelho no outro idioma (ADR 0002) |
