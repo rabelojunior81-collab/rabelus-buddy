@@ -1,6 +1,6 @@
 # Superfícies
 
-**Classe:** CÂNONE · **Versão:** 0.1 · **Data:** 2026-10-15 · **Origem:** pedido do Pai em 2026-10-15 ("re-verifique todo o projeto, identificando GAPS de atualizações… para não se repetir")
+**Classe:** CÂNONE · **Versão:** 0.2 · **Data:** 2026-10-16 · **Origem:** pedido do Pai em 2026-10-15 ("re-verifique todo o projeto, identificando GAPS de atualizações… para não se repetir")
 
 Um fato muda num lugar e precisa chegar a todos os lugares que o afirmam. Este mapa diz **quais superfícies tocar em cada tipo de evento**. A parte mecânica é conferida por `bd surfaces`, que roda no `bd post` e na CI; o resto é desta tabela, citada no checklist do PR.
 
@@ -12,6 +12,7 @@ Um fato muda num lugar e precisa chegar a todos os lugares que o afirmam. Este m
 | ADR aceita citada como "proposta" | qualquer documento vivo que ainda trate uma ADR aceita como proposta |
 | Carimbo "Atualizado em" | carimbo no futuro, ou mais de 6 h atrás do último commit do arquivo (editou e não recarimbou) |
 | `main` no STATUS | hash inexistente, ou mais de 1 commit de primeiro pai atrás da base |
+| Sub-fase concluída chega ao produto | sub-fase `[x]` de um `docs/50-planos/*/PLANO.md` ausente do `CHANGELOG.md` da raiz; a última concluída ausente do Estado do `README.md` ou do `README.en.md` |
 
 Documentos de história não entram: registros, diário, changelogs, LEARNING-CURVE, ledger, arquivo, proveniência, pesquisa e o corpo das ADRs.
 
@@ -22,6 +23,7 @@ Documentos de história não entram: registros, diário, changelogs, LEARNING-CU
 | **Decisão do Pai** | ADR (estado) e índice de ADRs; `MEMORY.md` (tabela de regras); `STATUS.md` (pendências); ROADMAP e PLANO-MACRO, se tocam marco ou pendência; changelog |
 | **Regra nova do Pai** | o mesmo, mais o **mecanismo**: `AGENTS.md` §3 (regra → mecanismo) e a ferramenta ou teste que a confere |
 | **PR mergeado** | `STATUS.md` (`main`, faixa de PRs) no PR seguinte |
+| **Sub-fase do plano concluída** | checkbox no PLANO; `CHANGELOG.md` da **raiz** (visão do produto) além do `.buddy-dev/CHANGELOG.md`; `STATUS.md`; Estado do `README.md` e do `README.en.md` |
 | **Fase ou marco muda** | `STATUS.md` (fase atual); ROADMAP ("Agora"); PLANO-MACRO (checkboxes); `README.md` e `README.en.md` (Estado); `docs/40-specs/README.md` quando nasce SPEC |
 | **Ficha de conhecimento nova ou reverificada** | índice de `docs/20-conhecimento/` (data); `STATUS.md` se a ficha mede o ambiente (versões, plano da conta) |
 | **Versão de ferramenta ou ambiente muda** | `STATUS.md` (ambiente medido); a ficha correspondente (`node-runtime.md`, `github-plataforma.md`…) |
@@ -52,3 +54,10 @@ A auditoria pedida pelo Pai achou estas lacunas. Cada uma vira caso da tabela ac
 | `docs/40-specs/README.md` dizendo que a SPEC nasce "depois da Fase 0" | marco mudou | tabela: fase ou marco muda |
 | `README.en.md` sem a seção de mapa que o `README.md` tem desde a Fase 0 | superfície pública mudou sem espelho completo | tabela: superfície pública muda |
 | Convenção de código "aguarda aceite" fora das pendências do STATUS | pendência criada sem registro | tabela: decisão do Pai (pendência no STATUS) |
+
+## Onde as lacunas aconteceram (2026-10-16)
+
+| Lacuna | Evento que a causou | Agora coberta por |
+|---|---|---|
+| `CHANGELOG.md` da raiz sem M0.6b, M0.6e e M0.7a; README e README.en parados na M0.5 | sub-fases mergeadas com o changelog do buddy-dev (`.buddy-dev/CHANGELOG.md`) atualizado, mas não o do produto | `bd surfaces` (sub-fase concluída chega ao produto) |
+| STATUS com a `main` de dois merges atrás (M0.6a e M0.6b sem atualizar a linha) | PR mergeado | `bd surfaces` (`main` no STATUS), que pegou no PR da M0.6e |

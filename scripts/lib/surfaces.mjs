@@ -125,6 +125,32 @@ export function statusMainLag(root, { statusText, base = 'origin/main' } = {}) {
   return { lag, problem: lag > 1 ? `STATUS: main \`${hash}\` está ${lag} commit(s) de primeiro pai atrás de ${base}; atualize o STATUS` : null };
 }
 
+// 5. Sub-fase concluída no plano chega ao produto: está no CHANGELOG.md da raiz, e a última
+//    concluída aparece no Estado do README.md e do README.en.md (lacuna de 2026-10-16: M0.6b,
+//    M0.6e e M0.7a mergeadas sem entrar no CHANGELOG do produto nem no README).
+const DONE = /^\s*- \[x\] \*\*(M\d+(?:\.\d+[a-z]?)?)\b/gm;
+const mentions = (text, id) => new RegExp(`(?<![\\w.])${id.replace('.', '\\.')}(?![0-9a-z])`).test(text);
+
+export function milestoneGaps(root) {
+  const plans = ls(root, 'docs/50-planos').filter((d) => d.isDirectory() && existsSync(join(root, 'docs/50-planos', d.name, 'PLANO.md'))).map((d) => `docs/50-planos/${d.name}/PLANO.md`).sort();
+  const gaps = [];
+  const changelog = existsSync(join(root, 'CHANGELOG.md')) ? read(root, 'CHANGELOG.md') : '';
+  let last = null;
+  for (const p of plans) {
+    for (const m of read(root, p).matchAll(DONE)) {
+      const id = m[1];
+      last = id;
+      if (!mentions(changelog, id)) gaps.push(`CHANGELOG.md: sub-fase ${id} concluída em ${p} e ausente do changelog do produto`);
+    }
+  }
+  if (last) {
+    for (const r of ['README.md', 'README.en.md']) {
+      if (existsSync(join(root, r)) && !mentions(read(root, r), last)) gaps.push(`${r}: o Estado não cita a última sub-fase concluída (${last})`);
+    }
+  }
+  return gaps;
+}
+
 export function surfaceGaps(root, opts = {}) {
-  return [...indexGaps(root), ...staleProposals(root), ...stampProblems(root, opts), statusMainLag(root, opts).problem].filter(Boolean);
+  return [...indexGaps(root), ...staleProposals(root), ...stampProblems(root, opts), statusMainLag(root, opts).problem, ...milestoneGaps(root)].filter(Boolean);
 }

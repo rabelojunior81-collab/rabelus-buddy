@@ -198,3 +198,7 @@ M0.6e: loop do agente (ordem de provedores com política e orçamento, chamada d
 ### #0046 · 2026-10-16T021524-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.7a: retomada do loop (conversa no log, reconciliação por tipo de efeito) e o dono executando o agente (agent.run/agent.resume, aprovação pelo IPC, rotas e credenciais configuradas); kill -9 + resume sem escrita duplicada contra provedor falso.
+
+### #0047 · 2026-10-16T022302-0300 · claude-code-vs-code-fe93fb · feat
+
+M0.7b: CLI do agente (run com dono sob demanda e aprovação no terminal, resume, status, log, providers, login/logout por chave). bd surfaces passa a cobrar que toda sub-fase concluída esteja no CHANGELOG do produto e a última no Estado dos READMEs (lacuna de M0.6b–M0.7a corrigida).

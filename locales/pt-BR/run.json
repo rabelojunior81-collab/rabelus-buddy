@@ -1,0 +1,17 @@
+{
+  "run": {
+    "usage": "Uso: rbuddy run \"<tarefa>\"",
+    "resumeUsage": "Uso: rbuddy resume <execução>",
+    "ownerStarting": "Subindo o dono do núcleo…",
+    "ownerFailed": "O dono do núcleo não respondeu a tempo.",
+    "noProvider": "Nenhum provedor com credencial. Veja: rbuddy providers",
+    "started": "Execução {{run}} na sessão {{session}}.",
+    "resumed": "Retomando a execução {{run}}.",
+    "ask": "Aprovar {{action}}? [s/N] ",
+    "done": "Execução {{run}} concluída.",
+    "stopped": "Execução parada: {{reason}}.",
+    "cannotResume": "A execução {{run}} está {{state}}: só se retoma interrompida ou parada.",
+    "notFound": "Execução {{run}} não encontrada.",
+    "yes": "s"
+  }
+}

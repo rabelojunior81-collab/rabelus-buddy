@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { indexGaps, staleProposals, stampProblems, statusMainLag } from '../lib/surfaces.mjs';
+import { indexGaps, staleProposals, stampProblems, statusMainLag, milestoneGaps } from '../lib/surfaces.mjs';
 
 function repo(files) {
   const r = mkdtempSync(join(tmpdir(), 'buddy-surf-'));
@@ -79,4 +79,27 @@ test('STATUS com a main mais de um merge atrás da base é lacuna', () => {
   assert.equal(lag(m1).problem, null);
   assert.match(lag(m0).problem, /2 commit\(s\) de primeiro pai atrás/);
   assert.match(lag('deadbee').problem, /não existe/);
+});
+
+test('sub-fase concluída no plano: precisa estar no CHANGELOG da raiz, e a última, no Estado dos dois READMEs', () => {
+  const plano = '- [x] **M0.1 CLI**\n- [x] **M0.2 Log**:\n  - [x] **M0.2a Banco**\n  - **M0.2b IPC**\n- [ ] **M0.3 Efeitos**\n';
+  const ok = repo({
+    'docs/50-planos/m0/PLANO.md': plano,
+    'CHANGELOG.md': '- CLI (M0.1)\n- Log (M0.2, com a M0.2a)\n',
+    'README.md': '> **Estado:** M0.2a feita.',
+    'README.en.md': '> **Status:** M0.2a done.',
+  });
+  assert.deepEqual(milestoneGaps(ok), []);
+  const bad = repo({
+    'docs/50-planos/m0/PLANO.md': plano,
+    'CHANGELOG.md': '- CLI (M0.1)\n',
+    'README.md': '> **Estado:** M0.1 feita.',
+    'README.en.md': '> **Status:** M0.2a done.',
+  });
+  const g = milestoneGaps(bad).join('\n');
+  assert.match(g, /CHANGELOG\.md.*M0\.2a/);
+  assert.match(g, /CHANGELOG\.md.*M0\.2\b/);
+  assert.match(g, /README\.md.*M0\.2a/);
+  assert.doesNotMatch(g, /README\.en\.md/);
+  assert.doesNotMatch(g, /M0\.2b|M0\.3/, 'sub-fase aberta não cobra');
 });

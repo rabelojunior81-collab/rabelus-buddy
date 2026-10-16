@@ -8,7 +8,7 @@
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** M0.1 feita (PR #23); **M0.2 feita** (PR #24, critérios 1–3); **M0.3 feita** (PR #25, critérios 4–6); **M0.4 feita** (PR #26, critérios 7–13 e 20); **M0.5 feita** (PR #27, critérios 14–16); **M0.6a feita** (PR #28: provedores Go, Ollama Cloud e OpenRouter, com chamada real mínima por rota); **M0.6b feita** (PR #29: ChatGPT por Sign in with ChatGPT, critérios 18 e 19 contra servidores falsos; o login real espera o Pai no navegador); **M0.6e feita** (PR #30: loop do agente, critérios 5, 16, 20 e 21 no loop); **M0.7a feita** (retomada do loop e dono executando o agente, com `kill -9` e `resume` contra provedor falso). Próximo: **M0.7b**, a CLI (`run`, `status`, `log`, `resume`, `login opencode-go`, `providers`). Ordem de provedores na ADR 0015; Pi por composição no M1 (ADR 0016).
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** M0.1 feita (PR #23); **M0.2 feita** (PR #24, critérios 1–3); **M0.3 feita** (PR #25, critérios 4–6); **M0.4 feita** (PR #26, critérios 7–13 e 20); **M0.5 feita** (PR #27, critérios 14–16); **M0.6a feita** (PR #28: provedores Go, Ollama Cloud e OpenRouter, com chamada real mínima por rota); **M0.6b feita** (PR #29: ChatGPT por Sign in with ChatGPT, critérios 18 e 19 contra servidores falsos; o login real espera o Pai no navegador); **M0.6e feita** (PR #30: loop do agente, critérios 5, 16, 20 e 21 no loop); **M0.7a feita** (PR #31: retomada do loop e dono executando o agente, com `kill -9` e `resume` contra provedor falso); **M0.7b feita** (CLI do agente: `run`, `resume`, `status`, `log`, `providers`, login por chave). Próximo: **M0.7c**, auditoria de segredos (critério 22) e do catálogo (critério 23); depois a M0.8 com o Pai. Ordem de provedores na ADR 0015; Pi por composição no M1 (ADR 0016).
 
 **M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) **aprovada**; plano [aprovado](../docs/50-planos/m0/PLANO.md).
 
@@ -16,7 +16,7 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `816a69e` (Merge #30: M0.6e), CI verde |
+| `main` | `de419f0` (Merge #31: M0.7a), CI verde |
 | PRs mergeados | #1–#27, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `97651a4`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |

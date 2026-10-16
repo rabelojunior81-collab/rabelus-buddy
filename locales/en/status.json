@@ -1,0 +1,12 @@
+{
+  "status": {
+    "header": "Owner running (pid {{pid}}); runs: {{runs}}.",
+    "run": "{{run}} · {{session}} · {{state}}",
+    "state": {
+      "running": "running",
+      "done": "done",
+      "interrupted": "interrupted",
+      "stopped": "stopped"
+    }
+  }
+}

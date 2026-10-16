@@ -9,7 +9,7 @@
 
 </div>
 
-> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)). The `rbuddy` CLI already answers `--help`, `--version` and `--lang` runs the core owner (`rbuddy daemon start|status|stop`), the sole writer of the event log, which recovers its state after a crash; resolves approvals (`rbuddy approvals|approve|deny`); and shows the budget by window (`rbuddy budget`); the other commands arrive in the next sub-phases.
+> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)), with **M0.7b** done: `rbuddy run "<task>"` runs the agent on the subscriptions (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), with policy, approvals in the terminal, budget by window and recovery after a crash (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` and `daemon` round out the CLI. Still to come: the secrets and catalog audit (M0.7c) and the demo with Pai (M0.8).
 
 > Portuguese (pt-BR) is the project's primary language. Public-facing files are mirrored in English; internal documentation is in Portuguese and translated on demand.
 

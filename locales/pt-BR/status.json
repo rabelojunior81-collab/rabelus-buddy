@@ -1,0 +1,12 @@
+{
+  "status": {
+    "header": "Dono no ar (pid {{pid}}); execuções: {{runs}}.",
+    "run": "{{run}} · {{session}} · {{state}}",
+    "state": {
+      "running": "rodando",
+      "done": "concluída",
+      "interrupted": "interrompida",
+      "stopped": "parada"
+    }
+  }
+}

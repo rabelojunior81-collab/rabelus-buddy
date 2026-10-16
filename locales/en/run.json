@@ -1,0 +1,17 @@
+{
+  "run": {
+    "usage": "Usage: rbuddy run \"<task>\"",
+    "resumeUsage": "Usage: rbuddy resume <run>",
+    "ownerStarting": "Starting the core owner…",
+    "ownerFailed": "The core owner did not answer in time.",
+    "noProvider": "No provider with credentials. See: rbuddy providers",
+    "started": "Run {{run}} in session {{session}}.",
+    "resumed": "Resuming run {{run}}.",
+    "ask": "Approve {{action}}? [y/N] ",
+    "done": "Run {{run}} done.",
+    "stopped": "Run stopped: {{reason}}.",
+    "cannotResume": "Run {{run}} is {{state}}: only interrupted or stopped runs can be resumed.",
+    "notFound": "Run {{run}} not found.",
+    "yes": "y"
+  }
+}
