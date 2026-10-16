@@ -63,6 +63,30 @@
       "approvedBy": "Pai, 2026-10-15 (resposta 4: 'Além disso…', sem objeção ao i18next)"
     },
     {
+      "name": "@earendil-works/pi-tui",
+      "version": "1.3.0",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "proposta",
+      "purpose": "Candidata a biblioteca da TUI (em avaliação com ink, ADR 0016)",
+      "phase": "depois do M0",
+      "ficha": "docs/20-conhecimento/pi-agent.md",
+      "verifiedAt": "2026-10-16",
+      "approvedBy": "pendente (escolha da TUI, ADR 0016)"
+    },
+    {
+      "name": "ink",
+      "version": "8.0.0",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "proposta",
+      "purpose": "Candidata a biblioteca da TUI (em avaliação com pi-tui, ADR 0016)",
+      "phase": "depois do M0",
+      "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
+      "verifiedAt": "2026-10-16",
+      "approvedBy": "pendente (escolha da TUI, ADR 0016)"
+    },
+    {
       "name": "typescript",
       "version": "7.0.2",
       "license": "Apache-2.0",

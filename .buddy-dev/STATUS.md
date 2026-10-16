@@ -2,13 +2,13 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-15T17:20:52-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-7ebb05
+**Atualizado em:** 2026-10-16T00:19:54-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-6265a4
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
 ## Fase atual
 
-**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: SPEC 0001 aprovada pelo Pai (2026-10-15, revisão 3), com o plano do M0.** Ordem de provedores: OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (ADR 0015). Próximo: M0.1 (fundação do código), depois da resposta do Pai sobre forkar o Pi Agent.
+**Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** SPEC 0001 aprovada (revisão 4) e plano aprovado. Ordem de provedores na ADR 0015; o Pi entra por composição no M1 (ADR 0016). Nesta sessão: governança de prune, merge e validações, depois a M0.1 (fundação do código).
 
 **M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) **aprovada**; plano [aprovado](../docs/50-planos/m0/PLANO.md).
 
@@ -49,7 +49,8 @@
 | Aceite do METODO.md e da ADR 0005 | feito: aceitos pelo Pai em 2026-10-15 | — |
 | SPEC do M0 | feito: aprovada pelo Pai em 2026-10-15 (revisão 3; decisão 8 = A) | — |
 | Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud | feito: em `.buddy-dev/.env.local` (Pai, 2026-10-15); conta ChatGPT Plus entra na demonstração | — |
-| Forkar o Pi Agent como CLI/TUI? | pergunta do Pai (2026-10-15); resposta com pesquisa em [ficha](../docs/20-conhecimento/pi-agent.md) | buddy-dev → Pai |
+| Forkar o Pi como CLI/TUI? | feito: não forkar; compor no M1 (ADR 0016, Pai, 2026-10-16) | — |
+| Biblioteca da TUI: `ink` × `pi-tui` | em avaliação; levar ao Pai as referências visuais das duas e a avaliação quando a TUI entrar (ADR 0016) | buddy-dev → Pai |
 | Alertas do Dependabot no repositório (a API respondeu 404: desligados) | proposta; ligar é configuração do repositório | Pai |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
 | Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); aplicado no Blog com nome, cor e emojis (`rabelus-lab-blog` `6ae9895`, governança v2.6) | — |
