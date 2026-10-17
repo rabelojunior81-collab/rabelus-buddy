@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-17T190256-0300-claude-code-vs-code-822419-0015",
+  "ts": "2026-10-17T19:02:56-03:00",
+  "utc": "2026-10-17T22:02:56.482Z",
+  "session": "claude-code-vs-code-822419",
+  "seq": 15,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "feat/m0.8d-feedback-ao-vivo"
+    ],
+    "archived": [],
+    "kept": []
+  }
+}
