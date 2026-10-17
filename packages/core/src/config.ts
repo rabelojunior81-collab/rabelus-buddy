@@ -42,11 +42,13 @@ function loadKeys(home: string): Record<string, string> {
   return existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as Record<string, string>) : {};
 }
 
-// Rotas utilizáveis, na ordem configurada: só entra provedor com credencial.
-export function buildRoutes(home: string, config: Config, env: NodeJS.ProcessEnv = process.env): Route[] {
+// Rotas utilizáveis, na ordem configurada: só entra provedor com credencial. `only`: a rota escolhida
+// para uma execução (provedor e modelo), com o endereço do config.json se houver (rev. 5).
+export function buildRoutes(home: string, config: Config, env: NodeJS.ProcessEnv = process.env, only?: { provider: ProviderId; model: string }): Route[] {
   const keys = loadKeys(home);
   const routes: Route[] = [];
-  for (const r of config.routes) {
+  const list = only ? [{ ...(config.routes.find((x) => x.provider === only.provider) ?? {}), provider: only.provider, model: only.model }] : config.routes;
+  for (const r of list) {
     if (r.provider === 'chatgpt') {
       if (!loadCredentials(home)?.refreshToken) continue;
       routes.push({ provider: createChatGptProvider({ home, ...(r.baseURL ? { endpoints: { ...SIWC_ENDPOINTS, api: r.baseURL } } : {}) }), model: r.model });

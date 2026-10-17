@@ -27,8 +27,8 @@ export const SIWC_SCOPE = 'openid profile email offline_access resource.invoke c
 export const SIWC_RESOURCE = 'https://api.openai.com/v1';
 export const PLAN_SCOPE = 'chatgpt.tokens.use.direct';
 export const AGENT_NAME = 'Rabelus Buddy';
-// Campos que a prévia proíbe no corpo (ficha, preview-limitations).
-export const FORBIDDEN_FIELDS = ['max_output_tokens', 'metadata', 'temperature', 'top_p', 'truncation', 'user', 'background', 'conversation', 'previous_response_id'] as const;
+// Campos que a prévia manda omitir (ficha, preview-limitations; reverificada em 2026-10-17).
+export const FORBIDDEN_FIELDS = ['max_output_tokens', 'metadata', 'temperature', 'top_p', 'truncation', 'user', 'background', 'conversation', 'previous_response_id', 'max_tool_calls', 'moderation', 'multi_agent', 'prompt', 'prompt_cache_retention', 'safety_identifier', 'top_logprobs'] as const;
 const DEFAULT_PORT = 1455; // o exemplo oficial; só a porta pode variar
 const REFRESH_MARGIN_MS = 60_000;
 // "Do not infer a reset time": a pausa é só o intervalo até reavaliar, não o horário de volta.
@@ -335,6 +335,8 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
         store: false,
         stream: true,
         ...(req.tools?.length ? { tools: responsesTools(req) } : {}),
+        // A prévia não cita `reasoning` (2026-10-17): vai só quando há esforço; recusa → o agente repete sem ele.
+        ...(req.effort ? { reasoning: { effort: req.effort } } : {}),
       };
       let stream: AsyncIterable<{ type: string; response?: { error?: { code?: string; message?: string } | null } & Parameters<typeof parseResponsesOutput>[0] }>;
       try {

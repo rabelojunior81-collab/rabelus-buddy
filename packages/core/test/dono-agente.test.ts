@@ -122,3 +122,53 @@ test('dono ocioso se desliga sozinho (a próxima tarefa sobe outro com as creden
   await call(ep2, 'daemon.stop', {});
   await fake.close();
 });
+
+test('rota escolhida por execução: só o provedor pedido, com o modelo pedido', () => {
+  const home = tempHome();
+  const env = { OPENCODE_GO_API_KEY: 'k1', OPENROUTER_API_KEY: 'k3' };
+  const one = buildRoutes(home, loadConfig(home), env, { provider: 'openrouter', model: 'outro/modelo:free' });
+  assert.deepEqual(one.map((r) => `${r.provider.id}/${r.model}`), ['openrouter/outro/modelo:free']);
+  assert.deepEqual(buildRoutes(home, loadConfig(home), env, { provider: 'chatgpt', model: 'gpt-6.1-sol' }), [], 'sem credencial, nada');
+});
+
+test('dono: agent.run com esforço, rota escolhida e continuação da conversa (rev. 5)', async () => {
+  const seen: Record<string, unknown>[] = [];
+  const fake = await fakeHttp((c: Captured) => { if (!c.path.endsWith('/chat/completions')) return { status: 404 }; seen.push(c.body); return chat({ content: `resposta ${seen.length}` }, 'stop'); });
+  const { home, workspace } = homeWithFake(fake.url);
+  owners.push(await spawnOwner(home, { OPENCODE_GO_API_KEY: 'chave-falsa' }));
+  const ep = endpointFor(home);
+  const waitDone = (run: string) => until(async () => { const r = (await call(ep, 'run.get', { id: run })) as Run; return r.state === 'running' ? undefined : r; });
+  const { run: r1 } = (await call(ep, 'agent.run', { session: 'sc', task: 'primeira', workspace, effort: 'low', route: { provider: 'opencode-go', model: 'kimi-k3' } })) as { run: string };
+  assert.equal((await waitDone(r1)).state, 'done');
+  assert.equal(seen[0]?.reasoning_effort, 'low');
+  const { run: r2 } = (await call(ep, 'agent.run', { session: 'sc', task: 'segunda', workspace, continueFrom: r1 })) as { run: string };
+  assert.equal((await waitDone(r2)).state, 'done');
+  const msgs = (seen[1]?.messages as { role: string; content: string }[]).map((m) => `${m.role}:${m.content}`);
+  assert.deepEqual(msgs.slice(1), ['user:primeira', 'assistant:resposta 1', 'user:segunda']);
+  assert.equal(seen[1]?.reasoning_effort, undefined, 'esforço padrão na segunda');
+  await assert.rejects(call(ep, 'agent.run', { session: 'sc', task: 'x', workspace, effort: 'altíssimo' }), /esforço/);
+  await fake.close();
+});
+
+test('dono: chaves e provedores pelo núcleo (a chave nunca volta); login do ChatGPT iniciado pelo núcleo', async () => {
+  const home = tempHome();
+  owners.push(await spawnOwner(home, { OPENCODE_GO_API_KEY: '', OPENROUTER_API_KEY: '', OLLAMA_CLOUD_API_KEY: '' }));
+  const ep = endpointFor(home);
+  const secret = `canario-${Date.now()}-chave`;
+  const set = await call(ep, 'keys.set', { provider: 'ollama-cloud', key: secret });
+  assert.equal(JSON.stringify(set).includes(secret), false);
+  const st = (await call(ep, 'providers.status', {})) as { provider: string; model: string; source: { kind: string } | null }[];
+  assert.equal(JSON.stringify(st).includes(secret), false, 'a chave nunca volta');
+  assert.deepEqual(st.find((p) => p.provider === 'ollama-cloud')?.source, { kind: 'keys' });
+  assert.equal(st.find((p) => p.provider === 'opencode-go')?.source, null);
+  await assert.rejects(call(ep, 'keys.set', { provider: 'chatgpt', key: 'x' }), /provedor/);
+  await call(ep, 'keys.remove', { provider: 'ollama-cloud' });
+  assert.equal(((await call(ep, 'providers.status', {})) as { provider: string; source: unknown }[]).find((p) => p.provider === 'ollama-cloud')?.source, null);
+
+  const { url } = (await call(ep, 'auth.chatgpt.start', {})) as { url: string };
+  assert.match(url, /^https:\/\/auth\.openai\.com\/api\/accounts\/authorize\?/);
+  assert.match(new URL(url).searchParams.get('ext_agent_host_id') ?? '', /^urn:uuid:/);
+  const auth = (await call(ep, 'auth.chatgpt.status', {})) as { loggedIn: boolean; pending: boolean };
+  assert.deepEqual({ loggedIn: auth.loggedIn, pending: auth.pending }, { loggedIn: false, pending: true });
+  await call(ep, 'daemon.stop', {});
+});

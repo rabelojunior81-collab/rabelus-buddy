@@ -8,6 +8,10 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ## [Não publicado]
 
+### Adicionado
+
+- Núcleo para a console (M0.8a): esforço de raciocínio por execução (baixo, médio, alto) no formato de cada provedor, com uma repetição sem ele se o provedor recusar; rota escolhida por execução; conversa contínua com o histórico da sessão; chaves de API, estado dos provedores e login do ChatGPT pelo próprio núcleo.
+
 ### Alterado
 
 - Rumo do M0 (decisão do Pai, 2026-10-17; [ADR 0017](./docs/60-decisoes/0017-console-web-local-no-m0.md)): o Rabelus Buddy é um agente com UX/UI, e a CLI é do próprio agente. A superfície do M0 passa a ser uma console web local servida pelo núcleo, e a demonstração acontece nela (SPEC 0001 revisão 5; plano com M0.8 e M0.9).

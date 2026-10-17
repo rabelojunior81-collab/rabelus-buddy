@@ -297,3 +297,27 @@ test('modelo :free do OpenRouter não consome o teto da API paga; provedor recus
   assert.equal(ev.filter((x) => x.kind === 'budget.released').length, 1, 'a reserva do Go volta');
   assert.equal(go.seen.length, 1);
 });
+
+test('esforço da execução chega ao provedor; recusado, a chamada se repete uma vez sem ele, com evento (critério 29)', async () => {
+  const p = scripted('openrouter', [new ProviderRejectedError('openrouter', 'http_400', 'reasoning not supported'), say('ok sem esforço')]);
+  const { log, agent } = setup({ routes: [{ provider: p, model: 'x/y:free' }] });
+  (agent as unknown as { o: { effort?: string } }).o.effort = 'high';
+  const r = await agent.run('s30', 'tarefa');
+  assert.equal(r.text, 'ok sem esforço');
+  assert.equal(p.seen[0]?.effort, 'high');
+  assert.equal(p.seen[1]?.effort, undefined);
+  const ev = log.events('s30').find((e) => e.kind === 'effort.dropped');
+  assert.deepEqual(ev?.payload, { route: 'openrouter/x/y:free', effort: 'high', code: 'http_400' });
+  const step = log.events('s30').find((e) => e.kind === 'agent.step');
+  assert.equal((step?.payload as { effort?: string }).effort, null);
+});
+
+test('conversa contínua: a nova mensagem leva o histórico da execução anterior ao modelo (critério 30)', async () => {
+  const p = scripted('opencode-go', [say('primeira resposta'), say('segunda resposta')]);
+  const { agent } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
+  const r1 = await agent.run('s31', 'primeira pergunta');
+  const r2 = await agent.begin('s31', 'segunda pergunta', { prior: agent.transcript('s31', r1.run) }).done;
+  assert.equal(r2.text, 'segunda resposta');
+  assert.deepEqual(p.seen[1]!.messages.map((m) => `${m.role}:${m.content}`).slice(1), ['user:primeira pergunta', 'assistant:primeira resposta', 'user:segunda pergunta']);
+  assert.notEqual(r2.run, r1.run);
+});

@@ -213,7 +213,7 @@ test('siwc: contrato da prévia — store:false, stream:true, sem campos proibid
   assert.equal(sent.body.store, false);
   assert.equal(sent.body.stream, true);
   for (const f of FORBIDDEN_FIELDS) assert.equal(f in sent.body, false, `campo proibido no corpo: ${f}`);
-  assert.deepEqual([...FORBIDDEN_FIELDS].sort(), ['background', 'conversation', 'max_output_tokens', 'metadata', 'previous_response_id', 'temperature', 'top_p', 'truncation', 'user']);
+  assert.deepEqual([...FORBIDDEN_FIELDS].sort(), ['background', 'conversation', 'max_output_tokens', 'max_tool_calls', 'metadata', 'moderation', 'multi_agent', 'previous_response_id', 'prompt', 'prompt_cache_retention', 'safety_identifier', 'temperature', 'top_logprobs', 'top_p', 'truncation', 'user']);
   assert.equal((sent.body.input as { role?: string }[]).some((i) => i.role === 'system'), false, 'sem item system');
   assert.equal(sent.body.instructions, 'Você é o buddy.');
   assert.equal(r.text, 'olá (siwc)');
@@ -325,4 +325,16 @@ test('siwc: host id salvo no formato antigo (UUID sem urn:uuid:) é corrigido um
   assert.equal(q.get('ext_agent_host_id'), 'urn:uuid:0b56bdbe-9c9d-49e5-81a5-056110f5a269');
   assert.equal(loadCredentials(home)?.hostId, 'urn:uuid:0b56bdbe-9c9d-49e5-81a5-056110f5a269');
   await fake.close();
+});
+
+test('siwc: esforço vai como reasoning.effort; padrão não envia (critério 29)', async () => {
+  const done = [{ type: 'response.completed', response: completed }];
+  const api = await fakeApi(done);
+  const home = savedHome(false);
+  const p = createChatGptProvider({ home, endpoints: { ...inert, api: `${api.url}/v1` } });
+  await p.call({ ...req(), effort: 'medium' }, { session: 's' });
+  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'medium' });
+  await p.call(req(), { session: 's' });
+  assert.equal(api.requests[1]?.body.reasoning, undefined);
+  await api.close();
 });

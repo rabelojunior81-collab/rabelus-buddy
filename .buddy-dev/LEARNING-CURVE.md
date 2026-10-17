@@ -56,3 +56,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0002-#0002
 
 1. **As ferramentas nasceram com teste (22 no primeiro PR).** O `bd` existe para que regra vire mecanismo; a regra de hoje (ação do Pai só com ensaio) entrou pelo mesmo caminho, no `bd validacoes`.
+
+## lote #0003-#0003
+
+1. **A fonte de verdade do relógio foi trocada quando oscilou 31 s.** Medir contra uma fonte melhor, e não confiar no primeiro valor, é o mesmo princípio do ensaio contra o serviço real.
