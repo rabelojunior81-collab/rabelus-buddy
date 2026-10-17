@@ -11,4 +11,4 @@ export { FsTools } from './tools/fs.ts';
 export { CommandTool } from './tools/command.ts';
 export { startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints, type ChatGptCredentials } from './providers/siwc.ts';
 export { Agent, AGENT_TOOLS, CONTEXT_LIMIT, compact, estimateTokens, type Route, type AgentOptions, type AgentResult } from './agent.ts';
-export { loadConfig, buildRoutes, saveKey, removeKey, hasCredential, DEFAULT_ROUTES, ENV_KEYS, keysPath, type Config, type RouteConfig, type ProviderId } from './config.ts';
+export { loadConfig, buildRoutes, saveKey, removeKey, hasCredential, credentialSource, DEFAULT_ROUTES, ENV_KEYS, keysPath, type Config, type RouteConfig, type ProviderId } from './config.ts';

@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import readline from 'node:readline';
 import type { I18n } from '@rabelus-buddy/client/i18n';
 import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
-import { stateHome, endpointFor, loadConfig, hasCredential, saveKey, removeKey, type ProviderId } from '@rabelus-buddy/core';
+import { stateHome, endpointFor, loadConfig, hasCredential, credentialSource, saveKey, removeKey, type ProviderId } from '@rabelus-buddy/core';
 
 export interface Io { out: (text: string) => void; err: (text: string) => void }
 export type Prompt = (question: string, opts?: { hidden?: boolean }) => Promise<string>;
@@ -201,7 +201,13 @@ export async function logCmd(arg: string | undefined, env: NodeJS.ProcessEnv, io
 
 export function providersCmd(env: NodeJS.ProcessEnv, io: Io, { t }: I18n): number {
   const home = stateHome(env);
-  const lines = loadConfig(home).routes.map((r, i) => t(hasCredential(home, r.provider, env) ? 'providers.ready' : 'providers.missing', { n: i + 1, route: `${r.provider}/${r.model}` }));
+  const lines = loadConfig(home).routes.map((r, i) => {
+    const src = credentialSource(home, r.provider, env);
+    const route = `${r.provider}/${r.model}`;
+    if (!src) return t('providers.missing', { n: i + 1, route });
+    const source = src.kind === 'env' ? t('providers.source.env', { name: src.name }) : t(src.kind === 'keys' ? 'providers.source.keys' : 'providers.source.login');
+    return t('providers.ready', { n: i + 1, route, source });
+  });
   io.out([t('providers.header'), ...lines].join('\n'));
   return 0;
 }

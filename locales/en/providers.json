@@ -1,8 +1,13 @@
 {
   "providers": {
     "header": "Provider order (ADR 0015):",
-    "ready": "{{n}}. {{route}} — ready",
-    "missing": "{{n}}. {{route}} — no credentials"
+    "ready": "{{n}}. {{route}} — ready ({{source}})",
+    "missing": "{{n}}. {{route}} — no credentials",
+    "source": {
+      "keys": "key stored by login",
+      "env": "environment variable {{name}}",
+      "login": "browser sign-in"
+    }
   },
   "keys": {
     "prompt": "{{provider}} API key: ",

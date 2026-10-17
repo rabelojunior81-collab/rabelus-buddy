@@ -1,8 +1,13 @@
 {
   "providers": {
     "header": "Ordem de provedores (ADR 0015):",
-    "ready": "{{n}}. {{route}} — pronto",
-    "missing": "{{n}}. {{route}} — sem credencial"
+    "ready": "{{n}}. {{route}} — pronto ({{source}})",
+    "missing": "{{n}}. {{route}} — sem credencial",
+    "source": {
+      "keys": "chave guardada pelo login",
+      "env": "variável de ambiente {{name}}",
+      "login": "login no navegador"
+    }
   },
   "keys": {
     "prompt": "Chave de API de {{provider}}: ",
