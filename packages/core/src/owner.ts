@@ -127,7 +127,9 @@ export async function startOwner(home: string): Promise<Owner> {
     if (x.kind === 'call') Object.assign(l, { phase: 'thinking', route: x.route, step: x.step, callStartedAt: nowIso(), reasoning: '', text: '', tool: null });
     else if (x.kind === 'reasoning') l.reasoning = (l.reasoning + x.delta).slice(-LIVE_MAX);
     else if (x.kind === 'text') { l.text = (l.text + x.delta).slice(-LIVE_MAX); l.phase = 'writing'; }
-    else if (x.kind === 'tool' || x.kind === 'exec') { l.tool = x.name; l.phase = 'tool'; }
+    else if (x.kind === 'tool') { l.tool = x.name; l.phase = 'tool'; }
+    // Passo concluído: raciocínio e texto já estão no log (a console mostra de lá); o andamento não repete.
+    else if (x.kind === 'exec') { Object.assign(l, { tool: x.name, phase: 'tool', reasoning: '', text: '' }); }
   };
   const runningIn = (session: string) => domain.listRuns().find((r) => r.session === session && r.state === 'running');
   interface Queued { queue: string; task: string; effort?: string | null; route?: unknown; workspace?: string; interactive?: boolean }

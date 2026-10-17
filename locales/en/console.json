@@ -68,7 +68,7 @@
     },
     "keys": {
       "title": "API keys",
-      "provider": "Provider",
+      "provider": "Key provider",
       "placeholder": "Paste the key here",
       "save": "Store",
       "remove": "Remove",
@@ -101,6 +101,16 @@
       "steer": "Steer now",
       "cancel": "Cancel",
       "queued": "The conversation is busy: your message was queued and runs next. Use \"Steer now\" to send it right away."
+    },
+    "reason": {
+      "userStopped": "stopped by you",
+      "maxSteps": "reached the step limit",
+      "sessionPaused": "conversation paused (repeated loop)",
+      "windowExhausted": "usage window exhausted on every provider",
+      "providerUnavailable": "no provider available",
+      "effectUnknown": "uncertain result of an action; use Resume to check",
+      "needsReconciliation": "needs your confirmation to resume",
+      "internalError": "internal core error"
     }
   }
 }

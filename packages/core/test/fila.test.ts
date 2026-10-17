@@ -101,7 +101,8 @@ test('direcionar: a mensagem da fila entra na execução em curso antes da próx
 
 test('parar: aborta a chamada pendurada e encerra como userStopped; parar na aprovação nega a pendente; retomar depois funciona (critério 33)', async () => {
   let n = 0;
-  const fake = await fakeHttp(() => { n++; if (n === 1) return { sse: chatChunks(chat('nunca termina', 'pensando')).slice(0, 2), hold: true }; if (n === 2) return { json: writeCall }; return { json: chat('fim') }; });
+  const writeWithReasoning = { ...writeCall, choices: [{ ...writeCall.choices[0]!, message: { ...writeCall.choices[0]!.message, reasoning: 'vou escrever o arquivo' } }] };
+  const fake = await fakeHttp(() => { n++; if (n === 1) return { sse: chatChunks(chat('nunca termina', 'pensando')).slice(0, 2), hold: true }; if (n === 2) return { json: writeWithReasoning }; return { json: chat('fim') }; });
   const { ep, workspace, waitDone } = await owner(fake.url);
   const { run } = (await call(ep, 'agent.run', { session: 'p1', task: 'longa', workspace, interactive: true })) as { run: string };
   await until(async () => (((await call(ep, 'run.live', { session: 'p1' })) as Live).running?.reasoning ? true : undefined));
@@ -115,6 +116,10 @@ test('parar: aborta a chamada pendurada e encerra como userStopped; parar na apr
   // Retomar: o modelo pede uma escrita; parar com a aprovação pendente nega a aprovação e para.
   await call(ep, 'agent.resume', { run, workspace, interactive: true });
   const ap = await until(async () => ((await call(ep, 'approval.list', {})) as { id: string; session: string }[]).find((a) => a.session === 'p1'));
+  // Achado no ensaio: o raciocínio do passo já está no log; a área ao vivo não o repete na espera da aprovação.
+  const waiting = (await call(ep, 'run.live', { session: 'p1' })) as Live;
+  assert.equal(waiting.running?.phase, 'approval');
+  assert.equal(waiting.running?.reasoning, '', 'raciocínio do passo concluído sai do andamento');
   await call(ep, 'agent.stop', { session: 'p1' });
   const again = await waitDone(run);
   assert.equal(again.state, 'stopped');

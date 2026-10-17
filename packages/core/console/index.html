@@ -237,8 +237,8 @@ function authView(a, t) {
 }
 // Memória da página (critério 34): conversa aberta e preferência de detalhes; armazenamento bloqueado não quebra nada.
 function restore(get) {
-  try { return { session: get('rb.session', null) || null, details: get('rb.details', 'closed') === 'open' }; }
-  catch { return { session: null, details: false }; }
+  try { return { session: get('rb.session', null) || null, details: get('rb.details', 'closed') === 'open', route: get('rb.route', '') || '' }; }
+  catch { return { session: null, details: false, route: '' }; }
 }
 function elapsedText(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
@@ -256,11 +256,27 @@ function liveLine(l, ms, t) {
   const phase = l.phase === 'tool' ? t('console.live.tool', { tool: l.tool || '?' }) : l.phase === 'writing' ? t('console.live.writing') : l.phase === 'approval' ? t('console.live.approval') : t('console.live.thinking');
   return [phase, elapsedText(ms), l.route].filter(Boolean).join(' · ');
 }
+// Matemática em LaTeX (o ChatGPT escreve \(30 \times 1\)) vira texto legível, sem biblioteca (ensaio da M0.8d).
+const TEX = { times: '×', div: '÷', cdot: '·', approx: '≈', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', to: '→', rightarrow: '→', pm: '±', infty: '∞' };
+function delatex(s) {
+  if (!/\\[([a-zA-Z]/.test(s)) return s;
+  let o = s.replace(/\\\[\s*([\s\S]*?)\s*\\\]/g, '$1').replace(/\\\(\s*([\s\S]*?)\s*\\\)/g, '$1');
+  o = o.replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '$1/$2').replace(/\\text\{([^{}]*)\}/g, '$1').replace(/\\mathbf\{([^{}]*)\}/g, '**$1**').replace(/_\{([^{}]*)\}/g, '($1)');
+  return o.replace(/\\(times|div|cdot|approx|leq|le|geq|ge|neq|to|rightarrow|pm|infty)(?![a-zA-Z])/g, (_m, k) => TEX[k]);
+}
+// Motivo de parada em frase (antes aparecia o código, como "userStopped").
+const REASONS = {
+  userStopped: 'console.reason.userStopped', maxSteps: 'console.reason.maxSteps', sessionPaused: 'console.reason.sessionPaused',
+  'budget.windowExhausted': 'console.reason.windowExhausted', 'provider.unavailable': 'console.reason.providerUnavailable',
+  'effect.unknown': 'console.reason.effectUnknown', needsReconciliation: 'console.reason.needsReconciliation', internalError: 'console.reason.internalError',
+};
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
   const f = document.createDocumentFragment();
-  for (const part of String(text).split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
+  // O LaTeX sai do texto corrido, nunca de dentro do código.
+  const plain = String(text).split(/(`[^`\n]+`)/).map((x) => (/^`[^`]+`$/.test(x) ? x : delatex(x))).join('');
+  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
     if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
     else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
     else if (part) f.append(document.createTextNode(part));
@@ -333,7 +349,7 @@ function feedItems(evs) {
         break;
       }
       case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
-      case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: p.reason }))); break;
+      case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
       case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
       case 'run.resumed': detail(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
       case 'agent.step': detail(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
@@ -372,6 +388,7 @@ async function refreshLive() {
   const was = Boolean(liveState && liveState.running);
   liveState = l;
   $('stop').hidden = !l.running;
+  if (!(l.queue || []).length && $('runMsg').textContent === t('console.queue.queued')) $('runMsg').textContent = '';
   if (was && !l.running) { lastFeedKey = ''; void refreshFeed(); }
   renderLive();
 }
@@ -418,7 +435,11 @@ function frame(now) {
       if (feed.scrollHeight - feed.scrollTop - feed.clientHeight < 80) feed.scrollTop = feed.scrollHeight;
     }
     const reason = $('liveReason');
-    if (reason && reason.textContent !== r.reasoning) reason.textContent = r.reasoning;
+    if (reason && reason.textContent !== r.reasoning) {
+      const follow = reason.scrollHeight - reason.scrollTop - reason.clientHeight < 40;
+      reason.textContent = r.reasoning;
+      if (follow) reason.scrollTop = reason.scrollHeight;
+    }
   }
   requestAnimationFrame(frame);
 }
@@ -464,7 +485,8 @@ async function refreshProviders() {
     el('span', { class: 't' }, (i + 1) + '. ' + p.provider + '/' + p.model),
     el('span', { class: 'badge ' + (p.source ? 'ok' : 'warn'), title: sourceText(p.source) }, p.source ? sourceText(p.source) : t('console.route.missing')))));
   const sel = $('route');
-  const cur = sel.value;
+  // Primeira montagem: o provedor escolhido da última vez (critério 34).
+  const cur = sel.options.length ? sel.value : prefs.route;
   const opts = [el('option', { value: '' }, t('console.route.auto'))];
   for (const r of routesCfg) {
     const ready = providerState.find((p) => p.provider === r.provider)?.source;
@@ -523,6 +545,7 @@ $('run').addEventListener('click', async () => {
     const r = await api('agent.run', params);
     store.set('rb.workspace', $('workspace').value);
     store.set('rb.effort', $('effort').value);
+    store.set('rb.route', $('route').value);
     $('task').value = '';
     // Conversa ocupada: a mensagem entrou na fila (Direcionar agora ou Cancelar, logo abaixo da conversa).
     msg.textContent = r.queued ? t('console.queue.queued') : '';

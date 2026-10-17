@@ -68,7 +68,7 @@
     },
     "keys": {
       "title": "Chaves de API",
-      "provider": "Provedor",
+      "provider": "Provedor da chave",
       "placeholder": "Cole a chave aqui",
       "save": "Guardar",
       "remove": "Remover",
@@ -101,6 +101,16 @@
       "steer": "Direcionar agora",
       "cancel": "Cancelar",
       "queued": "A conversa está trabalhando: a mensagem entrou na fila e roda em seguida. Use \"Direcionar agora\" para mandá-la já."
+    },
+    "reason": {
+      "userStopped": "parada por você",
+      "maxSteps": "chegou ao limite de passos",
+      "sessionPaused": "conversa pausada (laço repetido)",
+      "windowExhausted": "janela de consumo esgotada em todos os provedores",
+      "providerUnavailable": "nenhum provedor disponível",
+      "effectUnknown": "resultado incerto de uma ação; use Retomar para conferir",
+      "needsReconciliation": "precisa da sua confirmação para retomar",
+      "internalError": "erro interno do núcleo"
     }
   }
 }

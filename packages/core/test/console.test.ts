@@ -184,7 +184,7 @@ test('console: ChatGPT conectado — estado legível, "Entrar" vira "Trocar de c
 
 // ---------- SPEC 0001 rev. 6 (M0.8d): andamento ao vivo, detalhes recolhíveis, fila, console lembra ----------
 type Pure2 = {
-  restore: (get: (k: string, d: string | null) => string | null) => { session: string | null; details: boolean };
+  restore: (get: (k: string, d: string | null) => string | null) => { session: string | null; details: boolean; route: string };
   elapsedText: (ms: number) => string;
   revealStep: (shown: number, total: number, dtMs: number) => number;
   liveLine: (l: { phase: string; route: string; tool: string | null }, ms: number, t: (k: string, v?: Record<string, unknown>) => string) => string;
@@ -198,10 +198,11 @@ function pure2(): Pure2 {
 
 test('console lembra a conversa aberta e a preferência de detalhes; armazenamento quebrado não derruba a página (critério 34)', () => {
   const { restore } = pure2();
-  const mem: Record<string, string> = { 'rb.session': 'ses-abc', 'rb.details': 'open' };
-  assert.deepEqual(restore((k, d) => mem[k] ?? d), { session: 'ses-abc', details: true });
-  assert.deepEqual(restore((_k, d) => d), { session: null, details: false }, 'primeira visita: sem conversa, detalhes recolhidos');
-  assert.deepEqual(restore(() => { throw new Error('bloqueado'); }), { session: null, details: false });
+  const route = JSON.stringify({ provider: 'chatgpt', model: 'gpt-6.1-sol' });
+  const mem: Record<string, string> = { 'rb.session': 'ses-abc', 'rb.details': 'open', 'rb.route': route };
+  assert.deepEqual(restore((k, d) => mem[k] ?? d), { session: 'ses-abc', details: true, route }, 'o provedor escolhido também volta (achado no ensaio)');
+  assert.deepEqual(restore((_k, d) => d), { session: null, details: false, route: '' }, 'primeira visita: sem conversa, detalhes recolhidos, rota automática');
+  assert.deepEqual(restore(() => { throw new Error('bloqueado'); }), { session: null, details: false, route: '' });
 });
 
 test('andamento: tempo legível, texto revelado em cadência (sem pular nem travar) e linha de fase (critério 31)', () => {
@@ -225,14 +226,45 @@ test('console: raciocínio, comandos e resultados em blocos recolhíveis com a p
   assert.match(html, /case 'agent\.reasoning':/, 'o raciocínio do log aparece na conversa');
   assert.match(html, /id="detailsToggle"/, 'escolha de mostrar ou recolher os detalhes');
   assert.match(html, /id="stop"/, 'botão Parar');
+  assert.match(html, /reason\.scrollTop = reason\.scrollHeight/, 'o raciocínio ao vivo acompanha o fim enquanto cresce (achado no ensaio)');
   for (const m of ['run.live', 'agent.steer', 'agent.unqueue', 'agent.stop']) assert.ok(html.includes(`'${m}'`), `a página usa ${m}`);
   for (const m of ['run.live', 'agent.steer', 'agent.unqueue', 'agent.stop']) assert.ok((CONSOLE_METHODS as readonly string[]).includes(m), `${m} liberado na console`);
+});
+
+// Achados do ensaio da M0.8d (2026-10-17), com o ChatGPT real no esforço Alto.
+test('console: matemática em LaTeX vira texto legível (o ChatGPT escreve \\(30 \\times 1\\) e \\mathbf{…})', () => {
+  const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  const a = html.indexOf('// <puras>');
+  const b = html.indexOf('// </puras>');
+  const { delatex, REASONS } = new Function(`${html.slice(a, b)}; return { delatex, REASONS };`)() as { delatex: (s: string) => string; REASONS: Record<string, string> };
+  assert.equal(delatex('reduz em \\(30 \\times 1=30\\) km'), 'reduz em 30 × 1=30 km');
+  assert.equal(delatex('está a \\(60 \\times 4=\\mathbf{240\\text{ km}}\\) da origem'), 'está a 60 × 4=**240 km** da origem');
+  assert.equal(delatex('\\(50 \\div 30=5/3\\) e \\(\\frac{8}{3}\\) h, \\(a \\le b \\cdot c \\approx d \\neq e\\)'), '50 ÷ 30=5/3 e 8/3 h, a ≤ b · c ≈ d ≠ e');
+  assert.equal(delatex('\\[ v = \\frac{d}{t} \\]'), 'v = d/t');
+  assert.equal(delatex('taxa \\(v_{perseguidor}-v_{líder}\\)'), 'taxa v(perseguidor)-v(líder)', 'subscrito legível');
+  assert.equal(delatex('preço R$ 10 \\ sem fórmula'), 'preço R$ 10 \\ sem fórmula', 'texto sem LaTeX não muda');
+  // Motivo de parada legível: todo motivo conhecido tem frase nos dois catálogos.
+  for (const lang of ['pt-BR', 'en']) {
+    const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as Record<string, unknown>;
+    for (const [code, key] of Object.entries(REASONS)) {
+      const v = key.split('.').reduce<unknown>((o, p) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[p] : undefined), cat);
+      assert.equal(typeof v, 'string', `${lang}: ${code} → ${key}`);
+    }
+  }
+  for (const code of ['userStopped', 'maxSteps', 'sessionPaused', 'budget.windowExhausted', 'provider.unavailable', 'effect.unknown', 'needsReconciliation', 'internalError']) assert.ok(REASONS[code], `motivo ${code}`);
+  // O aviso "entrou na fila" sai quando a fila esvazia.
+  assert.match(html, /if \(!\(l\.queue \|\| \[\]\)\.length && \$\('runMsg'\)\.textContent === t\('console\.queue\.queued'\)\) \$\('runMsg'\)\.textContent = '';/);
 });
 
 test('console: rótulos acessíveis traduzidos (nada de "provider" em inglês na tela pt-BR)', () => {
   const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
   assert.doesNotMatch(html, /aria-label="[a-z]+"/, 'aria-label fixo sem catálogo');
   assert.match(html, /id="keyProvider"[^>]*data-i18n-aria="console\.keys\.provider"/);
+  // Achado no ensaio da M0.8d: o seletor da chave e o da rota se chamavam "Provedor" (leitor de tela não distingue).
+  for (const lang of ['pt-BR', 'en']) {
+    const c = (JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as { console: { keys: { provider: string }; task: { route: string } } }).console;
+    assert.notEqual(c.keys.provider, c.task.route, `${lang}: rótulos iguais para controles diferentes`);
+  }
 });
 
 test('console: o script da página é JavaScript válido (um script quebrado deixaria o Pai sem console)', () => {
