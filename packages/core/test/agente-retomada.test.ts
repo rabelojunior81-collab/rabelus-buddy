@@ -169,3 +169,36 @@ test('só se retoma execução interrompida ou parada', async () => {
   await assert.rejects(agent.resume('s5', r.run), (e: unknown) => e instanceof DomainError);
   assert.equal(existsSync(join(dir, 'ws')), true);
 });
+
+test('queda com aprovação pendente: a retomada reaproveita a mesma aprovação, sem duplicar (achado no ensaio da console)', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'rbuddy-ret-'));
+  const a = boot(dir, scripted('opencode-go', []));
+  const run = a.domain.startRun('s6', 'escrever').id;
+  for (const m of [
+    { role: 'system', content: 'sistema' },
+    { role: 'user', content: 'escrever' },
+    { role: 'assistant', content: '', toolCalls: [{ id: 'w9', name: 'write_file', arguments: JSON.stringify({ path: 'r.md', content: 'resumo' }) }] },
+  ] as ChatMessage[]) a.log.append('s6', 'agent.message', { run, message: m });
+  a.domain.beginEffect('s6', run, 'file.write', `${run}:w9`, 'r.md');
+  const pend = a.domain.requestApproval('s6', 'write_file r.md');
+
+  let asked = 0;
+  const b = boot(dir, scripted('opencode-go', [say('fim')]), { interactive: true, awaitApproval: async () => { asked++; return 'approve'; } });
+  b.domain.recover();
+  const r = await b.agent.resume('s6', run);
+  assert.equal(r.outcome, 'done');
+  assert.equal(b.domain.pendingApprovals().length, 0, 'nada pendurado');
+  assert.equal(b.domain.getApproval(pend.id).state, 'approved', 'a aprovação antiga foi a usada');
+  assert.equal(b.log.events('s6').filter((e) => e.kind === 'approval.requested').length, 1, 'nenhuma aprovação nova');
+  assert.equal(readFileSync(join(b.workspace, 'r.md'), 'utf8'), 'resumo');
+  assert.equal(asked, 1);
+});
+
+test('a reexecução na retomada não conta de novo para o detector de laço', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'rbuddy-ret-'));
+  const { run } = crashMidWrite(dir, { written: false });
+  const b = boot(dir, scripted('opencode-go', [say('fim')]));
+  b.domain.recover();
+  await b.agent.resume('s3', run);
+  assert.equal(b.log.events('s3').filter((e) => e.kind === 'tool.called').length, 0, 'a chamada é a mesma de antes da queda');
+});

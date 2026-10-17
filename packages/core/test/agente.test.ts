@@ -333,3 +333,12 @@ test('limite do provedor também deixa o motivo no log', async () => {
   const err = log.events('s40').find((e) => e.kind === 'provider.error');
   assert.deepEqual(err?.payload, { route: 'opencode-go/kimi-k3', code: 'limit', message: 'Upstream request failed: Insufficient account funds' });
 });
+
+test('a repetição interna depois da aprovação não conta para o detector de laço (achado no ensaio da console)', async () => {
+  const p = scripted('opencode-go', [tool('c1', 'write_file', { path: 'x.txt', content: '1' }), say('fim')]);
+  const { log, agent, workspace } = setup({ routes: [{ provider: p, model: 'kimi-k3' }], interactive: true, awaitApproval: async () => 'approve' });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  await agent.run('s41', 'escrever');
+  const calls = log.events('s41').filter((e) => e.kind === 'tool.called' && (e.payload as { sig: string }).sig === 'write_file x.txt');
+  assert.equal(calls.length, 1, 'uma chamada do modelo, uma contagem');
+});
