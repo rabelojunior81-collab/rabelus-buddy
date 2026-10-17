@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-17T203324-0300-claude-code-vs-code-569aca-0019",
+  "ts": "2026-10-17T20:33:24-03:00",
+  "utc": "2026-10-17T23:33:24.813Z",
+  "session": "claude-code-vs-code-569aca",
+  "seq": 19,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m1-ordem-c-e-pesquisa",
+  "type": "erro",
+  "summary": "Criei SPEC 0002, TESTES e plano do M1 sem bd claim; o bd claims reprovou antes do commit. Claims feitos depois (aparecem como novos na branch; arquivos novos não têm commit anterior, então o atraso só fica neste registro).",
+  "refs": [],
+  "data": {}
+}

@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0009 · 2026-10-14T112001-0300 · claude-code-5c038b · pesquisa
-
-Revisão 0.2 (F0.7): R1 custos (orçamento da 0.1 = US$ 60,82–62,82; uso agêntico exige camada barata), R2 sandbox 3 SOs, R3 aprovações com escopo, R4 núcleo + composição (gateways MIT existem), R5 concorrência fundacional, R6 nome. 5 subagentes conferidos por amostragem.
-
 ### #0010 · 2026-10-14T112002-0300 · claude-code-5c038b · processo
 
 O Pai disse que mergeou os PRs; o GitHub mostrou #1–#5 abertos e a main no commit de importação. Registrado e seguido em pilha (#6 sobre #5), sem presumir o merge.
@@ -207,3 +203,7 @@ M0.8d: andamento ao vivo na console (fase, tempo, raciocínio, texto em cadênci
 ### #0056 · 2026-10-17T193917-0300 · claude-code-vs-code-9497ba · marco
 
 M0 concluído: o Pai validou pela console ('testei todo o resto'); retrospectiva e métricas registradas; proposta de ordem dos marcos (A, B, C; recomendação C) aguarda o Pai. Tema da console (Sistema, Claro, Escuro) a pedido dele. bd claims passa a cobrir ROADMAP e PLANO-MACRO.
+
+### #0057 · 2026-10-17T203332-0300 · claude-code-vs-code-569aca · spec
+
+SPEC 0002 (M1, rascunho): orquestrador pelo registro oficial do ACP (detecção sem configuração, ícones, sonda, primeira execução aprovada, permissões pelo núcleo, autenticação do agente, delegação), multimodal de entrada, console nova em verde-oliva e vidro (protótipo), contrato tipado (zod), sessão de TUI no fim; dependências propostas: @agentclientprotocol/sdk 1.9.0 e zod 4.6.7.
