@@ -342,3 +342,52 @@ test('a repetição interna depois da aprovação não conta para o detector de 
   const calls = log.events('s41').filter((e) => e.kind === 'tool.called' && (e.payload as { sig: string }).sig === 'write_file x.txt');
   assert.equal(calls.length, 1, 'uma chamada do modelo, uma contagem');
 });
+
+// ---------- SPEC 0001 rev. 6 (M0.8d): andamento, raciocínio, direcionamento e parada ----------
+
+test('raciocínio do passo vai para o log como agent.reasoning; sem raciocínio, nenhum evento (critério 32)', async () => {
+  const p = scripted('openrouter', [{ ...tool('c1', 'list_dir', { path: '.' }), reasoning: 'vou olhar a pasta' }, say('pronto')]);
+  const { log, agent, workspace } = setup({ routes: [{ provider: p, model: 'x/y:free' }] });
+  (await import('node:fs')).mkdirSync(workspace, { recursive: true });
+  const r = await agent.run('s40', 'tarefa');
+  const ev = log.events('s40').filter((e) => e.kind === 'agent.reasoning');
+  assert.deepEqual(ev.map((e) => e.payload), [{ run: r.run, step: 1, route: 'openrouter/x/y:free', text: 'vou olhar a pasta' }]);
+  // O raciocínio não entra na conversa enviada ao modelo.
+  assert.equal(p.seen[1]!.messages.some((m) => m.content.includes('vou olhar a pasta')), false);
+});
+
+test('andamento: o agente repassa os fragmentos do provedor e as fases (chamada, ferramenta) a quem observa (critério 31)', async () => {
+  const p: Provider = { id: 'openrouter', async call(_req, ctx) { ctx.onProgress?.({ kind: 'reasoning', delta: 'pens' }); ctx.onProgress?.({ kind: 'text', delta: 'olá' }); return say('olá'); } };
+  const seen: unknown[] = [];
+  const { agent } = setup({ routes: [{ provider: p, model: 'x/y:free' }] });
+  (agent as unknown as { o: Record<string, unknown> }).o.onProgress = (run: string, x: unknown) => seen.push(x);
+  await agent.run('s41', 'tarefa');
+  assert.deepEqual(seen, [{ kind: 'call', route: 'openrouter/x/y:free', step: 1 }, { kind: 'reasoning', delta: 'pens' }, { kind: 'text', delta: 'olá' }]);
+});
+
+test('direcionar (steer): a mensagem entra antes da próxima chamada; resposta final não encerra enquanto houver direcionamento (critério 33)', async () => {
+  const inbox: string[] = [];
+  const p = scripted('opencode-go', [say('resposta à primeira'), say('resposta ao direcionamento')]);
+  const { log, agent } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
+  (agent as unknown as { o: Record<string, unknown> }).o.inbox = () => inbox.splice(0);
+  const orig = p.call.bind(p);
+  p.call = async (req, ctx) => { const r = await orig(req, ctx); if (p.seen.length === 1) inbox.push('na verdade, em inglês'); return r; };
+  const r = await agent.run('s42', 'tarefa');
+  assert.equal(r.text, 'resposta ao direcionamento');
+  assert.deepEqual(p.seen[1]!.messages.slice(-2).map((m) => `${m.role}:${m.content}`), ['assistant:resposta à primeira', 'user:na verdade, em inglês']);
+  const steer = log.events('s42').find((e) => e.kind === 'agent.message' && (e.payload as { steer?: boolean }).steer);
+  assert.deepEqual((steer?.payload as { message: unknown }).message, { role: 'user', content: 'na verdade, em inglês' });
+});
+
+test('parar: o sinal aborta a chamada em curso; a execução fica parada com userStopped, sem efeito desconhecido (critério 33)', async () => {
+  const ac = new AbortController();
+  const p: Provider = { id: 'opencode-go', call: (_req, ctx) => new Promise((_res, rej) => { ctx.signal?.addEventListener('abort', () => rej(Object.assign(new Error('Request was aborted.'), { name: 'AbortError' }))); setTimeout(() => ac.abort(), 20); }) };
+  const { log, domain, agent } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
+  (agent as unknown as { o: Record<string, unknown> }).o.signal = ac.signal;
+  const r = await agent.run('s43', 'tarefa longa');
+  assert.deepEqual([r.outcome, r.reason], ['stopped', 'userStopped']);
+  assert.equal(domain.getRun(r.run).state, 'stopped');
+  assert.equal(log.events('s43').some((e) => e.kind === 'effect.unknown'), false, 'parada pedida não é efeito desconhecido');
+  const failed = log.events('s43').find((e) => e.kind === 'effect.failed');
+  assert.equal((failed?.payload as { reason?: string }).reason, 'userStopped');
+});

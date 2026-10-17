@@ -319,7 +319,7 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
   const auth = new SiwcAuth({ home, endpoints });
   return {
     id: 'chatgpt',
-    async call(req: ModelRequest, _ctx: CallContext): Promise<ModelResponse> {
+    async call(req: ModelRequest, ctx: CallContext): Promise<ModelResponse> {
       if (loadCredentials(home)?.planEnabled === false) throw rejected('plan_not_enabled', 'o login não concedeu chatgpt.tokens.use.direct: o plano não pode ser usado');
       let token: string;
       try { token = await auth.accessToken(); } catch (e) {
@@ -336,11 +336,12 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
         stream: true,
         ...(req.tools?.length ? { tools: responsesTools(req) } : {}),
         // A prévia não cita `reasoning` (2026-10-17): vai só quando há esforço; recusa → o agente repete sem ele.
-        ...(req.effort ? { reasoning: { effort: req.effort } } : {}),
+        // `summary: "auto"` foi aceito pelo serviço real (medido em 2026-10-17) e traz o resumo do raciocínio (rev. 6).
+        ...(req.effort ? { reasoning: { effort: req.effort, summary: 'auto' } } : {}),
       };
-      let stream: AsyncIterable<{ type: string; item?: unknown; response?: { error?: { code?: string; message?: string } | null } & Parameters<typeof parseResponsesOutput>[0] }>;
+      let stream: AsyncIterable<{ type: string; item?: unknown; delta?: string; response?: { error?: { code?: string; message?: string } | null } & Parameters<typeof parseResponsesOutput>[0] }>;
       try {
-        stream = (await client.responses.create(body as unknown as Parameters<typeof client.responses.create>[0], { headers: { 'User-Agent': USER_AGENT } })) as unknown as typeof stream;
+        stream = (await client.responses.create(body as unknown as Parameters<typeof client.responses.create>[0], { headers: { 'User-Agent': USER_AGENT }, ...(ctx.signal ? { signal: ctx.signal } : {}) })) as unknown as typeof stream;
       } catch (e) { return fromHttp(e); }
       // O backend real manda `response.completed` com `output: []` (medido em 2026-10-17): texto e chamadas de
       // ferramenta só vêm em `response.output_item.done`. Guardamos os itens e usamos quando o final vier vazio.
@@ -349,6 +350,10 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
       try {
         for await (const ev of stream) {
           if (ev.type === 'response.output_item.done' && ev.item) items.push(ev.item);
+          // Andamento (critério 31): resumo do raciocínio, texto e o nome da ferramenta assim que chegam.
+          if (ev.type === 'response.reasoning_summary_text.delta' && ev.delta) ctx.onProgress?.({ kind: 'reasoning', delta: ev.delta });
+          if (ev.type === 'response.output_text.delta' && ev.delta) ctx.onProgress?.({ kind: 'text', delta: ev.delta });
+          if (ev.type === 'response.output_item.added' && (ev.item as { type?: string })?.type === 'function_call') ctx.onProgress?.({ kind: 'tool', name: String((ev.item as { name?: string }).name ?? '') });
           if (ev.type === 'response.completed') return final(ev.response);
           if (ev.type === 'response.incomplete') return { ...final(ev.response), finish: 'length' };
           if (ev.type === 'response.failed') {
@@ -362,6 +367,7 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
         if (typeof err?.status === 'number') return fromHttp(e);
         throw new ProviderUnknownError(`stream do ChatGPT interrompido: ${(e as Error).message}`);
       }
+      if (ctx.signal?.aborted) throw Object.assign(new Error('chamada abortada'), { name: 'AbortError' });
       throw new ProviderUnknownError('stream do ChatGPT terminou sem response.completed');
     },
   };

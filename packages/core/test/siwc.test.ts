@@ -369,7 +369,7 @@ test('siwc: esforço vai como reasoning.effort; padrão não envia (critério 29
   const home = savedHome(false);
   const p = createChatGptProvider({ home, endpoints: { ...inert, api: `${api.url}/v1` } });
   await p.call({ ...req(), effort: 'medium' }, { session: 's' });
-  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'medium' });
+  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'medium', summary: 'auto' }, 'com esforço, o resumo do raciocínio vai junto (rev. 6, critério 31)');
   await p.call(req(), { session: 's' });
   assert.equal(api.requests[1]?.body.reasoning, undefined);
   await api.close();

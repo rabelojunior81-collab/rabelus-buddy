@@ -12,8 +12,12 @@ export interface ChatMessage {
 // Esforço de raciocínio por execução (SPEC 0001 rev. 5, critério 29); ausente = padrão do provedor.
 export type Effort = 'low' | 'medium' | 'high';
 export interface ModelRequest { model: string; messages: ChatMessage[]; tools?: ToolSpec[]; maxOutputTokens?: number; effort?: Effort }
-export interface ModelResponse { text: string; toolCalls: ToolCall[]; usage: Usage; finish: 'stop' | 'tool_calls' | 'length' | 'other' }
-export interface CallContext { session: string }
+// reasoning: o raciocínio que o provedor expõe (resumo no SIWC; bruto no Ollama e no OpenRouter), para o log (critério 32).
+export interface ModelResponse { text: string; toolCalls: ToolCall[]; usage: Usage; finish: 'stop' | 'tool_calls' | 'length' | 'other'; reasoning?: string }
+// Andamento da chamada, em fragmentos, para quem observa (SPEC 0001 rev. 6, critério 31). Não vai para o log.
+export type Progress = { kind: 'reasoning' | 'text'; delta: string } | { kind: 'tool'; name: string };
+// signal: parar pela console aborta a chamada em curso (critério 33).
+export interface CallContext { session: string; signal?: AbortSignal; onProgress?: (p: Progress) => void }
 export interface Provider {
   id: string;
   call: (req: ModelRequest, ctx: CallContext) => Promise<ModelResponse>;

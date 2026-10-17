@@ -54,20 +54,45 @@ export function openaiChatAdapter(o: AdapterOptions): Provider {
         return { role: m.role, content: m.content } as { role: 'system' | 'user' | 'assistant'; content: string };
       });
       try {
-        const r = await client.chat.completions.create({
+        // Em fluxo (rev. 6, critério 31): raciocínio e texto chegam enquanto o modelo trabalha, e o uso vem no
+        // último pedaço (`include_usage`), formato medido no Ollama e no OpenRouter reais em 2026-10-17.
+        const stream = await client.chat.completions.create({
           model: req.model,
           messages,
+          stream: true,
+          stream_options: { include_usage: true },
           ...(req.tools?.length ? { tools: req.tools.map((t) => ({ type: 'function' as const, function: { name: t.name, description: t.description, parameters: t.parameters } })) } : {}),
           ...(req.maxOutputTokens ? { max_tokens: req.maxOutputTokens } : {}),
           // OpenRouter normaliza o esforço em `reasoning`; as demais rotas compatíveis usam `reasoning_effort`.
           ...(req.effort ? (o.id === 'openrouter' ? { reasoning: { effort: req.effort } } : { reasoning_effort: req.effort }) : {}),
-        } as Parameters<typeof client.chat.completions.create>[0], { headers: o.headers(ctx) }) as OpenAI.Chat.Completions.ChatCompletion;
-        const choice = r.choices[0];
-        const toolCalls: ToolCall[] = (choice?.message.tool_calls ?? []).flatMap((t) => (t.type === 'function' ? [{ id: t.id, name: t.function.name, arguments: t.function.arguments }] : []));
-        const u = r.usage;
+        } as unknown as OpenAI.Chat.Completions.ChatCompletionCreateParamsStreaming, { headers: o.headers(ctx), ...(ctx.signal ? { signal: ctx.signal } : {}) });
+        let text = '';
+        let reasoning = '';
+        let finishReason: string | null = null;
+        let u: OpenAI.Completions.CompletionUsage | undefined;
+        const calls: { id: string; name: string; arguments: string }[] = [];
+        for await (const chunk of stream) {
+          if (chunk.usage) u = chunk.usage;
+          const ch = chunk.choices[0];
+          if (!ch) continue;
+          const d = ch.delta as { content?: string | null; reasoning?: string | null; reasoning_content?: string | null; tool_calls?: { index: number; id?: string; function?: { name?: string; arguments?: string } }[] };
+          const r = d.reasoning ?? d.reasoning_content;
+          if (r) { reasoning += r; ctx.onProgress?.({ kind: 'reasoning', delta: r }); }
+          if (d.content) { text += d.content; ctx.onProgress?.({ kind: 'text', delta: d.content }); }
+          for (const t of d.tool_calls ?? []) {
+            const c = (calls[t.index] ??= { id: '', name: '', arguments: '' });
+            if (t.id) c.id = t.id;
+            if (t.function?.name) { c.name += t.function.name; ctx.onProgress?.({ kind: 'tool', name: c.name }); }
+            if (t.function?.arguments) c.arguments += t.function.arguments;
+          }
+          if (ch.finish_reason) finishReason = ch.finish_reason;
+        }
+        // O SDK encerra a iteração em silêncio quando a chamada é abortada: parada não é resposta.
+        if (ctx.signal?.aborted) throw Object.assign(new Error('chamada abortada'), { name: 'AbortError' });
+        const toolCalls: ToolCall[] = calls.filter((c) => c?.name).map((c) => ({ id: c.id, name: c.name, arguments: c.arguments || '{}' }));
         const usage: Usage = { input_tokens: u?.prompt_tokens ?? 0, cached_tokens: u?.prompt_tokens_details?.cached_tokens ?? 0, cache_write_tokens: 0, output_tokens: u?.completion_tokens ?? 0 };
-        const finish = choice?.finish_reason === 'tool_calls' ? 'tool_calls' : choice?.finish_reason === 'length' ? 'length' : choice?.finish_reason === 'stop' ? 'stop' : 'other';
-        return { text: choice?.message.content ?? '', toolCalls, usage, finish };
+        const finish = finishReason === 'tool_calls' || (toolCalls.length && finishReason !== 'length') ? 'tool_calls' : finishReason === 'length' ? 'length' : finishReason === 'stop' ? 'stop' : 'other';
+        return { text, toolCalls, usage, finish, ...(reasoning ? { reasoning } : {}) };
       } catch (e) { return mapError(o.id, e); }
     },
   };
@@ -91,14 +116,17 @@ export function responsesInput(msgs: ChatMessage[]): unknown[] {
 
 export function parseResponsesOutput(r: { output?: unknown[]; usage?: Record<string, unknown> | null; status?: string }): ModelResponse {
   let text = '';
+  let reasoning = '';
   const toolCalls: ToolCall[] = [];
-  for (const item of (r.output ?? []) as { type: string; content?: { type: string; text?: string }[]; call_id?: string; name?: string; arguments?: string }[]) {
+  for (const item of (r.output ?? []) as { type: string; content?: { type: string; text?: string }[]; summary?: { type: string; text?: string }[]; call_id?: string; name?: string; arguments?: string }[]) {
     if (item.type === 'message') text += (item.content ?? []).filter((c) => c.type === 'output_text').map((c) => c.text ?? '').join('');
     if (item.type === 'function_call') toolCalls.push({ id: item.call_id ?? '', name: item.name ?? '', arguments: item.arguments ?? '{}' });
+    // Resumo do raciocínio (SIWC com `reasoning.summary`; rev. 6, critério 32).
+    if (item.type === 'reasoning') reasoning += (item.summary ?? []).map((s) => s.text ?? '').filter(Boolean).join('\n\n');
   }
   const u = (r.usage ?? {}) as { input_tokens?: number; output_tokens?: number; input_tokens_details?: { cached_tokens?: number; cache_write_tokens?: number } };
   const usage: Usage = { input_tokens: u.input_tokens ?? 0, cached_tokens: u.input_tokens_details?.cached_tokens ?? 0, cache_write_tokens: u.input_tokens_details?.cache_write_tokens ?? 0, output_tokens: u.output_tokens ?? 0 };
-  return { text, toolCalls, usage, finish: toolCalls.length ? 'tool_calls' : r.status === 'incomplete' ? 'length' : 'stop' };
+  return { text, toolCalls, usage, finish: toolCalls.length ? 'tool_calls' : r.status === 'incomplete' ? 'length' : 'stop', ...(reasoning ? { reasoning } : {}) };
 }
 
 export const responsesTools = (req: ModelRequest): unknown[] => (req.tools ?? []).map((t) => ({ type: 'function', name: t.name, description: t.description, parameters: t.parameters, strict: false }));
