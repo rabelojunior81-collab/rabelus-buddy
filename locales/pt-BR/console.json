@@ -15,7 +15,8 @@
       "workspace": "Pasta de trabalho",
       "run": "Enviar",
       "empty": "Escreva a tarefa.",
-      "hint": "Enter envia · Shift+Enter quebra a linha"
+      "hint": "Enter envia · Shift+Enter quebra a linha",
+      "stop": "Parar"
     },
     "effort": {
       "default": "Padrão do provedor",
@@ -37,7 +38,11 @@
       "result": "Resultado",
       "session": "Sessão {{session}}",
       "working": "trabalhando…",
-      "new": "Nova conversa"
+      "new": "Nova conversa",
+      "showDetails": "Mostrar raciocínio e ações",
+      "details": "Raciocínio e ações ({{n}})",
+      "reasoning": "Raciocínio",
+      "steered": "direcionamento"
     },
     "approvals": {
       "title": "Aprovações",
@@ -84,6 +89,18 @@
       "resume": "Retomar",
       "open": "Abrir"
     },
-    "error": "Erro: {{message}}"
+    "error": "Erro: {{message}}",
+    "live": {
+      "thinking": "Pensando",
+      "writing": "Escrevendo",
+      "tool": "Usando {{tool}}",
+      "approval": "Aguardando sua aprovação"
+    },
+    "queue": {
+      "title": "Na fila",
+      "steer": "Direcionar agora",
+      "cancel": "Cancelar",
+      "queued": "A conversa está trabalhando: a mensagem entrou na fila e roda em seguida. Use \"Direcionar agora\" para mandá-la já."
+    }
   }
 }
