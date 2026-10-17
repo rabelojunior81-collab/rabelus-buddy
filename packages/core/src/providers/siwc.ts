@@ -141,7 +141,13 @@ function listen(server: http.Server, port: number): Promise<number> {
 export async function startLogin({ home, endpoints = SIWC_ENDPOINTS, port = DEFAULT_PORT, timeoutMs = 5 * 60_000, page = { ok: 'Rabelus Buddy: login concluído. Pode fechar esta aba.', fail: 'Rabelus Buddy: login não concluído. Volte ao terminal.' } }: LoginOptions): Promise<PendingLogin> {
   trustSystemCAs();
   let saved = loadCredentials(home);
-  if (!saved) { saved = { hostId: randomUUID(), clientId: null }; saveCredentials(home, saved); }
+  if (!saved) { saved = { hostId: `urn:uuid:${randomUUID()}`, clientId: null }; saveCredentials(home, saved); }
+  // A OpenAI real recusa host id fora de urn:uuid: (400 invalid_authorize_request, observado em
+  // 2026-10-17). Host id antigo (UUID puro) ganha o prefixo uma vez; o UUID continua o mesmo.
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(saved.hostId)) {
+    saved = { ...saved, hostId: `urn:uuid:${saved.hostId}` };
+    saveCredentials(home, saved);
+  }
   const { hostId } = saved;
   const savedClient = saved.clientId;
   const verifier = random();
