@@ -13,7 +13,7 @@ import { PRICES, type Price } from './prices.ts';
 import type { FsTools } from './tools/fs.ts';
 import type { CommandTool } from './tools/command.ts';
 import { scrub } from './providers/adapters.ts';
-import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
+import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type Effort, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
 export const SYSTEM_PROMPT = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.';
@@ -23,6 +23,8 @@ const DEFAULT_MAX_STEPS = 50;
 // Preço conservador para modelo da API paga sem preço na tabela: superestima, nunca fura o teto.
 export const CONSERVATIVE_PRICE: Price = { input: 15, cachedInput: 15, cacheWrite: 15, output: 75 };
 const PAID = new Set(['openrouter']);
+// Códigos de recusa que podem ser do campo de esforço (corpo inválido), não da conta.
+const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability']);
 const FREE: Price = { input: 0, cachedInput: 0, cacheWrite: 0, output: 0 };
 
 export interface Route { provider: Provider; model: string }
@@ -40,6 +42,7 @@ export interface AgentOptions {
   maxSteps?: number;
   contextLimit?: number;
   maxOutputTokens?: number;
+  effort?: Effort; // esforço de raciocínio da execução (rev. 5, critério 29)
 }
 
 export interface AgentResult { run: string; outcome: 'done' | 'stopped'; reason?: string; text: string; steps: number }
@@ -118,10 +121,12 @@ export class Agent {
   }
 
   // Cria a execução já (o id volta na hora para quem chamou) e segue o laço em segundo plano.
-  begin(session: string, task: string, { system = SYSTEM_PROMPT }: { system?: string } = {}): { run: string; done: Promise<AgentResult> } {
+  // `prior`: conversa contínua — o histórico de uma execução anterior da sessão vem antes da nova mensagem.
+  begin(session: string, task: string, { system = SYSTEM_PROMPT, prior }: { system?: string; prior?: ChatMessage[] } = {}): { run: string; done: Promise<AgentResult> } {
     const run = this.o.domain.startRun(session, task).id;
     const messages: ChatMessage[] = [];
-    this.push(session, run, messages, { role: 'system', content: system });
+    if (prior?.length) for (const m of prior) this.push(session, run, messages, m);
+    else this.push(session, run, messages, { role: 'system', content: system });
     this.push(session, run, messages, { role: 'user', content: task });
     return { run, done: this.loop(session, run, messages, 1) };
   }
@@ -162,6 +167,7 @@ export class Agent {
   private async loop(session: string, run: string, messages: ChatMessage[], first: number): Promise<AgentResult> {
     const { domain, log, policy } = this.o;
     const rejected = new Set<string>();
+    const noEffort = new Set<string>(); // rotas que recusaram o esforço nesta execução
     const limit = this.o.contextLimit ?? CONTEXT_LIMIT;
     const max = first - 1 + (this.o.maxSteps ?? DEFAULT_MAX_STEPS);
     for (let step = first; step <= max; step++) {
@@ -174,10 +180,10 @@ export class Agent {
         sent = c.messages;
         log.append(session, 'context.compacted', { run, step, before, after: estimateTokens(sent), dropped: c.dropped });
       }
-      const call = await this.callModel(session, run, step, sent, rejected);
+      const call = await this.callModel(session, run, step, sent, rejected, noEffort);
       if ('stop' in call) return this.stop(run, call.stop, step - 1);
       const res = call.response;
-      log.append(session, 'agent.step', { run, step, route: call.route, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
+      log.append(session, 'agent.step', { run, step, route: call.route, effort: call.effort ?? null, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
       this.push(session, run, messages, { role: 'assistant', content: res.text, ...(res.toolCalls.length ? { toolCalls: res.toolCalls } : {}) });
       if (!res.toolCalls.length) {
         domain.finishRun(run);
@@ -189,7 +195,7 @@ export class Agent {
   }
 
   // Percorre a ordem de provedores; cada tentativa é um efeito com identidade e uma reserva.
-  private async callModel(session: string, run: string, step: number, messages: ChatMessage[], rejected: Set<string>): Promise<{ response: ModelResponse; route: string } | { stop: string }> {
+  private async callModel(session: string, run: string, step: number, messages: ChatMessage[], rejected: Set<string>, noEffort: Set<string>): Promise<{ response: ModelResponse; route: string; effort?: Effort } | { stop: string }> {
     const { domain, budget, policy, log, routes } = this.o;
     const maxOut = this.o.maxOutputTokens ?? DEFAULT_MAX_OUTPUT;
     let budgetBlocked = false;
@@ -214,12 +220,13 @@ export class Agent {
       }
 
       const effect = domain.beginEffect(session, run, 'model.call', `${run}:step${step}:${name}`, name).id;
-      const req: ModelRequest = { model: r.model, messages, tools: AGENT_TOOLS, maxOutputTokens: maxOut };
+      const effort = this.o.effort && !noEffort.has(name) ? this.o.effort : undefined;
+      const req: ModelRequest = { model: r.model, messages, tools: AGENT_TOOLS, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
       try {
         const response = await r.provider.call(req, { session });
         domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
         budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
-        return { response, route: name };
+        return { response, route: name, ...(effort ? { effort } : {}) };
       } catch (e) {
         if (e instanceof ProviderLimitError) {
           domain.failEffect(effect, 'providerLimit');
@@ -227,6 +234,15 @@ export class Agent {
           budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' ? r.model : null, e.until, 'providerLimit');
           budgetBlocked = true;
           skip('windowExhausted');
+          continue;
+        }
+        // Recusa do esforço (corpo inválido): a mesma rota tenta de novo, uma vez, sem ele (critério 29).
+        if (e instanceof ProviderRejectedError && effort && EFFORT_REFUSAL.has(e.code)) {
+          log.append(session, 'effort.dropped', { route: name, effort, code: e.code });
+          domain.failEffect(effect, e.code);
+          budget.release(reservation, 'effortDropped');
+          noEffort.add(name);
+          i--;
           continue;
         }
         if (e instanceof ProviderRejectedError) {

@@ -9,7 +9,9 @@ export interface ChatMessage {
   toolCalls?: ToolCall[];
   toolCallId?: string;
 }
-export interface ModelRequest { model: string; messages: ChatMessage[]; tools?: ToolSpec[]; maxOutputTokens?: number }
+// Esforço de raciocínio por execução (SPEC 0001 rev. 5, critério 29); ausente = padrão do provedor.
+export type Effort = 'low' | 'medium' | 'high';
+export interface ModelRequest { model: string; messages: ChatMessage[]; tools?: ToolSpec[]; maxOutputTokens?: number; effort?: Effort }
 export interface ModelResponse { text: string; toolCalls: ToolCall[]; usage: Usage; finish: 'stop' | 'tool_calls' | 'length' | 'other' }
 export interface CallContext { session: string }
 export interface Provider {

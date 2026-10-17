@@ -12,6 +12,8 @@ export type HeadersFor = (ctx: CallContext) => Record<string, string>;
 export interface AdapterOptions { id: string; apiKey: string; baseURL: string; headers: HeadersFor }
 
 const DEFAULT_LIMIT_WAIT_MS = 5 * 60_000;
+// Orçamento de pensamento por nível, para as rotas que medem esforço em tokens (Messages, Google).
+export const THINKING_BUDGET: Record<'low' | 'medium' | 'high', number> = { low: 1024, medium: 4096, high: 16_000 };
 
 // Resposta HTTP é conclusiva (o provedor recebeu e respondeu): 429 esgota a janela; 401, 403 e os
 // demais 4xx são recusa (não se repete igual); 5xx deixa o provedor indisponível por um tempo.
@@ -55,7 +57,9 @@ export function openaiChatAdapter(o: AdapterOptions): Provider {
           messages,
           ...(req.tools?.length ? { tools: req.tools.map((t) => ({ type: 'function' as const, function: { name: t.name, description: t.description, parameters: t.parameters } })) } : {}),
           ...(req.maxOutputTokens ? { max_tokens: req.maxOutputTokens } : {}),
-        }, { headers: o.headers(ctx) });
+          // OpenRouter normaliza o esforço em `reasoning`; as demais rotas compatíveis usam `reasoning_effort`.
+          ...(req.effort ? (o.id === 'openrouter' ? { reasoning: { effort: req.effort } } : { reasoning_effort: req.effort }) : {}),
+        } as Parameters<typeof client.chat.completions.create>[0], { headers: o.headers(ctx) }) as OpenAI.Chat.Completions.ChatCompletion;
         const choice = r.choices[0];
         const toolCalls: ToolCall[] = (choice?.message.tool_calls ?? []).flatMap((t) => (t.type === 'function' ? [{ id: t.id, name: t.function.name, arguments: t.function.arguments }] : []));
         const u = r.usage;
@@ -110,6 +114,7 @@ export function openaiResponsesAdapter(o: AdapterOptions): Provider {
           store: false, // a Responses API guarda 30 dias por padrão (SPEC 0001, escopo 13)
           ...(req.tools?.length ? { tools: responsesTools(req) } : {}),
           ...(req.maxOutputTokens ? { max_output_tokens: req.maxOutputTokens } : {}),
+          ...(req.effort ? { reasoning: { effort: req.effort } } : {}),
         };
         const r = await client.responses.create(params as unknown as Parameters<typeof client.responses.create>[0], { headers: o.headers(ctx) });
         return parseResponsesOutput(r as unknown as { output?: unknown[]; usage?: Record<string, unknown> | null; status?: string });
@@ -132,9 +137,12 @@ export function anthropicAdapter(o: AdapterOptions & { maxTokens?: number }): Pr
         return { role: m.role as 'user' | 'assistant', content: m.content };
       });
       try {
+        // Messages: o esforço vira orçamento de pensamento, e max_tokens precisa ficar acima dele.
+        const budget = req.effort ? THINKING_BUDGET[req.effort] : 0;
         const r = await client.messages.create({
           model: req.model,
-          max_tokens: req.maxOutputTokens ?? o.maxTokens ?? 4096,
+          max_tokens: Math.max(req.maxOutputTokens ?? o.maxTokens ?? 4096, budget + 1024),
+          ...(budget ? { thinking: { type: 'enabled' as const, budget_tokens: budget } } : {}),
           ...(systemOf(req.messages) ? { system: systemOf(req.messages) } : {}),
           messages,
           ...(req.tools?.length ? { tools: req.tools.map((t) => ({ name: t.name, description: t.description, input_schema: t.parameters as { type: 'object' } })) } : {}),
@@ -178,6 +186,7 @@ export function googleAdapter(o: AdapterOptions & { apiVersion?: string }): Prov
             ...(systemOf(req.messages) ? { systemInstruction: systemOf(req.messages) } : {}),
             ...(req.tools?.length ? { tools: [{ functionDeclarations: req.tools.map((t) => ({ name: t.name, description: t.description, parametersJsonSchema: t.parameters })) }] } : {}),
             ...(req.maxOutputTokens ? { maxOutputTokens: req.maxOutputTokens } : {}),
+            ...(req.effort ? { thinkingConfig: { thinkingBudget: THINKING_BUDGET[req.effort] } } : {}),
           },
         });
         let text = '';
