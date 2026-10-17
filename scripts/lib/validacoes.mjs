@@ -41,6 +41,22 @@ export function checkValidations(root) {
     if (m.ci && !ci.includes(m.ci)) problems.push(`${who}: o passo de CI "${m.ci}" não existe em .github/workflows/`);
     if (m.teste && !existsSync(join(root, m.teste))) problems.push(`${who}: o teste ${m.teste} não existe`);
   }
-  const aguardaPai = list.filter((v) => v.quem === 'pai' && v.estado === 'pendente');
+  // Regra do Pai (2026-10-17): "nunca mais cogite me pedir teste que não funciona", e nunca por CLI:
+  // o produto é um agente com UX/UI. Ação do Pai só aguarda ele depois de ensaiada por mim, com os
+  // mesmos passos e no ambiente dele, e o "como" não passa por terminal.
+  const prontaParaOPai = new Set();
+  for (const v of list.filter((x) => x.quem === 'pai')) {
+    const who = v.id ?? '(sem id)';
+    if (!['decisao', 'acao'].includes(v.tipo)) { problems.push(`${who}: validação do Pai sem tipo (decisao ou acao)`); continue; }
+    if (v.estado === 'bloqueada') { if (!v.motivo) problems.push(`${who}: bloqueada sem motivo`); continue; }
+    if (v.tipo === 'decisao') { prontaParaOPai.add(v.id); continue; }
+    const before = problems.length;
+    if (!v.como) problems.push(`${who}: ação do Pai sem "como"`);
+    else if (/\b(terminal|cli|powershell|prompt de comando|rbuddy\s)/i.test(`${v.como} ${v.descricao}`)) problems.push(`${who}: ação do Pai por terminal ou CLI (o Pai usa UX/UI)`);
+    if (!v.ensaio) problems.push(`${who}: ação do Pai sem ensaio registrado (docs/registros/…)`);
+    else if (!existsSync(join(root, v.ensaio))) problems.push(`${who}: o ensaio ${v.ensaio} não existe`);
+    if (problems.length === before) prontaParaOPai.add(v.id);
+  }
+  const aguardaPai = list.filter((v) => v.quem === 'pai' && v.estado === 'pendente' && prontaParaOPai.has(v.id));
   return { problems, aguardaPai, total: list.length };
 }

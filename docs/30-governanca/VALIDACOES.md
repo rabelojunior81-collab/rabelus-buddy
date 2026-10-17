@@ -10,7 +10,9 @@ Toda validação do projeto mora num registro só, [`validacoes.json`](./validac
 | `quem` | `maquina` (ferramenta ou CI), `buddy` (o buddy-dev, por checklist) ou `pai` (só o Pai constata) |
 | `onde` | `bd pre`, `bd post`, CI, rotina semanal, `bd merge`, checklist do PR, um marco… |
 | `mecanismo` | `bd` (comando), `ci` (trecho do workflow) e/ou `teste` (arquivo de teste) |
-| `estado` | para as do Pai: `pendente` (aguarda ele), `recorrente` (a cada ocorrência) ou `feito` |
+| `estado` | para as do Pai: `pendente` (aguarda ele), `recorrente` (a cada ocorrência), `bloqueada` (com `motivo`) ou `feito` |
+| `tipo` | para as do Pai: `decisao` (ele decide) ou `acao` (ele faz ou testa algo) |
+| `como` e `ensaio` | para ação do Pai: como ele faz, **sem terminal nem CLI**, e o registro em `docs/registros/` do ensaio que eu fiz antes, com os mesmos passos e no ambiente dele |
 | `origem` | quem pediu e quando |
 
 ## O que o `bd validacoes` confere
@@ -24,6 +26,8 @@ Roda no `bd post` e na CI.
 5. Nenhum campo obrigatório falta e nenhum `id` se repete.
 
 As validações do **Pai** com `estado: pendente` aparecem no `bd pre` de toda sessão e na saída do `bd validacoes`. Nada que dependa dele some no caminho.
+
+**Regra do Pai (2026-10-17):** "nunca mais cogite me pedir teste que não funciona", e nunca por CLI; o produto é um agente com UX/UI. Ação do Pai sem `ensaio` existente, ou com terminal/CLI no `como` ou na descrição, reprova o `bd validacoes` e **não** aparece como "aguarda o Pai".
 
 ## Ciclo das branches (a validação `prune` e a `merge-governado`)
 

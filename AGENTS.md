@@ -60,6 +60,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Dependência só entra registrada, com versão exata, licença permitida, ficha e aprovação do Pai; reverificada a cada 30 dias | `bd deps` no `bd post` e na CI; rotina semanal `dependencias.yml`; [`DEPENDENCIAS.md`](./docs/30-governanca/DEPENDENCIAS.md) |
 | Teste reprovado se corrige no código, nunca afrouxando o teste | `bd test-guard` no `bd post` e na CI: a suíte não perde testes nem asserções; sem `skip`/`todo`/`only` |
 | Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
+| Nunca pedir ao Pai teste que eu não ensaiei, com os mesmos passos e no ambiente dele; nunca por terminal ou CLI (o produto é um agente com UX/UI) | `bd validacoes`: ação do Pai exige `ensaio` registrado e `como` sem terminal/CLI, senão reprova e não aparece como "aguarda o Pai" |
 | Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`); falso positivo só por impressão digital exata no `.gitleaksignore`, com justificativa (nunca por regra ou arquivo); canário de teste gerado na hora |
 
@@ -83,6 +84,7 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 6. Nunca afirmar teste, gate ou verificação que não rodou. Lacuna declarada vale mais que preenchimento bonito.
 7. Pedido novo do Pai no meio de uma tarefa se absorve **em paralelo**: atender ao pedido e retomar a tarefa em curso, sem esperar outra ordem. O STATUS diz o que segue enquanto algo aguarda o Pai.
 8. **Só parar quando o Pai precisar fazer ou decidir algo** (Pai, 2026-10-16). Plano aprovado se executa sub-fase após sub-fase, com o rito completo em cada uma; a parada vem com o que ele precisa fazer ou decidir, e as validações dele ficam em `validacoes.json` (aparecem em todo `bd pre`).
+9. **Teste com servidor falso prova o contrato que eu imaginei, não o mundo** (2026-10-17). Integração com serviço externo só se declara pronta depois de uma checagem contra o serviço real, até onde dá sem a conta do Pai, registrada em `docs/registros/`.
 
 ## 6. Mapa
 
