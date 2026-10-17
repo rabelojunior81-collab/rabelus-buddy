@@ -14,7 +14,8 @@ import { Policy, type Scope, type Tool } from './policy.ts';
 import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { Agent, type AgentResult } from './agent.ts';
-import { buildRoutes, loadConfig } from './config.ts';
+import { buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
+import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin } from './providers/siwc.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
@@ -80,6 +81,27 @@ export async function startOwner(home: string): Promise<Owner> {
     }
   };
   // Um agente por pedido: workspace e credenciais podem mudar entre tarefas.
+  // Parâmetros da execução vindos da console ou do IPC (SPEC 0001 rev. 5).
+  const effort = (v: unknown): 'low' | 'medium' | 'high' | undefined => {
+    if (v === undefined || v === null || v === '' || v === 'default') return undefined;
+    if (v === 'low' || v === 'medium' || v === 'high') return v;
+    throw new DomainError(-32602, `esforço inválido: ${String(v)}`);
+  };
+  const PROVIDERS: ProviderId[] = ['opencode-go', 'ollama-cloud', 'chatgpt', 'openrouter'];
+  const route = (v: unknown): { provider: ProviderId; model: string } | undefined => {
+    if (!v) return undefined;
+    const r = v as { provider?: string; model?: string };
+    if (!PROVIDERS.includes(r.provider as ProviderId) || !r.model) throw new DomainError(-32602, `rota inválida: ${String(r.provider)}/${String(r.model)}`);
+    return { provider: r.provider as ProviderId, model: String(r.model) };
+  };
+  const keyProvider = (v: unknown): ProviderId => {
+    if (v === 'opencode-go' || v === 'ollama-cloud' || v === 'openrouter') return v;
+    throw new DomainError(-32602, `provedor sem chave de API: ${String(v)}`);
+  };
+  // Login do ChatGPT pelo núcleo: um por vez; o resultado fica no estado (nunca tokens no log).
+  let login: PendingLogin | null = null;
+  let loginError: string | null = null;
+
   const agentFor = (p: Record<string, unknown>): Agent => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
@@ -88,8 +110,9 @@ export async function startOwner(home: string): Promise<Owner> {
       log, domain, policy, budget,
       fs: new FsTools(policy, { workspace }),
       cmd: new CommandTool(policy, { workspace }),
-      routes: buildRoutes(home, loadConfig(home)),
+      routes: buildRoutes(home, loadConfig(home), process.env, route(p.route)),
       interactive: p.interactive === true,
+      ...(effort(p.effort) ? { effort: effort(p.effort)! } : {}),
       awaitApproval,
     });
   };
@@ -104,7 +127,9 @@ export async function startOwner(home: string): Promise<Owner> {
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
       const session = String(p.session);
-      const { run, done } = agentFor(p).begin(session, String(p.task));
+      const agent = agentFor(p);
+      const prior = p.continueFrom ? agent.transcript(session, String(p.continueFrom)) : undefined;
+      const { run, done } = agent.begin(session, String(p.task), prior?.length ? { prior } : {});
       watch(session, run, done);
       return { run };
     },
@@ -116,6 +141,23 @@ export async function startOwner(home: string): Promise<Owner> {
       return { run };
     },
     'run.list': () => domain.listRuns(),
+    'providers.status': () => loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model, source: credentialSource(home, r.provider, process.env) })),
+    'keys.set': (p) => { const key = String(p.key ?? '').trim(); if (!key) throw new DomainError(-32602, 'chave vazia'); saveKey(home, keyProvider(p.provider), key); return { ok: true }; },
+    'keys.remove': (p) => ({ removed: removeKey(home, keyProvider(p.provider)) }),
+    'auth.chatgpt.start': async () => {
+      login?.cancel();
+      loginError = null;
+      const pending = await startLogin({ home });
+      login = pending;
+      pending.done.then(() => { if (login === pending) login = null; }, (e: unknown) => { if (login === pending) { login = null; loginError = e instanceof SiwcAuthError ? e.code : 'error'; } });
+      log.append('auth', 'auth.chatgpt.started', {});
+      return { url: pending.url };
+    },
+    'auth.chatgpt.status': () => {
+      const c = loadCredentials(home);
+      return { loggedIn: Boolean(c?.refreshToken), planEnabled: c?.planEnabled ?? null, email: c?.email ?? null, pending: login !== null, error: loginError };
+    },
+    'auth.chatgpt.logout': async () => { login?.cancel(); login = null; return logout(home); },
     'policy.grant': (p) => ({ grant: new Policy(log, { workspace: home }).grant(String(p.scope) as Scope, { tool: String(p.tool) as Tool, pattern: String(p.pattern) }, { session: String(p.session) }) }),
     'daemon.status': () => ({ pid: process.pid, endpoint, startedAt, sessions: log.sessions().length, events: log.totalEvents(), recovered }),
     'daemon.stop': () => { setImmediate(() => { void close(); }); return { stopping: true }; },
@@ -156,15 +198,24 @@ export async function startOwner(home: string): Promise<Owner> {
         const line = buffer.slice(0, i);
         buffer = buffer.slice(i + 1);
         let id: number | null = null;
+        const fail = (e: unknown) => {
+          const error = e instanceof DomainError ? { code: e.code, message: e.message, data: e.data } : { code: -32603, message: (e as Error).message };
+          socket.write(`${JSON.stringify({ jsonrpc: '2.0', id, error })}\n`);
+        };
         try {
           const req = JSON.parse(line) as { id: number; method: string; params?: Record<string, unknown> };
           id = req.id;
           const handler = methods[req.method];
           if (!handler) socket.write(`${JSON.stringify({ jsonrpc: '2.0', id, error: { code: -32601, message: `método desconhecido: ${req.method}` } })}\n`);
-          else socket.write(`${JSON.stringify({ jsonrpc: '2.0', id, result: handler(req.params ?? {}) })}\n`);
+          else {
+            // Síncrono responde na hora (a ordem se mantém); assíncrono (login, logout) responde ao terminar.
+            const out = handler(req.params ?? {});
+            const reply = (result: unknown) => socket.write(`${JSON.stringify({ jsonrpc: '2.0', id, result })}\n`);
+            if (out instanceof Promise) out.then(reply, fail);
+            else reply(out);
+          }
         } catch (e) {
-          const error = e instanceof DomainError ? { code: e.code, message: e.message, data: e.data } : { code: -32603, message: (e as Error).message };
-          socket.write(`${JSON.stringify({ jsonrpc: '2.0', id, error })}\n`);
+          fail(e);
         }
       }
     });
