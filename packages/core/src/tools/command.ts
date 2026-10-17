@@ -23,8 +23,8 @@ export class CommandTool {
     this.exec = exec;
   }
 
-  run(session: string, command: string, ctx: { interactive: boolean }): { ok: true; result: ExecResult } | { ok: false; reason: string } {
-    this.policy.observeCall(session, { tool: 'run_command', target: command });
+  run(session: string, command: string, ctx: { interactive: boolean; observe?: boolean }): { ok: true; result: ExecResult } | { ok: false; reason: string } {
+    if (ctx.observe !== false) this.policy.observeCall(session, { tool: 'run_command', target: command });
     const d = this.policy.decide({ session, tool: 'run_command', target: command }, ctx);
     if (d.effect !== 'allow') return { ok: false, reason: d.effect === 'ask' ? 'needsApproval' : d.reason };
     const result = this.exec(command, this.workspace);
