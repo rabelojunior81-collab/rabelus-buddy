@@ -190,3 +190,44 @@ test('402 (conta sem saldo) esgota o provedor por uma hora, em vez de ser recusa
   });
   await f.close();
 });
+
+// Critério 31 (rev. 6): Chat Completions em fluxo, no formato medido no Ollama e no OpenRouter reais (2026-10-17).
+test('chat em fluxo: raciocínio, texto e ferramenta chegam em fragmentos na ordem; o resultado final é o mesmo (critério 31)', async () => {
+  const usage = { prompt_tokens: 40, completion_tokens: 311, total_tokens: 351, prompt_tokens_details: { cached_tokens: 8 } };
+  const answer = { id: 'c1', choices: [{ finish_reason: 'stop', message: { role: 'assistant', reasoning: 'O usuário quer 17 × 23; 340 + 51.', content: '17 × 23 = 391.' } }], usage };
+  const call = { id: 'c2', choices: [{ finish_reason: 'tool_calls', message: { role: 'assistant', content: null, tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'read_file', arguments: '{"path":"README.md"}' } }] } }], usage };
+  let n = 0;
+  const fake = await fakeHttp(() => ({ json: ++n === 1 ? answer : call }));
+  const or = createOpenRouterProvider({ apiKey: 'k', baseURL: `${fake.url}/api/v1` });
+  const seen: { kind: string; delta?: string; name?: string }[] = [];
+  const r = await or.call({ ...req('x/y:free'), effort: 'medium' }, { session: 's', onProgress: (p) => seen.push(p) });
+  const body = fake.requests[0]!.body;
+  assert.equal(body.stream, true);
+  assert.deepEqual(body.stream_options, { include_usage: true });
+  assert.equal(r.text, '17 × 23 = 391.');
+  assert.equal(r.reasoning, 'O usuário quer 17 × 23; 340 + 51.');
+  assert.deepEqual(r.usage, { input_tokens: 40, cached_tokens: 8, cache_write_tokens: 0, output_tokens: 311 });
+  assert.equal(r.finish, 'stop');
+  assert.equal(seen.filter((p) => p.kind === 'reasoning').map((p) => p.delta).join(''), 'O usuário quer 17 × 23; 340 + 51.');
+  assert.equal(seen.filter((p) => p.kind === 'text').map((p) => p.delta).join(''), '17 × 23 = 391.');
+  assert.ok(seen.findIndex((p) => p.kind === 'text') > seen.findLastIndex((p) => p.kind === 'reasoning'), 'raciocínio antes do texto');
+
+  const seen2: { kind: string; name?: string }[] = [];
+  const t = await or.call(req('x/y:free'), { session: 's', onProgress: (p) => seen2.push(p) });
+  assert.deepEqual(t.toolCalls, [{ id: 'call_1', name: 'read_file', arguments: '{"path":"README.md"}' }], 'argumentos montados das partes');
+  assert.equal(t.finish, 'tool_calls');
+  assert.deepEqual(seen2.filter((p) => p.kind === 'tool'), [{ kind: 'tool', name: 'read_file' }]);
+  assert.equal(t.reasoning, undefined, 'sem raciocínio, nenhum campo');
+  await fake.close();
+});
+
+test('chat em fluxo: "reasoning_content" também é raciocínio; parar aborta a chamada em curso (critérios 31 e 33)', async () => {
+  const fake = await fakeHttp(() => ({ sse: [{ id: 'c', object: 'chat.completion.chunk', choices: [{ index: 0, delta: { reasoning_content: 'pensando' }, finish_reason: null }] }], hold: true }));
+  const ollama = createOllamaProvider({ apiKey: 'k', baseURL: `${fake.url}/v1` });
+  const ac = new AbortController();
+  const seen: { kind: string; delta?: string }[] = [];
+  const p = ollama.call(req('gpt-oss:20b'), { session: 's', signal: ac.signal, onProgress: (x) => { seen.push(x); if (x.kind === 'reasoning') ac.abort(); } });
+  await assert.rejects(p, (e: unknown) => (e as Error).name === 'AbortError' || /abort/i.test((e as Error).message));
+  assert.deepEqual(seen, [{ kind: 'reasoning', delta: 'pensando' }]);
+  await fake.close();
+});
