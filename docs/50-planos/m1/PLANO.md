@@ -16,13 +16,13 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
 ## TODO
 
 - [ ] **M1.0 Fundação:** dependências aprovadas instaladas (`@agentclientprotocol/sdk`, `zod`) com ficha e registro; contrato tipado dos métodos da console (critério 10)
-- [ ] **M1.1 Catálogo e detecção:** registro oficial com cópia local e ícones servidos pela console; sinais de instalação; tabela de fora do registro (critérios 1 e 2)
+- [ ] **M1.1 Catálogo e detecção:** registro oficial com cópia local e ícones servidos pela console; sinais de instalação; tabela de fora do registro (critérios 1 e 2); **catálogo de modelos provedor → lab → modelo com capacidades e fonte, em seletor separado do de harness** (critério 13)
 - [ ] **M1.2 Cliente ACP:** sonda, primeira execução aprovada, conversa com andamento ao vivo, permissões pelo núcleo, autenticação do agente (critérios 3–7); checagem contra um harness real do Pai (OpenCode ou Codex) registrada
 - [ ] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada
 - [ ] **M1.4 Delegação:** ferramenta `delegar` do Buddy (critério 8)
 - [ ] **M1.5 Console nova:** o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real
 - [ ] **M1.6 Ensaio real e demonstração com o Pai** (critério 12); métricas; retrospectiva
-- [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 13; ADR 0016)
+- [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 14; ADR 0016)
 
 ## Dependências e bloqueios
 

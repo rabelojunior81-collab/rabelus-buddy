@@ -32,6 +32,7 @@
     --reflect: linear-gradient(180deg, oklch(63% .13 122 / 0), oklch(63% .13 122 / .75), oklch(63% .13 122 / .1)), linear-gradient(15deg, oklch(63% .13 122 / .12) 50%, oklch(63% .13 122 / .7));
     --r: .5rem; --r-xl: .75rem; --r-2xl: 1rem;
     --blur-md: 12px; --blur-xl: 24px;
+    --picker-bg: oklch(17.5% .026 118); /* vidro aninhado não desfoca a página: fundo quase opaco */
     color-scheme: dark;
   }
   :root[data-theme="light"] {
@@ -46,6 +47,7 @@
     --primary-from: oklch(55% .12 122);
     --primary-to: oklch(44% .1 124);
     --reflect: linear-gradient(180deg, oklch(80% .1 118 / 0), oklch(70% .12 120 / .8), oklch(80% .1 118 / .2)), linear-gradient(15deg, oklch(80% .1 118 / .2) 50%, oklch(66% .12 121 / .7));
+    --picker-bg: oklch(98.4% .012 110);
     color-scheme: light;
   }
   * { box-sizing: border-box; }
@@ -119,6 +121,75 @@
   .bar .pill { height: 32px; padding: 0 11px; font-size: 12.5px; }
   .send { margin-left: auto; width: 36px; height: 36px; border-radius: var(--r); border: 0; color: var(--primary-ink); background: linear-gradient(180deg, var(--primary-from), var(--primary-to)); cursor: pointer; display: grid; place-items: center; }
   .proto { position: fixed; left: 280px; bottom: 6px; font-size: 11px; color: var(--muted); }
+  /* ---------- seletores: harness (menu) e modelo (paleta central) ---------- */
+  button.pill { font: inherit; font-size: 13px; font-weight: 600; }
+  .pill[disabled] { opacity: .45; cursor: not-allowed; }
+  .menu { position: fixed; width: 380px; max-height: 60vh; overflow: auto; padding: 6px; border-radius: var(--r-2xl); background: var(--picker-bg); border: 1px solid var(--line); box-shadow: 0 24px 60px -24px oklch(10% .02 120 / .7); z-index: 6; }
+  .mi { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: var(--r-xl); background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .mi:hover, .mi:focus-visible { background: var(--glass); outline: none; }
+  .mi .ico { width: 22px; height: 22px; }
+  .mi .tx { flex: 1; min-width: 0; }
+  .mi .tx b { display: block; font-size: 14.5px; }
+  .mi .tx small { display: block; color: var(--muted); font-size: 12.5px; }
+  .mi .ok { color: var(--olive-400); font-weight: 700; }
+  :root[data-theme="light"] .mi .ok { color: var(--olive-700); }
+  .mi[aria-disabled="true"] { opacity: .5; cursor: default; }
+  .backdrop { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 24px; background: oklch(10% .02 120 / .45); backdrop-filter: blur(6px); }
+  .backdrop[hidden] { display: none; }
+  .palette { width: min(860px, 100%); height: min(640px, 86vh); display: flex; flex-direction: column; border-radius: 18px; background: var(--picker-bg); border: 1px solid var(--line); box-shadow: 0 40px 100px -30px oklch(5% .02 120 / .8); overflow: hidden; }
+  .pl-top { display: flex; gap: 8px; padding: 14px 14px 8px; }
+  .pl-top input { flex: 1; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--sheet); color: var(--text); padding: 0 14px; font: inherit; font-size: 15.5px; }
+  .pl-top input:focus { outline: 2px solid var(--olive-500); outline-offset: 1px; }
+  .pl-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; border-bottom: 1px solid var(--line); }
+  .fchip { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--text); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  .fchip[aria-pressed="true"] { background: linear-gradient(180deg, var(--primary-from), var(--primary-to)); color: var(--primary-ink); border-color: transparent; }
+  .pl-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 200px 1fr; }
+  .pl-tabs { border-right: 1px solid var(--line); padding: 8px; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+  .tab { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; padding: 9px 10px; border: 0; border-radius: 10px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .tab b { font-size: 14px; }
+  .tab small { font-size: 11.5px; color: var(--muted); }
+  .tab:hover { background: var(--glass); }
+  .tab[aria-selected="true"] { background: var(--glass-strong); box-shadow: inset 3px 0 0 var(--olive-500); }
+  .pl-list { overflow: auto; padding: 6px 10px 12px; scroll-padding: 40px; }
+  .grp-h { position: sticky; top: 0; display: flex; align-items: center; gap: 8px; padding: 10px 6px 6px; font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); background: var(--picker-bg); z-index: 1; }
+  .grp-h .lab { width: 16px; height: 16px; color: var(--text); }
+  .row { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 4px 12px; width: 100%; padding: 10px 10px; border: 0; border-radius: 12px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+  .row:hover, .row.act { background: var(--glass); }
+  .row.sel { box-shadow: inset 0 0 0 1.5px var(--olive-500); }
+  .row .nm { font-size: 14.5px; font-weight: 600; }
+  .row .id { grid-column: 2; font-size: 12px; color: var(--muted); font-family: ui-monospace, Consolas, monospace; }
+  .row .rt { grid-row: 1 / span 2; grid-column: 3; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .row .ck { grid-row: 1 / span 2; color: var(--olive-400); font-weight: 800; }
+  .icons { display: flex; gap: 6px; color: var(--muted); }
+  .icons .on { color: var(--text); }
+  .meta { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .badge2 { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); }
+  .pl-foot { padding: 8px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+  .kbd { font-family: ui-monospace, Consolas, monospace; font-size: 11px; padding: 1px 6px; border-radius: 5px; border: 1px solid var(--line); }
+  .lab { width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat; }
+  .lab-fb { width: 16px; height: 16px; flex: none; display: grid; place-items: center; font-size: 9px; font-weight: 800; border-radius: 4px; border: 1px solid currentColor; }
+  .cap { width: 15px; height: 15px; flex: none; }
+  .pl-list { overflow-x: hidden; }
+  @media (max-width: 760px) {
+    .backdrop { padding: 8px; }
+    .palette { height: 92vh; border-radius: 14px; }
+    .pl-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .fchip { flex: none; }
+    .pl-tabs { scrollbar-width: none; }
+    .row { grid-template-columns: 22px 1fr; }
+    .row .rt { grid-row: auto; grid-column: 2; flex-direction: row; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 8px; }
+    .pl-foot .kbd, .pl-foot span:not(:last-child) { display: none; }
+  }
+  @media (max-width: 760px) { .pl-body { grid-template-columns: 1fr; } .pl-tabs { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); } .tab { flex: none; } .menu { width: calc(100% - 16px); } }
+  /* capacidades sob a caixa de mensagem */
+  .caps { display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); }
+  .capchip { flex: none; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--text); }
+  .capchip.no { opacity: .4; text-decoration: line-through; }
+  .caps .src { margin-left: auto; flex: none; font-size: 11.5px; cursor: help; white-space: nowrap; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip-att { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: var(--r); background: var(--glass); border: 1px solid var(--line); font-size: 12px; margin-bottom: 6px; }
+  .toast { position: fixed; left: 50%; bottom: 140px; transform: translateX(-50%); padding: 8px 14px; border-radius: var(--r-xl); background: var(--glass-strong); backdrop-filter: blur(var(--blur-md)); border: 1px solid var(--line); font-size: 13px; z-index: 9; }
+  @media (max-width: 860px) { .pk-cols { grid-template-columns: 1fr; height: 60vh; } }
   @media (max-width: 860px) { .app { grid-template-columns: 1fr; } aside { display: none; } main { margin: 8px 8px 0; } .proto { left: 12px; } }
 </style>
 </head>
@@ -142,52 +213,38 @@
       <button class="icon-btn" title="Configurações">⚙</button>
     </div>
     <div class="scroll"><div class="col" id="content"></div></div>
-    <div class="dock"><div class="composer"><div class="box">
-      <textarea placeholder="Escreva para o Buddy… (anexe imagens e arquivos)"></textarea>
+    <div class="dock"><div class="composer">
+      <div class="box">
+      <div class="chips" id="chips"></div>
+      <textarea id="task" placeholder="Escreva para o Buddy… (anexe imagens e arquivos)"></textarea>
       <div class="bar">
-        <span class="pill"><span class="ico buddy" style="width:14px;height:14px"></span>Buddy · orquestrador ▾</span>
-        <span class="pill">⚡ Esforço: Médio</span>
-        <span class="pill">📎 Anexar</span>
-        <span class="pill">🖼 Imagem</span>
-        <button class="send" title="Enviar">↑</button>
+        <button class="pill" id="harnessBtn" aria-haspopup="listbox" title="Harness: quem executa"></button>
+        <button class="pill" id="pickBtn" aria-haspopup="dialog" title="Modelo: com que cérebro"></button>
+        <button class="pill" id="effortBtn" title="Esforço de raciocínio (clique para trocar)"></button>
+        <button class="pill" id="attachBtn">📎 Anexar</button>
+        <button class="pill" id="imgBtn">🖼 Imagem</button>
+        <button class="send" id="send" title="Enviar">↑</button>
       </div>
+      <div class="caps" id="caps" aria-label="Capacidades do modelo escolhido"></div>
     </div></div></div>
   </main>
 </div>
-<div class="proto">Protótipo estático da SPEC 0002 — sem ligação com o núcleo</div>
-<script>
-  const CDN = 'https://cdn.agentclientprotocol.com/registry/v1/latest/';
-  const agents = [
-    ['Claude Code', 'claude-acp.svg', true], ['Codex', 'codex-acp.svg', true], ['OpenCode', 'opencode.svg', true],
-    ['Copilot', 'github-copilot-cli.svg', true], ['Pi', 'pi-acp.svg', true], ['Hermes', null, true], ['Gemini CLI', 'gemini.svg', false],
-  ];
-  // Fora do registro oficial (ex.: Hermes): ícone genérico, rótulo explícito.
-  const ico = (f) => f ? `<span class="ico" style="--src:url('${CDN}${f}')"></span>` : '<span class="ico" style="-webkit-mask:none;mask:none;background:none;border:1.5px solid currentColor;border-radius:5px"></span>';
-  document.getElementById('agents').innerHTML = agents.map(([n, f, on]) => `<div class="agent">${ico(f)}${n}${f ? '' : ' <small style="opacity:.6">fora do registro</small>'}<span class="st ${on ? '' : 'off'}" title="${on ? 'instalado' : 'não instalado'}"></span></div>`).join('');
-  const home = `<h1>Como posso ajudar, Pai?</h1>
-    <div class="pills">
-      <span class="pill on"><span class="ico buddy" style="width:14px;height:14px"></span>Buddy</span>
-      ${agents.filter(a => a[2]).map(([n, f]) => `<span class="pill">${ico(f)}${n}</span>`).join('')}
+<div class="menu" id="hmenu" role="listbox" aria-label="Harness" hidden></div>
+<div class="backdrop" id="palette" hidden>
+  <div class="palette" role="dialog" aria-modal="true" aria-label="Escolher modelo">
+    <div class="pl-top">
+      <input id="plSearch" placeholder="Buscar modelo ou lab…" autocomplete="off" aria-label="Buscar modelo">
+      <button class="icon-btn" id="plClose" title="Fechar (Esc)">✕</button>
     </div>
-    <div class="sugg">Revise este repositório e proponha melhorias</div>
-    <div class="sugg">O que há nesta imagem? (anexe um print)</div>
-    <div class="sugg">Peça ao Codex para escrever os testes, e ao Claude Code para revisar</div>
-    <div class="sugg">Resuma o que mudou hoje nos meus projetos</div>`;
-  const chat = `<div class="msg-you"><div>Revise o README e corrija o que estiver desatualizado. Use o Codex.</div><div class="attach"><span class="thumb"></span></div></div>
-    <div class="who"><span class="ico buddy" style="width:16px;height:16px"></span>Buddy delegou a ${ico('codex-acp.svg')} Codex · chatgpt/gpt-6.1-sol · Médio</div>
-    <details class="details" open><summary>Raciocínio e ações (3)</summary>
-      <div>Leu README.md (412 linhas) · comparou com STATUS.md · encontrou 3 trechos desatualizados</div></details>
-    <div class="perm">${ico('codex-acp.svg')}<span>Codex quer editar <code>README.md</code> (+12 −9)</span><span class="sp"></span><button class="btn-ghost">Negar</button><button class="btn-sm">Aprovar</button></div>
-    <div class="answer">Encontrei três trechos desatualizados: o estado do M0, a ordem dos marcos e o atalho da console. A edição aguarda sua aprovação acima.</div>
-    <div class="live"><span class="spin"></span>Aguardando sua aprovação · 12 s · Codex</div>`;
-  let v = 'home';
-  const render = () => { document.getElementById('content').innerHTML = v === 'home' ? home : chat; };
-  render();
-  document.getElementById('view').onclick = () => { v = v === 'home' ? 'chat' : 'home'; render(); };
-  document.getElementById('theme').onclick = () => { const r = document.documentElement; r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark'; };
-  const q = new URLSearchParams(location.search);
-  if (q.get('tema')) document.documentElement.dataset.theme = q.get('tema');
-  if (q.get('tela') === 'conversa') { v = 'chat'; render(); }
-</script>
+    <div class="pl-filters" id="plFilters"></div>
+    <div class="pl-body">
+      <nav class="pl-tabs" id="plTabs" aria-label="Provedor ou roteador"></nav>
+      <div class="pl-list" id="plList" role="listbox"></div>
+    </div>
+    <div class="pl-foot" id="plFoot"></div>
+  </div>
+</div>
+<div class="proto">Protótipo da SPEC 0002 — interativo, mas sem ligação com o núcleo · catálogo medido ao vivo em <span id="snapDate"></span></div>
+<script src="prototipo-visual.js"></script>
 </body>
 </html>

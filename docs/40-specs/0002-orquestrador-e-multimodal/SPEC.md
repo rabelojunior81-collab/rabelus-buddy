@@ -48,7 +48,30 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
    - **Continuidade:** tudo o que o M0 já faz (andamento ao vivo, fila, direcionar, parar, aprovações, consumo, provedores, chaves, login do ChatGPT, tema, idioma) continua, rearranjado.
    - **Acessibilidade e responsividade:** contraste AA nos dois temas, foco visível, `prefers-reduced-motion` respeitado e celular a 375 px.
 9. **Contrato tipado console ↔ núcleo** (axioma T3). Cada método liberado na console tem um esquema `zod` (proposta de dependência) validado no núcleo. Entrada fora do esquema volta como erro claro, sem efeito.
-10. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
+10. **Catálogo de modelos e capacidades** (pedido do Pai em 2026-10-17, depois de ver o protótipo).
+    - **Duas camadas, duas escolhas** (Pai: "o harness e o provider são duas camadas; escolhas diferentes"):
+      - o **harness**, quem executa: o Buddy (orquestrador) ou um harness detectado;
+      - o **modelo**, com que cérebro.
+
+      São dois seletores separados na caixa de mensagem. A lista de modelos depende do harness. Com o Buddy, são os nossos provedores. Com um harness externo, são os modelos que ele informa pelo ACP na criação da sessão, e a troca vai por `session/set_model`, se ele a aceitar.
+    - A escolha de modelo é em cascata: **provedor ou roteador → lab → modelo**. Hoje: ChatGPT (assinatura), OpenCode Go, Ollama Cloud e OpenRouter.
+    - Cada modelo mostra as **capacidades em ícones**, e o escolhido as exibe **sob a caixa de mensagem**: visão, raciocínio (com os níveis), ferramentas, vídeo, pesos abertos, contexto e preço ("na assinatura", "grátis" ou "pago, teto US$ 20"), sempre com a fonte.
+    - **Fonte das capacidades**, em ordem de confiança:
+      1. o que o provedor declara ao vivo (ChatGPT `/models`, Ollama `/api/show`, OpenRouter `/api/v1/models`);
+      2. o [models.dev](https://github.com/sst/models.dev) (MIT), onde o provedor não declara (OpenCode Go);
+      3. a família do modelo, só para o **lab**.
+    - As fontes divergem (ex.: `minimax-m3`), e por isso a fonte aparece junto da capacidade.
+    - O catálogo é guardado com data e renovado no máximo uma vez por dia. Os logos dos labs são servidos pela console.
+    - **Ergonomia** (Pai: "usabilidade quase nula" na primeira versão do protótipo, com três colunas espremidas sobre a caixa de mensagem):
+      - **Harness** é um menu próprio, opaco, com ícone, nome, uma linha do que é e o estado.
+      - **Modelo** abre uma **paleta central**: busca com foco automático; filtros de capacidade em pílulas; provedores em abas; labs como títulos de grupo com logo; uma linha por modelo com nome completo, id, ícones, contexto e preço.
+      - A paleta tem **Recentes**, teclado (↑ ↓ Enter, Esc, Ctrl+K) e o escolhido marcado.
+      - No celular, a linha empilha, e filtros e abas rolam de lado.
+      - Vidro só onde não compete com a leitura: camadas sobrepostas são opacas, porque o vidro aninhado não desfoca a página.
+      - Sob a caixa aparecem **só** as capacidades presentes, mais o aviso "sem visão" quando falta, e a fonte num "ⓘ".
+      - Modelo sem dados de capacidade diz "capacidades desconhecidas".
+    - A escolha controla o resto da caixa: o botão de imagem só fica ativo com visão, e o esforço só oferece os níveis que o modelo aceita.
+11. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
 
 **Fora** (com o marco que entrega):
 - Execução isolada; harness rodando sem pedir permissão a cada passo: **M2**.
@@ -87,7 +110,12 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - o contraste AA dos pares texto e fundo principais é medido e passa;
     - não há rolagem horizontal a 375 px.
 12. **Ensaio real (com o Pai, pela console):** os harnesses do Pai aparecem sozinhos. Uma tarefa vai a um deles, com permissão aprovada pela console. Uma imagem anexada é entendida. O Pai entra num harness que pede login.
-13. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
+13. **Catálogo de modelos e as duas camadas:** dois seletores separados na console, **harness** e **modelo**. Trocar o harness troca a lista de modelos: os nossos provedores com o Buddy, ou os que o harness informa pelo ACP. O modelo nunca escolhe o harness. com servidores falsos na forma medida (ChatGPT `/models` com `models[]`; Ollama `/api/tags` + `/api/show` com `capabilities`; OpenRouter `/api/v1/models` com `architecture` e `supported_parameters`; `models.dev` para o Go):
+    - o núcleo monta provedor → lab → modelo com capacidades e a fonte de cada uma;
+    - a declaração do provedor vence o `models.dev`;
+    - o esforço oferecido é o do modelo, e imagem com modelo sem visão é recusada antes de chamar;
+    - na console, a busca filtra por nome, lab e capacidade, e as capacidades do escolhido aparecem sob a caixa de mensagem.
+14. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
 
 ## Métricas (registradas)
 

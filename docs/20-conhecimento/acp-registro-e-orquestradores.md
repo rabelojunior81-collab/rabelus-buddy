@@ -32,6 +32,18 @@
 | Na máquina do Pai, pelo PATH: `claude`, `codex`, `opencode`, `copilot`, `pi`, `hermes`, além de `npx`, `uvx` e `bun` | medição local, só leitura (—) | 2026-10-17 |
 | Imagem na entrada: ChatGPT `gpt-6.1-sol` aceita `input_image`; OpenRouter `nemotron-3.5-super-vl:free` aceita `image_url`; Ollama `gpt-oss:20b` recusa (400, "does not support image input"); Ollama `qwen3-vl:235b` foi aposentado em 2026-06-16 (410) | medição própria, `workspace/diag-imagem.ts` (—) | 2026-10-17 |
 
+## Catálogo de modelos por provedor (medido em 2026-10-17)
+
+| Provedor | Lista | Capacidades | Modelos / labs | Observação |
+|---|---|---|---|---|
+| ChatGPT (SIWC) | `GET /models` (campo `models[]`, não `data`) | `input_modalities`, `supported_reasoning_levels` (até `ultra`), `context_window`; `visibility` `list`/`hide` | 8 visíveis / 1 | todos com imagem |
+| OpenCode Go | `GET /v1/models` (só ids) | nenhuma: vêm do models.dev (`attachment`, `reasoning`, `tool_call`, `modalities`, `open_weights`, `cost`, `canonical_model_id`) | 37 / 16 | models.dev tem 32 deles |
+| Ollama Cloud | `GET /api/tags` | `POST /api/show` → `capabilities` (`completion`, `tools`, `thinking`, `vision`) e contexto em `model_info` | 22 / 11 | 12 com visão; `gpt-oss` sem |
+| OpenRouter | `GET /api/v1/models` (público) | `architecture.input_modalities`, `supported_parameters` (`tools`, `reasoning`), `context_length`, `pricing` | 471 / 67 | 309 com visão, 19 grátis |
+
+- **models.dev** (`sst/models.dev`, MIT, ativo em 2026-10-17): `https://models.dev/api.json`, 232 provedores (inclui `opencode-go`, `ollama-cloud`, `openrouter`, `openai`), logos dos labs em `https://models.dev/logos/<lab>.svg`.
+- **Divergência:** para o `minimax-m3`, o Ollama declara `vision` e o models.dev não. Vale a declaração do provedor.
+
 ## Lacunas
 
 - O Hermes não está no registro oficial, mas o AionUi o integra por um caminho próprio. Falta descobrir como.
