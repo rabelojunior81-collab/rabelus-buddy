@@ -110,3 +110,12 @@ test('rbuddy budget mostra cada janela pelo catálogo', async () => {
   assert.match(r.stdout, /go\/gpt-6-luna\/5h/);
   await call(endpointFor(home), 'daemon.stop', {});
 });
+
+test('todo modelo com janela do Go tem preço na tabela (sem preço, a janela nunca contaria o consumo)', () => {
+  const goModels = [...new Set(defaultWindows().filter((w) => w.provider === 'opencode-go').map((w) => w.model!))];
+  assert.ok(goModels.length >= 8);
+  assert.deepEqual(goModels.filter((m) => !PRICES[m]), []);
+  // Valores da página oficial do Go (ficha precos-llm, 2026-10-16), por milhão de tokens.
+  assert.deepEqual(PRICES['kimi-k3'], { input: 3.0, cachedInput: 0.3, cacheWrite: 3.0, output: 15.0 });
+  assert.deepEqual(PRICES['deepseek-v4.1-flash'], { input: 0.3, cachedInput: 0.006, cacheWrite: 0.3, output: 1.2 });
+});

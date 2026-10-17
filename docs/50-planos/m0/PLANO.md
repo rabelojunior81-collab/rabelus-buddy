@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:42:10-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T07:56:00-03:00
 
 ## Objetivo
 
@@ -51,7 +51,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - [x] **M0.6d OpenRouter** como API paga: adaptador feito junto da M0.6a; reserva e teto de US$ 20 vêm da M0.5;
   - [x] **M0.6e Loop do agente**: ferramentas `read_file`, `list_dir`, `write_file`, `run_command` pela política; chamada de provedor e comando como efeitos com identidade; reserva e liquidação por chamada; troca de provedor ao esgotar a janela (critério 16); compactação abaixo de 100k tokens (critério 21); a escrita acontece uma vez (critério 5). Fechado com provedores roteirizados; o loop ainda não está ligado ao dono nem à CLI (`rbuddy run`, M0.7). Modelo sem preço na tabela: 0 no Go (o 429 manda), preço conservador no OpenRouter.
   - Critérios: 16–21.
-- [ ] **M0.7 CLI completa e auditoria**:
+- [x] **M0.7 CLI completa e auditoria**:
   - `run`, `status`, `approvals`, `approve`/`deny`, `budget`, `log`, `resume`, `daemon`;
   - aprovações por `readline`;
   - `--lang`/`RBUDDY_LANG`;
@@ -59,7 +59,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - Critérios: 22, 23.
   - [x] **M0.7a Retomada e dono executando o agente**: a conversa vira evento (`agent.message`); `resume` reconcilia efeitos desconhecidos (chamada de modelo: não feita; escrita: pelo hash do conteúdo; comando: o humano decide); o dono roda `agent.run`/`agent.resume` em segundo plano, com aprovação pelo IPC; rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente. `kill -9` com a chamada em curso e `resume` levam a tarefa ao fim sem escrita duplicada, com provedor HTTP falso;
   - [x] **M0.7b CLI**: `run` (dono sob demanda, acompanhamento pelo catálogo, aprovação no terminal), `status`, `log` (sem a conversa), `resume`, `providers`, `login`/`logout` por chave (sem eco, só do dono); testada em processo com provedor HTTP falso;
-  - **M0.7c Auditoria**: vazamento de segredos (critério 22) e catálogo completo (critério 23).
+  - [x] **M0.7c Auditoria**: vazamento de segredos (critério 22: ponta a ponta, com canários de chave do Go, token OAuth e `.env`, conferido por mutação) e catálogo completo (critério 23: varredura do primeiro argumento de cada `t(...)`, troca de idioma); preços por modelo do Go na tabela (a fumaça real mostrou consumo zero sem eles; [registro](../../registros/2026-10-17T075036-0300-fumaca-real-do-rbuddy-run-no-go/README.md)).
 - [ ] **M0.8 Demonstração e fechamento**:
   - tarefa real com o provedor real, `kill -9` e `resume`, validada pelo Pai;
   - métricas registradas;

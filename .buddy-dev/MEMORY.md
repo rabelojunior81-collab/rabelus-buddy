@@ -54,6 +54,7 @@
 
 ## Fatos que não posso esquecer
 
+- **M0.6 e M0.7 completas** (2026-10-16/17, PRs #29–#33): `rbuddy run` roda o agente de verdade no OpenCode Go (registro da fumaça real em `docs/registros/2026-10-17T075036-0300-fumaca-real-do-rbuddy-run-no-go/`). A M0.8 (demonstração) depende do Pai: login do ChatGPT no navegador e tarefa real com `kill -9` e `resume`.
 - A pesquisa de origem foi escrita pelo **Claude Haiku 5.5 via OpenCode**, finalizada pelo Pai com o Step 5 Preview. Não pelo Gemini 4 Argon.
 - O repositório mora em `C:\Users\rabel\Desktop\rabelus-lab\rabelus-buddy`, junto do LARS. A pasta original `Desktop\sandbox\gemini-argon` ficou intacta (estava em uso pela sessão).
 - **O merge é meu** (Pai, 2026-10-15: "MERGE pode e deve ser feito, por você!"), sempre com CI verde e `bd post` limpo. Em 2026-10-14 eu li "Mergeei os PRs" como fato consumado e só registrei a divergência; o Pai queria dizer que estava autorizado.

@@ -103,3 +103,12 @@ test('sub-fase concluída no plano: precisa estar no CHANGELOG da raiz, e a últ
   assert.doesNotMatch(g, /README\.en\.md/);
   assert.doesNotMatch(g, /M0\.2b|M0\.3/, 'sub-fase aberta não cobra');
 });
+
+test('carimbo velho em arquivo alterado e ainda não commitado já é lacuna (pega antes do commit, não só na CI)', () => {
+  const r = repo({ 'docs/50-planos/ROADMAP.md': '**Atualizado em:** 2026-10-15T03:50:00-03:00\n' });
+  commit(r, '2026-10-15T04:00:00-03:00');
+  const now = new Date('2026-10-17T08:00:00-03:00');
+  assert.deepEqual(stampProblems(r, { now }), [], 'sem alteração, o último commit manda');
+  writeFileSync(join(r, 'docs/50-planos/ROADMAP.md'), '**Atualizado em:** 2026-10-15T03:50:00-03:00\nlinha nova\n');
+  assert.match(stampProblems(r, { now }).join('\n'), /ROADMAP\.md.*desatualizado.*alterado e não commitado/);
+});

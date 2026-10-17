@@ -202,3 +202,7 @@ M0.7a: retomada do loop (conversa no log, reconciliação por tipo de efeito) e 
 ### #0047 · 2026-10-16T022302-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.7b: CLI do agente (run com dono sob demanda e aprovação no terminal, resume, status, log, providers, login/logout por chave). bd surfaces passa a cobrar que toda sub-fase concluída esteja no CHANGELOG do produto e a última no Estado dos READMEs (lacuna de M0.6b–M0.7a corrigida).
+
+### #0048 · 2026-10-17T075059-0300 · claude-code-vs-code-fe93fb · feat
+
+M0.7c: auditoria por teste de segredos (critério 22, ponta a ponta, conferido por mutação) e do catálogo (critério 23); preços por modelo do Go; fumaça real do rbuddy run no Go registrada. M0.7 completa; M0.8 aguarda o Pai.

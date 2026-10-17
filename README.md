@@ -9,7 +9,7 @@
 
 </div>
 
-> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)), com a **M0.7b** feita: `rbuddy run "<tarefa>"` roda o agente nas assinaturas (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), com política, aprovações no terminal, orçamento por janela e retomada depois de queda (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` e `daemon` completam a CLI. Falta a auditoria de segredos e do catálogo (M0.7c) e a demonstração com o Pai (M0.8).
+> **Estado:** **M0 — Núcleo governado** em execução ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plano](./docs/50-planos/m0/PLANO.md)), com a **M0.7c** feita (a M0.7 completa): `rbuddy run "<tarefa>"` roda o agente nas assinaturas (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), com política, aprovações no terminal, orçamento por janela e retomada depois de queda (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` e `daemon` completam a CLI. Segredos e catálogo auditados por teste. Falta a demonstração com o Pai (M0.8).
 
 ## O que é
 

@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- Auditoria (M0.7c; com ela, a M0.7 completa): teste de ponta a ponta de que chave de API, token OAuth e valor de `.env` nunca aparecem no banco, no log, na saída nem nos temporários; varredura de que toda string da CLI vem do catálogo pt-BR/en; mensagens de erro do núcleo e do login pelo catálogo; preços por modelo do OpenCode Go, para as janelas contarem o consumo real.
+
 - CLI do agente (M0.7b): `rbuddy run "<tarefa>"` sobe o dono quando preciso, acompanha a execução pelo catálogo e pergunta cada aprovação no terminal; `resume`, `status`, `log` (aprovações, consumo, escritas; nunca a conversa) e `providers` (ordem e credenciais); `login`/`logout` de `opencode-go`, `ollama-cloud` e `openrouter` com a chave lida sem eco e guardada só para o usuário.
 
 - Retomada (M0.7a): a conversa do agente fica no log; depois de uma queda, `resume` reconcilia cada efeito desconhecido (chamada de modelo refeita; escrita pelo hash do conteúdo pedido; comando, só com o humano) e leva a tarefa ao fim sem efeito duplicado. O dono executa o agente em segundo plano, com aprovação pelo IPC, rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente.

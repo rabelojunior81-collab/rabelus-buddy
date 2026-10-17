@@ -20,8 +20,10 @@ Com US$ 50/mês, o uso agêntico diário só cabe na camada barata. Os preços c
 | Gemini 3.8 Flash | 0,75 / 3,75 / 0,075 até 31/12/2026; o dobro a partir de 1/1/2027 | idem | 2026-10-14 |
 | Gemini 4 Argon | 2 / 10 / 0,10 até 30/11/2026; o dobro a partir de 1/12/2026 | idem | 2026-10-14 |
 | Tokenizador da Anthropic 4.7+: "approximately 30% more tokens for the same text" (comparado ao anterior da própria Anthropic) | platform.claude.com/docs/en/about-claude/pricing | 2026-10-14 |
+| **OpenCode Go, por modelo** (mede as janelas em dólares): kimi-k3 3 / 15 / 0,30; glm-5.3 1,40 / 4,40 / 0,26; deepseek-v4.1-flash 0,15 / 0,60 / 0,003 fora do pico e 0,30 / 1,20 / 0,006 no pico; minimax-m3 0,30 / 1,20 / 0,06; qwen3.8-max 2 / 6 / 0,25, escrita 2,50; gpt-6-luna e claude-haiku-5-5 como acima, com faixa mais cara acima de 272k e 100k tokens. Limites mensais do plano Go: Kimi K3, GLM-5.3, Qwen3.8 Max, GPT 6/5.6 Luna, Claude Haiku 5.5 US$ 15; MiniMax M3 60; DeepSeek V4.1 Flash 80 (existe também o Go Plus, com limites maiores) | https://opencode.ai/docs/go/ (tier 0) | 2026-10-16 |
 | Claude Code: "around $13 per developer per active day and $150-250 per developer per month" (empresas) | code.claude.com/docs/en/costs | 2026-10-14 |
 
 ## Histórico de verificações
 
 - 2026-10-14T11:40:00-03:00 · buddy-dev (claude-code-5c038b) · criação da ficha (Revisão 0.2)
+- 2026-10-16T02:35:13-03:00 · buddy-dev (claude-code-vs-code-fe93fb) · preços por modelo do OpenCode Go (a fumaça real mostrou consumo zero do kimi-k3, sem preço na tabela)

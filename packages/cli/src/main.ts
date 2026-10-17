@@ -50,7 +50,7 @@ async function login(provider: string | undefined, noBrowser: boolean, env: Node
     io.out(t(c.planEnabled ? 'login.done' : 'login.planDisabled', { email: c.email ?? c.sub ?? '?' }));
     return 0;
   } catch (e) {
-    io.err(t('login.failed', { code: e instanceof SiwcAuthError ? e.code : (e as Error).message }));
+    io.err(t('login.failed', { code: e instanceof SiwcAuthError ? e.code : (e as NodeJS.ErrnoException).code ?? 'error' }));
     return 1;
   }
 }
@@ -150,7 +150,7 @@ async function resolve(decision: 'approve' | 'deny', id: string | undefined, env
   }
   if (r.error?.code === RPC_ERR.notFound) io.err(t('approvals.notFound', { id }));
   else if (r.error?.code === RPC_ERR.alreadyResolved) io.err(t('approvals.alreadyResolved', { id, state: String(r.error.data.state) }));
-  else if (r.error) io.err(r.error.message);
+  else if (r.error) io.err(t('cli.rpcError', { code: r.error.code }));
   return 1;
 }
 
