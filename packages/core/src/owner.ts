@@ -133,6 +133,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const agent = agentFor(p);
       const prior = p.continueFrom ? agent.transcript(session, String(p.continueFrom)) : undefined;
       const { run, done } = agent.begin(session, String(p.task), prior?.length ? { prior } : {});
+      // Opções da execução ficam no log: a retomada usa o mesmo esforço e a mesma rota.
+      log.append(session, 'run.options', { run, effort: effort(p.effort) ?? null, route: route(p.route) ?? null });
       watch(session, run, done);
       return { run };
     },
@@ -140,7 +142,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const run = String(p.run);
       const r = domain.getRun(run);
       if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(-32004, `execução ${run} está ${r.state}: só se retoma interrompida ou parada`, { id: run, state: r.state });
-      watch(r.session, run, agentFor(p).resume(r.session, run));
+      const opts = log.events(r.session).filter((e) => e.kind === 'run.options' && (e.payload as { run?: string }).run === run).at(-1)?.payload as { effort?: string | null; route?: unknown } | undefined;
+      watch(r.session, run, agentFor({ ...p, effort: p.effort ?? opts?.effort ?? undefined, route: p.route ?? opts?.route ?? undefined }).resume(r.session, run));
       return { run };
     },
     'run.list': () => domain.listRuns(),
