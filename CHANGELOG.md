@@ -8,6 +8,10 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ## [Não publicado]
 
+### Corrigido
+
+- Achados da auditoria real de 2026-10-17, pelo binário e contra os serviços reais: o login do ChatGPT era recusado pela OpenAI (`ext_agent_host_id` agora no formato `urn:uuid:`); resposta HTTP de recusa (como o 403 de chave sem assinatura) parava a tarefa como efeito desconhecido e cobrava estimativa — agora é recusa com motivo no log e o agente passa ao próximo provedor; modelo gratuito do OpenRouter era cobrado; a CLI mostrava stack trace quando o dono caía; o dono sob demanda nunca se desligava e guardava credenciais velhas; `providers` agora diz de onde vem cada credencial.
+
 ### Adicionado
 
 - Auditoria (M0.7c; com ela, a M0.7 completa): teste de ponta a ponta de que chave de API, token OAuth e valor de `.env` nunca aparecem no banco, no log, na saída nem nos temporários; varredura de que toda string da CLI vem do catálogo pt-BR/en; mensagens de erro do núcleo e do login pelo catálogo; preços por modelo do OpenCode Go, para as janelas contarem o consumo real.

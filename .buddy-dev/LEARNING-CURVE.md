@@ -41,3 +41,14 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 1. **Dois changelogs, um lembrado.** Mergeei M0.6b, M0.6e e M0.7a atualizando o `.buddy-dev/CHANGELOG.md` (pelo `bd changelog add`) e esqueci o `CHANGELOG.md` da raiz, a visão do produto; o README ficou parado na M0.5. O `bd surfaces` não via isso. → O comando que eu uso todo dia escreve num só; o outro dependia de memória. → `bd surfaces` agora cobra cada sub-fase `[x]` do plano no `CHANGELOG.md` da raiz e a última no Estado do `README.md`/`.en.md`; lacuna registrada em `SUPERFICIES.md` (2026-10-16).
 2. **O teste escrito antes do código acertou contra mim.** A compactação do loop alterava o texto da tarefa para pôr a nota; o teste exigia a tarefa intacta. Corrigi o código (nota em mensagem própria), não o teste. Duas outras falhas eram do teste mirando o lugar errado (evento de esgotamento mora na sessão `budget` desde a M0.5): reapontei a asserção, com a mesma exigência, e declarei no PR.
 3. **A checagem local passou porque olhou o lugar errado.** Editei o `PLANO.md` sem recarimbar; o `bd surfaces` comparava o carimbo com o último commit do arquivo, que ainda era o antigo, e aprovou. A CI reprovou depois do commit. → Uma checagem que só vale depois do commit chega tarde. → O carimbo agora é conferido contra "agora" quando o arquivo está alterado e não commitado.
+
+## 2026-10-17 · a auditoria depois do "LIXO"
+
+1. **Pedi ao Pai um teste que eu nunca rodei do jeito dele.** "rbuddy login chatgpt" não existia no PowerShell dele, e eu tinha declarado o marco pronto. O Pai: "NÃO QUERO, NUNCA MAIS, QUE VOCÊ COGITE A HIPÓTESE DE ME PEDIR TESTE QUE NÃO FUNCIONA". → Ação do Pai só aparece como "aguarda o Pai" com ensaio meu registrado, nos mesmos passos e no ambiente dele (`bd validacoes`).
+2. **Eu estava construindo a superfície errada.** O Pai está construindo um agente multimodal com UX e UI; a CLI é do agente. Eu li "CLI" na SPEC e transformei a CLI na porta do Pai. → Toda ação do Pai passa por UX/UI, nunca por terminal (mesmo mecanismo); o roadmap volta para ele decidir.
+3. **194 testes verdes e um login que não passava da primeira tela.** O servidor OAuth falso aceitava qualquer `ext_agent_host_id`; a OpenAI real recusa. → AGENTS §5.9: integração externa só é "pronta" depois de checagem contra o serviço real, registrada; o servidor falso copia o comportamento real observado.
+4. **"Desconhecido" virou lata de lixo.** Um 403 com mensagem clara ("assinatura Go exigida") entrou como efeito desconhecido, parou a tarefa e cobrou estimativa. → Resposta HTTP é conclusiva; só falta de resposta é inconclusiva; o motivo vai para o log.
+
+## lote #0001-#0001
+
+1. **O nascimento foi uma importação intocada, com sha256 conferido.** O material original entrou sem edição e com prova de integridade; é a mesma disciplina que faltou hoje: conferir contra a fonte real antes de afirmar que algo está pronto.
