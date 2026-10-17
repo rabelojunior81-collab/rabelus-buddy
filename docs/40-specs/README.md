@@ -6,4 +6,4 @@ Uma SPEC por unidade de trabalho (marco, fase ou sub-fase), em `NNNN-slug/SPEC.m
 
 | SPEC | Marco | Estado |
 |---|---|---|
-| [0001-nucleo-governado](./0001-nucleo-governado/SPEC.md) | M0 — Núcleo governado | **aprovada** pelo Pai em 2026-10-15 (revisão 3) |
+| [0001-nucleo-governado](./0001-nucleo-governado/SPEC.md) | M0 — Núcleo governado | **aprovada** pelo Pai em 2026-10-15 (revisão 3); revisão 5 em 2026-10-17 (console web local, ADR 0017) |

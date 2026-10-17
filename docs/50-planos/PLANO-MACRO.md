@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-16T01:28:43-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T09:02:58-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -68,7 +68,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [ ] Multi-provedor por API completo (Anthropic, OpenAI, Google) com diferenças declaradas [§8]
 - [ ] Plugins, scripts e skills com permissão e isolamento; MCP; A2A registrado [§8]
 - [ ] Tracing, avaliação, controle de custo e auditoria (OTel GenAI) [§8]
-- [ ] Web UI · desktop · mobile cliente fino — stack da ADR 0013 (Expo universal → Web React DOM)
+- [ ] Web UI · desktop · mobile cliente fino — stack da ADR 0013 (Expo universal → Web React DOM). **Adendo 2026-10-17:** a console web local entra no M0 (ADR 0017) e esta linha deixa de esperar o M5+; o novo lugar é proposto ao Pai no fechamento do M0
 - [ ] TUI — biblioteca em avaliação, `ink` × `pi-tui`, com referências visuais ao Pai (ADR 0016)
 - [ ] Distribuição por instaladores; lojas depois
 - [ ] Abertura pública: buscas de marca (R6), canal de denúncia e segurança, rulesets, PVR

@@ -8,6 +8,10 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ## [Não publicado]
 
+### Alterado
+
+- Rumo do M0 (decisão do Pai, 2026-10-17; [ADR 0017](./docs/60-decisoes/0017-console-web-local-no-m0.md)): o Rabelus Buddy é um agente com UX/UI, e a CLI é do próprio agente. A superfície do M0 passa a ser uma console web local servida pelo núcleo, e a demonstração acontece nela (SPEC 0001 revisão 5; plano com M0.8 e M0.9).
+
 ### Corrigido
 
 - Achados da auditoria real de 2026-10-17, pelo binário e contra os serviços reais: o login do ChatGPT era recusado pela OpenAI (`ext_agent_host_id` agora no formato `urn:uuid:`); resposta HTTP de recusa (como o 403 de chave sem assinatura) parava a tarefa como efeito desconhecido e cobrava estimativa — agora é recusa com motivo no log e o agente passa ao próximo provedor; modelo gratuito do OpenRouter era cobrado; a CLI mostrava stack trace quando o dono caía; o dono sob demanda nunca se desligava e guardava credenciais velhas; `providers` agora diz de onde vem cada credencial.

@@ -1,11 +1,13 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T08:38:57-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T09:02:35-03:00
 
 ## Objetivo
 
-Entregar o núcleo governado da SPEC 0001: dono do log, IPC, política, orçamento, efeitos com identidade, loop com um provedor e CLI bilíngue. Cada critério de aceite vira teste antes do código.
+Entregar o núcleo governado da SPEC 0001: dono do log, IPC, política, orçamento, efeitos com identidade, loop com os provedores da ADR 0015, CLI bilíngue do próprio agente e, desde a revisão 5 (2026-10-17, [ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md)), a **console web local**, que é a superfície do Pai. Cada critério de aceite vira teste antes do código.
+
+> **Revisão do plano (2026-10-17).** O Pai: "não estou construindo uma CLI; estou construindo um agente multimodal com UX e UI". A demonstração por CLI saiu. Entraram a **M0.8**, a console e o que ela exige do núcleo, e a **M0.9**, a demonstração pela console, que reúne os testes reais que até aqui só existiam contra servidor falso.
 
 ## TODO
 
@@ -60,11 +62,18 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - [x] **M0.7a Retomada e dono executando o agente**: a conversa vira evento (`agent.message`); `resume` reconcilia efeitos desconhecidos (chamada de modelo: não feita; escrita: pelo hash do conteúdo; comando: o humano decide); o dono roda `agent.run`/`agent.resume` em segundo plano, com aprovação pelo IPC; rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente. `kill -9` com a chamada em curso e `resume` levam a tarefa ao fim sem escrita duplicada, com provedor HTTP falso;
   - [x] **M0.7b CLI**: `run` (dono sob demanda, acompanhamento pelo catálogo, aprovação no terminal), `status`, `log` (sem a conversa), `resume`, `providers`, `login`/`logout` por chave (sem eco, só do dono); testada em processo com provedor HTTP falso;
   - [x] **M0.7c Auditoria**: vazamento de segredos (critério 22: ponta a ponta, com canários de chave do Go, token OAuth e `.env`, conferido por mutação) e catálogo completo (critério 23: varredura do primeiro argumento de cada `t(...)`, troca de idioma); preços por modelo do Go na tabela (a fumaça real mostrou consumo zero sem eles; [registro](../../registros/2026-10-17T075036-0300-fumaca-real-do-rbuddy-run-no-go/README.md)).
-- [ ] **M0.8 Demonstração e fechamento** — **bloqueada** (Pai, 2026-10-17: o produto é um agente com UX/UI; a demonstração não pode ser por CLI; aguarda a decisão sobre a superfície):
-  - tarefa real com o provedor real, `kill -9` e `resume`, validada pelo Pai;
-  - métricas registradas;
-  - retrospectiva.
-  - Critério: 26.
+- [ ] **M0.8 Console web local** ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md); SPEC escopo 19, critérios 27–30):
+  - [ ] **M0.8a O que a console exige do núcleo:** esforço de raciocínio por execução, no formato de cada rota, com uma repetição sem ele se o provedor recusar (critério 29); rota escolhida por execução (automática ou provedor/modelo); conversa contínua (nova mensagem na sessão, com o histórico); login do ChatGPT iniciado pelo núcleo; campos omitidos da prévia do SIWC reverificados em 2026-10-17;
+  - [ ] **M0.8b A console:** servidor HTTP no dono, só `127.0.0.1`, token e `Host` exato (critério 27); página sem dependência, com tarefa, esforço, rota, passos ao vivo, conversa, aprovações, consumo por janela, provedores com origem da credencial, chaves guardadas (nunca devolvidas), login e logout do ChatGPT, execuções com "Retomar" (critério 30); catálogo pt-BR/en (critério 28); atalho de duplo clique que sobe o núcleo e abre a console; o uso da console conta como atividade (o dono não se desliga com ela aberta);
+  - [ ] **M0.8c Ensaio no ambiente do Pai:** navegador real (Playwright) na máquina do Pai, passo a passo do que ele vai fazer, registrado em `docs/registros/`; só então as ações dele entram em "aguarda o Pai" (`bd validacoes`).
+- [ ] **M0.9 Demonstração pela console e fechamento** (critério 26, rev. 5). Junta os testes reais que a console torna viáveis, antes só contra servidor falso:
+  - login real do ChatGPT (critério 19 no real) e um passo pela assinatura do ChatGPT (critério 18 no real, incluindo se a prévia aceita o esforço);
+  - interação: conversa contínua e mudança de esforço entre tarefas, com o consumo comparado;
+  - aprovar e negar pela console (critérios 9 e 13 vistos pelo Pai);
+  - troca de provedor visível quando uma conta ou janela recusa (critério 16 no real; hoje as duas chaves do Go recusam: 403 e 402);
+  - queda do núcleo e "Retomar" sem efeito duplicado (critérios 4 e 5 no real);
+  - consumo por janela na console (critérios 14 e 15 vistos pelo Pai);
+  - métricas registradas; retrospectiva.
 
 ## Dependências e bloqueios
 
@@ -75,7 +84,8 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
 | M0.3, M0.4, M0.5 | M0.2 | — |
 | M0.6 | M0.2, M0.4, M0.5 | nada para os falsos; a chave do Go e a conta ChatGPT só para testes reais |
 | M0.7 | M0.3–M0.6 | — |
-| M0.8 | tudo | chave do Go e conta ChatGPT Plus |
+| M0.8 | M0.1–M0.7 | — (decidida pelo Pai em 2026-10-17: opção A) |
+| M0.9 | M0.8 (com o ensaio registrado) | o Pai: login do ChatGPT e a demonstração pela console; uma chave do Go com assinatura e saldo, para o Go entrar na demonstração |
 
 **Enquanto a SPEC aguarda o Pai** (AGENTS §5.4): este plano, os fatos em aberto (`usage` verificado em 2026-10-15) e o desenho dos testes de cada critério. Nenhum código de produto antes da aprovação.
 
@@ -90,7 +100,8 @@ Depois da M0.2, as sub-fases M0.3, M0.4 e M0.5 tocam módulos diferentes do `cor
 ## Fechamento
 
 - [ ] Critérios 1–25 verdes na CI em Windows, Linux e macOS, nas linhas 24 e 26 do Node
-- [ ] Critério 26 validado pelo Pai
+- [ ] Critérios 27–30 verdes na CI e ensaiados num navegador real
+- [ ] Critério 26 validado pelo Pai, pela console
 - [ ] `bd post` sem falhas; `bd surfaces` verde
 - [ ] Retrospectiva em `docs/registros/`
 - [ ] ROADMAP, PLANO-MACRO, STATUS, MEMORY, README (Estado) e Blog atualizados ([SUPERFICIES.md](../../30-governanca/SUPERFICIES.md))

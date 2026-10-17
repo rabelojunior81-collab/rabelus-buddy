@@ -1,7 +1,8 @@
 # SPEC — M0: Núcleo governado
 
-**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 4 · **Estado:** aprovada
+**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 5 · **Estado:** aprovada
 **Autor:** buddy-dev (Buddy Fenix), sessões `claude-code-vs-code-438d04`, `-5cfc7b`, `-3a6e29` · **Criada em:** 2026-10-15T04:29:18-03:00 · **Aprovada por:** Pai, 2026-10-15 ("Aprovada, DEVE Mergear"), com a decisão 8 = A
+**Revisão 5 (2026-10-17), decisão do Pai ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md)):** o produto é um agente com UX/UI, e a CLI é do próprio agente; entra no escopo a **console web local** servida pelo núcleo (escopo 19), a demonstração passa a ser por ela (critério 26), e os critérios 27–30 cobrem a console, o esforço de raciocínio e a conversa contínua.
 **Revisões anteriores:** revisão 1 (rascunho), commit `6083ac2`; revisão 2 (rascunho), commit `1213bd2`. A revisão 3 é a 2 aprovada pelo Pai, com a ordem de provedores da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md) e a decisão 8 resolvida (A). A revisão 4 (2026-10-16) só ajusta o "Fora": a biblioteca da TUI passa a estar em avaliação, `ink` × `pi-tui` ([ADR 0016](../../60-decisoes/0016-pi-por-composicao-e-tui-em-avaliacao.md)), e o Pi entra no M1 como agente plugável. O escopo do M0 não muda. A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
 
 ## Problema e resultado
@@ -70,7 +71,8 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
     - comandos `run "<tarefa>"`, `status`, `approvals`, `approve`/`deny`, `budget`, `log`, `resume`, `login chatgpt|opencode-go`, `logout`, `providers`, `daemon start|stop|status`;
     - binários `rabelus-buddy` e `rbuddy` (ADR 0011);
     - argumentos com `parseArgs`;
-    - aprovações com `readline`.
+    - aprovações com `readline`;
+    - a CLI é interface do próprio agente e das ferramentas, **nunca superfície de teste do Pai** (regra de 2026-10-17).
 17. **Dependências sob protocolo:** toda dependência, de produção ou de desenvolvimento, segue o [protocolo de dependências](../../30-governanca/DEPENDENCIAS.md):
     - registro com versão exata, licença e ficha;
     - reverificação com prazo;
@@ -79,6 +81,14 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
     - teste reprovado se resolve corrigindo o código;
     - nenhum PR pode remover asserções, apagar teste, marcar `skip`/`todo`/`only` ou reduzir o número de testes de um arquivo;
     - conferido pelo `bd test-guard` no `bd post` e na CI.
+19. **Console web local** ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md)), servida pelo dono em `127.0.0.1`, sem dependência nova:
+    - tarefa com **esforço de raciocínio** (padrão, baixo, médio, alto) e **rota** (automática pela ordem da ADR 0015, ou um provedor e modelo escolhidos);
+    - passos ao vivo, resposta e **conversa contínua** (nova mensagem na mesma sessão, com o histórico);
+    - aprovações (aprovar ou negar), consumo por janela, provedores com a origem da credencial;
+    - chaves de API guardadas pela console (nunca voltam ao navegador); login e logout do ChatGPT;
+    - retomada de execução interrompida ou parada;
+    - toda string do catálogo (pt-BR e en);
+    - token e `Host` exato em toda requisição; aberta por atalho de duplo clique, sem terminal.
 
 **Fora** (com o marco que entrega):
 
@@ -86,7 +96,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 - Sandbox, worktree por sessão, aprovação na integração, comandos livres no workspace, rede por lista de domínios: **M2**.
 - Memória de longo prazo e identidade versionada do agente do usuário: **M3**.
 - Gateway, canais e entrada por mensagem (R5-2): **M4**.
-- Web UI, desktop, mobile (ADR 0013), MCP e subagentes (C2): **M5+**. TUI: depois do M0, com biblioteca escolhida entre `ink` e `pi-tui` (ADR 0016).
+- Web UI, desktop e mobile **de produto** (ADR 0013), MCP e subagentes (C2): depois do M0, com o roadmap em revisão (a console do escopo 19 é paliativa). TUI: depois do M0, com biblioteca escolhida entre `ink` e `pi-tui` (ADR 0016).
 - Instaladores e publicação no npm: **M5+**. No M0 a CLI roda do repositório.
 
 ## Decisões técnicas (cada uma com fonte)
@@ -155,13 +165,21 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 
 24. `bd deps` passa: toda dependência instalada está no registro com versão exata, licença permitida e verificação dentro do prazo.
 25. `bd test-guard` passa: nenhum teste removido, enfraquecido ou pulado em relação à base.
-26. **Demonstração do marco** (real, com o Pai):
-    - o Pai roda `rbuddy run` numa tarefa real de leitura e edição, na assinatura do Go;
-    - cada aprovação e cada consumo aparecem em `rbuddy log`;
-    - `kill -9` no meio e `rbuddy resume` levam a tarefa ao fim sem efeito duplicado;
-    - o mesmo passo roda uma vez pelo ChatGPT (SIWC).
+26. **Demonstração do marco** (real, com o Pai, **pela console**; revisão 5):
+    - o Pai entra com o ChatGPT pela console (o login real fecha o critério 19);
+    - escreve uma tarefa real de leitura e edição, aprova e nega ações, e muda o esforço entre tarefas;
+    - cada aprovação e cada consumo aparecem na console;
+    - uma queda do núcleo no meio e "Retomar" levam a tarefa ao fim sem efeito duplicado;
+    - um passo roda pelo ChatGPT (fecha o critério 18 no real), e a troca de provedor aparece quando uma janela ou conta recusa.
 
-Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–25 rodam com provedores falsos determinísticos e um servidor OAuth falso. O 26 usa as assinaturas reais e é validado pelo Pai.
+### Console, esforço e conversa (revisão 5)
+
+27. A console só escuta em `127.0.0.1`; requisição sem o token devolve 401 e com `Host` diferente devolve 403, e nenhuma ação acontece.
+28. Toda string da console vem do catálogo (pt-BR e en), e trocar o idioma na console muda os textos.
+29. O esforço escolhido chega a cada rota no formato dela: Responses `reasoning.effort`; Chat Completions `reasoning_effort` (OpenRouter: `reasoning.effort`); Messages `thinking` com orçamento; Google `thinkingConfig`. "Padrão" não envia nada. Se o provedor recusar o esforço, a chamada se repete uma vez sem ele, e isso vira evento.
+30. Pela console: aprovar ou negar resolve a aprovação como pelo IPC; chave de API guardada aparece só como origem (nunca o valor); conversa contínua leva o histórico da sessão ao modelo; retomar tem o mesmo efeito do `resume`; login do ChatGPT abre a tela da OpenAI e a conclusão aparece na console.
+
+Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–25 rodam com provedores falsos determinísticos e um servidor OAuth falso. O 26 usa as assinaturas reais e é validado pelo Pai, pela console, depois do ensaio do buddy-dev no ambiente dele (regra de 2026-10-17). Os critérios 27–30 rodam com servidor falso e são ensaiados pelo buddy-dev num navegador real antes da entrega.
 
 ## Métricas (registradas, sem meta fixa no M0)
 
@@ -207,4 +225,4 @@ Nenhuma. Todas respondidas pelo Pai em 2026-10-15:
 - SDKs e protocolo de dependências;
 - decisão 8 = A.
 
-Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud já estão em `.buddy-dev/.env.local` (informado pelo Pai). A conta ChatGPT Plus entra no `rbuddy login chatgpt` da demonstração.
+Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud já estão em `.buddy-dev/.env.local` (informado pelo Pai). A conta ChatGPT Plus entra pelo botão de login da console, na demonstração.

@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0002 · 2026-10-14T103608-0300 · claude-code-c33594 · ferramenta
-
-Ferramentas bd (relógio, nomes, barramento, arquivo morto, changelog, guarda, ritos pre/post) com 22 testes. PR #1. (10:23 -0300)
-
 ### #0003 · 2026-10-14T103608-0300 · claude-code-c33594 · correcao
 
 Fonte de relógio trocada de api.github.com (Date de cache, oscilou 31 s) para a trace da Cloudflare; core.quotePath=false para caminhos com acento. (10:24 -0300)
@@ -207,3 +203,7 @@ M0.7c: auditoria por teste de segredos (critério 22, ponta a ponta, conferido p
 ### #0049 · 2026-10-17T083810-0300 · claude-code-vs-code-7307c7 · fix
 
 Auditoria real depois da falha no shell do Pai: login do ChatGPT quebrado na OpenAI real (ext_agent_host_id), 403 tratado como efeito desconhecido, modelo gratuito cobrado, CLI com stack trace, dono eterno com ambiente velho — corrigidos; regra nova com mecanismo (ação do Pai exige ensaio, nunca por CLI).
+
+### #0050 · 2026-10-17T090326-0300 · claude-code-vs-code-7307c7 · decisao
+
+Opção A aprovada pelo Pai: console web local servida pelo núcleo (ADR 0017); SPEC 0001 rev. 5 (escopo 19, critérios 26–30); plano revisado com M0.8 (console) e M0.9 (demonstração pela console, aglutinando testes reais); adendo no ROADMAP; ficha de assinaturas reverificada ao vivo.

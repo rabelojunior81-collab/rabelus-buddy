@@ -34,6 +34,7 @@
 | 2026-10-16 | O Pi não é forkado: entra no M1 como agente plugável; a TUI fica em avaliação (ink × pi-tui), com referências visuais ao Pai no momento pertinente; M0 sem TUI | ADR 0016; SPEC 0001 rev. 4 |
 | 2026-10-16 | Prune de branches é responsabilidade do buddy-dev, com processo e enforcement; nenhuma branch sobrevive ao merge, nada se perde | `bd prune`, `bd merge`, `bd pre`; GitHub com auto-delete e só merge commit |
 | 2026-10-16 | Governança de validações ampliada: toda validação com dono (máquina, buddy, Pai), lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes`; `VALIDACOES.md` |
+| 2026-10-17 | **Opção A aprovada:** console web local servida pelo núcleo, antes de fechar o M0; demonstração e testes de interação, esforço e aprovações por ela; plano revisado aglutinando o que a console viabiliza | ADR 0017; SPEC 0001 rev. 5; plano do M0 (M0.8, M0.9); adendo no ROADMAP |
 | 2026-10-17 | **Nunca pedir ao Pai teste que não funciona**: só depois de ensaiar eu mesmo, com os mesmos passos e no ambiente dele | `bd validacoes` (ação do Pai exige `ensaio`); `AGENTS.md` §3 |
 | 2026-10-17 | **O produto é um agente multimodal com UX e UI; CLI é do próprio agente, nunca superfície do Pai.** Nada de teste por CLI para ele | `bd validacoes` (sem terminal/CLI no "como"); roadmap em revisão com o Pai |
 | 2026-10-16 | Só parar quando o Pai precisar fazer ou decidir; se não precisar, seguir o plano aprovado sem parar | `AGENTS.md` §5.8; validações do Pai em `validacoes.json` |

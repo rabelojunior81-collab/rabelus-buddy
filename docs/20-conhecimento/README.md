@@ -40,7 +40,7 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [precos-llm.md](./precos-llm.md) | Preços de Anthropic, OpenAI, Google e dos modelos do OpenCode Go | 2026-10-16 (reverificar antes de 30/11) |
 | [sandbox-e-permissoes.md](./sandbox-e-permissoes.md) | Isolamento de execução e modelos de permissão | 2026-10-14 |
 | [projetos-comparaveis.md](./projetos-comparaveis.md) | Harnesses, agentes e gateways abertos | 2026-10-14 |
-| [assinaturas-de-agentes.md](./assinaturas-de-agentes.md) | ChatGPT Plus (Codex) e OpenCode Go via ACP | 2026-10-14 |
+| [assinaturas-de-agentes.md](./assinaturas-de-agentes.md) | OpenCode Go, Sign in with ChatGPT, Ollama Cloud, OpenRouter; esforço de raciocínio | 2026-10-17 |
 | [banco-e-ipc.md](./banco-e-ipc.md) | `node:sqlite`, better-sqlite3, IPC por named pipe e socket Unix; spike do M0 | 2026-10-15 |
 | [bibliotecas-do-nucleo.md](./bibliotecas-do-nucleo.md) | CLI, TUI, i18n, SDKs do provedor, limites da OpenAI | 2026-10-15 |
 | [pi-agent.md](./pi-agent.md) | Pi (earendil-works): harness, extensões, provedores; forkar ou compor | 2026-10-15 |
