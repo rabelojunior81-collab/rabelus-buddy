@@ -338,14 +338,19 @@ export function createChatGptProvider({ home, endpoints = SIWC_ENDPOINTS }: { ho
         // A prévia não cita `reasoning` (2026-10-17): vai só quando há esforço; recusa → o agente repete sem ele.
         ...(req.effort ? { reasoning: { effort: req.effort } } : {}),
       };
-      let stream: AsyncIterable<{ type: string; response?: { error?: { code?: string; message?: string } | null } & Parameters<typeof parseResponsesOutput>[0] }>;
+      let stream: AsyncIterable<{ type: string; item?: unknown; response?: { error?: { code?: string; message?: string } | null } & Parameters<typeof parseResponsesOutput>[0] }>;
       try {
         stream = (await client.responses.create(body as unknown as Parameters<typeof client.responses.create>[0], { headers: { 'User-Agent': USER_AGENT } })) as unknown as typeof stream;
       } catch (e) { return fromHttp(e); }
+      // O backend real manda `response.completed` com `output: []` (medido em 2026-10-17): texto e chamadas de
+      // ferramenta só vêm em `response.output_item.done`. Guardamos os itens e usamos quando o final vier vazio.
+      const items: unknown[] = [];
+      const final = (r: Parameters<typeof parseResponsesOutput>[0] = {}) => parseResponsesOutput(r.output?.length ? r : { ...r, output: items });
       try {
         for await (const ev of stream) {
-          if (ev.type === 'response.completed') return parseResponsesOutput(ev.response ?? {});
-          if (ev.type === 'response.incomplete') return { ...parseResponsesOutput(ev.response ?? {}), finish: 'length' };
+          if (ev.type === 'response.output_item.done' && ev.item) items.push(ev.item);
+          if (ev.type === 'response.completed') return final(ev.response);
+          if (ev.type === 'response.incomplete') return { ...final(ev.response), finish: 'length' };
           if (ev.type === 'response.failed') {
             const er = ev.response?.error;
             throw fromCode(er?.code ?? 'unknown_error', er?.message ?? 'response.failed');

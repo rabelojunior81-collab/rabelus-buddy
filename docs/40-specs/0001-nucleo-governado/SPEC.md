@@ -151,7 +151,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 **Provedores**
 
 17. Cada provedor da ordem (Go, Ollama Cloud, OpenRouter) é chamado pela rota e pelo SDK certos, com a identificação exigida. Toda requisição ao Go leva `User-Agent: rabelus-buddy/<versão>` e `x-opencode-session` igual ao longo da mesma sessão (espião no transporte), e cada modelo vai pela rota e pelo SDK certos.
-18. Toda requisição pelo SIWC leva `store: false` e `stream: true`, não leva nenhum campo proibido pela prévia, e só é concluída em `response.completed`. `response.failed` com `subscription_sharing_usage_limit_exceeded` esgota a janela do SIWC.
+18. Toda requisição pelo SIWC leva `store: false` e `stream: true`, não leva nenhum campo proibido pela prévia, e só é concluída em `response.completed`. O conteúdo da resposta (texto e chamadas de ferramenta) vem dos itens de `response.output_item.done` quando o `output` de `response.completed` chega vazio, como o backend real do ChatGPT faz (medido em 2026-10-17). `response.failed` com `subscription_sharing_usage_limit_exceeded` esgota a janela do SIWC.
 19. O fluxo `rbuddy login chatgpt` usa PKCE S256, callback em `127.0.0.1`, `state` e `nonce` novos por tentativa, e o mesmo `ext_agent_host_id` entre logins. Um refresh substitui juntos access token, expiração e refresh token. Testado contra um servidor OAuth falso local.
 20. Modelos que treinam com os dados são negados por padrão; usá-los exige concessão explícita de projeto, registrada.
 
