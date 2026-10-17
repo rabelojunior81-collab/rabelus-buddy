@@ -140,11 +140,17 @@ test('rbuddy login opencode-go: a chave entra pelo prompt sem eco, fica só do d
   assert.equal(JSON.parse(readFileSync(keysPath(home), 'utf8'))['opencode-go'], secret);
   if (process.platform !== 'win32') assert.equal(statSync(keysPath(home)).mode & 0o777, 0o600);
 
+  // Chave na variável de ambiente também aparece, com o nome da variável (a do arquivo vence).
+  const pvEnv = capture();
+  assert.equal(await run(['providers'], { ...env, OPENROUTER_API_KEY: 'x' }, pvEnv, {}), 0);
+  assert.ok(pvEnv.lines.includes(pt('providers.ready', { n: 4, route: 'openrouter/nvidia/nemotron-3.5-super-vl:free', source: pt('providers.source.env', { name: 'OPENROUTER_API_KEY' }) })));
+  assert.notEqual(pt('providers.source.keys'), 'providers.source.keys', 'origem no catálogo');
+  assert.ok(pvEnv.lines.some((l) => l.includes('OPENROUTER_API_KEY')), 'a linha diz qual variável');
   const pv = capture();
   assert.equal(await run(['providers'], env, pv, {}), 0);
   assert.deepEqual(pv.lines, [
     pt('providers.header'),
-    pt('providers.ready', { n: 1, route: 'opencode-go/kimi-k3' }),
+    pt('providers.ready', { n: 1, route: 'opencode-go/kimi-k3', source: pt('providers.source.keys') }),
     pt('providers.missing', { n: 2, route: 'ollama-cloud/gpt-oss:20b' }),
     pt('providers.missing', { n: 3, route: 'chatgpt/gpt-6.1-sol' }),
     pt('providers.missing', { n: 4, route: 'openrouter/nvidia/nemotron-3.5-super-vl:free' }),
