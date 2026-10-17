@@ -153,3 +153,28 @@ test('sem resposta (conexão recusada) continua inconclusivo: nem recusa nem lim
   await f.close();
   await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: url }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => !(e instanceof ProviderRejectedError) && !(e instanceof ProviderLimitError));
 });
+
+test('esforço de raciocínio chega a cada rota no formato dela; "padrão" não envia nada (critério 29)', async () => {
+  const fake = await fakeHttp(canned);
+  const go = createGoProvider({ apiKey: 'k', baseURL: fake.url });
+  const sent = (i: number) => fake.requests[i]!.body as Record<string, unknown>;
+  await go.call({ ...req('gpt-6-luna'), effort: 'high' }, { session: 's' });
+  assert.deepEqual(sent(0).reasoning, { effort: 'high' });
+  await go.call({ ...req('kimi-k3'), effort: 'low' }, { session: 's' });
+  assert.equal(sent(1).reasoning_effort, 'low');
+  await go.call({ ...req('claude-haiku-5-5'), effort: 'medium', maxOutputTokens: 2000 }, { session: 's' });
+  const th = sent(2).thinking as { type: string; budget_tokens: number };
+  assert.equal(th.type, 'enabled');
+  assert.ok(th.budget_tokens >= 1024 && (sent(2).max_tokens as number) > th.budget_tokens, 'max_tokens acima do orçamento de pensamento');
+  await go.call({ ...req('gemini-4-argon-contributor'), effort: 'high' }, { session: 's' });
+  const gc = (sent(3).generationConfig ?? {}) as { thinkingConfig?: { thinkingBudget?: number } };
+  assert.ok((gc.thinkingConfig?.thinkingBudget ?? 0) > 0);
+  const or = createOpenRouterProvider({ apiKey: 'k', baseURL: `${fake.url}/api/v1` });
+  await or.call({ ...req('x/y:free'), effort: 'low' }, { session: 's' });
+  assert.deepEqual(sent(4).reasoning, { effort: 'low' });
+  assert.equal(sent(4).reasoning_effort, undefined);
+  // Padrão: nenhum campo de esforço em nenhuma rota.
+  for (const m of ['gpt-6-luna', 'kimi-k3', 'claude-haiku-5-5']) await go.call(req(m), { session: 's' });
+  for (const i of [5, 6, 7]) for (const f of ['reasoning', 'reasoning_effort', 'thinking']) assert.equal(sent(i)[f], undefined, `${i}:${f}`);
+  await fake.close();
+});

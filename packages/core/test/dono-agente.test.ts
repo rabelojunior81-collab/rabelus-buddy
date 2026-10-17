@@ -122,3 +122,11 @@ test('dono ocioso se desliga sozinho (a próxima tarefa sobe outro com as creden
   await call(ep2, 'daemon.stop', {});
   await fake.close();
 });
+
+test('rota escolhida por execução: só o provedor pedido, com o modelo pedido', () => {
+  const home = tempHome();
+  const env = { OPENCODE_GO_API_KEY: 'k1', OPENROUTER_API_KEY: 'k3' };
+  const one = buildRoutes(home, loadConfig(home), env, { provider: 'openrouter', model: 'outro/modelo:free' });
+  assert.deepEqual(one.map((r) => `${r.provider.id}/${r.model}`), ['openrouter/outro/modelo:free']);
+  assert.deepEqual(buildRoutes(home, loadConfig(home), env, { provider: 'chatgpt', model: 'gpt-6.1-sol' }), [], 'sem credencial, nada');
+});
