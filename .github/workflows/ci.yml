@@ -50,6 +50,11 @@ jobs:
       - name: Registro de validações com mecanismos ligados (VALIDACOES.md)
         run: node scripts/bd.mjs validacoes
 
+      - name: Documento vivo só com claim no ledger (AGENTS §2)
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node scripts/bd.mjs claims --base "origin/${BASE_REF:-main}"
+
       - name: Testes não se afrouxam (teste reprovado se corrige no código)
         env:
           BASE_REF: ${{ github.base_ref }}

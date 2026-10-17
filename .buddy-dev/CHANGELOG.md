@@ -207,3 +207,7 @@ M0.8: console web local (chat com esforço, provedor, aprovações, conversa con
 ### #0053 · 2026-10-17T164139-0300 · claude-code-vs-code-7307c7 · fix
 
 ChatGPT sem resposta na console: o backend real manda output vazio no response.completed; o núcleo lê os itens de response.output_item.done (medido ao vivo, teste com a sequência real); console formata listas e blocos de código, 'Trocar de conta' quando conectado, rótulos acessíveis traduzidos; login do ChatGPT do Pai feito
+
+### #0054 · 2026-10-17T182728-0300 · claude-code-vs-code-822419 · governanca
+
+bd claims: documento vivo alterado na branch sem claim no ledger reprova no bd post e na CI; claim depois da edição fica declarado como atrasado. Origem: o Pai perguntou 'cadê seu bus? cadê a governança?' e uma sessão inteira tinha editado plano, SPEC e STATUS sem claim. Regra nova no AGENTS §3: 'nova sessão' do Pai fecha a anterior e abre outra com o escopo real.

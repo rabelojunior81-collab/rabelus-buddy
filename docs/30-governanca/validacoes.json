@@ -420,6 +420,21 @@
       "estado": "pendente",
       "origem": "DEPENDENCIAS.md",
       "tipo": "decisao"
+    },
+    {
+      "id": "claim-documento-vivo",
+      "descricao": "Documento vivo compartilhado (STATUS, MEMORY, plano, SPEC e TESTES, validações, AGENTS, README, CHANGELOG, ROADMAP) só se altera com bd claim registrado no ledger da branch; claim depois da edição fica declarado como atrasado",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "claims",
+        "ci": "node scripts/bd.mjs claims",
+        "teste": "scripts/test/claims.test.mjs"
+      },
+      "origem": "AGENTS §2; Pai, 2026-10-17 (\"cadê seu bus? cadê a governança?\")"
     }
   ]
 }

@@ -13,6 +13,7 @@ import { checkDeps, latestVersions } from './lib/deps.mjs';
 import { testGuard } from './lib/testguard.mjs';
 import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
 import { checkValidations } from './lib/validacoes.mjs';
+import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
@@ -44,6 +45,7 @@ const HELP = `bd — buddy-dev
   prune [--dry-run] [--arquivar a,b] remove branches mergeadas; arquiva (tag) as abandonadas
   merge <PR>                         CI verde + bd post limpo → merge commit, main atualizada, prune
   validacoes                         registro de validações: mecanismos ligados; o que aguarda o Pai
+  claims [--base origin/main]        documento vivo alterado na branch tem claim no ledger (AGENTS §2)
 `;
 
 const { values: o, positionals: pos } = parseArgs({
@@ -249,6 +251,14 @@ const commands = {
     await commands.prune();
   },
 
+  claims() {
+    const { problems, late } = checkClaims(root(), { base: o.base ?? 'origin/main' });
+    problems.forEach((p) => console.log(`  ✖ ${p}`));
+    late.forEach((p) => console.log(`  ⚠ claim atrasado: ${p}`));
+    if (problems.length) process.exitCode = 1;
+    else console.log('documentos vivos alterados com claim no ledger');
+  },
+
   validacoes() {
     const { problems, aguardaPai, total } = checkValidations(root());
     problems.forEach((p) => console.log(`  ✖ ${p}`));
@@ -328,6 +338,10 @@ const commands = {
     const weakened = testGuard(r, { base: o.base ?? 'origin/main' });
     if (weakened.length) fail(`suíte de testes enfraquecida:\n    ${weakened.join('\n    ')}`);
     else ok('suíte de testes íntegra contra a base');
+    const cl = checkClaims(r, { base: o.base ?? 'origin/main' });
+    if (cl.problems.length) fail(`documento vivo sem claim (AGENTS §2; bd claim <arquivo> antes de editar):\n    ${cl.problems.join('\n    ')}`);
+    else ok('documentos vivos com claim');
+    cl.late.forEach((p) => warn(`claim atrasado: ${p}`));
     const val = checkValidations(r);
     if (val.problems.length) fail(`registro de validações com problema (docs/30-governanca/VALIDACOES.md):\n    ${val.problems.join('\n    ')}`);
     else ok(`${val.total} validações com mecanismo ligado`);
