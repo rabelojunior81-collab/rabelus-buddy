@@ -265,3 +265,35 @@ test('compactação: um resultado sozinho acima do limite é truncado até caber
   assert.match(c.messages.at(-1)?.content ?? '', /\[truncado\]$/);
   assert.equal(c.messages.at(-1)?.toolCallId, 't');
 });
+
+test('recusa do provedor fica no log com rota, código e motivo, e a tarefa segue no próximo; sem custo da chamada recusada', async () => {
+  const go = scripted('opencode-go', [new ProviderRejectedError('opencode-go', 'http_403', 'An active OpenCode Go subscription is required to use Go models.')]);
+  const or = scripted('openrouter', [say('feito pelo OpenRouter')]);
+  const { log, agent } = setup({ routes: [{ provider: go, model: 'kimi-k3' }, { provider: or, model: 'nvidia/nemotron-3.5-super-vl:free' }] });
+  const r = await agent.run('s20', 'tarefa');
+  assert.equal(r.text, 'feito pelo OpenRouter');
+  const err = log.events('s20').find((e) => e.kind === 'provider.error');
+  assert.deepEqual(err?.payload, { route: 'opencode-go/kimi-k3', code: 'http_403', message: 'An active OpenCode Go subscription is required to use Go models.' });
+  const settled = log.events('s20').filter((e) => e.kind === 'budget.settled');
+  assert.equal(settled.length, 1, 'só a chamada que respondeu é liquidada');
+});
+
+test('modelo :free do OpenRouter não consome o teto da API paga; provedor recusado é pulado sem repetir a troca a cada passo', async () => {
+  const go = scripted('opencode-go', [new ProviderRejectedError('opencode-go', 'http_403', 'sem assinatura')]);
+  const or = scripted('openrouter', [tool('c1', 'list_dir', { path: '.' }), say('fim')]);
+  const { log, agent, workspace } = setup({ routes: [{ provider: go, model: 'kimi-k3' }, { provider: or, model: 'nvidia/nemotron-3.5-super-vl:free' }] });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  const r = await agent.run('s21', 'tarefa');
+  assert.equal(r.outcome, 'done');
+  const ev = log.events('s21');
+  assert.equal(ev.filter((e) => e.kind === 'provider.switched').length, 1, 'a troca aparece uma vez');
+  // A reserva do Go (modelo com preço) é devolvida na recusa; as do modelo gratuito e toda liquidação valem 0.
+  const orRes = ev.filter((x) => x.kind === 'budget.reserved' && (x.payload as { provider: string }).provider === 'openrouter');
+  assert.equal(orRes.length, 2);
+  for (const e of orRes) assert.equal((e.payload as { estimate: number }).estimate, 0);
+  const settled = ev.filter((x) => x.kind === 'budget.settled');
+  assert.equal(settled.length, 2);
+  for (const e of settled) assert.equal((e.payload as { actual: number }).actual, 0);
+  assert.equal(ev.filter((x) => x.kind === 'budget.released').length, 1, 'a reserva do Go volta');
+  assert.equal(go.seen.length, 1);
+});

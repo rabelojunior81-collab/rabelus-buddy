@@ -4,7 +4,8 @@ import type { AddressInfo } from 'node:net';
 
 export interface Captured { method: string; path: string; headers: http.IncomingHttpHeaders; body: Record<string, unknown> }
 // hang: a requisição fica sem resposta (o provedor "some" no meio da chamada).
-export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[]; hang?: boolean };
+// drop: a conexão cai sem resposta nenhuma (falha inconclusiva de verdade).
+export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[]; hang?: boolean; drop?: boolean };
 
 export async function fakeHttp(responder: Responder): Promise<{ url: string; requests: Captured[]; close: () => Promise<void> }> {
   const requests: Captured[] = [];
@@ -20,6 +21,7 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
       requests.push(cap);
       const out = responder(cap);
       if (out.hang) return;
+      if (out.drop) { req.socket.destroy(); return; }
       if (out.sse) {
         res.writeHead(out.status ?? 200, { 'content-type': 'text/event-stream', ...out.headers });
         for (const ev of out.sse) {

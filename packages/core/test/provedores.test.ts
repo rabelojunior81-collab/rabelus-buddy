@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import tls from 'node:tls';
 import { fakeHttp, type Captured } from './fake-http.ts';
-import { createGoProvider, createOllamaProvider, createOpenRouterProvider, goRoute, ProviderLimitError, trustSystemCAs, USER_AGENT } from '../src/providers/index.ts';
+import { createGoProvider, createOllamaProvider, createOpenRouterProvider, goRoute, ProviderLimitError, ProviderRejectedError, trustSystemCAs, USER_AGENT } from '../src/providers/index.ts';
 import type { ModelRequest } from '../src/providers/types.ts';
 
 const req = (model: string): ModelRequest => ({
@@ -123,4 +123,33 @@ test('certificados do sistema somados aos embutidos, sem tirar nenhum', () => {
   const after = new Set(tls.getCACertificates('default'));
   for (const c of before) assert.ok(after.has(c), 'nenhum certificado embutido removido');
   for (const c of tls.getCACertificates('system')) assert.ok(after.has(c), 'certificado do sistema incluído');
+});
+
+test('resposta HTTP conclusiva não é efeito desconhecido: 401/403/4xx viram recusa com motivo; 5xx, indisponível por um tempo', async () => {
+  const msg = 'Upstream request failed: An active OpenCode Go subscription is required to use Go models.';
+  for (const route of ['kimi-k3', 'gpt-6-luna', 'claude-haiku-5-5']) {
+    const f403 = await fakeHttp(() => ({ status: 403, json: { error: { message: msg, type: 'permission_error' } } }));
+    await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: f403.url }).call(req(route), { session: 's' }), (e: unknown) => {
+      assert.ok(e instanceof ProviderRejectedError, `${route}: ${String(e)}`);
+      assert.equal(e.code, 'http_403');
+      assert.match(e.message, /active OpenCode Go subscription/);
+      return true;
+    });
+    assert.equal(f403.requests.length, 1);
+    await f403.close();
+  }
+  const f401 = await fakeHttp(() => ({ status: 401, json: { error: { message: 'invalid api key' } } }));
+  await assert.rejects(createOpenRouterProvider({ apiKey: 'k', baseURL: f401.url }).call(req('x/y'), { session: 's' }), (e: unknown) => e instanceof ProviderRejectedError && e.code === 'http_401');
+  await f401.close();
+  const f500 = await fakeHttp(() => ({ status: 500, json: { error: { message: 'boom' } } }));
+  const t0 = Date.now();
+  await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: f500.url }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => e instanceof ProviderLimitError && e.until > t0 && e.until <= Date.now() + 6 * 60_000);
+  await f500.close();
+});
+
+test('sem resposta (conexão recusada) continua inconclusivo: nem recusa nem limite', async () => {
+  const f = await fakeHttp(() => ({ status: 200 }));
+  const url = f.url;
+  await f.close();
+  await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: url }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => !(e instanceof ProviderRejectedError) && !(e instanceof ProviderLimitError));
 });

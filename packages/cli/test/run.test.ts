@@ -102,7 +102,8 @@ test('rbuddy resume: execução parada por efeito desconhecido volta e termina; 
   const fake = await fakeHttp((c: Captured) => {
     if (!c.path.endsWith('/chat/completions')) return { status: 404 };
     turn++;
-    if (fail) return { status: 500, json: { error: { message: 'queda' } } };
+    // Conexão cortada sem resposta: inconclusivo (HTTP 5xx é resposta, e vale como indisponível).
+    if (fail) return { drop: true };
     return chat({ content: 'fim' }, 'stop');
   });
   const { workspace, env } = setup(fake.url);
@@ -157,4 +158,34 @@ test('rbuddy login opencode-go: a chave entra pelo prompt sem eco, fica só do d
   const bad = capture();
   assert.equal(await run(['login', 'opencode-go'], env, bad, { prompt: async () => '' }), 1);
   assert.deepEqual(bad.errs, [pt('keys.empty')]);
+});
+
+test('o dono cai no meio do acompanhamento: a CLI avisa pelo catálogo e diz como retomar, sem stack trace', async () => {
+  const fake = await fakeHttp((c: Captured) => (c.path.endsWith('/chat/completions') ? { hang: true } : { status: 404 }));
+  const { home, workspace, env } = setup(fake.url);
+  const io = capture();
+  const pending = run(['run', 'tarefa longa'], env, io, { cwd: workspace, interactive: false });
+  for (let i = 0; i < 100 && !io.lines.some((l) => l.startsWith('Execução run-')); i++) await new Promise((r) => setTimeout(r, 50));
+  const runId = /run-[0-9a-f]{8}/.exec(io.lines.join('\n'))?.[0];
+  assert.ok(runId);
+  await call(endpointFor(home), 'daemon.stop', {});
+  assert.equal(await pending, 1);
+  assert.deepEqual(io.errs, [pt('run.ownerLost', { run: runId })]);
+  await fake.close();
+});
+
+test('log mostra o motivo da recusa do provedor', async () => {
+  let turn = 0;
+  const fake = await fakeHttp((c: Captured) => {
+    if (!c.path.endsWith('/chat/completions')) return { status: 404 };
+    turn++;
+    return { status: 403, json: { error: { message: 'An active OpenCode Go subscription is required to use Go models.' } } };
+  });
+  const { env, workspace } = setup(fake.url);
+  const io = capture();
+  assert.equal(await run(['run', 'tarefa'], env, io, { cwd: workspace, interactive: false }), 1);
+  assert.ok(io.lines.includes(pt('log.providerError', { route: 'opencode-go/kimi-k3', code: 'http_403', message: 'An active OpenCode Go subscription is required to use Go models.' })), io.lines.join('\n'));
+  assert.deepEqual(io.errs, [pt('run.stopped', { reason: 'provider.unavailable' })]);
+  assert.equal(turn, 1);
+  await fake.close();
 });
