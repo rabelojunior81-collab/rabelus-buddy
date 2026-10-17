@@ -178,3 +178,15 @@ test('esforço de raciocínio chega a cada rota no formato dela; "padrão" não 
   for (const i of [5, 6, 7]) for (const f of ['reasoning', 'reasoning_effort', 'thinking']) assert.equal(sent(i)[f], undefined, `${i}:${f}`);
   await fake.close();
 });
+
+test('402 (conta sem saldo) esgota o provedor por uma hora, em vez de ser recusado a cada mensagem', async () => {
+  const f = await fakeHttp(() => ({ status: 402, json: { error: { message: 'Upstream request failed: Insufficient account funds' } } }));
+  const t0 = Date.now();
+  await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: f.url }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => {
+    assert.ok(e instanceof ProviderLimitError, String(e));
+    assert.ok(e.until >= t0 + 59 * 60_000 && e.until <= Date.now() + 61 * 60_000);
+    assert.match(e.message, /Insufficient account funds/);
+    return true;
+  });
+  await f.close();
+});

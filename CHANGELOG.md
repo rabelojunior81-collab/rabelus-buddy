@@ -10,6 +10,9 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Console web local** (M0.8: núcleo na M0.8a, console na M0.8b, ensaio na M0.8c; ADR 0017): aberta por duplo clique em `abrir-rabelus-buddy.cmd` (ou `rbuddy ui`), servida pelo núcleo só em 127.0.0.1 com token. É um chat: caixa de mensagem embaixo da conversa, esforço de raciocínio e provedor por mensagem, conversa contínua, aprovar e negar, provedores com a origem da chave, chaves guardadas (nunca devolvidas à página), entrar e sair do ChatGPT, consumo por janela, execuções com Retomar, pt-BR e en, tela de celular. Ensaiada num navegador real na máquina do Pai.
+- Retomada mais robusta (achados do ensaio): aprovação pendente reaproveitada depois de uma queda; o detector de laço conta só pedidos do modelo; esforço e rota da execução voltam na retomada; conta sem saldo (402) tira o provedor da frente por 1 h.
+
 - Núcleo para a console (M0.8a): esforço de raciocínio por execução (baixo, médio, alto) no formato de cada provedor, com uma repetição sem ele se o provedor recusar; rota escolhida por execução; conversa contínua com o histórico da sessão; chaves de API, estado dos provedores e login do ChatGPT pelo próprio núcleo.
 
 ### Alterado

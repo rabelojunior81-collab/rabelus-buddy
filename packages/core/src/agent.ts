@@ -105,8 +105,9 @@ export class Agent {
   }
 
   // A conversa é evento: cada mensagem entra no log, e a retomada a reconstrói.
-  private push(session: string, run: string, messages: ChatMessage[], m: ChatMessage): void {
-    this.o.log.append(session, 'agent.message', { run, message: m });
+  // `prior`: mensagem copiada de uma execução anterior (conversa contínua); a console não a repete.
+  private push(session: string, run: string, messages: ChatMessage[], m: ChatMessage, prior = false): void {
+    this.o.log.append(session, 'agent.message', { run, message: m, ...(prior ? { prior: true } : {}) });
     messages.push(m);
   }
 
@@ -125,7 +126,7 @@ export class Agent {
   begin(session: string, task: string, { system = SYSTEM_PROMPT, prior }: { system?: string; prior?: ChatMessage[] } = {}): { run: string; done: Promise<AgentResult> } {
     const run = this.o.domain.startRun(session, task).id;
     const messages: ChatMessage[] = [];
-    if (prior?.length) for (const m of prior) this.push(session, run, messages, m);
+    if (prior?.length) for (const m of prior) this.push(session, run, messages, m, true);
     else this.push(session, run, messages, { role: 'system', content: system });
     this.push(session, run, messages, { role: 'user', content: task });
     return { run, done: this.loop(session, run, messages, 1) };
@@ -154,7 +155,8 @@ export class Agent {
     }
     const last = messages.at(-1);
     if (last?.role === 'assistant' && last.toolCalls?.length) {
-      for (const tc of last.toolCalls) this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+      // A mesma chamada do modelo de antes da queda: não conta de novo para o detector de laço.
+      for (const tc of last.toolCalls) this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc, { observe: false }) });
     }
     return this.loop(session, run, messages, messages.filter((m) => m.role === 'assistant').length + 1);
   }
@@ -229,6 +231,7 @@ export class Agent {
         return { response, route: name, ...(effort ? { effort } : {}) };
       } catch (e) {
         if (e instanceof ProviderLimitError) {
+          log.append(session, 'provider.error', { route: name, code: 'limit', message: scrub(e.message) });
           domain.failEffect(effect, 'providerLimit');
           budget.release(reservation, 'providerLimit');
           budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' ? r.model : null, e.until, 'providerLimit');
@@ -266,9 +269,9 @@ export class Agent {
   }
 
   // Executa uma chamada de ferramenta e devolve o resultado (JSON) para o modelo.
-  async executeTool(session: string, run: string, tc: ToolCall): Promise<string> {
+  async executeTool(session: string, run: string, tc: ToolCall, { observe = true }: { observe?: boolean } = {}): Promise<string> {
     const a = parse(tc.arguments);
-    const ctx = { interactive: this.o.interactive };
+    const ctx = { interactive: this.o.interactive, observe };
     const str = (v: unknown) => (typeof v === 'string' ? v : '');
     const out = (o: ToolOut) => JSON.stringify(o);
     try {
@@ -284,15 +287,15 @@ export class Agent {
         case 'write_file': {
           const path = str(a.path);
           const target = this.o.policy.relative(path) ?? path;
-          return out(await this.effect(session, run, tc, 'file.write', target, 'write_file', () => {
-            const r = this.o.fs.writeFile(session, path, str(a.content), ctx);
+          return out(await this.effect(session, run, tc, 'file.write', target, 'write_file', observe, (obs) => {
+            const r = this.o.fs.writeFile(session, path, str(a.content), { ...ctx, observe: obs });
             return r.ok ? { ok: true, hash: r.hash } : { ok: false, reason: r.reason };
           }));
         }
         case 'run_command': {
           const command = str(a.command);
-          return out(await this.effect(session, run, tc, 'command', command, 'run_command', () => {
-            const r = this.o.cmd.run(session, command, ctx);
+          return out(await this.effect(session, run, tc, 'command', command, 'run_command', observe, (obs) => {
+            const r = this.o.cmd.run(session, command, { ...ctx, observe: obs });
             return r.ok ? { ok: true, ...r.result } : { ok: false, reason: r.reason };
           }));
         }
@@ -306,7 +309,7 @@ export class Agent {
   }
 
   // Efeito com identidade (run + id da chamada): feito uma vez, repete o recibo; desconhecido exige reconciliação.
-  private async effect(session: string, run: string, tc: ToolCall, kind: string, target: string, tool: Tool, exec: () => ToolOut): Promise<ToolOut> {
+  private async effect(session: string, run: string, tc: ToolCall, kind: string, target: string, tool: Tool, observe: boolean, exec: (observe: boolean) => ToolOut): Promise<ToolOut> {
     const { domain, policy } = this.o;
     const key = `${run}:${tc.id}`;
     const prev = domain.effectByKey(key);
@@ -319,12 +322,12 @@ export class Agent {
       if (e instanceof DomainError && e.code === ERR.needsReconciliation) return { ok: false, reason: 'needsReconciliation', effect: e.data.effect };
       throw e;
     }
-    let r = exec();
+    let r = exec(observe);
     if (!r.ok && r.reason === 'needsApproval') {
       const decision = await this.approve(session, `${tool} ${target}`);
       if (decision === 'approve') {
         policy.grant('once', { tool, pattern: target }, { session });
-        r = exec();
+        r = exec(false);
       } else r = { ok: false, reason: 'deniedByHuman' };
     }
     if (r.ok) domain.completeEffect(effect, r);
@@ -334,7 +337,8 @@ export class Agent {
 
   private async approve(session: string, action: string): Promise<'approve' | 'deny'> {
     const { domain } = this.o;
-    const ap = domain.requestApproval(session, action);
+    // Pendente da mesma sessão e ação (sobreviveu a uma queda): é a mesma pergunta, não se repete.
+    const ap = domain.pendingApprovals().find((x) => x.session === session && x.action === action) ?? domain.requestApproval(session, action);
     if (!this.o.awaitApproval) return 'deny';
     const decision = await this.o.awaitApproval(ap);
     if (domain.getApproval(ap.id).state === 'pending') domain.resolveApproval(ap.id, decision);

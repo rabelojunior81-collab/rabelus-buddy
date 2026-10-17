@@ -1,0 +1,6 @@
+{
+  "ui": {
+    "opened": "Console aberta no navegador: {{url}}",
+    "noConsole": "O núcleo está no ar sem a console (RBUDDY_CONSOLE=0)."
+  }
+}

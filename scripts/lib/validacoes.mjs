@@ -52,7 +52,7 @@ export function checkValidations(root) {
     if (v.tipo === 'decisao') { prontaParaOPai.add(v.id); continue; }
     const before = problems.length;
     if (!v.como) problems.push(`${who}: ação do Pai sem "como"`);
-    else if (/\b(terminal|cli|powershell|prompt de comando|rbuddy\s)/i.test(`${v.como} ${v.descricao}`)) problems.push(`${who}: ação do Pai por terminal ou CLI (o Pai usa UX/UI)`);
+    else if (/\b(terminal|cli|powershell|prompt de comando)\b|\brbuddy\s/i.test(`${v.como} ${v.descricao}`)) problems.push(`${who}: ação do Pai por terminal ou CLI (o Pai usa UX/UI)`);
     if (!v.ensaio) problems.push(`${who}: ação do Pai sem ensaio registrado (docs/registros/…)`);
     else if (!existsSync(join(root, v.ensaio))) problems.push(`${who}: o ensaio ${v.ensaio} não existe`);
     if (problems.length === before) prontaParaOPai.add(v.id);

@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0004 · 2026-10-14T103608-0300 · claude-code-c33594 · doc
-
-Superfície open source (Apache-2.0, pt-BR+en, Contributor Covenant 3.0, SECURITY), 7 ADRs, banco de conhecimento com 4 fichas. PR #2. (10:32 -0300)
-
 ### #0005 · 2026-10-14T103609-0300 · claude-code-c33594 · correcao
 
 Escrevi as primeiras entradas deste CHANGELOG à mão, contrariando o próprio cabeçalho; refeitas pelo bd changelog add antes do commit.
@@ -207,3 +203,7 @@ Opção A aprovada pelo Pai: console web local servida pelo núcleo (ADR 0017); 
 ### #0051 · 2026-10-17T091458-0300 · claude-code-vs-code-7307c7 · feat
 
 M0.8a: esforço de raciocínio por rota (com repetição sem ele se recusado), rota por execução, conversa contínua, chaves/provedores/login do ChatGPT pelo núcleo; campos omitidos da prévia do SIWC atualizados.
+
+### #0052 · 2026-10-17T094540-0300 · claude-code-vs-code-7307c7 · feat
+
+M0.8: console web local (chat com esforço, provedor, aprovações, conversa contínua, chaves, login do ChatGPT, consumo, Retomar; pt-BR/en; celular), aberta por abrir-rabelus-buddy.cmd; ensaiada na máquina do Pai, que acompanhou e corrigiu o layout; nove defeitos achados e corrigidos com teste.

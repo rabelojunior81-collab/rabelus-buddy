@@ -9,6 +9,7 @@ import type { Policy } from '../policy.ts';
 
 const hash = (content: string): string => createHash('sha256').update(content).digest('hex');
 
+export interface ToolCtx { interactive: boolean; observe?: boolean }
 export type ToolResult<T> = ({ ok: true } & T) | { ok: false; reason: string };
 
 export class FsTools {
@@ -20,13 +21,14 @@ export class FsTools {
     this.workspace = resolve(workspace);
   }
 
-  private gate(session: string, tool: 'read_file' | 'write_file' | 'list_dir', target: string, ctx: { interactive: boolean }): string | null {
-    this.policy.observeCall(session, { tool, target });
+  private gate(session: string, tool: 'read_file' | 'write_file' | 'list_dir', target: string, ctx: ToolCtx): string | null {
+    // observe: false = repetição interna (depois de aprovar, ou na retomada), não pedido novo do modelo.
+    if (ctx.observe !== false) this.policy.observeCall(session, { tool, target });
     const d = this.policy.decide({ session, tool, target }, ctx);
     return d.effect === 'allow' ? null : d.effect === 'ask' ? 'needsApproval' : d.reason;
   }
 
-  readFile(session: string, target: string, ctx: { interactive: boolean }): { ok: boolean; content?: string; reason?: string } {
+  readFile(session: string, target: string, ctx: ToolCtx): { ok: boolean; content?: string; reason?: string } {
     const denied = this.gate(session, 'read_file', target, ctx);
     if (denied) return { ok: false, reason: denied };
     const abs = resolve(this.workspace, target);
@@ -35,13 +37,13 @@ export class FsTools {
     return { ok: true, content };
   }
 
-  listDir(session: string, target: string, ctx: { interactive: boolean }): ToolResult<{ entries: string[] }> {
+  listDir(session: string, target: string, ctx: ToolCtx): ToolResult<{ entries: string[] }> {
     const denied = this.gate(session, 'list_dir', target, ctx);
     if (denied) return { ok: false, reason: denied };
     return { ok: true, entries: readdirSync(resolve(this.workspace, target)) };
   }
 
-  writeFile(session: string, target: string, content: string, ctx: { interactive: boolean }): ToolResult<{ hash: string }> {
+  writeFile(session: string, target: string, content: string, ctx: ToolCtx): ToolResult<{ hash: string }> {
     const denied = this.gate(session, 'write_file', target, ctx);
     if (denied) return { ok: false, reason: denied };
     const abs = resolve(this.workspace, target);

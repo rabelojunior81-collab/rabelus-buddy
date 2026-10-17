@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createI18n, resolveLang, type I18n } from '@rabelus-buddy/client/i18n';
 import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
-import { runCmd, resumeCmd, statusCmd, logCmd, providersCmd, keyLogin, keyLogout, isKeyProvider, type Prompt } from './agente.ts';
+import { runCmd, resumeCmd, statusCmd, logCmd, providersCmd, uiCmd, keyLogin, keyLogout, isKeyProvider, type Prompt } from './agente.ts';
 import { startOwner, AlreadyRunningError, stateHome, endpointFor, startLogin, logout, loadCredentials, SiwcAuthError, SIWC_ENDPOINTS, type SiwcEndpoints } from '@rabelus-buddy/core';
 
 const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as { version: string };
@@ -213,6 +213,7 @@ export async function run(argv: string[], env: NodeJS.ProcessEnv, io: Io, deps: 
   if (command === 'status') return statusCmd(env, io, i18n);
   if (command === 'log') return logCmd(positionals[1], env, io, i18n);
   if (command === 'providers') return providersCmd(env, io, i18n);
+  if (command === 'ui') return uiCmd(env, io, i18n, deps.openUrl ?? openBrowser);
   if (command === 'approvals') return approvals(env, io, i18n);
   if (command === 'budget') return budget(env, io, i18n);
   if (command === 'approve' || command === 'deny') return resolve(command, positionals[1], env, io, i18n);

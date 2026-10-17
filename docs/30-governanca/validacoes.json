@@ -385,15 +385,14 @@
       "descricao": "Entrar com a conta do ChatGPT Plus na tela de login da OpenAI, aberta pelo buddy no navegador, e conceder o uso do plano (chatgpt.tokens.use.direct)",
       "quem": "pai",
       "onde": [
-        "M0.6b",
-        "M0.8"
+        "M0.9"
       ],
       "mecanismo": {},
       "estado": "pendente",
       "origem": "SPEC 0001, critério 19",
       "tipo": "acao",
-      "como": "o buddy abre a tela de login da OpenAI no navegador do Pai; o Pai entra com a conta do ChatGPT Plus e aprova o acesso",
-      "ensaio": "docs/registros/2026-10-17T083606-0300-ensaio-do-login-do-chatgpt-na-openai-real/README.md"
+      "como": "na console, clicar em \"Entrar com o ChatGPT\"; na aba da OpenAI que abre, entrar com a conta do ChatGPT Plus e aprovar o acesso",
+      "ensaio": "docs/registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md"
     },
     {
       "id": "demonstracao-m0",
@@ -403,10 +402,11 @@
         "M0.9"
       ],
       "mecanismo": {},
-      "estado": "bloqueada",
+      "estado": "pendente",
       "origem": "SPEC 0001",
       "tipo": "acao",
-      "motivo": "Espera a console (M0.8) e o ensaio dela no ambiente do Pai (M0.8c); a opção A foi aprovada em 2026-10-17."
+      "como": "duplo clique em \"abrir-rabelus-buddy.cmd\" (ou o buddy abre a console); na console: entrar com o ChatGPT, escrever tarefas, aprovar e negar, mudar o esforço, continuar a conversa; o buddy derruba o núcleo no meio e o Pai clica em Retomar",
+      "ensaio": "docs/registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md"
     },
     {
       "id": "alertas-dependabot",

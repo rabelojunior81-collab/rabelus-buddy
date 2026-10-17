@@ -19,6 +19,7 @@
     "effectUnknown": "effect {{effect}} unknown",
     "reconciled": "effect {{effect}} reconciled: {{outcome}}",
     "compacted": "context compacted: {{before}} → {{after}} tokens",
-    "providerError": "{{route}} refused ({{code}}): {{message}}"
+    "providerError": "{{route}} refused ({{code}}): {{message}}",
+    "effortDropped": "{{route}} refused effort {{effort}} ({{code}}); retrying without it"
   }
 }

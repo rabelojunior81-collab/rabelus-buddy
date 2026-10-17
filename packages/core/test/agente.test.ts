@@ -320,4 +320,25 @@ test('conversa contínua: a nova mensagem leva o histórico da execução anteri
   assert.equal(r2.text, 'segunda resposta');
   assert.deepEqual(p.seen[1]!.messages.map((m) => `${m.role}:${m.content}`).slice(1), ['user:primeira pergunta', 'assistant:primeira resposta', 'user:segunda pergunta']);
   assert.notEqual(r2.run, r1.run);
+  // O histórico copiado para a nova execução fica marcado (a console não o mostra de novo).
+  const copied = agent['o'].log.events('s31').filter((e) => e.kind === 'agent.message' && (e.payload as { run: string }).run === r2.run);
+  assert.deepEqual(copied.map((e) => Boolean((e.payload as { prior?: boolean }).prior)), [true, true, true, false, false], "histórico (sistema, pergunta, resposta) marcado; nova pergunta e nova resposta não");
+});
+
+test('limite do provedor também deixa o motivo no log', async () => {
+  const go = scripted('opencode-go', [new ProviderLimitError('opencode-go', Date.now() + 3_600_000, 'Upstream request failed: Insufficient account funds')]);
+  const or = scripted('openrouter', [say('ok')]);
+  const { log, agent } = setup({ routes: [{ provider: go, model: 'kimi-k3' }, { provider: or, model: 'x/y:free' }] });
+  await agent.run('s40', 'tarefa');
+  const err = log.events('s40').find((e) => e.kind === 'provider.error');
+  assert.deepEqual(err?.payload, { route: 'opencode-go/kimi-k3', code: 'limit', message: 'Upstream request failed: Insufficient account funds' });
+});
+
+test('a repetição interna depois da aprovação não conta para o detector de laço (achado no ensaio da console)', async () => {
+  const p = scripted('opencode-go', [tool('c1', 'write_file', { path: 'x.txt', content: '1' }), say('fim')]);
+  const { log, agent, workspace } = setup({ routes: [{ provider: p, model: 'kimi-k3' }], interactive: true, awaitApproval: async () => 'approve' });
+  await import('node:fs').then((f) => f.mkdirSync(workspace, { recursive: true }));
+  await agent.run('s41', 'escrever');
+  const calls = log.events('s41').filter((e) => e.kind === 'tool.called' && (e.payload as { sig: string }).sig === 'write_file x.txt');
+  assert.equal(calls.length, 1, 'uma chamada do modelo, uma contagem');
 });

@@ -60,3 +60,12 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0003-#0003
 
 1. **A fonte de verdade do relógio foi trocada quando oscilou 31 s.** Medir contra uma fonte melhor, e não confiar no primeiro valor, é o mesmo princípio do ensaio contra o serviço real.
+
+## lote #0004-#0004
+
+1. **A superfície open source nasceu bilíngue no segundo PR.** Coerência entre superfícies desde o começo custa menos que remendar depois; hoje o `bd surfaces` cobra isso sozinho.
+
+## 2026-10-17 · o ensaio da console com o Pai olhando
+
+1. **O Pai viu o que o meu script não via.** Eu disparava ações por `evaluate`; ele olhou a janela e perguntou "cadê o input text?". A caixa de mensagem estava no topo, longe da conversa. → Ensaio de interface se faz como pessoa: clicar, digitar, Enter, olhar a tela. Script só para esperar e ler.
+2. **O uso real achou oito defeitos que 216 testes não achavam** (aprovação duplicada na retomada, detector de laço contando repetição interna, esforço perdido na retomada, histórico duplicado, 402 a cada mensagem…). Cada um virou teste antes da correção.

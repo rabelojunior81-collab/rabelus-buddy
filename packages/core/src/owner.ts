@@ -17,6 +17,7 @@ import { Agent, type AgentResult } from './agent.ts';
 import { buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin } from './providers/siwc.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
+import { startConsole, type ConsoleServer } from './console.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -67,7 +68,9 @@ export async function startOwner(home: string): Promise<Owner> {
   const closed = new Promise<void>((r) => { resolveClosed = r; });
   const server = net.createServer();
 
+  let consoleSrv: ConsoleServer | null = null;
   const close = (): Promise<void> => new Promise((resolve) => {
+    void consoleSrv?.close();
     server.close(() => { log.db.close(); resolveClosed(); resolve(); });
     for (const s of sockets) s.destroy();
   });
@@ -130,6 +133,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const agent = agentFor(p);
       const prior = p.continueFrom ? agent.transcript(session, String(p.continueFrom)) : undefined;
       const { run, done } = agent.begin(session, String(p.task), prior?.length ? { prior } : {});
+      // Opções da execução ficam no log: a retomada usa o mesmo esforço e a mesma rota.
+      log.append(session, 'run.options', { run, effort: effort(p.effort) ?? null, route: route(p.route) ?? null });
       watch(session, run, done);
       return { run };
     },
@@ -137,7 +142,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const run = String(p.run);
       const r = domain.getRun(run);
       if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(-32004, `execução ${run} está ${r.state}: só se retoma interrompida ou parada`, { id: run, state: r.state });
-      watch(r.session, run, agentFor(p).resume(r.session, run));
+      const opts = log.events(r.session).filter((e) => e.kind === 'run.options' && (e.payload as { run?: string }).run === run).at(-1)?.payload as { effort?: string | null; route?: unknown } | undefined;
+      watch(r.session, run, agentFor({ ...p, effort: p.effort ?? opts?.effort ?? undefined, route: p.route ?? opts?.route ?? undefined }).resume(r.session, run));
       return { run };
     },
     'run.list': () => domain.listRuns(),
@@ -159,7 +165,13 @@ export async function startOwner(home: string): Promise<Owner> {
     },
     'auth.chatgpt.logout': async () => { login?.cancel(); login = null; return logout(home); },
     'policy.grant': (p) => ({ grant: new Policy(log, { workspace: home }).grant(String(p.scope) as Scope, { tool: String(p.tool) as Tool, pattern: String(p.pattern) }, { session: String(p.session) }) }),
-    'daemon.status': () => ({ pid: process.pid, endpoint, startedAt, sessions: log.sessions().length, events: log.totalEvents(), recovered }),
+    'daemon.status': () => ({ pid: process.pid, endpoint, startedAt, sessions: log.sessions().length, events: log.totalEvents(), recovered, ...(consoleSrv ? { console: { url: consoleSrv.url } } : {}) }),
+    // Padrões da console: pasta de trabalho própria (nunca o repositório por acaso) e as rotas configuradas.
+    'console.defaults': () => {
+      const workspace = join(home, 'area-de-trabalho');
+      mkdirSync(workspace, { recursive: true });
+      return { workspace, routes: loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model })) };
+    },
     'daemon.stop': () => { setImmediate(() => { void close(); }); return { stopping: true }; },
     'event.append': (p) => log.append(String(p.session), String(p.kind), p.payload),
     'session.events': (p) => log.events(String(p.session)),
@@ -225,6 +237,9 @@ export async function startOwner(home: string): Promise<Owner> {
     server.once('error', (e: NodeJS.ErrnoException) => reject(e.code === 'EADDRINUSE' ? new AlreadyRunningError(endpoint) : e));
     server.listen({ path: endpoint, readableAll: false, writableAll: false }, () => resolve());
   });
+
+  // Console web local (ADR 0017): mesma API, lista fechada de métodos; RBUDDY_CONSOLE=0 desliga.
+  if (process.env.RBUDDY_CONSOLE !== '0') consoleSrv = await startConsole({ home, methods, touch: () => { lastActivity = Date.now(); } });
 
   // Ocioso se desliga (padrão 15 min; RBUDDY_IDLE_MS, 0 desliga): o dono sob demanda guardava para
   // sempre as variáveis de ambiente do primeiro terminal, e uma chave trocada não valia (2026-10-17).
