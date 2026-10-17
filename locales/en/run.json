@@ -12,6 +12,7 @@
     "stopped": "Run stopped: {{reason}}.",
     "cannotResume": "Run {{run}} is {{state}}: only interrupted or stopped runs can be resumed.",
     "notFound": "Run {{run}} not found.",
-    "yes": "y"
+    "yes": "y",
+    "ownerLost": "The core owner went down during run {{run}}. To continue: rbuddy resume {{run}}"
   }
 }

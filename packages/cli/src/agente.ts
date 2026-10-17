@@ -81,6 +81,7 @@ function formatter({ t }: I18n): (e: Ev) => string | null {
       }
       case 'budget.reserved': routes.set(String(p.reservation), `${String(p.provider)}/${String(p.model)}`); return null;
       case 'budget.settled': return t('log.settled', { amount: Number(p.actual ?? 0).toFixed(4), route: routes.get(String(p.reservation)) ?? '?' });
+      case 'provider.error': return t('log.providerError', { route: p.route, code: p.code, message: p.message });
       case 'provider.switched': return t('log.switched', { from: p.from, to: p.to, reason: p.reason });
       case 'approval.requested': return t('log.approvalRequested', { action: p.action });
       case 'approval.resolved': return t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') });
@@ -103,7 +104,13 @@ async function follow(endpoint: string, session: string, run: string, after: num
   let last = after;
   const asked = new Set<string>();
   for (;;) {
-    const evs = await events(endpoint, session);
+    let evs: Ev[];
+    // Dono fora do ar no meio: mensagem do catálogo e o caminho de volta, nunca stack trace.
+    try { evs = await events(endpoint, session); } catch (e) {
+      if (e instanceof RpcError) throw e;
+      io.err(t('run.ownerLost', { run }));
+      return 1;
+    }
     for (const e of evs) {
       if (e.seq <= after) { if (e.kind === 'budget.reserved') fmt(e); continue; }
       if (e.seq <= last) continue;

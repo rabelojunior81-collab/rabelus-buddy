@@ -18,6 +18,7 @@
     "commandRan": "command ran: {{command}} (code {{code}})",
     "effectUnknown": "effect {{effect}} unknown",
     "reconciled": "effect {{effect}} reconciled: {{outcome}}",
-    "compacted": "context compacted: {{before}} → {{after}} tokens"
+    "compacted": "context compacted: {{before}} → {{after}} tokens",
+    "providerError": "{{route}} refused ({{code}}): {{message}}"
   }
 }
