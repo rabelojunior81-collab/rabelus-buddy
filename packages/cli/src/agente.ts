@@ -82,6 +82,7 @@ function formatter({ t }: I18n): (e: Ev) => string | null {
       case 'budget.reserved': routes.set(String(p.reservation), `${String(p.provider)}/${String(p.model)}`); return null;
       case 'budget.settled': return t('log.settled', { amount: Number(p.actual ?? 0).toFixed(4), route: routes.get(String(p.reservation)) ?? '?' });
       case 'provider.error': return t('log.providerError', { route: p.route, code: p.code, message: p.message });
+      case 'effort.dropped': return t('log.effortDropped', { route: p.route, effort: p.effort, code: p.code });
       case 'provider.switched': return t('log.switched', { from: p.from, to: p.to, reason: p.reason });
       case 'approval.requested': return t('log.approvalRequested', { action: p.action });
       case 'approval.resolved': return t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') });
@@ -222,5 +223,17 @@ export async function keyLogin(provider: ProviderId, env: NodeJS.ProcessEnv, io:
 
 export function keyLogout(provider: ProviderId, env: NodeJS.ProcessEnv, io: Io, { t }: I18n): number {
   io.out(t(removeKey(stateHome(env), provider) ? 'keys.removed' : 'keys.none', { provider }));
+  return 0;
+}
+
+// Console web local (ADR 0017): sobe o núcleo se preciso e abre a console no navegador.
+export async function uiCmd(env: NodeJS.ProcessEnv, io: Io, i18n: I18n, open: (url: string) => void): Promise<number> {
+  const { t } = i18n;
+  const endpoint = await ensureOwner(env, io, i18n);
+  if (!endpoint) return 1;
+  const st = (await call(endpoint, 'daemon.status', {})) as { console?: { url: string } };
+  if (!st.console) { io.err(t('ui.noConsole')); return 1; }
+  open(st.console.url);
+  io.out(t('ui.opened', { url: st.console.url }));
   return 0;
 }

@@ -19,6 +19,7 @@
     "effectUnknown": "efeito {{effect}} desconhecido",
     "reconciled": "efeito {{effect}} reconciliado: {{outcome}}",
     "compacted": "contexto compactado: {{before}} → {{after}} tokens",
-    "providerError": "{{route}} recusou ({{code}}): {{message}}"
+    "providerError": "{{route}} recusou ({{code}}): {{message}}",
+    "effortDropped": "{{route}} recusou o esforço {{effort}} ({{code}}); repetindo sem ele"
   }
 }

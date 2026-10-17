@@ -1,0 +1,6 @@
+{
+  "ui": {
+    "opened": "Console opened in the browser: {{url}}",
+    "noConsole": "The core is running without the console (RBUDDY_CONSOLE=0)."
+  }
+}

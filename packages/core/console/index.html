@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Rabelus Buddy</title>
+<style>
+  :root {
+    --bg: #0d1113; --panel: #151b1e; --panel2: #1b2327; --line: #263238; --text: #e6eef0; --muted: #8fa3a8;
+    --accent: #3fb8a8; --accent-ink: #062a25; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 2; }
+  header h1 { font-size: 17px; margin: 0; letter-spacing: .3px; }
+  header h1 span { color: var(--accent); }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header .spacer { flex: 1; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); display: inline-block; margin-right: 6px; }
+  .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; padding: 16px 20px; max-width: 1400px; margin: 0 auto; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 12px; } header { padding: 10px 12px; flex-wrap: wrap; } }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+  textarea, input, select, button { font: inherit; color: inherit; }
+  textarea, input[type=text], input[type=password], select { width: 100%; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+  textarea { min-height: 84px; resize: vertical; }
+  textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .check { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 14px; color: var(--text); }
+  .check input { width: auto; }
+  button { cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: var(--panel2); padding: 8px 14px; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  button.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
+  button:disabled { opacity: .5; cursor: default; }
+  .actions { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .note { color: var(--muted); font-size: 13px; }
+  .msg { font-size: 13px; margin-top: 8px; min-height: 1em; }
+  .msg.bad { color: var(--bad); }
+  #feed { display: flex; flex-direction: column; gap: 8px; max-height: 62vh; overflow: auto; padding-right: 4px; }
+  .bubble { border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; }
+  .bubble.you { background: var(--panel2); border: 1px solid var(--line); align-self: flex-end; max-width: 85%; }
+  .bubble.buddy { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); max-width: 92%; }
+  .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .6px; }
+  .ev { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
+  .ev.err { color: var(--bad); border-left-color: var(--bad); }
+  .ev.tool { color: var(--text); }
+  details.res { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
+  details.res pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; max-height: 200px; overflow: auto; }
+  ul.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.list li { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 14px; }
+  ul.list li .t { overflow: hidden; text-overflow: ellipsis; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge.ok { color: var(--ok); border-color: var(--ok); } .badge.warn { color: var(--warn); border-color: var(--warn); } .badge.bad { color: var(--bad); border-color: var(--bad); }
+  .approval { border: 1px solid var(--warn); border-radius: 8px; padding: 10px; }
+  .approval .a { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
+  .bar { height: 6px; background: var(--panel2); border-radius: 99px; overflow: hidden; margin-top: 3px; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .win { font-size: 13px; }
+  .win .n { display: flex; justify-content: space-between; gap: 8px; }
+  .runs li { cursor: pointer; }
+  .runs li.sel .t { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Rabelus <span>Buddy</span></h1>
+  <span class="sub" data-i18n="console.subtitle">Console local</span>
+  <span class="spacer"></span>
+  <span class="note"><span id="conn" class="dot"></span><span id="connText"></span></span>
+  <label for="lang" class="note" style="margin:0" data-i18n="console.lang">Idioma</label>
+  <select id="lang" style="width:auto"><option value="pt-BR">pt-BR</option><option value="en">en</option></select>
+</header>
+<main>
+  <div>
+    <section aria-labelledby="hTask">
+      <h2 id="hTask" data-i18n="console.task.title">Nova tarefa</h2>
+      <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
+      <div class="row">
+        <div><label for="effort" data-i18n="console.task.effort">Esforço</label>
+          <select id="effort">
+            <option value="default" data-i18n="console.effort.default"></option>
+            <option value="low" data-i18n="console.effort.low"></option>
+            <option value="medium" data-i18n="console.effort.medium"></option>
+            <option value="high" data-i18n="console.effort.high"></option>
+          </select></div>
+        <div><label for="route" data-i18n="console.task.route">Provedor</label><select id="route"></select></div>
+      </div>
+      <div style="margin-top:10px"><label for="workspace" data-i18n="console.task.workspace">Pasta</label><input id="workspace" type="text" spellcheck="false"></div>
+      <label class="check"><input id="continue" type="checkbox"><span data-i18n="console.task.continue">Continuar</span></label>
+      <div class="actions"><button id="run" class="primary" data-i18n="console.task.run">Executar</button><span id="runMsg" class="msg"></span></div>
+    </section>
+    <section aria-labelledby="hFeed">
+      <h2 id="hFeed"><span data-i18n="console.feed.title">Conversa</span> <span id="sessionLabel" class="note" style="text-transform:none;letter-spacing:0"></span></h2>
+      <div id="feed" aria-live="polite"></div>
+    </section>
+  </div>
+  <aside>
+    <section aria-labelledby="hAp"><h2 id="hAp" data-i18n="console.approvals.title">Aprovações</h2><div id="approvals"></div></section>
+    <section aria-labelledby="hProv">
+      <h2 id="hProv" data-i18n="console.providers.title">Provedores</h2>
+      <ul id="providers" class="list"></ul>
+      <div style="margin-top:14px">
+        <label data-i18n="console.chatgpt.title">ChatGPT</label>
+        <div id="chatgptState" class="note"></div>
+        <div class="actions"><button id="login" class="primary" data-i18n="console.chatgpt.login">Entrar</button><button id="logout" class="danger" data-i18n="console.chatgpt.logout">Sair</button></div>
+        <div id="loginMsg" class="msg"></div>
+      </div>
+      <div style="margin-top:14px">
+        <label data-i18n="console.keys.title">Chaves</label>
+        <div class="row" style="margin-top:0">
+          <select id="keyProvider" aria-label="provider"><option value="opencode-go">opencode-go</option><option value="ollama-cloud">ollama-cloud</option><option value="openrouter">openrouter</option></select>
+          <input id="keyValue" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.keys.placeholder">
+        </div>
+        <div class="actions"><button id="keySave" data-i18n="console.keys.save">Guardar</button><button id="keyRemove" class="danger" data-i18n="console.keys.remove">Remover</button></div>
+        <div id="keyMsg" class="msg"></div>
+        <p class="note" data-i18n="console.keys.hint"></p>
+      </div>
+    </section>
+    <section aria-labelledby="hBud"><h2 id="hBud" data-i18n="console.budget.title">Consumo</h2><div id="budget"></div><div class="actions"><button id="budgetToggle"></button></div></section>
+    <section aria-labelledby="hRuns"><h2 id="hRuns" data-i18n="console.runs.title">Execuções</h2><ul id="runs" class="list runs"></ul></section>
+  </aside>
+</main>
+<script>
+'use strict';
+const token = new URLSearchParams(location.search).get('t') || '';
+const $ = (id) => document.getElementById(id);
+const store = { get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } } };
+let cat = {};
+let lang = store.get('rb.lang', 'pt-BR');
+let session = null;        // sessão aberta na conversa
+let lastRun = null;        // última execução da sessão aberta
+let showAll = false;
+let routesCfg = [];
+let providerState = [];
+
+function t(key, vars) {
+  let s = key.split('.').reduce((o, p) => (o && typeof o === 'object' ? o[p] : undefined), cat);
+  if (typeof s !== 'string') return key;
+  for (const [k, v] of Object.entries(vars || {})) s = s.split('{{' + k + '}}').join(String(v));
+  return s;
+}
+function el(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) { if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v); }
+  for (const k of kids) if (k !== null && k !== undefined) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
+  return e;
+}
+async function api(method, params) {
+  const r = await fetch('/api/' + method, { method: 'POST', headers: { 'content-type': 'application/json', 'x-rbuddy-token': token }, body: JSON.stringify(params || {}) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+  return j.result;
+}
+function conn(ok) { $('conn').className = 'dot ' + (ok ? 'ok' : 'bad'); $('connText').textContent = t(ok ? 'console.conn.ok' : 'console.conn.lost'); }
+
+async function loadLang() {
+  const r = await fetch('/i18n/' + lang + '.json', { headers: { 'x-rbuddy-token': token } });
+  cat = await r.json();
+  document.documentElement.lang = lang;
+  $('lang').value = lang;
+  for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = t(e.getAttribute('data-i18n'));
+  for (const e of document.querySelectorAll('[data-i18n-placeholder]')) e.setAttribute('placeholder', t(e.getAttribute('data-i18n-placeholder')));
+  $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all');
+}
+
+// Uma linha por evento (o mesmo catálogo do rbuddy log); a conversa vira balões.
+function feedItems(evs) {
+  const out = [];
+  const routes = {};
+  for (const e of evs) {
+    const p = e.payload || {};
+    switch (e.kind) {
+      case 'agent.message': {
+        const m = p.message || {};
+        if (m.role === 'user') out.push(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you')), m.content));
+        else if (m.role === 'assistant') {
+          if (m.content) out.push(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), m.content));
+          for (const c of m.toolCalls || []) out.push(el('div', { class: 'ev tool' }, t('console.feed.tool') + ': ' + c.name + ' ' + String(c.arguments || '').slice(0, 160)));
+        } else if (m.role === 'tool') out.push(el('details', { class: 'res' }, el('summary', {}, t('console.feed.result')), el('pre', {}, String(m.content || '').slice(0, 4000))));
+        break;
+      }
+      case 'run.started': out.push(el('div', { class: 'ev' }, t('log.runStarted', { run: p.run }))); break;
+      case 'run.finished': out.push(el('div', { class: 'ev' }, t('log.runFinished', { run: p.run }))); break;
+      case 'run.stopped': out.push(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: p.reason }))); break;
+      case 'run.interrupted': out.push(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
+      case 'run.resumed': out.push(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
+      case 'agent.step': out.push(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
+      case 'budget.reserved': routes[p.reservation] = p.provider + '/' + p.model; break;
+      case 'budget.settled': out.push(el('div', { class: 'ev' }, t('log.settled', { amount: Number(p.actual || 0).toFixed(4), route: routes[p.reservation] || '?' }))); break;
+      case 'provider.error': out.push(el('div', { class: 'ev err' }, t('log.providerError', { route: p.route, code: p.code, message: p.message }))); break;
+      case 'provider.switched': out.push(el('div', { class: 'ev' }, t('log.switched', { from: p.from, to: p.to, reason: p.reason }))); break;
+      case 'effort.dropped': out.push(el('div', { class: 'ev err' }, t('log.effortDropped', { route: p.route, effort: p.effort, code: p.code }))); break;
+      case 'approval.requested': out.push(el('div', { class: 'ev' }, t('log.approvalRequested', { action: p.action }))); break;
+      case 'approval.resolved': out.push(el('div', { class: 'ev' }, t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') }))); break;
+      case 'file.written': out.push(el('div', { class: 'ev' }, t('log.fileWritten', { path: p.path }))); break;
+      case 'command.ran': out.push(el('div', { class: 'ev' }, t('log.commandRan', { command: p.command, code: p.code }))); break;
+      case 'effect.unknown': out.push(el('div', { class: 'ev err' }, t('log.effectUnknown', { effect: p.effect }))); break;
+      case 'effect.reconciled': out.push(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
+      case 'context.compacted': out.push(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
+      default: break;
+    }
+  }
+  return out;
+}
+
+let lastFeedKey = '';
+async function refreshFeed() {
+  const feed = $('feed');
+  if (!session) { if (lastFeedKey !== 'empty') { feed.replaceChildren(el('div', { class: 'note' }, t('console.feed.empty'))); lastFeedKey = 'empty'; } $('sessionLabel').textContent = ''; return; }
+  const evs = await api('session.events', { session });
+  const key = session + ':' + evs.length + ':' + lang;
+  $('sessionLabel').textContent = '· ' + t('console.feed.session', { session });
+  if (key === lastFeedKey) return;
+  lastFeedKey = key;
+  const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
+  const items = feedItems(evs);
+  const runs = evs.filter((e) => e.kind === 'run.started').map((e) => e.payload.run);
+  lastRun = runs[runs.length - 1] || null;
+  const running = evs.length && !['run.finished', 'run.stopped', 'run.interrupted'].includes(evs.filter((e) => e.kind.startsWith('run.')).slice(-1)[0]?.kind);
+  if (running) items.push(el('div', { class: 'ev' }, t('console.feed.working')));
+  feed.replaceChildren(...items);
+  if (atBottom) feed.scrollTop = feed.scrollHeight;
+}
+
+async function refreshApprovals() {
+  const list = await api('approval.list');
+  const box = $('approvals');
+  if (!list.length) { box.replaceChildren(el('div', { class: 'note' }, t('console.approvals.none'))); return; }
+  box.replaceChildren(...list.map((a) => el('div', { class: 'approval' },
+    el('div', { class: 'a' }, a.action),
+    el('div', { class: 'note' }, a.session),
+    el('div', { class: 'actions' },
+      el('button', { class: 'primary', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')),
+      el('button', { class: 'danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny'))))));
+}
+async function resolve(id, decision) { try { await api('approval.resolve', { id, decision }); } catch (e) { /* já resolvida */ } await refreshApprovals(); }
+
+function sourceText(s) {
+  if (!s) return '';
+  if (s.kind === 'env') return t('providers.source.env', { name: s.name });
+  return t(s.kind === 'keys' ? 'providers.source.keys' : 'providers.source.login');
+}
+async function refreshProviders() {
+  providerState = await api('providers.status');
+  $('providers').replaceChildren(...providerState.map((p, i) => el('li', {},
+    el('span', { class: 't' }, (i + 1) + '. ' + p.provider + '/' + p.model),
+    el('span', { class: 'badge ' + (p.source ? 'ok' : 'warn'), title: sourceText(p.source) }, p.source ? sourceText(p.source) : t('console.route.missing')))));
+  const sel = $('route');
+  const cur = sel.value;
+  const opts = [el('option', { value: '' }, t('console.route.auto'))];
+  for (const r of routesCfg) {
+    const ready = providerState.find((p) => p.provider === r.provider)?.source;
+    opts.push(el('option', { value: JSON.stringify(r) }, r.provider + ' · ' + r.model + ' (' + t(ready ? 'console.route.ready' : 'console.route.missing') + ')'));
+  }
+  sel.replaceChildren(...opts);
+  sel.value = [...sel.options].some((o) => o.value === cur) ? cur : '';
+}
+async function refreshAuth() {
+  const a = await api('auth.chatgpt.status');
+  let s = t('console.chatgpt.out');
+  if (a.pending) s = t('console.chatgpt.pending');
+  else if (a.loggedIn) s = t('console.chatgpt.connected', { who: a.email || '—' }) + ' ' + t(a.planEnabled ? 'console.chatgpt.planYes' : 'console.chatgpt.planNo');
+  else if (a.error) s = t('console.chatgpt.error', { code: a.error });
+  $('chatgptState').textContent = s;
+  $('logout').disabled = !a.loggedIn && !a.pending;
+}
+async function refreshBudget() {
+  const ws = await api('budget.status');
+  const shown = showAll ? ws : ws.filter((w) => w.used > 0 || w.exhaustedUntil || w.provider !== 'opencode-go');
+  $('budget').replaceChildren(...shown.map((w) => {
+    const pct = w.capacity ? Math.min(100, (w.used / w.capacity) * 100) : 0;
+    const right = w.exhaustedUntil ? t('console.budget.exhausted', { until: new Date(w.exhaustedUntil).toLocaleString(lang) }) : w.capacity === null ? 'US$ ' + w.used.toFixed(4) + ' · ' + t('console.budget.noCap') : 'US$ ' + w.used.toFixed(4) + ' / ' + w.capacity.toFixed(2);
+    return el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, w.id), el('span', { class: 'note' }, right)), w.capacity ? el('div', { class: 'bar' }, el('i', { style: 'width:' + pct.toFixed(1) + '%' })) : null);
+  }));
+}
+async function refreshRuns() {
+  const runs = (await api('run.list')).slice(-15).reverse();
+  if (!runs.length) { $('runs').replaceChildren(el('li', { class: 'note' }, t('console.runs.none'))); return; }
+  $('runs').replaceChildren(...runs.map((r) => {
+    const canResume = r.state === 'interrupted' || r.state === 'stopped';
+    return el('li', { class: r.session === session ? 'sel' : '', onclick: () => openSession(r.session) },
+      el('span', { class: 't', title: r.task }, r.task.slice(0, 60)),
+      el('span', { class: 'badge ' + (r.state === 'done' ? 'ok' : r.state === 'running' ? '' : 'warn') }, t('status.state.' + r.state)),
+      canResume ? el('button', { onclick: (ev) => { ev.stopPropagation(); resume(r); } }, t('console.runs.resume')) : null);
+  }));
+}
+function openSession(s) { session = s; lastFeedKey = ''; $('continue').checked = true; void refreshFeed(); void refreshRuns(); }
+async function resume(r) {
+  try { await api('agent.resume', { run: r.id, workspace: $('workspace').value, interactive: true }); openSession(r.session); }
+  catch (e) { $('runMsg').className = 'msg bad'; $('runMsg').textContent = t('console.error', { message: e.message }); }
+}
+
+$('run').addEventListener('click', async () => {
+  const task = $('task').value.trim();
+  const msg = $('runMsg');
+  msg.className = 'msg';
+  if (!task) { msg.className = 'msg bad'; msg.textContent = t('console.task.empty'); return; }
+  const cont = $('continue').checked && session && lastRun;
+  const s = cont ? session : 'ses-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const params = { session: s, task, workspace: $('workspace').value, interactive: true, effort: $('effort').value };
+  if ($('route').value) params.route = JSON.parse($('route').value);
+  if (cont) params.continueFrom = lastRun;
+  $('run').disabled = true;
+  try {
+    const { run } = await api('agent.run', params);
+    store.set('rb.workspace', $('workspace').value);
+    store.set('rb.effort', $('effort').value);
+    $('task').value = '';
+    msg.textContent = t('console.task.started', { run });
+    openSession(s);
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = t('console.error', { message: e.message }); }
+  finally { $('run').disabled = false; }
+});
+$('login').addEventListener('click', async () => {
+  // A janela abre no clique (senão o bloqueador de pop-up barra) e recebe a URL quando o núcleo responder.
+  const w = window.open('about:blank', '_blank');
+  $('loginMsg').className = 'msg';
+  $('loginMsg').textContent = '';
+  try {
+    const { url } = await api('auth.chatgpt.start');
+    if (w) w.location.href = url; else { $('loginMsg').className = 'msg bad'; $('loginMsg').textContent = t('console.chatgpt.popup'); }
+  } catch (e) { if (w) w.close(); $('loginMsg').className = 'msg bad'; $('loginMsg').textContent = t('console.error', { message: e.message }); }
+  void refreshAuth();
+});
+$('logout').addEventListener('click', async () => { try { await api('auth.chatgpt.logout'); } catch (e) { /* nada */ } void refreshAuth(); void refreshProviders(); });
+$('keySave').addEventListener('click', async () => {
+  const m = $('keyMsg');
+  try { await api('keys.set', { provider: $('keyProvider').value, key: $('keyValue').value }); $('keyValue').value = ''; m.className = 'msg'; m.textContent = t('console.keys.saved'); }
+  catch (e) { m.className = 'msg bad'; m.textContent = t('console.error', { message: e.message }); }
+  void refreshProviders();
+});
+$('keyRemove').addEventListener('click', async () => {
+  const m = $('keyMsg');
+  try { await api('keys.remove', { provider: $('keyProvider').value }); m.className = 'msg'; m.textContent = t('console.keys.removed'); }
+  catch (e) { m.className = 'msg bad'; m.textContent = t('console.error', { message: e.message }); }
+  void refreshProviders();
+});
+$('budgetToggle').addEventListener('click', () => { showAll = !showAll; $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all'); void refreshBudget(); });
+$('lang').addEventListener('change', async () => { lang = $('lang').value; store.set('rb.lang', lang); await loadLang(); lastFeedKey = ''; void slow(); void fast(); });
+
+async function fast() { try { await Promise.all([refreshFeed(), refreshApprovals()]); conn(true); } catch { conn(false); } }
+async function slow() { try { await Promise.all([refreshProviders(), refreshAuth(), refreshBudget(), refreshRuns()]); conn(true); } catch { conn(false); } }
+
+(async () => {
+  await loadLang();
+  try {
+    const d = await api('console.defaults');
+    routesCfg = d.routes;
+    $('workspace').value = store.get('rb.workspace', d.workspace);
+    $('effort').value = store.get('rb.effort', 'default');
+  } catch { conn(false); }
+  await slow();
+  await fast();
+  setInterval(fast, 800);
+  setInterval(slow, 3000);
+})();
+</script>
+</body>
+</html>

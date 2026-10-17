@@ -1,0 +1,88 @@
+{
+  "console": {
+    "title": "Rabelus Buddy",
+    "subtitle": "Console local",
+    "lang": "Idioma",
+    "conn": {
+      "ok": "conectado ao núcleo",
+      "lost": "sem conexão com o núcleo"
+    },
+    "task": {
+      "title": "Nova tarefa",
+      "placeholder": "O que o buddy deve fazer?",
+      "effort": "Esforço de raciocínio",
+      "route": "Provedor",
+      "workspace": "Pasta de trabalho",
+      "continue": "Continuar a conversa aberta",
+      "run": "Executar",
+      "empty": "Escreva a tarefa.",
+      "started": "Execução {{run}} iniciada."
+    },
+    "effort": {
+      "default": "Padrão do provedor",
+      "low": "Baixo",
+      "medium": "Médio",
+      "high": "Alto"
+    },
+    "route": {
+      "auto": "Automático, pela ordem (Go → Ollama → ChatGPT → OpenRouter)",
+      "ready": "pronto",
+      "missing": "sem credencial"
+    },
+    "feed": {
+      "title": "Conversa",
+      "empty": "Escreva uma tarefa ou abra uma execução.",
+      "you": "Você",
+      "buddy": "Buddy",
+      "tool": "Ferramenta",
+      "result": "Resultado",
+      "session": "Sessão {{session}}",
+      "working": "trabalhando…"
+    },
+    "approvals": {
+      "title": "Aprovações",
+      "none": "Nada aguardando.",
+      "approve": "Aprovar",
+      "deny": "Negar"
+    },
+    "providers": {
+      "title": "Provedores"
+    },
+    "chatgpt": {
+      "title": "ChatGPT (Sign in with ChatGPT)",
+      "login": "Entrar com o ChatGPT",
+      "logout": "Sair do ChatGPT",
+      "pending": "Aguardando o login no navegador…",
+      "connected": "Conectado: {{who}}",
+      "planYes": "Uso do plano concedido.",
+      "planNo": "O login não concedeu o uso do plano.",
+      "error": "Login não concluído: {{code}}",
+      "popup": "O navegador bloqueou a janela de login. Permita pop-ups para esta página e tente de novo.",
+      "out": "Sem login."
+    },
+    "keys": {
+      "title": "Chaves de API",
+      "provider": "Provedor",
+      "placeholder": "Cole a chave aqui",
+      "save": "Guardar",
+      "remove": "Remover",
+      "saved": "Chave guardada.",
+      "removed": "Chave removida.",
+      "hint": "A chave fica só neste computador, vale mais que a variável de ambiente e nunca volta para esta página."
+    },
+    "budget": {
+      "title": "Consumo por janela",
+      "noCap": "sem teto (o provedor informa)",
+      "exhausted": "esgotada até {{until}}",
+      "all": "Mostrar todas",
+      "some": "Mostrar só as usadas"
+    },
+    "runs": {
+      "title": "Execuções",
+      "none": "Nenhuma ainda.",
+      "resume": "Retomar",
+      "open": "Abrir"
+    },
+    "error": "Erro: {{message}}"
+  }
+}
