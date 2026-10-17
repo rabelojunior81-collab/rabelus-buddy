@@ -105,8 +105,9 @@ export class Agent {
   }
 
   // A conversa é evento: cada mensagem entra no log, e a retomada a reconstrói.
-  private push(session: string, run: string, messages: ChatMessage[], m: ChatMessage): void {
-    this.o.log.append(session, 'agent.message', { run, message: m });
+  // `prior`: mensagem copiada de uma execução anterior (conversa contínua); a console não a repete.
+  private push(session: string, run: string, messages: ChatMessage[], m: ChatMessage, prior = false): void {
+    this.o.log.append(session, 'agent.message', { run, message: m, ...(prior ? { prior: true } : {}) });
     messages.push(m);
   }
 
@@ -125,7 +126,7 @@ export class Agent {
   begin(session: string, task: string, { system = SYSTEM_PROMPT, prior }: { system?: string; prior?: ChatMessage[] } = {}): { run: string; done: Promise<AgentResult> } {
     const run = this.o.domain.startRun(session, task).id;
     const messages: ChatMessage[] = [];
-    if (prior?.length) for (const m of prior) this.push(session, run, messages, m);
+    if (prior?.length) for (const m of prior) this.push(session, run, messages, m, true);
     else this.push(session, run, messages, { role: 'system', content: system });
     this.push(session, run, messages, { role: 'user', content: task });
     return { run, done: this.loop(session, run, messages, 1) };
@@ -229,6 +230,7 @@ export class Agent {
         return { response, route: name, ...(effort ? { effort } : {}) };
       } catch (e) {
         if (e instanceof ProviderLimitError) {
+          log.append(session, 'provider.error', { route: name, code: 'limit', message: scrub(e.message) });
           domain.failEffect(effect, 'providerLimit');
           budget.release(reservation, 'providerLimit');
           budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' ? r.model : null, e.until, 'providerLimit');

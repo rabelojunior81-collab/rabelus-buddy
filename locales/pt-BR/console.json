@@ -8,15 +8,14 @@
       "lost": "sem conexão com o núcleo"
     },
     "task": {
-      "title": "Nova tarefa",
+      "title": "Mensagem",
       "placeholder": "O que o buddy deve fazer?",
       "effort": "Esforço de raciocínio",
       "route": "Provedor",
       "workspace": "Pasta de trabalho",
-      "continue": "Continuar a conversa aberta",
-      "run": "Executar",
+      "run": "Enviar",
       "empty": "Escreva a tarefa.",
-      "started": "Execução {{run}} iniciada."
+      "hint": "Enter envia · Shift+Enter quebra a linha"
     },
     "effort": {
       "default": "Padrão do provedor",
@@ -37,7 +36,8 @@
       "tool": "Ferramenta",
       "result": "Resultado",
       "session": "Sessão {{session}}",
-      "working": "trabalhando…"
+      "working": "trabalhando…",
+      "new": "Nova conversa"
     },
     "approvals": {
       "title": "Aprovações",

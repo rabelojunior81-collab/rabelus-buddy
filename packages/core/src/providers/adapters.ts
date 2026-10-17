@@ -31,6 +31,8 @@ function mapError(id: string, e: unknown): never {
   const wait = (fallback: number) => Date.now() + (Number.isFinite(secs) && secs > 0 ? secs * 1000 : fallback);
   const message = scrub(err.error?.message ?? String(err.message ?? '').replace(/^\d{3}\s*/, ''));
   if (err.status === 429) throw new ProviderLimitError(id, wait(DEFAULT_LIMIT_WAIT_MS), message || 'limite do provedor');
+  // 402: conta sem saldo (observado no Go em 2026-10-17). Não se resolve na próxima mensagem: sai da frente por 1 h.
+  if (err.status === 402) throw new ProviderLimitError(id, wait(60 * 60_000), message || 'conta sem saldo');
   if (err.status >= 500) throw new ProviderLimitError(id, wait(TEMPORARY_WAIT_MS), message || `provedor indisponível (${err.status})`);
   throw new ProviderRejectedError(id, `http_${err.status}`, message || `recusado (${err.status})`);
 }

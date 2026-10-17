@@ -8,15 +8,14 @@
       "lost": "no connection to the core"
     },
     "task": {
-      "title": "New task",
+      "title": "Message",
       "placeholder": "What should buddy do?",
       "effort": "Reasoning effort",
       "route": "Provider",
       "workspace": "Working folder",
-      "continue": "Continue the open conversation",
-      "run": "Run",
+      "run": "Send",
       "empty": "Write the task.",
-      "started": "Run {{run}} started."
+      "hint": "Enter sends · Shift+Enter adds a line"
     },
     "effort": {
       "default": "Provider default",
@@ -37,7 +36,8 @@
       "tool": "Tool",
       "result": "Result",
       "session": "Session {{session}}",
-      "working": "working…"
+      "working": "working…",
+      "new": "New conversation"
     },
     "approvals": {
       "title": "Approvals",
