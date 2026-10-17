@@ -33,7 +33,7 @@ test('siwc: login oauth — PKCE S256, callback em 127.0.0.1, state/nonce novos,
   assert.equal(q1.get('code_challenge_method'), 'S256');
   assert.match(q1.get('code_challenge') ?? '', /^[A-Za-z0-9_-]{43}$/, 'base64url sem padding');
   assert.match(q1.get('redirect_uri') ?? '', /^http:\/\/127\.0\.0\.1:\d+\/auth\/callback$/);
-  assert.ok((q1.get('ext_agent_host_id') ?? '').length >= 16);
+  assert.match(q1.get('ext_agent_host_id') ?? '', /^urn:uuid:[0-9a-f-]{36}$/, 'formato aceito pela OpenAI real');
   assert.ok((q1.get('state') ?? '').length >= 32 && (q1.get('nonce') ?? '').length >= 32);
 
   // Troca: client id emitido, verifier conferido pelo servidor, mesmo redirect e resource.
@@ -313,4 +313,16 @@ test('siwc: logout revoga o refresh token e apaga os tokens locais, guardando ho
   const home2 = savedHome(false);
   assert.deepEqual(await logout(home2, inert), { revoked: false });
   assert.equal(loadCredentials(home2)?.refreshToken, undefined);
+});
+
+test('siwc: host id salvo no formato antigo (UUID sem urn:uuid:) é corrigido uma vez e passa a ser estável', async () => {
+  const { fake, st, endpoints } = await fakeAuth();
+  const home = tempHome();
+  saveCredentials(home, { hostId: '0b56bdbe-9c9d-49e5-81a5-056110f5a269', clientId: null });
+  const l = await startLogin({ home, endpoints, port: 0 });
+  const { q } = await browse(l.url, st, { client_id: 'oaiapp_123' });
+  await l.done;
+  assert.equal(q.get('ext_agent_host_id'), 'urn:uuid:0b56bdbe-9c9d-49e5-81a5-056110f5a269');
+  assert.equal(loadCredentials(home)?.hostId, 'urn:uuid:0b56bdbe-9c9d-49e5-81a5-056110f5a269');
+  await fake.close();
 });

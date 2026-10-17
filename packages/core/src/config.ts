@@ -88,3 +88,10 @@ function writeOwnerOnly(p: string, data: unknown): void {
   renameSync(tmp, p);
   chmodSync(p, 0o600);
 }
+
+// De onde vem a credencial de cada provedor (a guardada pelo login vence a variável de ambiente).
+export function credentialSource(home: string, provider: ProviderId, env: NodeJS.ProcessEnv = process.env): { kind: 'keys' | 'env' | 'login'; name?: string } | null {
+  if (provider === 'chatgpt') return loadCredentials(home)?.refreshToken ? { kind: 'login' } : null;
+  if (loadKeys(home)[provider]) return { kind: 'keys' };
+  return env[ENV_KEYS[provider]] ? { kind: 'env', name: ENV_KEYS[provider] } : null;
+}

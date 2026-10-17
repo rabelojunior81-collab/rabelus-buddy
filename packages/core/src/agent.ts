@@ -12,6 +12,7 @@ import { BudgetError, costOf, type Budget, type Usage } from './budget.ts';
 import { PRICES, type Price } from './prices.ts';
 import type { FsTools } from './tools/fs.ts';
 import type { CommandTool } from './tools/command.ts';
+import { scrub } from './providers/adapters.ts';
 import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
@@ -22,6 +23,7 @@ const DEFAULT_MAX_STEPS = 50;
 // Preço conservador para modelo da API paga sem preço na tabela: superestima, nunca fura o teto.
 export const CONSERVATIVE_PRICE: Price = { input: 15, cachedInput: 15, cacheWrite: 15, output: 75 };
 const PAID = new Set(['openrouter']);
+const FREE: Price = { input: 0, cachedInput: 0, cacheWrite: 0, output: 0 };
 
 export interface Route { provider: Provider; model: string }
 
@@ -94,6 +96,8 @@ export class Agent {
   constructor(o: AgentOptions) { this.o = o; }
 
   private priceFor(r: Route): Price | null {
+    // Variante :free do OpenRouter não cobra (registro da sonda real: chamada "sem custo").
+    if (PAID.has(r.provider.id) && r.model.endsWith(':free')) return FREE;
     return PRICES[r.model] ?? (PAID.has(r.provider.id) ? CONSERVATIVE_PRICE : null);
   }
 
@@ -194,7 +198,7 @@ export class Agent {
       const name = `${r.provider.id}/${r.model}`;
       const next = routes[i + 1];
       const skip = (reason: string) => { if (next) log.append(session, 'provider.switched', { from: name, to: `${next.provider.id}/${next.model}`, reason }); };
-      if (rejected.has(r.provider.id)) { skip('rejected'); continue; }
+      if (rejected.has(r.provider.id)) continue; // a recusa e a troca já estão no log desta execução
       if (policy.decide({ session, tool: 'model.use', target: r.model }, { interactive: false }).effect !== 'allow') { skip('policy'); continue; }
 
       const price = this.priceFor(r);
@@ -226,6 +230,8 @@ export class Agent {
           continue;
         }
         if (e instanceof ProviderRejectedError) {
+          // O motivo fica no log (sem segredo): sem ele, um 403 de assinatura vira mistério.
+          log.append(session, 'provider.error', { route: name, code: e.code, message: scrub(e.message) });
           domain.failEffect(effect, e.code);
           budget.release(reservation, e.code);
           rejected.add(r.provider.id);
@@ -235,7 +241,8 @@ export class Agent {
         // Sem resposta conclusiva: o consumo é incerto (liquida pela estimativa) e repetir exige reconciliação.
         domain.markUnknown(effect);
         budget.settle(reservation, null, estimate);
-        if (!(e instanceof ProviderUnknownError)) log.append(session, 'provider.error', { route: name, error: (e as Error).name });
+        const ex = e as { name?: string; code?: string; cause?: { code?: string } };
+        log.append(session, 'provider.error', { route: name, code: String(ex.code ?? ex.cause?.code ?? ex.name ?? 'unknown'), message: 'sem resposta conclusiva' });
         return { stop: 'effect.unknown' };
       }
     }

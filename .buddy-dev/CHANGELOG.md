@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0001 · 2026-10-14T103608-0300 · claude-code-c33594 · nascimento
-
-Projeto movido para rabelus-lab/rabelus-buddy, git init, material original importado intocado (14 arquivos, sha256 conferido) e repositório privado criado no GitHub. (ocorrido às 10:17 -0300)
-
 ### #0002 · 2026-10-14T103608-0300 · claude-code-c33594 · ferramenta
 
 Ferramentas bd (relógio, nomes, barramento, arquivo morto, changelog, guarda, ritos pre/post) com 22 testes. PR #1. (10:23 -0300)
@@ -131,6 +127,7 @@ M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (st
 ### #0031 · 2026-10-15T045425-0300 · claude-code-vs-code-3a6e29 · decisao
 
 Respostas do Pai à SPEC 0001 aplicadas: ADR 0014 (OpenCode Go primeiro, ChatGPT por Sign in with ChatGPT, API paga como reserva), teto US$ 20, convenção de código aceita, SDKs OpenAI/Anthropic/Gemini (+OpenCode no M1). SPEC revisão 2 com 26 critérios; explicação de build e testes com prova executada.
+
 ### #0028 · 2026-10-15T045853-0300 · claude-code-vs-code-3a6e29 · ferramenta
 
 bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 dias; rotina semanal na CI) e bd test-guard (a suíte não perde testes nem asserções; sem skip/todo/only), no bd post e na CI. Ordens do Pai de 2026-10-15. 57 testes.
@@ -206,3 +203,7 @@ M0.7b: CLI do agente (run com dono sob demanda e aprovação no terminal, resume
 ### #0048 · 2026-10-17T075059-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.7c: auditoria por teste de segredos (critério 22, ponta a ponta, conferido por mutação) e do catálogo (critério 23); preços por modelo do Go; fumaça real do rbuddy run no Go registrada. M0.7 completa; M0.8 aguarda o Pai.
+
+### #0049 · 2026-10-17T083810-0300 · claude-code-vs-code-7307c7 · fix
+
+Auditoria real depois da falha no shell do Pai: login do ChatGPT quebrado na OpenAI real (ext_agent_host_id), 403 tratado como efeito desconhecido, modelo gratuito cobrado, CLI com stack trace, dono eterno com ambiente velho — corrigidos; regra nova com mecanismo (ação do Pai exige ensaio, nunca por CLI).

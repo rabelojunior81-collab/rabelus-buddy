@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-17T081739-0300-claude-code-vs-code-7307c7-0007",
+  "ts": "2026-10-17T08:17:39-03:00",
+  "utc": "2026-10-17T11:17:39.309Z",
+  "session": "claude-code-vs-code-7307c7",
+  "seq": 7,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/m0-auditoria-real",
+  "type": "decisao",
+  "summary": "Pai (2026-10-17): o produto é um agente multimodal com UX/UI; CLI é do próprio agente, nunca superfície de teste do Pai; nunca pedir ao Pai teste que não funciona",
+  "refs": [],
+  "data": {}
+}

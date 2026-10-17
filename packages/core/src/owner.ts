@@ -140,6 +140,7 @@ export async function startOwner(home: string): Promise<Owner> {
     'budget.status': () => budget.status(),
   };
 
+  let lastActivity = Date.now();
   const sockets = new Set<net.Socket>();
   server.on('connection', (socket) => {
     sockets.add(socket);
@@ -148,6 +149,7 @@ export async function startOwner(home: string): Promise<Owner> {
     socket.setEncoding('utf8');
     let buffer = '';
     socket.on('data', (chunk: string) => {
+      lastActivity = Date.now();
       buffer += chunk;
       let i: number;
       while ((i = buffer.indexOf('\n')) >= 0) {
@@ -172,6 +174,19 @@ export async function startOwner(home: string): Promise<Owner> {
     server.once('error', (e: NodeJS.ErrnoException) => reject(e.code === 'EADDRINUSE' ? new AlreadyRunningError(endpoint) : e));
     server.listen({ path: endpoint, readableAll: false, writableAll: false }, () => resolve());
   });
+
+  // Ocioso se desliga (padrão 15 min; RBUDDY_IDLE_MS, 0 desliga): o dono sob demanda guardava para
+  // sempre as variáveis de ambiente do primeiro terminal, e uma chave trocada não valia (2026-10-17).
+  const idleMs = Number(process.env.RBUDDY_IDLE_MS ?? 15 * 60_000);
+  if (idleMs > 0) {
+    const timer = setInterval(() => {
+      const running = domain.listRuns().some((r) => r.state === 'running');
+      if (running) lastActivity = Date.now();
+      else if (Date.now() - lastActivity >= idleMs) { clearInterval(timer); void close(); }
+    }, Math.max(250, Math.min(idleMs / 4, 30_000)));
+    timer.unref();
+    void closed.then(() => clearInterval(timer));
+  }
 
   return { endpoint, pid: process.pid, closed, close };
 }

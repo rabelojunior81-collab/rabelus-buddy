@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import readline from 'node:readline';
 import type { I18n } from '@rabelus-buddy/client/i18n';
 import { call, RpcError, RPC_ERR } from '@rabelus-buddy/client/ipc';
-import { stateHome, endpointFor, loadConfig, hasCredential, saveKey, removeKey, type ProviderId } from '@rabelus-buddy/core';
+import { stateHome, endpointFor, loadConfig, hasCredential, credentialSource, saveKey, removeKey, type ProviderId } from '@rabelus-buddy/core';
 
 export interface Io { out: (text: string) => void; err: (text: string) => void }
 export type Prompt = (question: string, opts?: { hidden?: boolean }) => Promise<string>;
@@ -81,6 +81,7 @@ function formatter({ t }: I18n): (e: Ev) => string | null {
       }
       case 'budget.reserved': routes.set(String(p.reservation), `${String(p.provider)}/${String(p.model)}`); return null;
       case 'budget.settled': return t('log.settled', { amount: Number(p.actual ?? 0).toFixed(4), route: routes.get(String(p.reservation)) ?? '?' });
+      case 'provider.error': return t('log.providerError', { route: p.route, code: p.code, message: p.message });
       case 'provider.switched': return t('log.switched', { from: p.from, to: p.to, reason: p.reason });
       case 'approval.requested': return t('log.approvalRequested', { action: p.action });
       case 'approval.resolved': return t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') });
@@ -103,7 +104,13 @@ async function follow(endpoint: string, session: string, run: string, after: num
   let last = after;
   const asked = new Set<string>();
   for (;;) {
-    const evs = await events(endpoint, session);
+    let evs: Ev[];
+    // Dono fora do ar no meio: mensagem do catálogo e o caminho de volta, nunca stack trace.
+    try { evs = await events(endpoint, session); } catch (e) {
+      if (e instanceof RpcError) throw e;
+      io.err(t('run.ownerLost', { run }));
+      return 1;
+    }
     for (const e of evs) {
       if (e.seq <= after) { if (e.kind === 'budget.reserved') fmt(e); continue; }
       if (e.seq <= last) continue;
@@ -194,7 +201,13 @@ export async function logCmd(arg: string | undefined, env: NodeJS.ProcessEnv, io
 
 export function providersCmd(env: NodeJS.ProcessEnv, io: Io, { t }: I18n): number {
   const home = stateHome(env);
-  const lines = loadConfig(home).routes.map((r, i) => t(hasCredential(home, r.provider, env) ? 'providers.ready' : 'providers.missing', { n: i + 1, route: `${r.provider}/${r.model}` }));
+  const lines = loadConfig(home).routes.map((r, i) => {
+    const src = credentialSource(home, r.provider, env);
+    const route = `${r.provider}/${r.model}`;
+    if (!src) return t('providers.missing', { n: i + 1, route });
+    const source = src.kind === 'env' ? t('providers.source.env', { name: src.name }) : t(src.kind === 'keys' ? 'providers.source.keys' : 'providers.source.login');
+    return t('providers.ready', { n: i + 1, route, source });
+  });
   io.out([t('providers.header'), ...lines].join('\n'));
   return 0;
 }

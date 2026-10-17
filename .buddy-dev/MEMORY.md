@@ -34,6 +34,8 @@
 | 2026-10-16 | O Pi não é forkado: entra no M1 como agente plugável; a TUI fica em avaliação (ink × pi-tui), com referências visuais ao Pai no momento pertinente; M0 sem TUI | ADR 0016; SPEC 0001 rev. 4 |
 | 2026-10-16 | Prune de branches é responsabilidade do buddy-dev, com processo e enforcement; nenhuma branch sobrevive ao merge, nada se perde | `bd prune`, `bd merge`, `bd pre`; GitHub com auto-delete e só merge commit |
 | 2026-10-16 | Governança de validações ampliada: toda validação com dono (máquina, buddy, Pai), lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes`; `VALIDACOES.md` |
+| 2026-10-17 | **Nunca pedir ao Pai teste que não funciona**: só depois de ensaiar eu mesmo, com os mesmos passos e no ambiente dele | `bd validacoes` (ação do Pai exige `ensaio`); `AGENTS.md` §3 |
+| 2026-10-17 | **O produto é um agente multimodal com UX e UI; CLI é do próprio agente, nunca superfície do Pai.** Nada de teste por CLI para ele | `bd validacoes` (sem terminal/CLI no "como"); roadmap em revisão com o Pai |
 | 2026-10-16 | Só parar quando o Pai precisar fazer ou decidir; se não precisar, seguir o plano aprovado sem parar | `AGENTS.md` §5.8; validações do Pai em `validacoes.json` |
 | 2026-10-15 | Não parar: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela | `AGENTS.md` §5.4 e §5.7; checklist do PR; linha "Seguindo em paralelo" no STATUS |
 | 2026-10-15 | Bloqueio do harness se reporta como bloqueio do harness, nunca como regra do Lab | LEARNING-CURVE 2026-10-15 #4 |

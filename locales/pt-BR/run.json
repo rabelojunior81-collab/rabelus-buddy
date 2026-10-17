@@ -12,6 +12,7 @@
     "stopped": "Execução parada: {{reason}}.",
     "cannotResume": "A execução {{run}} está {{state}}: só se retoma interrompida ou parada.",
     "notFound": "Execução {{run}} não encontrada.",
-    "yes": "s"
+    "yes": "s",
+    "ownerLost": "O dono do núcleo saiu do ar durante a execução {{run}}. Para continuar: rbuddy resume {{run}}"
   }
 }

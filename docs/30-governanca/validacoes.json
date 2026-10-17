@@ -365,7 +365,8 @@
       ],
       "mecanismo": {},
       "estado": "recorrente",
-      "origem": "METODO §2"
+      "origem": "METODO §2",
+      "tipo": "decisao"
     },
     {
       "id": "escolha-da-tui",
@@ -376,11 +377,12 @@
       ],
       "mecanismo": {},
       "estado": "pendente",
-      "origem": "ADR 0016"
+      "origem": "ADR 0016",
+      "tipo": "decisao"
     },
     {
       "id": "login-chatgpt-real",
-      "descricao": "Rodar rbuddy login chatgpt com a conta ChatGPT Plus no navegador e confirmar que o plano foi concedido (chatgpt.tokens.use.direct)",
+      "descricao": "Entrar com a conta do ChatGPT Plus na tela de login da OpenAI, aberta pelo buddy no navegador, e conceder o uso do plano (chatgpt.tokens.use.direct)",
       "quem": "pai",
       "onde": [
         "M0.6b",
@@ -388,7 +390,10 @@
       ],
       "mecanismo": {},
       "estado": "pendente",
-      "origem": "SPEC 0001, critério 19"
+      "origem": "SPEC 0001, critério 19",
+      "tipo": "acao",
+      "como": "o buddy abre a tela de login da OpenAI no navegador do Pai; o Pai entra com a conta do ChatGPT Plus e aprova o acesso",
+      "ensaio": "docs/registros/2026-10-17T083606-0300-ensaio-do-login-do-chatgpt-na-openai-real/README.md"
     },
     {
       "id": "demonstracao-m0",
@@ -398,8 +403,10 @@
         "M0.8"
       ],
       "mecanismo": {},
-      "estado": "pendente",
-      "origem": "SPEC 0001"
+      "estado": "bloqueada",
+      "origem": "SPEC 0001",
+      "tipo": "acao",
+      "motivo": "Pai (2026-10-17): não testa por CLI; o produto é um agente com UX/UI. A demonstração espera a decisão sobre a superfície em que ela acontece."
     },
     {
       "id": "alertas-dependabot",
@@ -410,7 +417,8 @@
       ],
       "mecanismo": {},
       "estado": "pendente",
-      "origem": "DEPENDENCIAS.md"
+      "origem": "DEPENDENCIAS.md",
+      "tipo": "decisao"
     }
   ]
 }

@@ -51,6 +51,10 @@ export async function fakeAuth() {
 export async function browse(url: string, st: { challenge: string; nonce: string }, extra: Record<string, string> = {}, { keepState = true } = {}) {
   const u = new URL(url);
   const q = u.searchParams;
+  // Como a OpenAI real (observado em 2026-10-17): host id fora de urn:uuid: → 400 invalid_authorize_request.
+  if (!/^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(q.get('ext_agent_host_id') ?? '')) {
+    throw new Error('400 invalid_authorize_request: ext_agent_host_id');
+  }
   st.challenge = q.get('code_challenge') ?? '';
   st.nonce = q.get('nonce') ?? '';
   const cb = new URL(q.get('redirect_uri') ?? '');

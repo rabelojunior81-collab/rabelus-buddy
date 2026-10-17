@@ -18,6 +18,7 @@
     "commandRan": "comando rodou: {{command}} (código {{code}})",
     "effectUnknown": "efeito {{effect}} desconhecido",
     "reconciled": "efeito {{effect}} reconciliado: {{outcome}}",
-    "compacted": "contexto compactado: {{before}} → {{after}} tokens"
+    "compacted": "contexto compactado: {{before}} → {{after}} tokens",
+    "providerError": "{{route}} recusou ({{code}}): {{message}}"
   }
 }

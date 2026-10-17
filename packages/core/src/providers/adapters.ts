@@ -6,23 +6,31 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenAI } from '@google/genai';
 import type { Usage } from '../budget.ts';
-import { ProviderLimitError, type CallContext, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall } from './types.ts';
+import { ProviderLimitError, ProviderRejectedError, type CallContext, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall } from './types.ts';
 
 export type HeadersFor = (ctx: CallContext) => Record<string, string>;
 export interface AdapterOptions { id: string; apiKey: string; baseURL: string; headers: HeadersFor }
 
 const DEFAULT_LIMIT_WAIT_MS = 5 * 60_000;
 
-// 429 (ou erro de limite) vira esgotamento da janela; o resto segue como erro.
+// Resposta HTTP é conclusiva (o provedor recebeu e respondeu): 429 esgota a janela; 401, 403 e os
+// demais 4xx são recusa (não se repete igual); 5xx deixa o provedor indisponível por um tempo.
+// Só a falta de resposta (conexão, stream cortado) segue como erro inconclusivo. Lacuna de
+// 2026-10-17: um 403 ("assinatura Go ativa exigida") virava efeito desconhecido e parava a tarefa.
+const TEMPORARY_WAIT_MS = 5 * 60_000;
+// Mensagem do provedor vai para o log: nada com cara de chave ou token.
+export const scrub = (m: string): string => m.replace(/[A-Za-z0-9_\-.]{32,}/g, '[…]').slice(0, 300);
+
 function mapError(id: string, e: unknown): never {
-  const err = e as { status?: number; headers?: Headers | Record<string, string>; message?: string };
-  if (err?.status === 429) {
-    const h = err.headers;
-    const raw = h instanceof Headers ? h.get('retry-after') : h?.['retry-after'];
-    const secs = Number(raw);
-    throw new ProviderLimitError(id, Date.now() + (Number.isFinite(secs) && secs > 0 ? secs * 1000 : DEFAULT_LIMIT_WAIT_MS), err.message ?? 'limite do provedor');
-  }
-  throw e;
+  const err = e as { status?: number; headers?: Headers | Record<string, string>; message?: string; error?: { message?: string } };
+  if (typeof err?.status !== 'number') throw e;
+  const h = err.headers;
+  const secs = Number(h instanceof Headers ? h.get('retry-after') : h?.['retry-after']);
+  const wait = (fallback: number) => Date.now() + (Number.isFinite(secs) && secs > 0 ? secs * 1000 : fallback);
+  const message = scrub(err.error?.message ?? String(err.message ?? '').replace(/^\d{3}\s*/, ''));
+  if (err.status === 429) throw new ProviderLimitError(id, wait(DEFAULT_LIMIT_WAIT_MS), message || 'limite do provedor');
+  if (err.status >= 500) throw new ProviderLimitError(id, wait(TEMPORARY_WAIT_MS), message || `provedor indisponível (${err.status})`);
+  throw new ProviderRejectedError(id, `http_${err.status}`, message || `recusado (${err.status})`);
 }
 
 export const systemOf = (msgs: ChatMessage[]): string => msgs.filter((m) => m.role === 'system').map((m) => m.content).join('\n\n');
