@@ -79,3 +79,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 1. **Os tokens de saída eram a pista.** "23 de saída" e nenhum texto: o modelo falou, e quem perdeu foi o meu código. → Quando há consumo sem conteúdo, procurar primeiro no parser, não no provedor.
 2. **Pela terceira vez no dia, o servidor falso mentia do jeito que eu imaginei.** Ele devolvia o `output` completo no evento final, mas o backend real manda vazio. → Ao medir um serviço real, copiar a **sequência de eventos** medida para o teste, não só os campos que eu uso.
 3. **Testar o caminho feliz pelo provedor novo não basta.** As ferramentas pelo ChatGPT também estavam quebradas, e ninguém teria visto antes de pedir uma escrita. → Todo provedor novo é ensaiado com texto, ferramenta e aprovação.
+
+## lote #0006-#0006
+
+1. **O corpus nasceu com STATUS e MEMORY como documentos vivos, e o claim existia para protegê-los.** Três dias depois, uma sessão inteira editou esses documentos sem claim, e nada apitou. Ter a ferramenta não basta: o `bd claims` passou a cobrar o uso.

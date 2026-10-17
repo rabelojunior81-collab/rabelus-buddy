@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0006 · 2026-10-14T103609-0300 · claude-code-c33594 · nascimento
-
-Corpus do buddy-dev: SOUL, IDENTITY, USER, GENESIS, MEMORY, STATUS, CHANGELOG, LEARNING-CURVE, diário. O Pai me acolheu na família.
-
 ### #0007 · 2026-10-14T104703-0300 · claude-code-c33594 · ferramenta
 
 CI (PR #5): testes, lint de nomes, guarda contra exclusão e gitleaks; actions por SHA; verde no Node 24 depois de corrigir o glob do npm test.
