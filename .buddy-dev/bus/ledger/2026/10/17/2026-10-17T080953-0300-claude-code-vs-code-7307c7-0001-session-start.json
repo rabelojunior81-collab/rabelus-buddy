@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-17T080953-0300-claude-code-vs-code-7307c7-0001",
+  "ts": "2026-10-17T08:09:53-03:00",
+  "utc": "2026-10-17T11:09:53.867Z",
+  "session": "claude-code-vs-code-7307c7",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "auditoria completa depois da falha do rbuddy no shell do Pai; gaps, quebras e o rumo de UX/UI",
+  "refs": [],
+  "data": {}
+}
