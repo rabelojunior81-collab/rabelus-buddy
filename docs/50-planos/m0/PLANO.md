@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T09:14:57-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T09:44:34-03:00
 
 ## Objetivo
 
@@ -62,10 +62,10 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - [x] **M0.7a Retomada e dono executando o agente**: a conversa vira evento (`agent.message`); `resume` reconcilia efeitos desconhecidos (chamada de modelo: não feita; escrita: pelo hash do conteúdo; comando: o humano decide); o dono roda `agent.run`/`agent.resume` em segundo plano, com aprovação pelo IPC; rotas e credenciais por `config.json`, `credentials/keys.json` ou variáveis de ambiente. `kill -9` com a chamada em curso e `resume` levam a tarefa ao fim sem escrita duplicada, com provedor HTTP falso;
   - [x] **M0.7b CLI**: `run` (dono sob demanda, acompanhamento pelo catálogo, aprovação no terminal), `status`, `log` (sem a conversa), `resume`, `providers`, `login`/`logout` por chave (sem eco, só do dono); testada em processo com provedor HTTP falso;
   - [x] **M0.7c Auditoria**: vazamento de segredos (critério 22: ponta a ponta, com canários de chave do Go, token OAuth e `.env`, conferido por mutação) e catálogo completo (critério 23: varredura do primeiro argumento de cada `t(...)`, troca de idioma); preços por modelo do Go na tabela (a fumaça real mostrou consumo zero sem eles; [registro](../../registros/2026-10-17T075036-0300-fumaca-real-do-rbuddy-run-no-go/README.md)).
-- [ ] **M0.8 Console web local** ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md); SPEC escopo 19, critérios 27–30):
+- [x] **M0.8 Console web local** ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md); SPEC escopo 19, critérios 27–30):
   - [x] **M0.8a O que a console exige do núcleo:** esforço de raciocínio por execução, no formato de cada rota, com uma repetição sem ele se o provedor recusar (critério 29); rota escolhida por execução (automática ou provedor/modelo); conversa contínua (nova mensagem na sessão, com o histórico); login do ChatGPT iniciado pelo núcleo; campos omitidos da prévia do SIWC reverificados em 2026-10-17;
-  - [ ] **M0.8b A console:** servidor HTTP no dono, só `127.0.0.1`, token e `Host` exato (critério 27); página sem dependência, com tarefa, esforço, rota, passos ao vivo, conversa, aprovações, consumo por janela, provedores com origem da credencial, chaves guardadas (nunca devolvidas), login e logout do ChatGPT, execuções com "Retomar" (critério 30); catálogo pt-BR/en (critério 28); atalho de duplo clique que sobe o núcleo e abre a console; o uso da console conta como atividade (o dono não se desliga com ela aberta);
-  - [ ] **M0.8c Ensaio no ambiente do Pai:** navegador real (Playwright) na máquina do Pai, passo a passo do que ele vai fazer, registrado em `docs/registros/`; só então as ações dele entram em "aguarda o Pai" (`bd validacoes`).
+  - [x] **M0.8b A console:** servidor HTTP no dono, só `127.0.0.1`, token e `Host` exato (critério 27); página sem dependência, com tarefa, esforço, rota, passos ao vivo, conversa, aprovações, consumo por janela, provedores com origem da credencial, chaves guardadas (nunca devolvidas), login e logout do ChatGPT, execuções com "Retomar" (critério 30); catálogo pt-BR/en (critério 28); atalho de duplo clique que sobe o núcleo e abre a console; o uso da console conta como atividade (o dono não se desliga com ela aberta);
+  - [x] **M0.8c Ensaio no ambiente do Pai** ([registro](../../registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md); o Pai acompanhou e corrigiu o layout para chat; nove defeitos achados e corrigidos com teste): navegador real (Playwright) na máquina do Pai, passo a passo do que ele vai fazer, registrado em `docs/registros/`; só então as ações dele entram em "aguarda o Pai" (`bd validacoes`).
 - [ ] **M0.9 Demonstração pela console e fechamento** (critério 26, rev. 5). Junta os testes reais que a console torna viáveis, antes só contra servidor falso:
   - login real do ChatGPT (critério 19 no real) e um passo pela assinatura do ChatGPT (critério 18 no real, incluindo se a prévia aceita o esforço);
   - interação: conversa contínua e mudança de esforço entre tarefas, com o consumo comparado;

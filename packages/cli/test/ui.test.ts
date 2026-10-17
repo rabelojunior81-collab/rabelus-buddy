@@ -30,7 +30,7 @@ test('rbuddy ui: sobe o núcleo, abre a console no navegador com o endereço e o
 });
 
 test('atalho de duplo clique no Windows chama rbuddy ui a partir da pasta do repositório', () => {
-  const cmd = join(import.meta.dirname, '..', '..', '..', 'Rabelus Buddy.cmd');
+  const cmd = join(import.meta.dirname, '..', '..', '..', 'abrir-rabelus-buddy.cmd');
   assert.ok(existsSync(cmd));
   const s = readFileSync(cmd, 'utf8');
   assert.ok(s.includes('cd /d "%~dp0"'), s);
