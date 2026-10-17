@@ -49,6 +49,10 @@ Cada critério de aceite tem um teste nomeado antes do código (METODO §3.5). T
 | 28 | `console: catálogo` | toda chave usada pela página existe em pt-BR e en (varredura); trocar o idioma muda os textos (navegador real no ensaio) | M0.8 |
 | 29 | `esforço por rota` | espião no transporte de cada rota: `reasoning.effort`, `reasoning_effort` (OpenRouter: `reasoning.effort`), `thinking.budget_tokens`, `thinkingConfig`; padrão não envia; recusa do esforço → uma repetição sem ele e evento | M0.8 |
 | 30 | `console: ações e conversa` | pela API da console: aprovar/negar, guardar chave (nunca devolvida), continuar a conversa com o histórico, retomar, iniciar login do ChatGPT (URL da OpenAI) e ver a conclusão | M0.8 |
+| 31 | `andamento ao vivo` | servidor falso em fluxo com a sequência medida (Chat: `delta.reasoning`, `delta.content`, `tool_calls` em partes, uso no último pedaço; SIWC: `reasoning_summary_text.delta`, `output_text.delta`) → o adaptador entrega fragmentos na ordem e o mesmo resultado final; o pedido do SIWC leva `reasoning.summary` só com esforço; `run.live` mostra fase, raciocínio e texto parciais durante a chamada e nada depois | M0.8d |
+| 32 | `raciocínio registrado` | passo com raciocínio → evento `agent.reasoning` com execução, passo e rota; sem raciocínio, nenhum evento; a console tem o bloco recolhível (varredura da página) | M0.8d |
+| 33 | `uma execução por conversa; parar` | `agent.run` com execução rodando na sessão → `run.busy` e nenhum evento novo; `agent.stop` durante uma chamada pendurada → a chamada é abortada, a execução fica `stopped` com `userStopped`, a aprovação pendente é negada; retomar depois funciona | M0.8d |
+| 34 | `console lembra` | funções puras da página: sessão e preferência guardadas e lidas do armazenamento local, com falha de armazenamento tolerada; ensaio no navegador real recarregando a página | M0.8d |
 
 ## O que não é teste automático no M0
 

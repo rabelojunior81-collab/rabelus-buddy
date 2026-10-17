@@ -1,7 +1,8 @@
 # SPEC — M0: Núcleo governado
 
-**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 5 · **Estado:** aprovada
+**ID:** 0001-nucleo-governado · **Tamanho:** fase · **Revisão:** 6 · **Estado:** aprovada
 **Autor:** buddy-dev (Buddy Fenix), sessões `claude-code-vs-code-438d04`, `-5cfc7b`, `-3a6e29` · **Criada em:** 2026-10-15T04:29:18-03:00 · **Aprovada por:** Pai, 2026-10-15 ("Aprovada, DEVE Mergear"), com a decisão 8 = A
+**Revisão 6 (2026-10-17), pedido do Pai depois do primeiro uso real da console:** "precisamos de feedback visual, tanto para esperar quanto para a apresentação com cadência de digitação; visibilidade, rastreabilidade e registro do raciocínio e dos comandos, com opção de colapsar". Entram no escopo 19 o **andamento ao vivo** (raciocínio e texto em fluxo, espera com tempo e fase), o **raciocínio registrado** no log, **uma execução por vez em cada conversa**, com "Parar", e a **conversa lembrada** ao recarregar (critérios 31–34). Medido antes: 248 s sem nada na tela com esforço Alto, e duas execuções simultâneas na mesma conversa.
 **Revisão 5 (2026-10-17), decisão do Pai ([ADR 0017](../../60-decisoes/0017-console-web-local-no-m0.md)):** o produto é um agente com UX/UI, e a CLI é do próprio agente; entra no escopo a **console web local** servida pelo núcleo (escopo 19), a demonstração passa a ser por ela (critério 26), e os critérios 27–30 cobrem a console, o esforço de raciocínio e a conversa contínua.
 **Revisões anteriores:** revisão 1 (rascunho), commit `6083ac2`; revisão 2 (rascunho), commit `1213bd2`. A revisão 3 é a 2 aprovada pelo Pai, com a ordem de provedores da [ADR 0015](../../60-decisoes/0015-ordem-de-provedores.md) e a decisão 8 resolvida (A). A revisão 4 (2026-10-16) só ajusta o "Fora": a biblioteca da TUI passa a estar em avaliação, `ink` × `pi-tui` ([ADR 0016](../../60-decisoes/0016-pi-por-composicao-e-tui-em-avaliacao.md)), e o Pi entra no M1 como agente plugável. O escopo do M0 não muda. A revisão 2 aplica as respostas do Pai de 2026-10-15: assinaturas como provedor ([ADR 0014](../../60-decisoes/0014-assinaturas-consumidas-pelo-nucleo.md)), teto de US$ 20, convenção de código aceita, SDKs definidos, protocolo de dependências e testes sem flexibilidade.
 
@@ -87,6 +88,9 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
     - aprovações (aprovar ou negar), consumo por janela, provedores com a origem da credencial;
     - chaves de API guardadas pela console (nunca voltam ao navegador); login e logout do ChatGPT;
     - retomada de execução interrompida ou parada;
+    - **andamento ao vivo** (rev. 6): enquanto o modelo trabalha, a conversa mostra a fase (pensando, escrevendo, usando ferramenta, aguardando aprovação), o tempo decorrido, o raciocínio que o provedor expõe e o texto chegando em cadência; raciocínio, comandos e resultados ficam em blocos recolhíveis, e a escolha de mostrar ou recolher é do usuário e fica lembrada;
+    - **uma execução por vez em cada conversa** (rev. 6): enviar enquanto a conversa trabalha não abre outra execução; a console oferece "Parar", que interrompe a chamada em curso e encerra a execução com motivo;
+    - a conversa aberta continua aberta ao recarregar a página (rev. 6);
     - toda string do catálogo (pt-BR e en);
     - token e `Host` exato em toda requisição; aberta por atalho de duplo clique, sem terminal.
 
@@ -179,7 +183,12 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 29. O esforço escolhido chega a cada rota no formato dela: Responses `reasoning.effort`; Chat Completions `reasoning_effort` (OpenRouter: `reasoning.effort`); Messages `thinking` com orçamento; Google `thinkingConfig`. "Padrão" não envia nada. Se o provedor recusar o esforço, a chamada se repete uma vez sem ele, e isso vira evento.
 30. Pela console: aprovar ou negar resolve a aprovação como pelo IPC; chave de API guardada aparece só como origem (nunca o valor); conversa contínua leva o histórico da sessão ao modelo; retomar tem o mesmo efeito do `resume`; login do ChatGPT abre a tela da OpenAI e a conclusão aparece na console.
 
-Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–25 rodam com provedores falsos determinísticos e um servidor OAuth falso. O 26 usa as assinaturas reais e é validado pelo Pai, pela console, depois do ensaio do buddy-dev no ambiente dele (regra de 2026-10-17). Os critérios 27–30 rodam com servidor falso e são ensaiados pelo buddy-dev num navegador real antes da entrega.
+31. Os provedores transmitem o andamento: Chat Completions em `stream: true` (com `stream_options.include_usage`), lendo `delta.reasoning` (ou `reasoning_content`), `delta.content` e as chamadas de ferramenta montadas pelos deltas; o SIWC pede `reasoning.summary: "auto"` junto com o esforço e lê `response.reasoning_summary_text.delta` e `response.output_text.delta`. O núcleo expõe o andamento da execução em curso (fase, início, raciocínio e texto parciais, rota) sem gravar cada fragmento no log; o resultado final é o mesmo de antes (texto, ferramentas, uso).
+32. O raciocínio que o provedor expõe vai para o log ao fim de cada passo (`agent.reasoning`, com execução, passo e rota), e a console o mostra na conversa em bloco recolhível, como os comandos e os resultados das ferramentas.
+33. Uma conversa tem no máximo uma execução rodando: `agent.run` numa sessão com execução em curso é recusado com `run.busy`, sem efeito. `agent.stop` interrompe a chamada em curso, nega a aprovação pendente da sessão e encerra a execução como parada (`userStopped`); a execução parada pode ser retomada.
+34. A console lembra a conversa aberta e a preferência de mostrar ou recolher os detalhes ao recarregar a página.
+
+Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–25 rodam com provedores falsos determinísticos e um servidor OAuth falso. O 26 usa as assinaturas reais e é validado pelo Pai, pela console, depois do ensaio do buddy-dev no ambiente dele (regra de 2026-10-17). Os critérios 27–34 rodam com servidor falso (os formatos de fluxo copiados da medição real de 2026-10-17) e são ensaiados pelo buddy-dev num navegador real antes da entrega.
 
 ## Métricas (registradas, sem meta fixa no M0)
 

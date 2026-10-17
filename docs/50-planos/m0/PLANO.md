@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T16:41:38-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T18:18:33-03:00
 
 ## Objetivo
 
@@ -66,6 +66,10 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - [x] **M0.8a O que a console exige do núcleo:** esforço de raciocínio por execução, no formato de cada rota, com uma repetição sem ele se o provedor recusar (critério 29); rota escolhida por execução (automática ou provedor/modelo); conversa contínua (nova mensagem na sessão, com o histórico); login do ChatGPT iniciado pelo núcleo; campos omitidos da prévia do SIWC reverificados em 2026-10-17;
   - [x] **M0.8b A console:** servidor HTTP no dono, só `127.0.0.1`, token e `Host` exato (critério 27); página sem dependência, com tarefa, esforço, rota, passos ao vivo, conversa, aprovações, consumo por janela, provedores com origem da credencial, chaves guardadas (nunca devolvidas), login e logout do ChatGPT, execuções com "Retomar" (critério 30); catálogo pt-BR/en (critério 28); atalho de duplo clique que sobe o núcleo e abre a console; o uso da console conta como atividade (o dono não se desliga com ela aberta);
   - [x] **M0.8c Ensaio no ambiente do Pai** ([registro](../../registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md); o Pai acompanhou e corrigiu o layout para chat; nove defeitos achados e corrigidos com teste): navegador real (Playwright) na máquina do Pai, passo a passo do que ele vai fazer, registrado em `docs/registros/`; só então as ações dele entram em "aguarda o Pai" (`bd validacoes`).
+- [ ] **M0.8d Andamento ao vivo e uma execução por conversa** (SPEC rev. 6, critérios 31–34; pedido do Pai no primeiro uso real, 2026-10-17). Medido antes: 248 s sem nada na tela no esforço Alto e duas execuções simultâneas na mesma conversa; os três provedores transmitem raciocínio em fluxo (ChatGPT: resumo; Ollama e OpenRouter: raciocínio bruto). Absorve a lacuna "recarregar fecha a conversa".
+  - [ ] **M0.8d-1 Núcleo:** fluxo nos adaptadores Chat e SIWC, `run.live`, `agent.reasoning` no log, `run.busy`, `agent.stop` com aborto da chamada;
+  - [ ] **M0.8d-2 Console:** fase e tempo de espera, texto em cadência, raciocínio, comandos e resultados recolhíveis (preferência lembrada), "Parar", conversa lembrada;
+  - [ ] **M0.8d-3 Ensaio no navegador real** com os provedores reais (ChatGPT com esforço Alto incluso), registrado.
 - [ ] **M0.9 Demonstração pela console e fechamento** (critério 26, rev. 5). Junta os testes reais que a console torna viáveis, antes só contra servidor falso:
   - login real do ChatGPT (critério 19 no real; **feito pelo Pai em 2026-10-17**) e um passo pela assinatura do ChatGPT (critério 18 no real, incluindo se a prévia aceita o esforço; o primeiro uso do Pai achou a resposta perdida: o backend real manda o `output` final vazio, corrigido no [hotfix ensaiado](../../registros/2026-10-17T164021-0300-chatgpt-sem-resposta-na-console-hotfix-ensaiado/README.md), com texto, ferramenta e aprovação pelo ChatGPT e esforço Baixo aceito);
   - lacuna de UX achada no hotfix: recarregar a página fecha a conversa aberta (volta pelo clique em "Execuções"); a console deve lembrar a conversa;
@@ -86,7 +90,8 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
 | M0.6 | M0.2, M0.4, M0.5 | nada para os falsos; a chave do Go e a conta ChatGPT só para testes reais |
 | M0.7 | M0.3–M0.6 | — |
 | M0.8 | M0.1–M0.7 | — (decidida pelo Pai em 2026-10-17: opção A) |
-| M0.9 | M0.8 (com o ensaio registrado) | o Pai: login do ChatGPT e a demonstração pela console; uma chave do Go com assinatura e saldo, para o Go entrar na demonstração |
+| M0.8d | M0.8 | — (pedido do Pai em 2026-10-17) |
+| M0.9 | M0.8 e M0.8d (com os ensaios registrados) | o Pai: login do ChatGPT e a demonstração pela console; uma chave do Go com assinatura e saldo, para o Go entrar na demonstração |
 
 **Enquanto a SPEC aguarda o Pai** (AGENTS §5.4): este plano, os fatos em aberto (`usage` verificado em 2026-10-15) e o desenho dos testes de cada critério. Nenhum código de produto antes da aprovação.
 
