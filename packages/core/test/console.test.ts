@@ -146,3 +146,10 @@ test('console: arquivos da página não carregam nada de fora (sem CDN, sem scri
     assert.doesNotMatch(s, /(src|href)=["']https?:\/\//, `${f} carrega recurso externo`);
   }
 });
+
+test('console: o script da página é JavaScript válido (um script quebrado deixaria o Pai sem console)', () => {
+  const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  const js = html.slice(html.indexOf('<script>') + 8, html.lastIndexOf('</script>'));
+  assert.ok(js.length > 1000);
+  assert.doesNotThrow(() => new Function(js));
+});
