@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
 **SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-16T01:42:10-03:00
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T07:56:00-03:00
 
 ## Objetivo
 

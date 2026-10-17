@@ -61,3 +61,4 @@ A auditoria pedida pelo Pai achou estas lacunas. Cada uma vira caso da tabela ac
 |---|---|---|
 | `CHANGELOG.md` da raiz sem M0.6b, M0.6e e M0.7a; README e README.en parados na M0.5 | sub-fases mergeadas com o changelog do buddy-dev (`.buddy-dev/CHANGELOG.md`) atualizado, mas não o do produto | `bd surfaces` (sub-fase concluída chega ao produto) |
 | STATUS com a `main` de dois merges atrás (M0.6a e M0.6b sem atualizar a linha) | PR mergeado | `bd surfaces` (`main` no STATUS), que pegou no PR da M0.6e |
+| `PLANO.md` do M0 editado sem recarimbar: o `bd surfaces` local passou (o arquivo ainda não estava commitado) e só a CI reprovou | carimbo conferido contra o último commit, que ainda era o antigo | `bd surfaces` trata arquivo alterado e não commitado como editado agora (2026-10-17) |

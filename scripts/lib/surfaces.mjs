@@ -103,9 +103,12 @@ export function stampProblems(root, { now = new Date() } = {}) {
     if (!m) continue;
     const stamp = new Date(m[1]);
     if (stamp.getTime() > now.getTime() + 5 * 60_000) { gaps.push(`${p}: "Atualizado em" ${m[1]} está no futuro`); continue; }
-    const last = tryGit(root, 'log', '-1', '--format=%cI', '--', p);
+    // Alterado e não commitado conta como editado agora (lacuna de 2026-10-17: o carimbo velho do
+    // PLANO passou no bd surfaces local, antes do commit, e só reprovou na CI).
+    const dirty = Boolean(tryGit(root, 'status', '--porcelain', '--', p));
+    const last = dirty ? now.toISOString() : tryGit(root, 'log', '-1', '--format=%cI', '--', p);
     if (last && new Date(last).getTime() - stamp.getTime() > STAMP_TOLERANCE_H * 3_600_000) {
-      gaps.push(`${p}: "Atualizado em" ${m[1]} desatualizado (último commit do arquivo: ${last})`);
+      gaps.push(`${p}: "Atualizado em" ${m[1]} desatualizado (${dirty ? 'alterado e não commitado' : `último commit do arquivo: ${last}`})`);
     }
   }
   return gaps;
