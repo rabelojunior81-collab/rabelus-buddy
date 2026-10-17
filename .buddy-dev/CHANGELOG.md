@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0003 · 2026-10-14T103608-0300 · claude-code-c33594 · correcao
-
-Fonte de relógio trocada de api.github.com (Date de cache, oscilou 31 s) para a trace da Cloudflare; core.quotePath=false para caminhos com acento. (10:24 -0300)
-
 ### #0004 · 2026-10-14T103608-0300 · claude-code-c33594 · doc
 
 Superfície open source (Apache-2.0, pt-BR+en, Contributor Covenant 3.0, SECURITY), 7 ADRs, banco de conhecimento com 4 fichas. PR #2. (10:32 -0300)
@@ -207,3 +203,7 @@ Auditoria real depois da falha no shell do Pai: login do ChatGPT quebrado na Ope
 ### #0050 · 2026-10-17T090326-0300 · claude-code-vs-code-7307c7 · decisao
 
 Opção A aprovada pelo Pai: console web local servida pelo núcleo (ADR 0017); SPEC 0001 rev. 5 (escopo 19, critérios 26–30); plano revisado com M0.8 (console) e M0.9 (demonstração pela console, aglutinando testes reais); adendo no ROADMAP; ficha de assinaturas reverificada ao vivo.
+
+### #0051 · 2026-10-17T091458-0300 · claude-code-vs-code-7307c7 · feat
+
+M0.8a: esforço de raciocínio por rota (com repetição sem ele se recusado), rota por execução, conversa contínua, chaves/provedores/login do ChatGPT pelo núcleo; campos omitidos da prévia do SIWC atualizados.
