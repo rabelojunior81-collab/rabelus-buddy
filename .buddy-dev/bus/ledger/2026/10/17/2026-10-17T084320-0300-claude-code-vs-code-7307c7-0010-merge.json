@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-17T084320-0300-claude-code-vs-code-7307c7-0010",
+  "ts": "2026-10-17T08:43:20-03:00",
+  "utc": "2026-10-17T11:43:20.590Z",
+  "session": "claude-code-vs-code-7307c7",
+  "seq": 10,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #34: fix: auditoria real — login do ChatGPT, erros HTTP, dono ocioso; regra 'nunca teste não ensaiado'",
+  "refs": [
+    "#34"
+  ],
+  "data": {}
+}

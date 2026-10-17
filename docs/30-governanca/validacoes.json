@@ -397,16 +397,16 @@
     },
     {
       "id": "demonstracao-m0",
-      "descricao": "Tarefa real na assinatura do Go, kill -9 e resume, um passo pelo ChatGPT (critério 26)",
+      "descricao": "Demonstração do M0 pela console web local: login do ChatGPT, tarefa real, aprovações, mudança de esforço, queda e retomada, consumo (critério 26, rev. 5)",
       "quem": "pai",
       "onde": [
-        "M0.8"
+        "M0.9"
       ],
       "mecanismo": {},
       "estado": "bloqueada",
       "origem": "SPEC 0001",
       "tipo": "acao",
-      "motivo": "Pai (2026-10-17): não testa por CLI; o produto é um agente com UX/UI. A demonstração espera a decisão sobre a superfície em que ela acontece."
+      "motivo": "Espera a console (M0.8) e o ensaio dela no ambiente do Pai (M0.8c); a opção A foi aprovada em 2026-10-17."
     },
     {
       "id": "alertas-dependabot",

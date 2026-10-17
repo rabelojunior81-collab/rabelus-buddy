@@ -22,3 +22,4 @@ Uma decisão aceita **não se edita** para mudar de ideia: escreve-se uma ADR no
 | [0014](./0014-assinaturas-consumidas-pelo-nucleo.md) | Assinaturas consumidas pelo núcleo: OpenCode Go primeiro, ChatGPT pelo Sign in with ChatGPT, API paga como reserva (ordem substituída pela 0015) | aceita |
 | [0015](./0015-ordem-de-provedores.md) | Ordem de provedores: OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga) | aceita |
 | [0016](./0016-pi-por-composicao-e-tui-em-avaliacao.md) | Pi por composição (agente plugável no M1), sem fork; TUI em avaliação (ink × pi-tui) | aceita |
+| [0017](./0017-console-web-local-no-m0.md) | Console web local servida pelo núcleo como superfície do Pai no M0 (paliativa; não substitui a 0013) | aceita |

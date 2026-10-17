@@ -52,3 +52,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0001-#0001
 
 1. **O nascimento foi uma importação intocada, com sha256 conferido.** O material original entrou sem edição e com prova de integridade; é a mesma disciplina que faltou hoje: conferir contra a fonte real antes de afirmar que algo está pronto.
+
+## lote #0002-#0002
+
+1. **As ferramentas nasceram com teste (22 no primeiro PR).** O `bd` existe para que regra vire mecanismo; a regra de hoje (ação do Pai só com ensaio) entrou pelo mesmo caminho, no `bd validacoes`.

@@ -9,7 +9,7 @@
 
 </div>
 
-> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)), with **M0.7c** done (M0.7 complete): `rbuddy run "<task>"` runs the agent on the subscriptions (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), with policy, approvals in the terminal, budget by window and recovery after a crash (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` and `daemon` round out the CLI. Secrets and catalog audited by tests; an audit against the real services fixed the ChatGPT sign-in and error handling. The demo (M0.8) waits for the decision on the interface: Rabelus Buddy is an agent with UX/UI, not a CLI.
+> **Status:** **M0 — Governed core** in progress ([SPEC 0001](./docs/40-specs/0001-nucleo-governado/SPEC.md), [plan](./docs/50-planos/m0/PLANO.md)), with **M0.7c** done (M0.7 complete): `rbuddy run "<task>"` runs the agent on the subscriptions (OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter), with policy, approvals in the terminal, budget by window and recovery after a crash (`rbuddy resume`); `status`, `log`, `providers`, `login`/`logout`, `approvals`, `budget` and `daemon` round out the CLI. Secrets and catalog audited by tests; an audit against the real services fixed the ChatGPT sign-in and error handling. Rabelus Buddy is an agent with UX/UI, not a CLI: next comes the **local web console** (M0.8, [ADR 0017](./docs/60-decisoes/0017-console-web-local-no-m0.md)), and the M0 demo happens in it (M0.9).
 
 > Portuguese (pt-BR) is the project's primary language. Public-facing files are mirrored in English; internal documentation is in Portuguese and translated on demand.
 

@@ -44,7 +44,11 @@ Cada critério de aceite tem um teste nomeado antes do código (METODO §3.5). T
 | 23 | `catálogo completo e troca de idioma` | toda chave usada no código existe em `pt-BR` e `en` (varredura estática); `--lang en` e `RBUDDY_LANG=pt-BR` mudam a saída de `status` | M0.1 / M0.7 |
 | 24 | `bd deps verde` | o `bd deps` do repositório passa na CI (registro, versão exata, licença, prazo) | M0.1 |
 | 25 | `bd test-guard verde` | o `bd test-guard` passa contra a base em todo PR do M0 | M0.1 |
-| 26 | demonstração (manual, com o Pai) | roteiro: tarefa real na assinatura do Go → aprovações → `kill -9` → `resume` → `log` mostra cada aprovação e consumo, sem efeito duplicado; um passo pelo ChatGPT (SIWC) | M0.8 |
+| 26 | demonstração (real, com o Pai, pela console; rev. 5) | ensaio do buddy-dev no ambiente do Pai (registro) → o Pai entra com o ChatGPT pela console, roda tarefa real, aprova/nega, muda o esforço; queda do núcleo e "Retomar" sem efeito duplicado; um passo pelo ChatGPT; consumo e troca de provedor visíveis | M0.9 |
+| 27 | `console: só local, com token e Host` | servidor da console: sem token → 401; `Host` diferente → 403; nenhuma aprovação ou chave muda nesses casos; escuta só em 127.0.0.1 | M0.8 |
+| 28 | `console: catálogo` | toda chave usada pela página existe em pt-BR e en (varredura); trocar o idioma muda os textos (navegador real no ensaio) | M0.8 |
+| 29 | `esforço por rota` | espião no transporte de cada rota: `reasoning.effort`, `reasoning_effort` (OpenRouter: `reasoning.effort`), `thinking.budget_tokens`, `thinkingConfig`; padrão não envia; recusa do esforço → uma repetição sem ele e evento | M0.8 |
+| 30 | `console: ações e conversa` | pela API da console: aprovar/negar, guardar chave (nunca devolvida), continuar a conversa com o histórico, retomar, iniciar login do ChatGPT (URL da OpenAI) e ver a conclusão | M0.8 |
 
 ## O que não é teste automático no M0
 
