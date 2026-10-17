@@ -101,3 +101,24 @@ test('kill -9 com a chamada ao modelo em curso, reinício e agent.resume: tarefa
   assert.ok(kinds.includes('run.interrupted') && kinds.includes('run.resumed') && kinds.includes('effect.reconciled'));
   await fake.close();
 });
+
+test('dono ocioso se desliga sozinho (a próxima tarefa sobe outro com as credenciais atuais); com execução rodando, fica', async () => {
+  const home = tempHome();
+  const ep = endpointFor(home);
+  const o = await spawnOwner(home, { RBUDDY_IDLE_MS: '1500' });
+  owners.push(o);
+  // Esperar o processo sair, sem falar com o dono (cada chamada conta como atividade).
+  const code = await new Promise<number | null>((r) => { if (o.exitCode !== null) r(o.exitCode); else o.once('exit', (c) => r(c)); });
+  assert.equal(code, 0, 'ocioso: saiu do ar sozinho');
+  await assert.rejects(call(ep, 'daemon.status', {}));
+
+  const fake = await fakeHttp(() => ({ hang: true }));
+  const { home: h2, workspace } = homeWithFake(fake.url);
+  const ep2 = endpointFor(h2);
+  owners.push(await spawnOwner(h2, { RBUDDY_IDLE_MS: '1500', OPENCODE_GO_API_KEY: 'chave-falsa' }));
+  await call(ep2, 'agent.run', { session: 'si', task: 'longa', workspace, interactive: false });
+  await new Promise((r) => setTimeout(r, 4000));
+  assert.ok(await call(ep2, 'daemon.status', {}), 'com execução rodando, o dono fica');
+  await call(ep2, 'daemon.stop', {});
+  await fake.close();
+});
