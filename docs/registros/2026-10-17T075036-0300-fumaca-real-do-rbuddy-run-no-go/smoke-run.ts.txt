@@ -1,0 +1,32 @@
+// Fumaça real (M0.7): rbuddy run na assinatura do OpenCode Go, numa pasta temporária.
+// Lê as chaves de .buddy-dev/.env.local sem imprimi-las; aprova as escritas pelo prompt injetado.
+import { readFileSync, mkdtempSync, readdirSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { run } from '../packages/cli/src/main.ts';
+import { call } from '../packages/client/src/ipc.ts';
+import { endpointFor } from '../packages/core/src/paths.ts';
+
+const env: NodeJS.ProcessEnv = { ...process.env };
+for (const line of readFileSync(join(import.meta.dirname, '..', '.buddy-dev', '.env.local'), 'utf8').split(/\r?\n/)) {
+  const m = /^([A-Z0-9_]+)=(.*)$/.exec(line.trim());
+  if (m) env[m[1]!] = m[2]!.replace(/^["']|["']$/g, '');
+}
+const home = mkdtempSync(join(tmpdir(), 'rbuddy-smoke-home-'));
+const ws = mkdtempSync(join(tmpdir(), 'rbuddy-smoke-ws-'));
+env.RBUDDY_HOME = home;
+delete env.RBUDDY_LANG;
+console.log('variáveis carregadas:', ['OPENCODE_GO_API_KEY', 'OLLAMA_CLOUD_API_KEY', 'OPENROUTER_API_KEY'].filter((k) => env[k]).join(', '));
+
+const secrets = ['OPENCODE_GO_API_KEY', 'OLLAMA_CLOUD_API_KEY', 'OPENROUTER_API_KEY', 'GEMINI_API_KEY'].map((k) => env[k]).filter(Boolean) as string[];
+const safe = (s: string) => secrets.reduce((a, k) => a.split(k).join('[segredo]'), s);
+const io = { out: (s: string) => console.log(safe(s)), err: (s: string) => console.error(safe(s)) };
+
+const task = process.argv[2] ?? 'Crie o arquivo ola.txt com o conteúdo "oi do buddy" e depois liste o diretório atual. Responda em uma frase.';
+const code = await run(['run', task], env, io, { cwd: ws, interactive: true, prompt: async (q) => { console.log(`${q}s (automático)`); return 's'; } });
+console.log('código de saída:', code);
+console.log('workspace:', readdirSync(ws), existsSync(join(ws, 'ola.txt')) ? readFileSync(join(ws, 'ola.txt'), 'utf8') : '(sem ola.txt)');
+const sess = /ses-[0-9a-f]{8}/;
+void sess;
+await run(['budget'], env, io, {});
+await call(endpointFor(home), 'daemon.stop', {});
