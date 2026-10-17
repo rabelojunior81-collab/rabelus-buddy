@@ -172,3 +172,27 @@ test('dono: chaves e provedores pelo núcleo (a chave nunca volta); login do Cha
   assert.deepEqual({ loggedIn: auth.loggedIn, pending: auth.pending }, { loggedIn: false, pending: true });
   await call(ep, 'daemon.stop', {});
 });
+
+test('retomar mantém o esforço e a rota escolhidos para a execução (achado no ensaio da console)', async () => {
+  const seen: Record<string, unknown>[] = [];
+  let hang = true;
+  const fake = await fakeHttp((c: Captured) => {
+    if (!c.path.endsWith('/chat/completions')) return { status: 404 };
+    seen.push(c.body);
+    if (hang) return { hang: true };
+    return chat({ content: 'fim' }, 'stop');
+  });
+  const { home, workspace } = homeWithFake(fake.url);
+  const owner = await spawnOwner(home, { OPENCODE_GO_API_KEY: 'chave-falsa', RBUDDY_CONSOLE: '0' });
+  owners.push(owner);
+  const ep = endpointFor(home);
+  const { run } = (await call(ep, 'agent.run', { session: 'sr', task: 'x', workspace, effort: 'high', route: { provider: 'opencode-go', model: 'kimi-k3' } })) as { run: string };
+  await until(async () => (seen.length >= 1 ? true : undefined));
+  await killHard(owner);
+  hang = false;
+  owners.push(await spawnOwner(home, { OPENCODE_GO_API_KEY: 'chave-falsa', RBUDDY_CONSOLE: '0' }));
+  await call(ep, 'agent.resume', { run, workspace });
+  await until(async () => (((await call(ep, 'run.get', { id: run })) as Run).state === 'done' ? true : undefined));
+  assert.equal(seen.at(-1)?.reasoning_effort, 'high', 'o esforço da execução volta na retomada');
+  await fake.close();
+});
