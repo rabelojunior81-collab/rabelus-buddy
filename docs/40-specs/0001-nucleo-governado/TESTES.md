@@ -53,6 +53,7 @@ Cada critério de aceite tem um teste nomeado antes do código (METODO §3.5). T
 | 32 | `raciocínio registrado` | passo com raciocínio → evento `agent.reasoning` com execução, passo e rota; sem raciocínio, nenhum evento; a console tem o bloco recolhível (varredura da página) | M0.8d |
 | 33 | `uma execução por conversa: fila, direcionar, parar` | `agent.run` com execução rodando na sessão → `run.queued`, nenhuma execução nova; ao terminar, a da fila começa com o histórico (`run.dequeued`); `agent.steer` durante uma chamada → a mensagem entra antes da próxima chamada, e uma resposta final sem ferramentas não encerra enquanto houver direcionamento; `agent.unqueue` cancela; fila lida do log depois de reiniciar o dono; `agent.stop` durante uma chamada pendurada → a chamada é abortada, a execução fica `stopped` com `userStopped`, a aprovação pendente é negada; retomar depois funciona | M0.8d |
 | 34 | `console lembra` | funções puras da página: sessão e preferência guardadas e lidas do armazenamento local, com falha de armazenamento tolerada; ensaio no navegador real recarregando a página | M0.8d |
+| 35 | `console: tema` | função pura da página: Sistema não força nada, Claro e Escuro marcam a página; escolha lembrada e armazenamento quebrado tolerado; o CSS define Escuro acima da preferência do sistema e Claro acima dela; ensaio no navegador real nos dois modos do sistema | M0.8d |
 
 ## O que não é teste automático no M0
 

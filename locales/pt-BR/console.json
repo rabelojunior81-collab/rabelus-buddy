@@ -111,6 +111,12 @@
       "effectUnknown": "resultado incerto de uma ação; use Retomar para conferir",
       "needsReconciliation": "precisa da sua confirmação para retomar",
       "internalError": "erro interno do núcleo"
+    },
+    "theme": {
+      "title": "Tema",
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Escuro"
     }
   }
 }

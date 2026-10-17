@@ -168,6 +168,9 @@ test('console: resposta com bloco de código e lista vira blocos, não texto cru
   assert.deepEqual(mdBlocks('1. um\n2. dois'), [{ type: 'list', ordered: true, items: ['um', 'dois'] }]);
   assert.deepEqual(mdBlocks('```\nsem fim'), [{ type: 'code', lang: '', text: 'sem fim' }], 'bloco sem fechamento não some');
   assert.deepEqual(mdBlocks('linha 1\nlinha 2'), [{ type: 'p', text: 'linha 1\nlinha 2' }]);
+  // Achado no ensaio do tema (2026-10-17): o modelo escreve títulos ("### Compostos excluídos").
+  assert.deepEqual(mdBlocks('texto\n### Compostos excluídos\n- 155'), [{ type: 'p', text: 'texto' }, { type: 'h', text: 'Compostos excluídos' }, { type: 'list', ordered: false, items: ['155'] }]);
+  assert.deepEqual(mdBlocks('#hashtag sem espaço'), [{ type: 'p', text: '#hashtag sem espaço' }], 'só com espaço depois do #');
 });
 
 test('console: ChatGPT conectado — estado legível, "Entrar" vira "Trocar de conta" secundário (achado do Pai, 2026-10-17)', () => {
@@ -184,7 +187,7 @@ test('console: ChatGPT conectado — estado legível, "Entrar" vira "Trocar de c
 
 // ---------- SPEC 0001 rev. 6 (M0.8d): andamento ao vivo, detalhes recolhíveis, fila, console lembra ----------
 type Pure2 = {
-  restore: (get: (k: string, d: string | null) => string | null) => { session: string | null; details: boolean; route: string };
+  restore: (get: (k: string, d: string | null) => string | null) => { session: string | null; details: boolean; route: string; theme: string };
   elapsedText: (ms: number) => string;
   revealStep: (shown: number, total: number, dtMs: number) => number;
   liveLine: (l: { phase: string; route: string; tool: string | null }, ms: number, t: (k: string, v?: Record<string, unknown>) => string) => string;
@@ -200,9 +203,28 @@ test('console lembra a conversa aberta e a preferência de detalhes; armazenamen
   const { restore } = pure2();
   const route = JSON.stringify({ provider: 'chatgpt', model: 'gpt-6.1-sol' });
   const mem: Record<string, string> = { 'rb.session': 'ses-abc', 'rb.details': 'open', 'rb.route': route };
-  assert.deepEqual(restore((k, d) => mem[k] ?? d), { session: 'ses-abc', details: true, route }, 'o provedor escolhido também volta (achado no ensaio)');
-  assert.deepEqual(restore((_k, d) => d), { session: null, details: false, route: '' }, 'primeira visita: sem conversa, detalhes recolhidos, rota automática');
-  assert.deepEqual(restore(() => { throw new Error('bloqueado'); }), { session: null, details: false, route: '' });
+  assert.deepEqual(restore((k, d) => mem[k] ?? d), { session: 'ses-abc', details: true, route, theme: 'system' }, 'o provedor escolhido também volta (achado no ensaio)');
+  assert.deepEqual(restore((_k, d) => d), { session: null, details: false, route: '', theme: 'system' }, 'primeira visita: sem conversa, detalhes recolhidos, rota automática');
+  assert.deepEqual(restore(() => { throw new Error('bloqueado'); }), { session: null, details: false, route: '', theme: 'system' });
+});
+
+test('tema: Sistema segue o navegador, Claro e Escuro valem acima dele, escolha lembrada (critério 35; pedido do Pai)', () => {
+  const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  const a = html.indexOf('// <puras>');
+  const b = html.indexOf('// </puras>');
+  const { themeOf, restore } = new Function(`${html.slice(a, b)}; return { themeOf, restore };`)() as { themeOf: (c: unknown) => string | null; restore: (get: (k: string, d: string | null) => string | null) => { theme: string } };
+  assert.equal(themeOf('system'), null, 'Sistema não marca a página');
+  assert.equal(themeOf('light'), 'light');
+  assert.equal(themeOf('dark'), 'dark');
+  assert.equal(themeOf('roxo'), null, 'valor desconhecido cai no Sistema');
+  assert.equal(restore((k, d) => (k === 'rb.theme' ? 'dark' : d)).theme, 'dark');
+  assert.equal(restore((_k, d) => d).theme, 'system');
+  assert.equal(restore(() => { throw new Error('bloqueado'); }).theme, 'system');
+  // CSS: escuro por padrão; claro pelo sistema só sem escolha explícita; escolha explícita vale acima do sistema.
+  assert.match(html, /@media \(prefers-color-scheme: light\) \{\s*:root:not\(\[data-theme="dark"\]\)/);
+  assert.match(html, /:root\[data-theme="light"\]/);
+  assert.match(html, /<select id="theme"[^>]*>[\s\S]*?data-i18n="console\.theme\.system"[\s\S]*?data-i18n="console\.theme\.light"[\s\S]*?data-i18n="console\.theme\.dark"/);
+  assert.match(html, /<label for="theme"[^>]*data-i18n="console\.theme\.title"/);
 });
 
 test('andamento: tempo legível, texto revelado em cadência (sem pular nem travar) e linha de fase (critério 31)', () => {
