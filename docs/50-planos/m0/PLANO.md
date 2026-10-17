@@ -1,7 +1,7 @@
 # Plano — M0: Núcleo governado
 
-**SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** em execução · **Aprovado por:** Pai, 2026-10-15
-**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T18:58:50-03:00
+**SPEC:** [0001-nucleo-governado](../../40-specs/0001-nucleo-governado/SPEC.md) · **Estado:** concluído (2026-10-17) · **Aprovado por:** Pai, 2026-10-15
+**Branch(es):** uma por sub-fase, `feat/m0-N-<slug>` · **Atualizado em:** 2026-10-17T19:39:15-03:00
 
 ## Objetivo
 
@@ -70,7 +70,7 @@ Cada sub-fase: SPEC curta no PR, testes commitados falhando, código, CI verde e
   - [x] **M0.8d-1 Núcleo:** fluxo nos adaptadores Chat e SIWC, `run.live`, `agent.reasoning` no log, fila por conversa (`run.queued`), `agent.steer`, `agent.unqueue`, `agent.stop` com aborto da chamada;
   - [x] **M0.8d-2 Console:** fase e tempo de espera, texto em cadência, raciocínio, comandos e resultados recolhíveis (preferência lembrada), fila visível com "Direcionar agora" e "Cancelar" (Pai: "primariamente queued, com opção para steer"), "Parar", conversa lembrada;
   - [x] **M0.8d-3 Ensaio no navegador real** com os provedores reais (ChatGPT com esforço Alto incluso), registrado ([registro](../../registros/2026-10-17T185732-0300-ensaio-da-m0-8d-andamento-ao-vivo-e-fila/README.md); oito defeitos achados pelo uso e corrigidos com teste antes, entre eles o aborto engolido pelo SDK, o LaTeX cru e o raciocínio repetido).
-- [ ] **M0.9 Demonstração pela console e fechamento** (critério 26, rev. 5). Junta os testes reais que a console torna viáveis, antes só contra servidor falso:
+- [x] **M0.9 Demonstração pela console e fechamento** ([retrospectiva e métricas](../../registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md); o Pai validou pela console: "testei todo o resto"; tema Sistema/Claro/Escuro entrou a pedido dele, critério 35) (critério 26, rev. 5). Junta os testes reais que a console torna viáveis, antes só contra servidor falso:
   - login real do ChatGPT (critério 19 no real; **feito pelo Pai em 2026-10-17**) e um passo pela assinatura do ChatGPT (critério 18 no real, incluindo se a prévia aceita o esforço; o primeiro uso do Pai achou a resposta perdida: o backend real manda o `output` final vazio, corrigido no [hotfix ensaiado](../../registros/2026-10-17T164021-0300-chatgpt-sem-resposta-na-console-hotfix-ensaiado/README.md), com texto, ferramenta e aprovação pelo ChatGPT e esforço Baixo aceito);
   - lacuna de UX achada no hotfix: recarregar a página fecha a conversa aberta (volta pelo clique em "Execuções"); a console deve lembrar a conversa;
   - interação: conversa contínua e mudança de esforço entre tarefas, com o consumo comparado;

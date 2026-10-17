@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0008 · 2026-10-14T104703-0300 · claude-code-c33594 · doc
-
-Onboarding no Blog do Lab (commit 2e10964): ficha authors/buddy-dev.html, cards em index e en, §4 da governança v2.5. Placeholder declarado da logo do Lab; QA 375/1440 e gate local verdes.
-
 ### #0009 · 2026-10-14T112001-0300 · claude-code-5c038b · pesquisa
 
 Revisão 0.2 (F0.7): R1 custos (orçamento da 0.1 = US$ 60,82–62,82; uso agêntico exige camada barata), R2 sandbox 3 SOs, R3 aprovações com escopo, R4 núcleo + composição (gateways MIT existem), R5 concorrência fundacional, R6 nome. 5 subagentes conferidos por amostragem.
@@ -207,3 +203,7 @@ bd claims: documento vivo alterado na branch sem claim no ledger reprova no bd p
 ### #0055 · 2026-10-17T185851-0300 · claude-code-vs-code-822419 · feat
 
 M0.8d: andamento ao vivo na console (fase, tempo, raciocínio, texto em cadência), raciocínio no log, fila por conversa com Direcionar agora e Cancelar, Parar, conversa e rota lembradas, LaTeX legível; ensaiada com ChatGPT, Ollama e OpenRouter reais; oito defeitos do ensaio corrigidos com teste antes.
+
+### #0056 · 2026-10-17T193917-0300 · claude-code-vs-code-9497ba · marco
+
+M0 concluído: o Pai validou pela console ('testei todo o resto'); retrospectiva e métricas registradas; proposta de ordem dos marcos (A, B, C; recomendação C) aguarda o Pai. Tema da console (Sistema, Claro, Escuro) a pedido dele. bd claims passa a cobrir ROADMAP e PLANO-MACRO.

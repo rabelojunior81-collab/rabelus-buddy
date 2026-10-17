@@ -16,6 +16,7 @@ const LIVING = [
   /^README(\.en)?\.md$/,
   /^CHANGELOG\.md$/,
   /^docs\/ROADMAP[^/]*\.md$/,
+  /^docs\/50-planos\/(ROADMAP|PLANO-MACRO)\.md$/, // achado no fechamento do M0: moram em 50-planos
 ];
 export const isLiving = (f) => LIVING.some((re) => re.test(f));
 

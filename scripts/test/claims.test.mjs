@@ -24,7 +24,7 @@ function repo() {
 const claim = (r, resource, ts, seq = 1) => put(r, { [`.buddy-dev/bus/ledger/2026/10/17/${ts.replace(/[:]/g, '').slice(0, 17)}-s-${String(seq).padStart(4, '0')}-claim.json`]: JSON.stringify({ v: 1, ts, utc: new Date(ts).toISOString(), session: 's', type: 'claim', summary: resource }) });
 
 test('documentos vivos: STATUS, MEMORY, plano, SPEC e TESTES, validações, AGENTS, README e ROADMAP; código e append-only não', () => {
-  for (const f of ['.buddy-dev/STATUS.md', '.buddy-dev/MEMORY.md', 'docs/50-planos/m0/PLANO.md', 'docs/40-specs/0001-x/SPEC.md', 'docs/40-specs/0001-x/TESTES.md', 'docs/30-governanca/validacoes.json', 'AGENTS.md', 'README.md', 'README.en.md', 'docs/ROADMAP.md', 'CHANGELOG.md']) assert.ok(isLiving(f), f);
+  for (const f of ['.buddy-dev/STATUS.md', '.buddy-dev/MEMORY.md', 'docs/50-planos/m0/PLANO.md', 'docs/40-specs/0001-x/SPEC.md', 'docs/40-specs/0001-x/TESTES.md', 'docs/30-governanca/validacoes.json', 'AGENTS.md', 'README.md', 'README.en.md', 'docs/ROADMAP.md', 'CHANGELOG.md', 'docs/50-planos/ROADMAP.md', 'docs/50-planos/PLANO-MACRO.md']) assert.ok(isLiving(f), f);
   for (const f of ['src/x.ts', '.buddy-dev/CHANGELOG.md', '.buddy-dev/LEARNING-CURVE.md', '.buddy-dev/diario/2026-10-17.md', 'docs/registros/x/README.md']) assert.equal(isLiving(f), false, f);
 });
 

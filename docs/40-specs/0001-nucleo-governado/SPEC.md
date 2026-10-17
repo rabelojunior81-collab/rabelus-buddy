@@ -91,6 +91,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
     - **andamento ao vivo** (rev. 6): enquanto o modelo trabalha, a conversa mostra a fase (pensando, escrevendo, usando ferramenta, aguardando aprovação), o tempo decorrido, o raciocínio que o provedor expõe e o texto chegando em cadência; raciocínio, comandos e resultados ficam em blocos recolhíveis, e a escolha de mostrar ou recolher é do usuário e fica lembrada;
     - **uma execução por vez em cada conversa, com fila e direcionamento** (rev. 6; Pai: "primariamente queued, com opção para steer"): mensagem enviada enquanto a conversa trabalha **entra na fila** e roda em seguida, continuando a conversa; cada mensagem da fila pode **direcionar agora** (entra na execução em curso antes da próxima chamada ao modelo) ou ser cancelada; a console também oferece "Parar", que interrompe a chamada em curso e encerra a execução com motivo;
     - a conversa aberta continua aberta ao recarregar a página (rev. 6);
+    - tema escolhido na console: Sistema (segue o navegador), Claro ou Escuro, lembrado (pedido do Pai, 2026-10-17);
     - toda string do catálogo (pt-BR e en);
     - token e `Host` exato em toda requisição; aberta por atalho de duplo clique, sem terminal.
 
@@ -187,6 +188,7 @@ Toda ação passa pelo motor de política, todo consumo passa pelo orçamento at
 32. O raciocínio que o provedor expõe vai para o log ao fim de cada passo (`agent.reasoning`, com execução, passo e rota), e a console o mostra na conversa em bloco recolhível, como os comandos e os resultados das ferramentas.
 33. Uma conversa tem no máximo uma execução rodando. `agent.run` numa sessão com execução em curso **enfileira** a mensagem (`run.queued`, no log); quando a execução termina (concluída ou parada), a primeira da fila começa continuando a conversa (`run.dequeued`). `agent.steer` leva uma mensagem da fila para a execução em curso: ela entra como mensagem do usuário antes da próxima chamada ao modelo, e, se o modelo já tinha respondido sem ferramentas, a execução segue com mais uma chamada em vez de terminar. `agent.unqueue` cancela uma mensagem da fila. `agent.stop` interrompe a chamada em curso, nega a aprovação pendente da sessão e encerra a execução como parada (`userStopped`); a execução parada pode ser retomada. A fila sobrevive à queda do núcleo (está no log).
 34. A console lembra a conversa aberta e a preferência de mostrar ou recolher os detalhes ao recarregar a página.
+35. A console tem tema Sistema, Claro ou Escuro; Sistema segue `prefers-color-scheme`, Claro e Escuro valem acima dele; a escolha fica lembrada e o texto do seletor vem do catálogo.
 
 Desenho de cada teste: [TESTES.md](./TESTES.md). Os critérios 1–25 rodam com provedores falsos determinísticos e um servidor OAuth falso. O 26 usa as assinaturas reais e é validado pelo Pai, pela console, depois do ensaio do buddy-dev no ambiente dele (regra de 2026-10-17). Os critérios 27–34 rodam com servidor falso (os formatos de fluxo copiados da medição real de 2026-10-17) e são ensaiados pelo buddy-dev num navegador real antes da entrega.
 

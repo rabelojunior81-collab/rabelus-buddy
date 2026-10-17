@@ -111,6 +111,12 @@
       "effectUnknown": "uncertain result of an action; use Resume to check",
       "needsReconciliation": "needs your confirmation to resume",
       "internalError": "internal core error"
+    },
+    "theme": {
+      "title": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
     }
   }
 }

@@ -1,13 +1,13 @@
 # Roadmap vivo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T09:02:58-03:00 · **Por:** buddy-dev (claude-code-vs-code-7307c7)
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T19:39:15-03:00 · **Por:** buddy-dev (claude-code-vs-code-9497ba)
 **Estado:** aprovado pelo Pai em 2026-10-15. **Base:** [Revisão 0.2](../10-pesquisa/rev-0.2/RELATORIO.md) e ADRs [0008](../60-decisoes/0008-orcamento-por-assinaturas.md)–[0012](../60-decisoes/0012-canais-globais-rede-e-buzz.md). A ordem dos marcos foi aceita pelo Pai ([ADR 0010](../60-decisoes/0010-nucleo-governado-e-composicao.md)); o conteúdo detalhado de cada marco é proposta e vira SPEC quando o marco começar.
 
 Onde estamos e para onde vamos. Sem datas: o esforço real começa a ser medido no M0 (pelo ledger) e o roadmap é recalibrado ao fim de cada marco.
 
 ## Agora
 
-**M0 — Núcleo governado** · SPEC [0001](../40-specs/0001-nucleo-governado/SPEC.md) e [plano](./m0/PLANO.md) **aprovados** pelo Pai em 2026-10-15; execução começa pela M0.1. A Fase 0 foi fechada em 2026-10-15 ([plano](./fase-0/PLANO.md)).
+**M0 — Núcleo governado: concluído em 2026-10-17**, validado pelo Pai pela console ([retrospectiva e métricas](../registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md)). **Aguarda o Pai:** a ordem dos próximos marcos (proposta abaixo). A Fase 0 foi fechada em 2026-10-15 ([plano](./fase-0/PLANO.md)).
 
 ## Princípio
 
@@ -43,6 +43,15 @@ O Pai: "não estou construindo uma CLI; estou construindo um agente multimodal c
 - a **console web local** (ADR 0017) entra no M0 como superfície do Pai, paliativa e sem dependência;
 - a interface de produto (ADR 0013: Expo universal, depois Web React DOM) **não espera mais o M5+**: o reposicionamento dela e dos demais marcos é proposto ao Pai no fechamento do M0, com o que a console tiver ensinado;
 - a CLI fica como interface do próprio agente e das ferramentas, nunca superfície de teste do Pai.
+
+## Proposta de 2026-10-17 — a ordem depois do M0 (aguarda o Pai)
+
+Prometida no adendo acima, com o que o M0 ensinou. O detalhe e os prós e contras estão na [retrospectiva](../registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md).
+- **A — Manter:** a ordem atual.
+- **B — Interface primeiro:** interface de produto e multimodal no M1, e ACP no M2.
+- **C — Console como produto, multimodal cedo (recomendada):** M1 ACP e multimodal de entrada na console; M2 isolamento; M3 interface de produto (ADR 0013) nascida da console, com voz; M4 memória e identidade; M5 canais; M6+ o resto.
+
+A tabela de marcos acima só muda depois da decisão.
 
 ## Histórico
 

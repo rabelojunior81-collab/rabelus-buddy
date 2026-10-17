@@ -6,14 +6,17 @@
 <meta name="referrer" content="no-referrer">
 <title>Rabelus Buddy</title>
 <link rel="icon" href="data:,">
+<script id="tema-cedo">try { var rbT = localStorage.getItem('rb.theme'); if (rbT === 'light' || rbT === 'dark') document.documentElement.setAttribute('data-theme', rbT); } catch (e) { /* sem armazenamento: Sistema */ }</script>
 <style>
   :root {
     --bg: #0d1113; --panel: #151b1e; --panel2: #1b2327; --line: #263238; --text: #e6eef0; --muted: #8fa3a8;
-    --accent: #3fb8a8; --accent-ink: #062a25; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px;
+    --accent: #3fb8a8; --accent-ink: #062a25; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px; color-scheme: dark;
   }
+  /* Tema (critério 35): Sistema segue o navegador; Claro e Escuro escolhidos na console valem acima dele. */
   @media (prefers-color-scheme: light) {
-    :root { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; }
+    :root:not([data-theme="dark"]) { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; color-scheme: light; }
   }
+  :root[data-theme="light"] { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; color-scheme: light; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 2; }
@@ -62,7 +65,7 @@
   .bubble { border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; }
   .bubble.you { background: var(--panel2); border: 1px solid var(--line); align-self: flex-end; max-width: 85%; }
   .bubble.buddy { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); max-width: 92%; }
-  .bubble p { margin: 0 0 8px; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
+  .bubble p { margin: 0 0 8px; } .bubble p.h { margin-top: 10px; font-size: 1.04em; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
   .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
   .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; overflow: auto; white-space: pre; }
   .bubble pre.code code { padding: 0; background: none; }
@@ -112,6 +115,8 @@
   <span class="note"><span id="conn" class="dot"></span><span id="connText"></span></span>
   <label for="lang" class="note" style="margin:0" data-i18n="console.lang">Idioma</label>
   <select id="lang" style="width:auto"><option value="pt-BR">pt-BR</option><option value="en">en</option></select>
+  <label for="theme" class="note" style="margin:0" data-i18n="console.theme.title">Tema</label>
+  <select id="theme" style="width:auto"><option value="system" data-i18n="console.theme.system">Sistema</option><option value="light" data-i18n="console.theme.light">Claro</option><option value="dark" data-i18n="console.theme.dark">Escuro</option></select>
 </header>
 <main>
   <section class="chat" aria-labelledby="hFeed">
@@ -211,6 +216,13 @@ function mdBlocks(text) {
       out.push({ type: 'code', lang: fence[1], text: body.join('\n') });
       continue;
     }
+    const head = /^\s*#{1,6}\s+(.+?)\s*#*\s*$/.exec(lines[i]);
+    if (head) {
+      flush();
+      for (const b of out) delete b.open;
+      out.push({ type: 'h', text: head[1] });
+      continue;
+    }
     const item = /^\s*(?:([-*])|(\d+)[.)])\s+(.*)$/.exec(lines[i]);
     if (item) {
       flush();
@@ -237,9 +249,11 @@ function authView(a, t) {
 }
 // Memória da página (critério 34): conversa aberta e preferência de detalhes; armazenamento bloqueado não quebra nada.
 function restore(get) {
-  try { return { session: get('rb.session', null) || null, details: get('rb.details', 'closed') === 'open', route: get('rb.route', '') || '' }; }
-  catch { return { session: null, details: false, route: '' }; }
+  try { return { session: get('rb.session', null) || null, details: get('rb.details', 'closed') === 'open', route: get('rb.route', '') || '', theme: get('rb.theme', 'system') || 'system' }; }
+  catch { return { session: null, details: false, route: '', theme: 'system' }; }
 }
+// Tema (critério 35): Sistema não marca a página (vale o prefers-color-scheme); Claro e Escuro marcam.
+function themeOf(choice) { return choice === 'light' || choice === 'dark' ? choice : null; }
 function elapsedText(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   return s < 60 ? s + ' s' : Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' s';
@@ -288,6 +302,7 @@ function rich(text) {
   for (const b of mdBlocks(text)) {
     if (b.type === 'code') f.append(el('pre', { class: 'code' }, el('code', {}, b.text)));
     else if (b.type === 'list') f.append(el(b.ordered ? 'ol' : 'ul', {}, ...b.items.map((i) => el('li', {}, inline(i)))));
+    else if (b.type === 'h') f.append(el('p', { class: 'h' }, el('strong', {}, inline(b.text))));
     else f.append(el('p', {}, inline(b.text)));
   }
   return f;
@@ -558,6 +573,11 @@ $('stop').addEventListener('click', async () => {
   try { await api('agent.stop', { session }); } catch (e) { /* já terminou */ }
   void refreshLive();
 });
+function applyTheme(choice) {
+  const v = themeOf(choice);
+  if (v) document.documentElement.setAttribute('data-theme', v); else document.documentElement.removeAttribute('data-theme');
+}
+$('theme').addEventListener('change', () => { prefs.theme = $('theme').value; store.set('rb.theme', prefs.theme); applyTheme(prefs.theme); });
 $('detailsToggle').addEventListener('change', () => {
   prefs.details = $('detailsToggle').checked;
   store.set('rb.details', prefs.details ? 'open' : 'closed');
@@ -605,6 +625,8 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
     $('effort').value = store.get('rb.effort', 'default');
   } catch { conn(false); }
   $('detailsToggle').checked = prefs.details;
+  $('theme').value = themeOf(prefs.theme) ?? 'system';
+  applyTheme(prefs.theme);
   await slow();
   await fast();
   await liveTick();

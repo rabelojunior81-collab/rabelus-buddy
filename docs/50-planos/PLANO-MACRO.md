@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T09:02:58-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T19:39:15-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -18,16 +18,18 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 ## M0 — Núcleo governado
 
 - [x] SPEC do M0 aprovada pelo Pai (2026-10-15): [rascunho 0001](../40-specs/0001-nucleo-governado/SPEC.md) entregue em 2026-10-15, com spike de banco e IPC; [plano de fase](./m0/PLANO.md) proposto
-- [ ] Modelo de sessão, execução, passo e evento compartilhado entre interfaces [§8; R5]
+- [x] Modelo de sessão, execução, passo e evento compartilhado entre interfaces [§8; R5] — CLI e console falam com o mesmo dono (M0.7, M0.8)
 - [x] Um processo dono do banco; IPC para os demais [R5-1] — M0.2
 - [x] Log de eventos em SQLite com projeções; retomada após `kill -9` [R5-7; §8] — M0.2 e M0.3
 - [x] Motor de política (M0.4): deny → ask → allow, escopos (uma vez, sessão, projeto), caminhos protegidos, `ask` → `deny` sem interação, detecção de laço [R3; ADR 0009]
 - [x] Orçamento atômico (M0.5): reserva e liquidação; janelas de assinatura e dólares [R1; R5-6; ADR 0008]
 - [x] Efeitos externos com identidade estável e estado "desconhecido" [R5-5] — M0.3
-- [ ] Compactação de contexto abaixo de 100k tokens [R1]
-- [ ] 1 provedor da camada barata por API (plano B das assinaturas) [ADR 0008]
-- [~] CLI `rabelus-buddy` / `rbuddy`, strings via catálogo pt-BR/en [ADR 0011; ADR 0002] — base na M0.1
-- [ ] Auditoria append-only sem conteúdo sensível [§8]
+- [x] Compactação de contexto abaixo de 100k tokens [R1] — critério 21 (M0.6e)
+- [x] 1 provedor da camada barata por API (plano B das assinaturas) [ADR 0008] — OpenRouter com teto de US$ 20 (ADR 0015, M0.6a)
+- [x] CLI `rabelus-buddy` / `rbuddy`, strings via catálogo pt-BR/en [ADR 0011; ADR 0002] — do próprio agente (M0.7)
+- [x] Console web local, superfície do Pai [ADR 0017] — M0.8 e M0.8d, ensaiadas no ambiente dele
+- [x] Auditoria append-only sem conteúdo sensível [§8] — auditoria de segredos (M0.7c)
+- [x] **M0 concluído em 2026-10-17** ([retrospectiva](../registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md)); a nova ordem dos marcos aguarda o Pai
 
 ## M1 — Agentes por ACP
 

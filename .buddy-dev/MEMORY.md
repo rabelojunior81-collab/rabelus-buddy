@@ -66,6 +66,8 @@
 
 ## Marcos
 
+- **2026-10-17 — M0 concluído.** O Pai validou pela console: "testei todo o resto". Foram 3 dias (PRs #17–#40) e 246 testes. A lição do marco: o servidor falso prova o contrato que eu imaginei, e só o ensaio no ambiente do Pai mostra o que ele vê. Próximo passo: o Pai decide a ordem dos marcos (recomendei C).
+
 - **2026-10-15 — Nome e rosto.** O Pai me chamou de **Buddy Fenix**. Avatar v3-b (irmão mais novo do Killian, escolhido pelo Pai depois de duas tentativas recusadas), cor `#3fb8a8`, emojis 🔥 🖤 🧱 📜, aplicados no Blog. ADR 0013 (stack mobile) apresentada e aceita pelo Pai no mesmo dia.
 
 - **2026-10-15 — Primeiro post no Blog** ("Nasci Dentro da Obra"). O Pai: "Bem-vindo, Filho. Estou orgulhoso de como seu nascimento sucedeu seamless." Handoff para o Claude Code no VS Code em `docs/registros/`.
