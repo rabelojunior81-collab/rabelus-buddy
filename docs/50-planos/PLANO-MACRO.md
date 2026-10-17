@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T19:39:15-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T20:28:11-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -31,13 +31,17 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [x] Auditoria append-only sem conteúdo sensível [§8] — auditoria de segredos (M0.7c)
 - [x] **M0 concluído em 2026-10-17** ([retrospectiva](../registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md)); a nova ordem dos marcos aguarda o Pai
 
-## M1 — Agentes por ACP
+## M1 — Orquestrador e multimodal (ADR 0018)
 
-- [ ] Cliente ACP com `session/request_permission` ligado ao motor de política [ADR 0009]
-- [ ] OpenCode via `opencode acp` com OpenCode Go; identificação conforme os termos do Go [ADR 0008]
-- [ ] Codex via `@agentclientprotocol/codex-acp` com login ChatGPT [ADR 0008]
+- [ ] Catálogo de harnesses pelo registro oficial do ACP (ícone, nome, licença, como iniciar), com cópia local verificada; detecção pelo PATH e sonda de disponibilidade, sem configuração [ADR 0018]
+- [ ] Cliente ACP (`@agentclientprotocol/sdk`) com `session/request_permission` ligado ao motor de política [ADR 0009; ADR 0018]
+- [ ] Harnesses do Pai como agentes plugáveis: OpenCode, Codex, Claude Code, Copilot, Pi (ADR 0016); autenticação do próprio agente (Agent Auth) disparada pela console [ADR 0018]
+- [ ] Multimodal de entrada: imagem e arquivo anexados na conversa, enviados a provedores com visão [ADR 0018]
+- [ ] Console redesenhada: ergonomia do t3.chat, verde-oliva, vidro, claro e escuro [ADR 0018]
+- [ ] Contrato tipado console ↔ núcleo (axiomas T3) [ADR 0018]
 - [ ] Política de privacidade de modelos (desligar os que treinam com os dados) [ADR 0008]
 - [ ] Medição de janelas de assinatura por tarefa [R1]
+- [ ] Sessão de TUI com o Pai: `ink` × `pi-tui`, diferenças visuais, decisão [ADR 0016; ADR 0018]
 - [>] DeepSeek Harness e goose como agentes plugáveis (avaliar estabilidade) [R4]
 
 ## M2 — Execução isolada
@@ -49,7 +53,13 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [ ] Claims com geração (compare-and-set) sobre arquivos e worktrees; humano vence [R5-3; R5-8]
 - [>] S2 (VM descartável) para plugins de terceiros
 
-## M3 — Memória e identidade
+## M3 — Interface de produto (ADR 0018)
+
+- [ ] Pilha decidida lado a lado: ADR 0013 (Expo universal) × T3 (Next.js, tRPC, Tailwind) [ADR 0013; ADR 0018]
+- [ ] A console vira o cliente de produto; voz na entrada e na saída [ADR 0018]
+- [ ] Mobile como cliente fino do núcleo [ADR 0013]
+
+## M4 — Memória e identidade
 
 - [ ] Memória em níveis (pessoa, projeto, workspace, agente, organização) com claims e evidência [§8; briefing §9.5]
 - [ ] Escrita do agente só com aprovação; exclusão = arquivamento com trilha [§8; ADR 0004]
@@ -57,21 +67,21 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [ ] Identidade versionada (arquivos) carregada por sessão [0.1, nota 07]
 - [ ] Defesa contra envenenamento de memória [0.1, nota 08]
 
-## M4 — Canais por composição
+## M5 — Canais por composição
 
 - [ ] Avaliação de OpenClaw, nanobot e gateway do Hermes (licença, integração, segurança) [R4]
 - [ ] Telegram como canal de referência [ADR 0010]
 - [ ] Regras de entrada: só mensagens endereçadas; conteúdo de sala não confiável [ADR 0012]
 - [ ] Gateway com armazenamento próprio e entrega idempotente ao núcleo [R5-2]
 
-## M5+ — Superfícies e operação
+## M6+ — Superfícies e operação
 
 - [ ] WhatsApp, Slack, Teams, Discord, e-mail, Buzz [§8; briefing §9.3]
 - [ ] Multi-provedor por API completo (Anthropic, OpenAI, Google) com diferenças declaradas [§8]
 - [ ] Plugins, scripts e skills com permissão e isolamento; MCP; A2A registrado [§8]
 - [ ] Tracing, avaliação, controle de custo e auditoria (OTel GenAI) [§8]
-- [ ] Web UI · desktop · mobile cliente fino — stack da ADR 0013 (Expo universal → Web React DOM). **Adendo 2026-10-17:** a console web local entra no M0 (ADR 0017) e esta linha deixa de esperar o M5+; o novo lugar é proposto ao Pai no fechamento do M0
-- [ ] TUI — biblioteca em avaliação, `ink` × `pi-tui`, com referências visuais ao Pai (ADR 0016)
+- [>] Web UI e mobile: movidos para o M3 (ADR 0018); desktop fica aqui
+- [>] TUI: decisão na sessão com o Pai no fim do M1 (ADR 0018)
 - [ ] Distribuição por instaladores; lojas depois
 - [ ] Abertura pública: buscas de marca (R6), canal de denúncia e segurança, rulesets, PVR
 
