@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-17T181908-0300-claude-code-vs-code-7307c7-0023",
+  "ts": "2026-10-17T18:19:08-03:00",
+  "utc": "2026-10-17T21:19:08.316Z",
+  "session": "claude-code-vs-code-7307c7",
+  "seq": 23,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m0.8d-feedback-ao-vivo",
+  "type": "decisao",
+  "summary": "Pai: mensagens concorrentes entram na fila (queued) por padrão, com opção de direcionar agora (steer). Critério 33 reescrito antes do código: run.queued/run.dequeued no log, agent.steer, agent.unqueue, agent.stop.",
+  "refs": [],
+  "data": {}
+}
