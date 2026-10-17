@@ -87,3 +87,8 @@ test('ação do Pai com terminal ou CLI na descrição também reprova', () => {
   const r = checkValidations(repo({ ...files([pai({ tipo: 'acao', descricao: 'Rodar rbuddy login chatgpt', como: 'no navegador', ensaio: 'docs/registros/x/README.md' })]), 'docs/registros/x/README.md': 'ok' }));
   assert.match(r.problems.join(), /terminal ou CLI/);
 });
+
+test('"clicar" não é CLI: o detector olha palavras inteiras', () => {
+  const r = checkValidations(repo({ ...files([pai({ tipo: 'acao', como: 'na console, clicar em Entrar', ensaio: 'docs/registros/x/README.md' })]), 'docs/registros/x/README.md': 'ok' }));
+  assert.deepEqual(r.problems, []);
+});
