@@ -147,6 +147,47 @@ test('console: arquivos da página não carregam nada de fora (sem CDN, sem scri
   }
 });
 
+// Funções puras da página (entre os marcadores `// <puras>` e `// </puras>`), avaliadas sem navegador.
+function pure(): { mdBlocks: (s: string) => unknown[]; authView: (a: Record<string, unknown>, t: (k: string, v?: Record<string, unknown>) => string) => { text: string; loginKey: string; loginPrimary: boolean; logoutEnabled: boolean } } {
+  const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  const a = html.indexOf('// <puras>');
+  const b = html.indexOf('// </puras>');
+  assert.ok(a > 0 && b > a, 'marcadores das funções puras');
+  return new Function(`${html.slice(a, b)}; return { mdBlocks, authView };`)() as ReturnType<typeof pure>;
+}
+
+test('console: resposta com bloco de código e lista vira blocos, não texto cru (achado do Pai com o ChatGPT, 2026-10-17)', () => {
+  const { mdBlocks } = pure();
+  const real = 'Arquivos encontrados na pasta de trabalho:\n- `final.md`\n- `lista.md`\n\nCriei também o arquivo `ola-chatgpt.txt` com o conteúdo:\n```text\nteste do ChatGPT\n```';
+  assert.deepEqual(mdBlocks(real), [
+    { type: 'p', text: 'Arquivos encontrados na pasta de trabalho:' },
+    { type: 'list', ordered: false, items: ['`final.md`', '`lista.md`'] },
+    { type: 'p', text: 'Criei também o arquivo `ola-chatgpt.txt` com o conteúdo:' },
+    { type: 'code', lang: 'text', text: 'teste do ChatGPT' },
+  ]);
+  assert.deepEqual(mdBlocks('1. um\n2. dois'), [{ type: 'list', ordered: true, items: ['um', 'dois'] }]);
+  assert.deepEqual(mdBlocks('```\nsem fim'), [{ type: 'code', lang: '', text: 'sem fim' }], 'bloco sem fechamento não some');
+  assert.deepEqual(mdBlocks('linha 1\nlinha 2'), [{ type: 'p', text: 'linha 1\nlinha 2' }]);
+});
+
+test('console: ChatGPT conectado — estado legível, "Entrar" vira "Trocar de conta" secundário (achado do Pai, 2026-10-17)', () => {
+  const { authView } = pure();
+  const t = (k: string, v?: Record<string, unknown>) => (v ? `${k}(${Object.values(v).join(',')})` : k);
+  const on = authView({ loggedIn: true, email: 'pai@x', planEnabled: true }, t);
+  assert.equal(on.text, 'console.chatgpt.connected(pai@x) · console.chatgpt.planYes');
+  assert.deepEqual([on.loginKey, on.loginPrimary, on.logoutEnabled], ['console.chatgpt.switch', false, true]);
+  const off = authView({ loggedIn: false }, t);
+  assert.deepEqual([off.text, off.loginKey, off.loginPrimary, off.logoutEnabled], ['console.chatgpt.out', 'console.chatgpt.login', true, false]);
+  assert.equal(authView({ pending: true }, t).logoutEnabled, true);
+  assert.equal(authView({ error: 'x' }, t).text, 'console.chatgpt.error(x)');
+});
+
+test('console: rótulos acessíveis traduzidos (nada de "provider" em inglês na tela pt-BR)', () => {
+  const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  assert.doesNotMatch(html, /aria-label="[a-z]+"/, 'aria-label fixo sem catálogo');
+  assert.match(html, /id="keyProvider"[^>]*data-i18n-aria="console\.keys\.provider"/);
+});
+
 test('console: o script da página é JavaScript válido (um script quebrado deixaria o Pai sem console)', () => {
   const html = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
   const js = html.slice(html.indexOf('<script>') + 8, html.lastIndexOf('</script>'));

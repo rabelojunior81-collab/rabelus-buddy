@@ -58,7 +58,8 @@
       "planNo": "O login não concedeu o uso do plano.",
       "error": "Login não concluído: {{code}}",
       "popup": "O navegador bloqueou a janela de login. Permita pop-ups para esta página e tente de novo.",
-      "out": "Sem login."
+      "out": "Sem login.",
+      "switch": "Trocar de conta"
     },
     "keys": {
       "title": "Chaves de API",

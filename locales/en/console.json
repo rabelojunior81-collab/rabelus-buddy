@@ -58,7 +58,8 @@
       "planNo": "The sign-in did not grant plan usage.",
       "error": "Sign-in not completed: {{code}}",
       "popup": "The browser blocked the sign-in window. Allow pop-ups for this page and try again.",
-      "out": "Not signed in."
+      "out": "Not signed in.",
+      "switch": "Switch account"
     },
     "keys": {
       "title": "API keys",
