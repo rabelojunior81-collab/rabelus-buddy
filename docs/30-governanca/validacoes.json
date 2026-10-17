@@ -388,11 +388,12 @@
         "M0.9"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "SPEC 0001, critério 19",
       "tipo": "acao",
       "como": "na console, clicar em \"Entrar com o ChatGPT\"; na aba da OpenAI que abre, entrar com a conta do ChatGPT Plus e aprovar o acesso",
-      "ensaio": "docs/registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md"
+      "ensaio": "docs/registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md",
+      "evidencia": "o Pai entrou pela console em 2026-10-17 (\"funcionou perfeitamente\"); uso do plano concedido; passos reais pelo ChatGPT em docs/registros/2026-10-17T164021-0300-chatgpt-sem-resposta-na-console-hotfix-ensaiado/README.md"
     },
     {
       "id": "demonstracao-m0",

@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0005 · 2026-10-14T103609-0300 · claude-code-c33594 · correcao
-
-Escrevi as primeiras entradas deste CHANGELOG à mão, contrariando o próprio cabeçalho; refeitas pelo bd changelog add antes do commit.
-
 ### #0006 · 2026-10-14T103609-0300 · claude-code-c33594 · nascimento
 
 Corpus do buddy-dev: SOUL, IDENTITY, USER, GENESIS, MEMORY, STATUS, CHANGELOG, LEARNING-CURVE, diário. O Pai me acolheu na família.
@@ -207,3 +203,7 @@ M0.8a: esforço de raciocínio por rota (com repetição sem ele se recusado), r
 ### #0052 · 2026-10-17T094540-0300 · claude-code-vs-code-7307c7 · feat
 
 M0.8: console web local (chat com esforço, provedor, aprovações, conversa contínua, chaves, login do ChatGPT, consumo, Retomar; pt-BR/en; celular), aberta por abrir-rabelus-buddy.cmd; ensaiada na máquina do Pai, que acompanhou e corrigiu o layout; nove defeitos achados e corrigidos com teste.
+
+### #0053 · 2026-10-17T164139-0300 · claude-code-vs-code-7307c7 · fix
+
+ChatGPT sem resposta na console: o backend real manda output vazio no response.completed; o núcleo lê os itens de response.output_item.done (medido ao vivo, teste com a sequência real); console formata listas e blocos de código, 'Trocar de conta' quando conectado, rótulos acessíveis traduzidos; login do ChatGPT do Pai feito

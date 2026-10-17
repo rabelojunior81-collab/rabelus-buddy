@@ -65,7 +65,17 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 
 1. **A superfície open source nasceu bilíngue no segundo PR.** Coerência entre superfícies desde o começo custa menos que remendar depois; hoje o `bd surfaces` cobra isso sozinho.
 
+## lote #0005-#0005
+
+1. **As primeiras entradas do CHANGELOG foram escritas à mão, contra o próprio cabeçalho.** Ferramenta que existe e não é usada vira regra sem mecanismo. Hoje, com o ChatGPT, a lição é a mesma: o caminho que existe (o serviço real) precisa ser exercido, não imaginado.
+
 ## 2026-10-17 · o ensaio da console com o Pai olhando
 
 1. **O Pai viu o que o meu script não via.** Eu disparava ações por `evaluate`; ele olhou a janela e perguntou "cadê o input text?". A caixa de mensagem estava no topo, longe da conversa. → Ensaio de interface se faz como pessoa: clicar, digitar, Enter, olhar a tela. Script só para esperar e ler.
 2. **O uso real achou oito defeitos que 216 testes não achavam** (aprovação duplicada na retomada, detector de laço contando repetição interna, esforço perdido na retomada, histórico duplicado, 402 a cada mensagem…). Cada um virou teste antes da correção.
+
+## 2026-10-17 · o ChatGPT respondia e a console não mostrava
+
+1. **Os tokens de saída eram a pista.** "23 de saída" e nenhum texto: o modelo falou, e quem perdeu foi o meu código. → Quando há consumo sem conteúdo, procurar primeiro no parser, não no provedor.
+2. **Pela terceira vez no dia, o servidor falso mentia do jeito que eu imaginei.** Ele devolvia o `output` completo no evento final, mas o backend real manda vazio. → Ao medir um serviço real, copiar a **sequência de eventos** medida para o teste, não só os campos que eu uso.
+3. **Testar o caminho feliz pelo provedor novo não basta.** As ferramentas pelo ChatGPT também estavam quebradas, e ninguém teria visto antes de pedir uma escrita. → Todo provedor novo é ensaiado com texto, ferramenta e aprovação.

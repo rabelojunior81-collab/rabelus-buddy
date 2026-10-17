@@ -62,6 +62,10 @@
   .bubble { border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; }
   .bubble.you { background: var(--panel2); border: 1px solid var(--line); align-self: flex-end; max-width: 85%; }
   .bubble.buddy { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); max-width: 92%; }
+  .bubble p { margin: 0 0 8px; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
+  .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
+  .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; overflow: auto; white-space: pre; }
+  .bubble pre.code code { padding: 0; background: none; }
   .bubble code { font-family: ui-monospace, Consolas, monospace; font-size: 13px; background: var(--panel2); padding: 1px 5px; border-radius: 4px; }
   .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .6px; }
   .ev { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
@@ -116,7 +120,7 @@
         <div><label for="route" data-i18n="console.task.route">Provedor</label><select id="route"></select></div>
         <button id="run" class="primary" data-i18n="console.task.run">Enviar</button>
       </div>
-      <details><summary data-i18n="console.task.workspace">Pasta de trabalho</summary><input id="workspace" type="text" spellcheck="false" aria-label="workspace"></details>
+      <details><summary data-i18n="console.task.workspace">Pasta de trabalho</summary><input id="workspace" type="text" spellcheck="false" data-i18n-aria="console.task.workspace"></details>
       <div class="hint"><span data-i18n="console.task.hint"></span> <span id="runMsg" class="msg"></span></div>
     </div>
   </section>
@@ -134,7 +138,7 @@
       <div style="margin-top:14px">
         <label data-i18n="console.keys.title">Chaves</label>
         <div class="row" style="margin-top:0">
-          <select id="keyProvider" aria-label="provider"><option value="opencode-go">opencode-go</option><option value="ollama-cloud">ollama-cloud</option><option value="openrouter">openrouter</option></select>
+          <select id="keyProvider" data-i18n-aria="console.keys.provider"><option value="opencode-go">opencode-go</option><option value="ollama-cloud">ollama-cloud</option><option value="openrouter">openrouter</option></select>
           <input id="keyValue" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.keys.placeholder">
         </div>
         <div class="actions"><button id="keySave" data-i18n="console.keys.save">Guardar</button><button id="keyRemove" class="danger" data-i18n="console.keys.remove">Remover</button></div>
@@ -171,13 +175,63 @@ function el(tag, attrs, ...kids) {
   for (const k of kids) if (k !== null && k !== undefined) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
   return e;
 }
-// Negrito e código simples na resposta, montados como nós de texto: nada do modelo vira HTML.
-function rich(text) {
+// <puras> (sem DOM; o teste avalia este trecho)
+// Blocos da resposta: parágrafo, lista e bloco de código cercado por ```.
+function mdBlocks(text) {
+  const out = [];
+  const lines = String(text).replace(/\r\n/g, '\n').split('\n');
+  let para = [];
+  const flush = () => { if (para.length) out.push({ type: 'p', text: para.join('\n') }); para = []; };
+  for (let i = 0; i < lines.length; i++) {
+    const fence = /^\s*```\s*([\w+-]*)\s*$/.exec(lines[i]);
+    if (fence) {
+      flush();
+      const body = [];
+      for (i++; i < lines.length && !/^\s*```\s*$/.test(lines[i]); i++) body.push(lines[i]);
+      out.push({ type: 'code', lang: fence[1], text: body.join('\n') });
+      continue;
+    }
+    const item = /^\s*(?:([-*])|(\d+)[.)])\s+(.*)$/.exec(lines[i]);
+    if (item) {
+      flush();
+      const ordered = !item[1];
+      const last = out[out.length - 1];
+      if (last && last.type === 'list' && last.ordered === ordered && last.open) last.items.push(item[3]);
+      else out.push({ type: 'list', ordered, items: [item[3]], open: true });
+      continue;
+    }
+    for (const b of out) delete b.open;
+    if (lines[i].trim() === '') flush(); else para.push(lines[i]);
+  }
+  flush();
+  for (const b of out) delete b.open;
+  return out;
+}
+// Estado do login do ChatGPT: conectado, o botão principal deixa de ser "Entrar".
+function authView(a, t) {
+  let text = t('console.chatgpt.out');
+  if (a.pending) text = t('console.chatgpt.pending');
+  else if (a.loggedIn) text = t('console.chatgpt.connected', { who: a.email || '—' }) + ' · ' + t(a.planEnabled ? 'console.chatgpt.planYes' : 'console.chatgpt.planNo');
+  else if (a.error) text = t('console.chatgpt.error', { code: a.error });
+  return { text, loginKey: a.loggedIn ? 'console.chatgpt.switch' : 'console.chatgpt.login', loginPrimary: !a.loggedIn, logoutEnabled: !!(a.loggedIn || a.pending) };
+}
+// </puras>
+// Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
+function inline(text) {
   const f = document.createDocumentFragment();
   for (const part of String(text).split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
     if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
     else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
     else if (part) f.append(document.createTextNode(part));
+  }
+  return f;
+}
+function rich(text) {
+  const f = document.createDocumentFragment();
+  for (const b of mdBlocks(text)) {
+    if (b.type === 'code') f.append(el('pre', { class: 'code' }, el('code', {}, b.text)));
+    else if (b.type === 'list') f.append(el(b.ordered ? 'ol' : 'ul', {}, ...b.items.map((i) => el('li', {}, inline(i)))));
+    else f.append(el('p', {}, inline(b.text)));
   }
   return f;
 }
@@ -196,6 +250,7 @@ async function loadLang() {
   $('lang').value = lang;
   for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = t(e.getAttribute('data-i18n'));
   for (const e of document.querySelectorAll('[data-i18n-placeholder]')) e.setAttribute('placeholder', t(e.getAttribute('data-i18n-placeholder')));
+  for (const e of document.querySelectorAll('[data-i18n-aria]')) e.setAttribute('aria-label', t(e.getAttribute('data-i18n-aria')));
   $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all');
 }
 
@@ -291,13 +346,11 @@ async function refreshProviders() {
   sel.value = [...sel.options].some((o) => o.value === cur) ? cur : '';
 }
 async function refreshAuth() {
-  const a = await api('auth.chatgpt.status');
-  let s = t('console.chatgpt.out');
-  if (a.pending) s = t('console.chatgpt.pending');
-  else if (a.loggedIn) s = t('console.chatgpt.connected', { who: a.email || '—' }) + ' ' + t(a.planEnabled ? 'console.chatgpt.planYes' : 'console.chatgpt.planNo');
-  else if (a.error) s = t('console.chatgpt.error', { code: a.error });
-  $('chatgptState').textContent = s;
-  $('logout').disabled = !a.loggedIn && !a.pending;
+  const v = authView(await api('auth.chatgpt.status'), t);
+  $('chatgptState').textContent = v.text;
+  $('login').textContent = t(v.loginKey);
+  $('login').className = v.loginPrimary ? 'primary' : '';
+  $('logout').disabled = !v.logoutEnabled;
 }
 async function refreshBudget() {
   const ws = await api('budget.status');

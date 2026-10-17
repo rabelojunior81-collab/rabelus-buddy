@@ -21,6 +21,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Corrigido
 
+- **ChatGPT sem resposta na console** (achado do Pai no primeiro uso): o backend real do ChatGPT manda `response.completed` com `output` vazio e entrega texto e chamadas de ferramenta só em `response.output_item.done`; o núcleo agora lê esses itens (medido ao vivo; [registro](./docs/registros/2026-10-17T164021-0300-chatgpt-sem-resposta-na-console-hotfix-ensaiado/README.md)). Na mesma passada, a console mostra listas e blocos de código formatados, troca "Entrar com o ChatGPT" por "Trocar de conta" quando já conectado e traduz os rótulos acessíveis.
 - Achados da auditoria real de 2026-10-17, pelo binário e contra os serviços reais: o login do ChatGPT era recusado pela OpenAI (`ext_agent_host_id` agora no formato `urn:uuid:`); resposta HTTP de recusa (como o 403 de chave sem assinatura) parava a tarefa como efeito desconhecido e cobrava estimativa — agora é recusa com motivo no log e o agente passa ao próximo provedor; modelo gratuito do OpenRouter era cobrado; a CLI mostrava stack trace quando o dono caía; o dono sob demanda nunca se desligava e guardava credenciais velhas; `providers` agora diz de onde vem cada credencial.
 
 ### Adicionado

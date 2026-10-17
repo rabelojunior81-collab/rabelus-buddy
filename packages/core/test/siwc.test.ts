@@ -222,6 +222,42 @@ test('siwc: contrato da prévia — store:false, stream:true, sem campos proibid
   await api.close();
 });
 
+// Formato medido no backend real do ChatGPT (2026-10-17, workspace/diag-chatgpt.ts): `response.completed` traz
+// `output: []`; o texto e as chamadas de ferramenta só chegam em `response.output_item.done`.
+test('siwc: backend real — output vazio no response.completed; texto e ferramentas vêm de response.output_item.done (critério 18)', async () => {
+  const usage = { input_tokens: 173, output_tokens: 23 };
+  const real = (item: unknown) => [
+    { type: 'response.created', response: { id: 'resp_r', status: 'in_progress', output: [] } },
+    { type: 'response.output_item.added', item: { type: 'message', role: 'assistant', content: [] } },
+    { type: 'response.output_text.delta', delta: 'Olá' },
+    { type: 'response.metadata' },
+    { type: 'response.output_item.done', item },
+    { type: 'response.completed', response: { id: 'resp_r', status: 'completed', output: [], usage } },
+  ];
+  const home = savedHome(false);
+  const text = await fakeApi(real({ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: 'Olá, Pai!' }] }));
+  const r = await createChatGptProvider({ home, endpoints: { ...inert, api: `${text.url}/v1` } }).call(req(), { session: 's' });
+  assert.equal(r.text, 'Olá, Pai!');
+  assert.equal(r.finish, 'stop');
+  assert.equal(r.usage.output_tokens, 23);
+  await text.close();
+
+  const tool = await fakeApi(real({ type: 'function_call', call_id: 'call_1', name: 'read_file', arguments: '{"path":"README.md"}' }));
+  const t = await createChatGptProvider({ home, endpoints: { ...inert, api: `${tool.url}/v1` } }).call(req(), { session: 's' });
+  assert.deepEqual(t.toolCalls, [{ id: 'call_1', name: 'read_file', arguments: '{"path":"README.md"}' }]);
+  assert.equal(t.finish, 'tool_calls');
+  await tool.close();
+
+  // Quando o output final vem preenchido, ele manda (sem duplicar com os itens do stream).
+  const both = await fakeApi([
+    { type: 'response.output_item.done', item: { type: 'message', content: [{ type: 'output_text', text: 'olá (siwc)' }] } },
+    { type: 'response.completed', response: completed },
+  ]);
+  const b = await createChatGptProvider({ home, endpoints: { ...inert, api: `${both.url}/v1` } }).call(req(), { session: 's' });
+  assert.equal(b.text, 'olá (siwc)');
+  await both.close();
+});
+
 test('siwc: stream interrompido sem response.completed fica desconhecido; response.incomplete não é sucesso', async () => {
   const cut = await fakeApi([{ type: 'response.output_text.delta', delta: 'olá' }]);
   const home = savedHome(false);
