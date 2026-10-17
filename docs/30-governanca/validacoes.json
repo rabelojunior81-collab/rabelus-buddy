@@ -403,11 +403,12 @@
         "M0.9"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "SPEC 0001",
       "tipo": "acao",
       "como": "duplo clique em \"abrir-rabelus-buddy.cmd\" (ou o buddy abre a console); na console: escrever tarefas, aprovar e negar, mudar o esforço, ver o raciocínio e o texto chegando, mandar outra mensagem durante uma resposta e usar \"Direcionar agora\", \"Parar\"; o buddy derruba o núcleo no meio e o Pai clica em Retomar",
-      "ensaio": "docs/registros/2026-10-17T185732-0300-ensaio-da-m0-8d-andamento-ao-vivo-e-fila/README.md"
+      "ensaio": "docs/registros/2026-10-17T185732-0300-ensaio-da-m0-8d-andamento-ao-vivo-e-fila/README.md",
+      "evidencia": "o Pai pela console em 2026-10-17: \"testei todo o resto\" (depois do login do ChatGPT e do uso real com os três provedores); métricas e retrospectiva em docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md"
     },
     {
       "id": "alertas-dependabot",
@@ -435,6 +436,18 @@
         "teste": "scripts/test/claims.test.mjs"
       },
       "origem": "AGENTS §2; Pai, 2026-10-17 (\"cadê seu bus? cadê a governança?\")"
+    },
+    {
+      "id": "roadmap-pos-m0",
+      "descricao": "Decidir a ordem dos marcos depois do M0: A (manter), B (interface de produto primeiro) ou C (console como produto, multimodal no M1, isolamento no M2, interface de produto no M3; recomendada)",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "fechamento do M0"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "adendo do ROADMAP de 2026-10-17; docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md"
     }
   ]
 }

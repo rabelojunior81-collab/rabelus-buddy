@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-17T18:58:50-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-822419
+**Atualizado em:** 2026-10-17T19:39:15-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-9497ba
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -10,14 +10,14 @@
 
 **Missões de 2026-10-15, concluídas:** (1) decisões do Pai registradas (PR #11); (2) avatar, emojis e cor do Buddy Fenix (PR #12; Blog `6ae9895`); (3) stack mobile pesquisada e [ADR 0013](../docs/60-decisoes/0013-stack-mobile-e-web.md) aceita pelo Pai (PR #15). Depois, a pedido do Pai, o **gate do Blog** no `bd` (enforcement de post e daily por sessão). Por fim, a pedido do Pai, a **auditoria de superfícies** (`bd surfaces`, [SUPERFICIES.md](../docs/30-governanca/SUPERFICIES.md)). **Agora: M0 em execução.** M0.1 feita (PR #23); **M0.2 feita** (PR #24, critérios 1–3); **M0.3 feita** (PR #25, critérios 4–6); **M0.4 feita** (PR #26, critérios 7–13 e 20); **M0.5 feita** (PR #27, critérios 14–16); **M0.6a feita** (PR #28: provedores Go, Ollama Cloud e OpenRouter, com chamada real mínima por rota); **M0.6b feita** (PR #29: ChatGPT por Sign in with ChatGPT, critérios 18 e 19 contra servidores falsos; o login real espera o Pai no navegador); **M0.6e feita** (PR #30: loop do agente, critérios 5, 16, 20 e 21 no loop); **M0.7a feita** (PR #31: retomada do loop e dono executando o agente, com `kill -9` e `resume` contra provedor falso); **M0.7b feita** (PR #32: CLI do agente); **M0.7c feita** (segredos e catálogo auditados por teste; preços do Go; fumaça real do `rbuddy run` no Go registrada). **M0.7 completa** nos testes, mas a **auditoria real de 2026-10-17** (depois que o `rbuddy` falhou no shell do Pai) achou o login do ChatGPT quebrado na OpenAI real e falhas no tratamento de erro, todas corrigidas ([registro](../docs/registros/2026-10-17T083800-0300-auditoria-real-depois-da-falha-no-shell-do-pai/README.md)). **Decisão do Pai (2026-10-17):** o produto é um agente multimodal com UX/UI; nada de teste por CLI para ele. **Decidido pelo Pai (opção A):** console web local servida pelo núcleo ([ADR 0017](../docs/60-decisoes/0017-console-web-local-no-m0.md); SPEC 0001 rev. 5; plano revisado). **M0.8 feita** (M0.8a núcleo; M0.8b console; M0.8c ensaio na máquina do Pai, que acompanhou e corrigiu o layout). **Agora: M0.9**, a demonstração pela console — **aguarda o Pai**. Login do ChatGPT **feito pelo Pai**; o primeiro uso achou a resposta do ChatGPT perdida (hotfix #38) e 248 s de tela parada no Alto, que viraram a **M0.8d feita** (andamento ao vivo, raciocínio registrado, fila com direcionamento, Parar; SPEC rev. 6, ensaiada com os provedores reais). Governança: `bd claims` reprova documento vivo sem claim, depois **M0.9**, a demonstração pela console. **Contas:** as duas chaves do Go recusam hoje (variável de ambiente da máquina: 403 sem assinatura; `.env.local`: 402 sem saldo), e OpenRouter gratuito e Ollama funcionam. Ordem de provedores na ADR 0015; Pi por composição no M1 (ADR 0016).
 
-**M0 — Núcleo governado:** SPEC [0001](../docs/40-specs/0001-nucleo-governado/SPEC.md) **aprovada**; plano [aprovado](../docs/50-planos/m0/PLANO.md).
+**M0 — Núcleo governado: concluído em 2026-10-17.** O Pai validou pela console ("testei todo o resto"); [retrospectiva e métricas](../docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md). **Aguarda o Pai:** a ordem dos próximos marcos (A, B ou C; recomendação C), validação `roadmap-pos-m0`. Enquanto isso, nada de código de marco novo (SPEC de fase só depois da decisão).
 
 ## Repositório
 
 | Item | Valor |
 |---|---|
-| `main` | `60e15c4` (Merge #38: hotfix ChatGPT), CI verde |
-| PRs mergeados | #1–#38, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `c8e8869` (Merge #40: fim da sessão 822419), CI verde |
+| PRs mergeados | #1–#40, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 

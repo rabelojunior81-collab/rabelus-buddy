@@ -94,3 +94,12 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0007-#0007
 
 1. **A CI nasceu no quinto PR, com guarda contra exclusão e varredura de segredos.** Cada passo novo da CI (hoje, `bd claims`) repete o gesto: a regra só vale quando a máquina a cobra em todo PR.
+
+## 2026-10-17 · fechamento do M0
+
+1. **A ferramenta nova falhou no primeiro uso amplo.** O `bd claims` não cobria o ROADMAP e o PLANO-MACRO, porque eu tinha imaginado o caminho deles. → Um mecanismo novo é testado contra os caminhos reais do repositório, não contra os que eu lembro.
+2. **Métrica medida mostra o que a sensação esconde.** O p95 do ChatGPT no Alto é 125 s, e foi isso que pediu o andamento ao vivo. A Ollama tem p50 de 1,6 s, mas uma tarefa levou 15 passos. → Medir antes de propor o próximo marco.
+
+## lote #0008-#0008
+
+1. **A entrada no Blog veio com QA de 375 e 1440 px desde o primeiro post.** Hoje, a mesma conferência pegou o que os testes não pegam em cada entrega da console. Conferir no tamanho e no modo em que a pessoa usa é parte da entrega.

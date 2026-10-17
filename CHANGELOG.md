@@ -10,6 +10,9 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **M0 concluído** (2026-10-17): o núcleo governado com a console web local, validado pelo Pai pela console ([retrospectiva e métricas](./docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md)).
+- **Tema da console** Sistema, Claro ou Escuro, lembrado e aplicado antes de a página aparecer (critério 35, pedido do Pai). Títulos em Markdown formatados na conversa.
+
 - **Andamento ao vivo na console** (M0.8d; SPEC 0001 rev. 6, critérios 31–34; pedido do Pai depois de 248 s de tela parada no esforço Alto). Enquanto o agente trabalha, a conversa mostra:
   - a fase (pensando, escrevendo, usando uma ferramenta, aguardando aprovação) e o tempo;
   - o raciocínio que o provedor expõe (resumo no ChatGPT, por inteiro na Ollama e no OpenRouter);
