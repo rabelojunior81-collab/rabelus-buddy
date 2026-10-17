@@ -17,6 +17,7 @@ export const DEFAULT_CONSOLE_PORT = 47321;
 export const CONSOLE_METHODS = [
   'daemon.status', 'console.defaults', 'session.events', 'session.list',
   'run.get', 'run.list', 'agent.run', 'agent.resume',
+  'run.live', 'agent.steer', 'agent.unqueue', 'agent.stop',
   'approval.list', 'approval.resolve', 'budget.status',
   'providers.status', 'keys.set', 'keys.remove',
   'auth.chatgpt.start', 'auth.chatgpt.status', 'auth.chatgpt.logout',

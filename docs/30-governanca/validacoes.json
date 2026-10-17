@@ -397,7 +397,7 @@
     },
     {
       "id": "demonstracao-m0",
-      "descricao": "Demonstração do M0 pela console web local: login do ChatGPT, tarefa real, aprovações, mudança de esforço, queda e retomada, consumo (critério 26, rev. 5)",
+      "descricao": "Demonstração do M0 pela console web local: tarefa real, aprovações, mudança de esforço, andamento ao vivo (raciocínio e texto), fila com direcionamento e Parar, queda e retomada, consumo (critério 26, rev. 6)",
       "quem": "pai",
       "onde": [
         "M0.9"
@@ -406,8 +406,8 @@
       "estado": "pendente",
       "origem": "SPEC 0001",
       "tipo": "acao",
-      "como": "duplo clique em \"abrir-rabelus-buddy.cmd\" (ou o buddy abre a console); na console: entrar com o ChatGPT, escrever tarefas, aprovar e negar, mudar o esforço, continuar a conversa; o buddy derruba o núcleo no meio e o Pai clica em Retomar",
-      "ensaio": "docs/registros/2026-10-17T094406-0300-ensaio-da-console-web-local/README.md"
+      "como": "duplo clique em \"abrir-rabelus-buddy.cmd\" (ou o buddy abre a console); na console: escrever tarefas, aprovar e negar, mudar o esforço, ver o raciocínio e o texto chegando, mandar outra mensagem durante uma resposta e usar \"Direcionar agora\", \"Parar\"; o buddy derruba o núcleo no meio e o Pai clica em Retomar",
+      "ensaio": "docs/registros/2026-10-17T185732-0300-ensaio-da-m0-8d-andamento-ao-vivo-e-fila/README.md"
     },
     {
       "id": "alertas-dependabot",
@@ -420,6 +420,21 @@
       "estado": "pendente",
       "origem": "DEPENDENCIAS.md",
       "tipo": "decisao"
+    },
+    {
+      "id": "claim-documento-vivo",
+      "descricao": "Documento vivo compartilhado (STATUS, MEMORY, plano, SPEC e TESTES, validações, AGENTS, README, CHANGELOG, ROADMAP) só se altera com bd claim registrado no ledger da branch; claim depois da edição fica declarado como atrasado",
+      "quem": "maquina",
+      "onde": [
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "claims",
+        "ci": "node scripts/bd.mjs claims",
+        "teste": "scripts/test/claims.test.mjs"
+      },
+      "origem": "AGENTS §2; Pai, 2026-10-17 (\"cadê seu bus? cadê a governança?\")"
     }
   ]
 }

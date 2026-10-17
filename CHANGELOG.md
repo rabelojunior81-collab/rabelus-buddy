@@ -10,6 +10,14 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Andamento ao vivo na console** (M0.8d; SPEC 0001 rev. 6, critérios 31–34; pedido do Pai depois de 248 s de tela parada no esforço Alto). Enquanto o agente trabalha, a conversa mostra:
+  - a fase (pensando, escrevendo, usando uma ferramenta, aguardando aprovação) e o tempo;
+  - o raciocínio que o provedor expõe (resumo no ChatGPT, por inteiro na Ollama e no OpenRouter);
+  - o texto chegando em cadência.
+
+  Raciocínio, comandos e resultados ficam em blocos recolhíveis, com a preferência lembrada. O raciocínio vai para o log (`agent.reasoning`). Uma conversa roda uma execução por vez: a mensagem nova entra **na fila**, com **"Direcionar agora"** (entra na execução em curso) e "Cancelar". **"Parar"** interrompe a chamada em curso. Recarregar a página mantém a conversa e o provedor escolhido. Contas em LaTeX aparecem legíveis. Ensaiado com os provedores reais ([registro](./docs/registros/2026-10-17T185732-0300-ensaio-da-m0-8d-andamento-ao-vivo-e-fila/README.md)).
+- **`bd claims`**: documento vivo alterado sem claim no ledger reprova no `bd post` e na CI.
+
 - **Console web local** (M0.8: núcleo na M0.8a, console na M0.8b, ensaio na M0.8c; ADR 0017): aberta por duplo clique em `abrir-rabelus-buddy.cmd` (ou `rbuddy ui`), servida pelo núcleo só em 127.0.0.1 com token. É um chat: caixa de mensagem embaixo da conversa, esforço de raciocínio e provedor por mensagem, conversa contínua, aprovar e negar, provedores com a origem da chave, chaves guardadas (nunca devolvidas à página), entrar e sair do ChatGPT, consumo por janela, execuções com Retomar, pt-BR e en, tela de celular. Ensaiada num navegador real na máquina do Pai.
 - Retomada mais robusta (achados do ensaio): aprovação pendente reaproveitada depois de uma queda; o detector de laço conta só pedidos do modelo; esforço e rota da execução voltam na retomada; conta sem saldo (402) tira o provedor da frente por 1 h.
 

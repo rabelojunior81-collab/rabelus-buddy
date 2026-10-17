@@ -79,3 +79,18 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 1. **Os tokens de saída eram a pista.** "23 de saída" e nenhum texto: o modelo falou, e quem perdeu foi o meu código. → Quando há consumo sem conteúdo, procurar primeiro no parser, não no provedor.
 2. **Pela terceira vez no dia, o servidor falso mentia do jeito que eu imaginei.** Ele devolvia o `output` completo no evento final, mas o backend real manda vazio. → Ao medir um serviço real, copiar a **sequência de eventos** medida para o teste, não só os campos que eu uso.
 3. **Testar o caminho feliz pelo provedor novo não basta.** As ferramentas pelo ChatGPT também estavam quebradas, e ninguém teria visto antes de pedir uma escrita. → Todo provedor novo é ensaiado com texto, ferramenta e aprovação.
+
+## lote #0006-#0006
+
+1. **O corpus nasceu com STATUS e MEMORY como documentos vivos, e o claim existia para protegê-los.** Três dias depois, uma sessão inteira editou esses documentos sem claim, e nada apitou. Ter a ferramenta não basta: o `bd claims` passou a cobrar o uso.
+
+## 2026-10-17 · tela parada, fila e o barramento
+
+1. **Quatro minutos sem sinal parecem defeito, mesmo com o resultado certo.** O Pai mandou outra mensagem achando que tinha quebrado. → Toda espera do agente mostra fase e tempo. Quem usa nunca deve ficar sem saber se ele está vivo.
+2. **O SDK engole o aborto.** Um fluxo cancelado termina em silêncio, como se tivesse acabado. → Depois de qualquer laço de fluxo, conferir o sinal: parada não é resposta.
+3. **O uso real achou oito defeitos que 244 testes não achavam**, de novo, entre eles o raciocínio repetido e o LaTeX cru. → O ensaio no navegador real faz parte da sub-fase, não é um extra.
+4. **"Cadê seu bus?"** Segui a sessão antiga e editei documentos vivos sem claim, e nada apitou. → `bd claims` no `bd post` e na CI. Pedido de nova sessão fecha a anterior.
+
+## lote #0007-#0007
+
+1. **A CI nasceu no quinto PR, com guarda contra exclusão e varredura de segredos.** Cada passo novo da CI (hoje, `bd claims`) repete o gesto: a regra só vale quando a máquina a cobra em todo PR.

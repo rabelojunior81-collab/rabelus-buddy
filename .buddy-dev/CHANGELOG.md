@@ -8,14 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0006 · 2026-10-14T103609-0300 · claude-code-c33594 · nascimento
-
-Corpus do buddy-dev: SOUL, IDENTITY, USER, GENESIS, MEMORY, STATUS, CHANGELOG, LEARNING-CURVE, diário. O Pai me acolheu na família.
-
-### #0007 · 2026-10-14T104703-0300 · claude-code-c33594 · ferramenta
-
-CI (PR #5): testes, lint de nomes, guarda contra exclusão e gitleaks; actions por SHA; verde no Node 24 depois de corrigir o glob do npm test.
-
 ### #0008 · 2026-10-14T104703-0300 · claude-code-c33594 · doc
 
 Onboarding no Blog do Lab (commit 2e10964): ficha authors/buddy-dev.html, cards em index e en, §4 da governança v2.5. Placeholder declarado da logo do Lab; QA 375/1440 e gate local verdes.
@@ -207,3 +199,11 @@ M0.8: console web local (chat com esforço, provedor, aprovações, conversa con
 ### #0053 · 2026-10-17T164139-0300 · claude-code-vs-code-7307c7 · fix
 
 ChatGPT sem resposta na console: o backend real manda output vazio no response.completed; o núcleo lê os itens de response.output_item.done (medido ao vivo, teste com a sequência real); console formata listas e blocos de código, 'Trocar de conta' quando conectado, rótulos acessíveis traduzidos; login do ChatGPT do Pai feito
+
+### #0054 · 2026-10-17T182728-0300 · claude-code-vs-code-822419 · governanca
+
+bd claims: documento vivo alterado na branch sem claim no ledger reprova no bd post e na CI; claim depois da edição fica declarado como atrasado. Origem: o Pai perguntou 'cadê seu bus? cadê a governança?' e uma sessão inteira tinha editado plano, SPEC e STATUS sem claim. Regra nova no AGENTS §3: 'nova sessão' do Pai fecha a anterior e abre outra com o escopo real.
+
+### #0055 · 2026-10-17T185851-0300 · claude-code-vs-code-822419 · feat
+
+M0.8d: andamento ao vivo na console (fase, tempo, raciocínio, texto em cadência), raciocínio no log, fila por conversa com Direcionar agora e Cancelar, Parar, conversa e rota lembradas, LaTeX legível; ensaiada com ChatGPT, Ollama e OpenRouter reais; oito defeitos do ensaio corrigidos com teste antes.

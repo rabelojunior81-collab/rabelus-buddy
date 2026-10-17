@@ -369,8 +369,39 @@ test('siwc: esforço vai como reasoning.effort; padrão não envia (critério 29
   const home = savedHome(false);
   const p = createChatGptProvider({ home, endpoints: { ...inert, api: `${api.url}/v1` } });
   await p.call({ ...req(), effort: 'medium' }, { session: 's' });
-  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'medium' });
+  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'medium', summary: 'auto' }, 'com esforço, o resumo do raciocínio vai junto (rev. 6, critério 31)');
   await p.call(req(), { session: 's' });
   assert.equal(api.requests[1]?.body.reasoning, undefined);
+  await api.close();
+});
+
+// Critério 31 (rev. 6): sequência medida com o login real (2026-10-17, workspace/diag-fluxo.ts).
+test('siwc: resumo do raciocínio pedido só com esforço; resumo e texto chegam em fragmentos; o resumo volta no resultado (critério 31)', async () => {
+  const usage = { input_tokens: 60, output_tokens: 300 };
+  const api = await fakeApi([
+    { type: 'response.created', response: { id: 'r', status: 'in_progress', output: [] } },
+    { type: 'response.output_item.added', item: { type: 'reasoning', summary: [] } },
+    { type: 'response.reasoning_summary_part.added', part: { type: 'summary_text', text: '' } },
+    { type: 'response.reasoning_summary_text.delta', delta: '**Calculando**\n\n' },
+    { type: 'response.reasoning_summary_text.delta', delta: 'O segundo trem alcança.' },
+    { type: 'response.reasoning_summary_text.done', text: '**Calculando**\n\nO segundo trem alcança.' },
+    { type: 'response.output_item.done', item: { type: 'reasoning', summary: [{ type: 'summary_text', text: '**Calculando**\n\nO segundo trem alcança.' }] } },
+    { type: 'response.output_item.added', item: { type: 'message', role: 'assistant', content: [] } },
+    { type: 'response.output_text.delta', delta: 'Às 15h, ' },
+    { type: 'response.output_text.delta', delta: 'a 480 km.' },
+    { type: 'response.metadata' },
+    { type: 'response.output_item.done', item: { type: 'message', role: 'assistant', content: [{ type: 'output_text', text: 'Às 15h, a 480 km.' }] } },
+    { type: 'response.completed', response: { id: 'r', status: 'completed', output: [], usage } },
+  ]);
+  const home = savedHome(false);
+  const p = createChatGptProvider({ home, endpoints: { ...inert, api: `${api.url}/v1` } });
+  const seen: { kind: string; delta?: string }[] = [];
+  const r = await p.call({ ...req(), effort: 'high' }, { session: 's', onProgress: (x) => seen.push(x) });
+  assert.deepEqual(api.requests[0]?.body.reasoning, { effort: 'high', summary: 'auto' });
+  assert.equal(r.text, 'Às 15h, a 480 km.');
+  assert.equal(r.reasoning, '**Calculando**\n\nO segundo trem alcança.');
+  assert.deepEqual(seen.map((x) => x.kind), ['reasoning', 'reasoning', 'text', 'text']);
+  await p.call(req(), { session: 's' });
+  assert.equal(api.requests[1]?.body.reasoning, undefined, 'padrão: nada de reasoning');
   await api.close();
 });

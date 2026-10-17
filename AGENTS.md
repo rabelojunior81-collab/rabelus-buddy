@@ -53,7 +53,8 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Uma branch por unidade; commit e push a cada passo; merge commit pelo buddy-dev só com CI verde e `bd post` limpo | template de PR; CI; `bd post` reprova commit sem push ([ADR 0003](./docs/60-decisoes/0003-fluxo-git-granular.md)) |
 | Documento → SPEC → teste → código | template de PR; SPEC em `docs/40-specs/` antes do plano |
 | Conhecimento externo verificado ao vivo, com fonte e data | ficha em `docs/20-conhecimento/`; checklist do PR |
-| Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)) |
+| Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)); `bd claims` no `bd post` e na CI reprova documento vivo alterado na branch sem claim no ledger e declara o claim atrasado (desde 2026-10-17) |
+| Pedido do Pai de "nova sessão" (ou retomada depois de compactação com outro escopo) fecha a sessão anterior com post e daily e abre outra com o escopo real | `bd session end`/`start`; o barramento mostra o escopo de cada sessão |
 | Regra recebida do Pai vai para o corpus no mesmo dia | `.buddy-dev/MEMORY.md` (tabela de regras) |
 | Toda sessão com o Pai gera post e daily no Blog | `bd session end` recusa sem post do buddy-dev publicado desde o início da sessão, com daily ligada e no manifesto; `session start` não abre outra sessão antes; `bd post` avisa com sessão aberta e reprova a última encerrada (`scripts/lib/blog.mjs`) |
 | Toda evolução atualiza as superfícies que afirmam o fato | `bd surfaces` no `bd post` e na CI; mapa evento → superfícies em [`SUPERFICIES.md`](./docs/30-governanca/SUPERFICIES.md) |

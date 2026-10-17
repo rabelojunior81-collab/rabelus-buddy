@@ -15,7 +15,8 @@
       "workspace": "Working folder",
       "run": "Send",
       "empty": "Write the task.",
-      "hint": "Enter sends · Shift+Enter adds a line"
+      "hint": "Enter sends · Shift+Enter adds a line",
+      "stop": "Stop"
     },
     "effort": {
       "default": "Provider default",
@@ -37,7 +38,11 @@
       "result": "Result",
       "session": "Session {{session}}",
       "working": "working…",
-      "new": "New conversation"
+      "new": "New conversation",
+      "showDetails": "Show reasoning and actions",
+      "details": "Reasoning and actions ({{n}})",
+      "reasoning": "Reasoning",
+      "steered": "steer"
     },
     "approvals": {
       "title": "Approvals",
@@ -63,7 +68,7 @@
     },
     "keys": {
       "title": "API keys",
-      "provider": "Provider",
+      "provider": "Key provider",
       "placeholder": "Paste the key here",
       "save": "Store",
       "remove": "Remove",
@@ -84,6 +89,28 @@
       "resume": "Resume",
       "open": "Open"
     },
-    "error": "Error: {{message}}"
+    "error": "Error: {{message}}",
+    "live": {
+      "thinking": "Thinking",
+      "writing": "Writing",
+      "tool": "Using {{tool}}",
+      "approval": "Waiting for your approval"
+    },
+    "queue": {
+      "title": "Queued",
+      "steer": "Steer now",
+      "cancel": "Cancel",
+      "queued": "The conversation is busy: your message was queued and runs next. Use \"Steer now\" to send it right away."
+    },
+    "reason": {
+      "userStopped": "stopped by you",
+      "maxSteps": "reached the step limit",
+      "sessionPaused": "conversation paused (repeated loop)",
+      "windowExhausted": "usage window exhausted on every provider",
+      "providerUnavailable": "no provider available",
+      "effectUnknown": "uncertain result of an action; use Resume to check",
+      "needsReconciliation": "needs your confirmation to resume",
+      "internalError": "internal core error"
+    }
   }
 }

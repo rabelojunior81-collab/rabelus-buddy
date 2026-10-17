@@ -13,7 +13,7 @@ import { PRICES, type Price } from './prices.ts';
 import type { FsTools } from './tools/fs.ts';
 import type { CommandTool } from './tools/command.ts';
 import { scrub } from './providers/adapters.ts';
-import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type Effort, type ModelRequest, type ModelResponse, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
+import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type Effort, type ModelRequest, type ModelResponse, type Progress, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
 export const SYSTEM_PROMPT = 'Você é o Rabelus Buddy, um agente de código governado. Use as ferramentas para cumprir a tarefa.';
@@ -26,6 +26,8 @@ const PAID = new Set(['openrouter']);
 // Códigos de recusa que podem ser do campo de esforço (corpo inválido), não da conta.
 const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability']);
 const FREE: Price = { input: 0, cachedInput: 0, cacheWrite: 0, output: 0 };
+// Raciocínio registrado por passo (critério 32): teto para o log não crescer sem limite.
+const REASONING_MAX = 20_000;
 
 export interface Route { provider: Provider; model: string }
 
@@ -43,7 +45,14 @@ export interface AgentOptions {
   contextLimit?: number;
   maxOutputTokens?: number;
   effort?: Effort; // esforço de raciocínio da execução (rev. 5, critério 29)
+  // Rev. 6 (M0.8d): parar aborta a chamada em curso; o andamento vai a quem observa (fora do log);
+  // a caixa de direcionamento (steer) entrega mensagens do usuário antes da próxima chamada.
+  signal?: AbortSignal;
+  onProgress?: (run: string, p: AgentProgress) => void;
+  inbox?: (run: string) => string[];
 }
+
+export type AgentProgress = Progress | { kind: 'call'; route: string; step: number } | { kind: 'exec'; name: string; step: number };
 
 export interface AgentResult { run: string; outcome: 'done' | 'stopped'; reason?: string; text: string; steps: number }
 
@@ -173,7 +182,9 @@ export class Agent {
     const limit = this.o.contextLimit ?? CONTEXT_LIMIT;
     const max = first - 1 + (this.o.maxSteps ?? DEFAULT_MAX_STEPS);
     for (let step = first; step <= max; step++) {
+      if (this.o.signal?.aborted) return this.stop(run, 'userStopped', step - 1);
       if (policy.isPaused(session)) return this.stop(run, 'sessionPaused', step - 1);
+      this.steer(session, run, messages);
       // A compactação vale para a chamada; a conversa completa continua no log.
       let sent = messages;
       const before = estimateTokens(messages);
@@ -186,14 +197,31 @@ export class Agent {
       if ('stop' in call) return this.stop(run, call.stop, step - 1);
       const res = call.response;
       log.append(session, 'agent.step', { run, step, route: call.route, effort: call.effort ?? null, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
+      // O raciocínio exposto fica registrado (critério 32), fora da conversa enviada ao modelo.
+      if (res.reasoning) log.append(session, 'agent.reasoning', { run, step, route: call.route, text: res.reasoning.slice(0, REASONING_MAX) });
       this.push(session, run, messages, { role: 'assistant', content: res.text, ...(res.toolCalls.length ? { toolCalls: res.toolCalls } : {}) });
       if (!res.toolCalls.length) {
+        // Direcionamento que chegou durante a chamada: a execução segue em vez de terminar (critério 33).
+        if (this.steer(session, run, messages)) continue;
         domain.finishRun(run);
         return { run, outcome: 'done', text: res.text, steps: step };
       }
-      for (const tc of res.toolCalls) this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+      for (const tc of res.toolCalls) {
+        this.o.onProgress?.(run, { kind: 'exec', name: tc.name, step });
+        this.push(session, run, messages, { role: 'tool', toolCallId: tc.id, content: await this.executeTool(session, run, tc) });
+      }
     }
     return this.stop(run, 'maxSteps', max);
+  }
+
+  // Mensagens de direcionamento (steer) entram como mensagens do usuário, marcadas no log.
+  private steer(session: string, run: string, messages: ChatMessage[]): number {
+    const msgs = this.o.inbox?.(run) ?? [];
+    for (const content of msgs) {
+      this.o.log.append(session, 'agent.message', { run, message: { role: 'user', content }, steer: true });
+      messages.push({ role: 'user', content });
+    }
+    return msgs.length;
   }
 
   // Percorre a ordem de provedores; cada tentativa é um efeito com identidade e uma reserva.
@@ -225,11 +253,18 @@ export class Agent {
       const effort = this.o.effort && !noEffort.has(name) ? this.o.effort : undefined;
       const req: ModelRequest = { model: r.model, messages, tools: AGENT_TOOLS, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
       try {
-        const response = await r.provider.call(req, { session });
+        this.o.onProgress?.(run, { kind: 'call', route: name, step });
+        const response = await r.provider.call(req, { session, ...(this.o.signal ? { signal: this.o.signal } : {}), ...(this.o.onProgress ? { onProgress: (p: Progress) => this.o.onProgress!(run, p) } : {}) });
         domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
         budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
         return { response, route: name, ...(effort ? { effort } : {}) };
       } catch (e) {
+        // Parada pedida pelo usuário: não é efeito desconhecido; o consumo é incerto e liquida pela estimativa.
+        if (this.o.signal?.aborted) {
+          domain.failEffect(effect, 'userStopped');
+          budget.settle(reservation, null, estimate);
+          return { stop: 'userStopped' };
+        }
         if (e instanceof ProviderLimitError) {
           log.append(session, 'provider.error', { route: name, code: 'limit', message: scrub(e.message) });
           domain.failEffect(effect, 'providerLimit');

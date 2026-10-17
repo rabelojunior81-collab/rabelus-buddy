@@ -15,7 +15,8 @@
       "workspace": "Pasta de trabalho",
       "run": "Enviar",
       "empty": "Escreva a tarefa.",
-      "hint": "Enter envia · Shift+Enter quebra a linha"
+      "hint": "Enter envia · Shift+Enter quebra a linha",
+      "stop": "Parar"
     },
     "effort": {
       "default": "Padrão do provedor",
@@ -37,7 +38,11 @@
       "result": "Resultado",
       "session": "Sessão {{session}}",
       "working": "trabalhando…",
-      "new": "Nova conversa"
+      "new": "Nova conversa",
+      "showDetails": "Mostrar raciocínio e ações",
+      "details": "Raciocínio e ações ({{n}})",
+      "reasoning": "Raciocínio",
+      "steered": "direcionamento"
     },
     "approvals": {
       "title": "Aprovações",
@@ -63,7 +68,7 @@
     },
     "keys": {
       "title": "Chaves de API",
-      "provider": "Provedor",
+      "provider": "Provedor da chave",
       "placeholder": "Cole a chave aqui",
       "save": "Guardar",
       "remove": "Remover",
@@ -84,6 +89,28 @@
       "resume": "Retomar",
       "open": "Abrir"
     },
-    "error": "Erro: {{message}}"
+    "error": "Erro: {{message}}",
+    "live": {
+      "thinking": "Pensando",
+      "writing": "Escrevendo",
+      "tool": "Usando {{tool}}",
+      "approval": "Aguardando sua aprovação"
+    },
+    "queue": {
+      "title": "Na fila",
+      "steer": "Direcionar agora",
+      "cancel": "Cancelar",
+      "queued": "A conversa está trabalhando: a mensagem entrou na fila e roda em seguida. Use \"Direcionar agora\" para mandá-la já."
+    },
+    "reason": {
+      "userStopped": "parada por você",
+      "maxSteps": "chegou ao limite de passos",
+      "sessionPaused": "conversa pausada (laço repetido)",
+      "windowExhausted": "janela de consumo esgotada em todos os provedores",
+      "providerUnavailable": "nenhum provedor disponível",
+      "effectUnknown": "resultado incerto de uma ação; use Retomar para conferir",
+      "needsReconciliation": "precisa da sua confirmação para retomar",
+      "internalError": "erro interno do núcleo"
+    }
   }
 }

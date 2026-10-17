@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-17T182434-0300-claude-code-vs-code-822419-0003",
+  "ts": "2026-10-17T18:24:34-03:00",
+  "utc": "2026-10-17T21:24:34.463Z",
+  "session": "claude-code-vs-code-822419",
+  "seq": 3,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m0.8d-feedback-ao-vivo",
+  "type": "claim",
+  "summary": "docs/50-planos/m0/PLANO.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-18T01:24:34.463Z",
+    "tookOverFrom": null
+  }
+}

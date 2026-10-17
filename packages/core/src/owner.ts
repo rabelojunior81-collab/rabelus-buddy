@@ -13,7 +13,8 @@ import { Budget, defaultWindows, type WindowDef } from './budget.ts';
 import { Policy, type Scope, type Tool } from './policy.ts';
 import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
-import { Agent, type AgentResult } from './agent.ts';
+import { randomBytes } from 'node:crypto';
+import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
 import { buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin } from './providers/siwc.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
@@ -69,7 +70,10 @@ export async function startOwner(home: string): Promise<Owner> {
   const server = net.createServer();
 
   let consoleSrv: ConsoleServer | null = null;
+  // Fechando: as execuções em curso não puxam a fila (o banco vai fechar).
+  let closing = false;
   const close = (): Promise<void> => new Promise((resolve) => {
+    closing = true;
     void consoleSrv?.close();
     server.close(() => { log.db.close(); resolveClosed(); resolve(); });
     for (const s of sockets) s.destroy();
@@ -105,7 +109,40 @@ export async function startOwner(home: string): Promise<Owner> {
   let login: PendingLogin | null = null;
   let loginError: string | null = null;
 
-  const agentFor = (p: Record<string, unknown>): Agent => {
+  // ---------- Andamento ao vivo, fila, direcionamento e parada (SPEC 0001 rev. 6, critérios 31 e 33) ----------
+  // O andamento fica em memória (fragmentos não vão para o log); a fila fica no log (sobrevive à queda).
+  interface LiveRun { run: string; phase: 'thinking' | 'writing' | 'tool' | 'approval'; route: string; step: number; startedAt: string; callStartedAt: string; reasoning: string; text: string; tool: string | null }
+  const LIVE_MAX = 200_000;
+  const live = new Map<string, LiveRun>();
+  const controllers = new Map<string, AbortController>();
+  const inboxes = new Map<string, string[]>();
+  const nowIso = () => new Date().toISOString();
+  const liveOf = (run: string): LiveRun => {
+    let l = live.get(run);
+    if (!l) { l = { run, phase: 'thinking', route: '', step: 0, startedAt: nowIso(), callStartedAt: nowIso(), reasoning: '', text: '', tool: null }; live.set(run, l); }
+    return l;
+  };
+  const onProgress = (run: string, x: AgentProgress): void => {
+    const l = liveOf(run);
+    if (x.kind === 'call') Object.assign(l, { phase: 'thinking', route: x.route, step: x.step, callStartedAt: nowIso(), reasoning: '', text: '', tool: null });
+    else if (x.kind === 'reasoning') l.reasoning = (l.reasoning + x.delta).slice(-LIVE_MAX);
+    else if (x.kind === 'text') { l.text = (l.text + x.delta).slice(-LIVE_MAX); l.phase = 'writing'; }
+    else if (x.kind === 'tool') { l.tool = x.name; l.phase = 'tool'; }
+    // Passo concluído: raciocínio e texto já estão no log (a console mostra de lá); o andamento não repete.
+    else if (x.kind === 'exec') { Object.assign(l, { tool: x.name, phase: 'tool', reasoning: '', text: '' }); }
+  };
+  const runningIn = (session: string) => domain.listRuns().find((r) => r.session === session && r.state === 'running');
+  interface Queued { queue: string; task: string; effort?: string | null; route?: unknown; workspace?: string; interactive?: boolean }
+  const queueOf = (session: string): Queued[] => {
+    const q = new Map<string, Queued>();
+    for (const e of log.events(session)) {
+      if (e.kind === 'run.queued') { const x = e.payload as unknown as Queued; q.set(x.queue, x); }
+      if (e.kind === 'run.dequeued') q.delete(String((e.payload as { queue?: string }).queue));
+    }
+    return [...q.values()];
+  };
+
+  const agentFor = (p: Record<string, unknown>, signal?: AbortSignal): Agent => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
     const policy = new Policy(log, { workspace });
@@ -117,33 +154,115 @@ export async function startOwner(home: string): Promise<Owner> {
       interactive: p.interactive === true,
       ...(effort(p.effort) ? { effort: effort(p.effort)! } : {}),
       awaitApproval,
+      ...(signal ? { signal } : {}),
+      onProgress,
+      inbox: (run: string) => inboxes.get(run)?.splice(0) ?? [],
     });
   };
+  // Fim da execução: limpa o andamento e, concluída ou parada, a primeira da fila começa continuando a conversa.
   // Falha inesperada no laço: a execução para com motivo, sem mensagem de erro (pode carregar dados).
   const watch = (session: string, run: string, done: Promise<AgentResult>): void => {
     done.catch((e: unknown) => {
       log.append(session, 'run.error', { run, error: (e as Error)?.name ?? 'Error' });
       if (domain.getRun(run).state === 'running') domain.stopRun(run, 'internalError');
+    }).finally(() => {
+      live.delete(run);
+      controllers.delete(run);
+      inboxes.delete(run);
+      if (!closing) drain(session, run);
     });
+  };
+  const startRun = (session: string, task: string, p: Record<string, unknown>, continueFrom?: string): string => {
+    const ac = new AbortController();
+    const agent = agentFor(p, ac.signal);
+    const prior = continueFrom ? agent.transcript(session, continueFrom) : undefined;
+    const { run, done } = agent.begin(session, task, prior?.length ? { prior } : {});
+    controllers.set(run, ac);
+    inboxes.set(run, inboxes.get(run) ?? []);
+    liveOf(run);
+    // Opções da execução ficam no log: a retomada usa o mesmo esforço e a mesma rota.
+    log.append(session, 'run.options', { run, effort: effort(p.effort) ?? null, route: route(p.route) ?? null });
+    watch(session, run, done);
+    return run;
+  };
+  const drain = (session: string, prev: string): void => {
+    if (runningIn(session)) return;
+    const next = queueOf(session)[0];
+    if (!next) return;
+    try {
+      const run = startRun(session, next.task, next as unknown as Record<string, unknown>, prev);
+      log.append(session, 'run.dequeued', { queue: next.queue, reason: 'started', run });
+    } catch (e) {
+      log.append(session, 'run.dequeued', { queue: next.queue, reason: 'failed', error: (e as Error)?.name ?? 'Error' });
+    }
+  };
+  const busy = (session: string) => {
+    const r = runningIn(session);
+    if (!r) throw new DomainError(-32004, `nenhuma execução rodando na conversa ${session}`, { session });
+    return r;
   };
 
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
       const session = String(p.session);
-      const agent = agentFor(p);
-      const prior = p.continueFrom ? agent.transcript(session, String(p.continueFrom)) : undefined;
-      const { run, done } = agent.begin(session, String(p.task), prior?.length ? { prior } : {});
-      // Opções da execução ficam no log: a retomada usa o mesmo esforço e a mesma rota.
-      log.append(session, 'run.options', { run, effort: effort(p.effort) ?? null, route: route(p.route) ?? null });
-      watch(session, run, done);
-      return { run };
+      // Uma execução por conversa (critério 33): com outra rodando, a mensagem entra na fila (decisão do Pai).
+      if (runningIn(session)) {
+        if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
+        effort(p.effort); route(p.route); // valida já, não na hora de rodar
+        const queue = `q-${randomBytes(4).toString('hex')}`;
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true });
+        return { queued: queue };
+      }
+      return { run: startRun(session, String(p.task), p, p.continueFrom ? String(p.continueFrom) : undefined) };
+    },
+    'run.live': (p) => {
+      const session = String(p.session);
+      const r = runningIn(session);
+      const queue = queueOf(session).map((q) => ({ id: q.queue, task: q.task }));
+      if (!r) return { running: null, queue };
+      const l = { ...liveOf(r.id) };
+      if (domain.pendingApprovals().some((a) => a.session === session)) l.phase = 'approval';
+      return { running: l, queue };
+    },
+    'agent.steer': (p) => {
+      const session = String(p.session);
+      const r = busy(session);
+      let text = typeof p.text === 'string' ? p.text.trim() : '';
+      if (p.queue) {
+        const q = queueOf(session).find((x) => x.queue === String(p.queue));
+        if (!q) throw new DomainError(-32602, `mensagem ${String(p.queue)} não está na fila`);
+        text = q.task;
+        log.append(session, 'run.dequeued', { queue: q.queue, reason: 'steered', run: r.id });
+      }
+      if (!text) throw new DomainError(-32602, 'direcionamento vazio');
+      (inboxes.get(r.id) ?? inboxes.set(r.id, []).get(r.id)!).push(text);
+      return { run: r.id };
+    },
+    'agent.unqueue': (p) => {
+      const session = String(p.session);
+      const q = queueOf(session).find((x) => x.queue === String(p.queue));
+      if (!q) throw new DomainError(-32602, `mensagem ${String(p.queue)} não está na fila`);
+      log.append(session, 'run.dequeued', { queue: q.queue, reason: 'cancelled' });
+      return { ok: true };
+    },
+    'agent.stop': (p) => {
+      const session = String(p.session);
+      const r = busy(session);
+      for (const a of domain.pendingApprovals()) if (a.session === session) domain.resolveApproval(a.id, 'deny');
+      const ac = controllers.get(r.id);
+      if (ac) ac.abort(); else domain.stopRun(r.id, 'userStopped'); // sem laço vivo neste processo
+      return { stopping: r.id };
     },
     'agent.resume': (p) => {
       const run = String(p.run);
       const r = domain.getRun(run);
       if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(-32004, `execução ${run} está ${r.state}: só se retoma interrompida ou parada`, { id: run, state: r.state });
       const opts = log.events(r.session).filter((e) => e.kind === 'run.options' && (e.payload as { run?: string }).run === run).at(-1)?.payload as { effort?: string | null; route?: unknown } | undefined;
-      watch(r.session, run, agentFor({ ...p, effort: p.effort ?? opts?.effort ?? undefined, route: p.route ?? opts?.route ?? undefined }).resume(r.session, run));
+      const ac = new AbortController();
+      controllers.set(run, ac);
+      inboxes.set(run, []);
+      liveOf(run);
+      watch(r.session, run, agentFor({ ...p, effort: p.effort ?? opts?.effort ?? undefined, route: p.route ?? opts?.route ?? undefined }, ac.signal).resume(r.session, run));
       return { run };
     },
     'run.list': () => domain.listRuns(),

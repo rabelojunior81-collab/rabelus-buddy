@@ -73,6 +73,22 @@
   .ev.tool { color: var(--text); }
   details.res { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
   details.res pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; max-height: 200px; overflow: auto; }
+  details.grp { font-size: 12.5px; color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; }
+  details.grp > summary { cursor: pointer; user-select: none; }
+  details.grp > .in { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  details.reason pre, .live .reason pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; max-height: 240px; overflow: auto; font-family: inherit; color: var(--muted); }
+  .live { display: flex; flex-direction: column; gap: 8px; }
+  .live .line { font-size: 12.5px; color: var(--accent); display: flex; gap: 8px; align-items: center; }
+  .live .spin { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; animation: rb-spin .8s linear infinite; }
+  @keyframes rb-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .live .spin { animation: none; } }
+  .bubble.buddy.typing::after { content: '▍'; color: var(--accent); }
+  .queued { align-self: flex-end; max-width: 85%; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
+  .queued .who { color: var(--warn); }
+  .queued .actions { margin-top: 6px; }
+  .tag { font-size: 10.5px; color: var(--warn); margin-left: 6px; text-transform: none; letter-spacing: 0; }
+  .toggle { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); margin: 0; }
+  .toggle input { width: auto; margin: 0; }
   ul.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
   ul.list li { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 14px; }
   ul.list li .t { overflow: hidden; text-overflow: ellipsis; }
@@ -103,6 +119,7 @@
       <h2 id="hFeed" data-i18n="console.feed.title">Conversa</h2>
       <span id="sessionLabel" class="note"></span>
       <span class="spacer"></span>
+      <label class="toggle" for="detailsToggle"><input id="detailsToggle" type="checkbox"><span data-i18n="console.feed.showDetails">Mostrar raciocínio e ações</span></label>
       <button id="newChat" data-i18n="console.feed.new">Nova conversa</button>
     </div>
     <div id="feed" aria-live="polite"></div>
@@ -119,6 +136,7 @@
           </select></div>
         <div><label for="route" data-i18n="console.task.route">Provedor</label><select id="route"></select></div>
         <button id="run" class="primary" data-i18n="console.task.run">Enviar</button>
+        <button id="stop" class="danger" hidden data-i18n="console.task.stop">Parar</button>
       </div>
       <details><summary data-i18n="console.task.workspace">Pasta de trabalho</summary><input id="workspace" type="text" spellcheck="false" data-i18n-aria="console.task.workspace"></details>
       <div class="hint"><span data-i18n="console.task.hint"></span> <span id="runMsg" class="msg"></span></div>
@@ -157,7 +175,9 @@ const $ = (id) => document.getElementById(id);
 const store = { get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } } };
 let cat = {};
 let lang = store.get('rb.lang', 'pt-BR');
-let session = null;        // sessão aberta na conversa
+const prefs = restore((k, d) => store.get(k, d));
+let session = prefs.session; // sessão aberta na conversa (lembrada ao recarregar)
+const groupOpen = new Map();  // grupos abertos ou fechados à mão pelo usuário
 let lastRun = null;        // última execução da sessão aberta
 let showAll = false;
 let routesCfg = [];
@@ -215,11 +235,48 @@ function authView(a, t) {
   else if (a.error) text = t('console.chatgpt.error', { code: a.error });
   return { text, loginKey: a.loggedIn ? 'console.chatgpt.switch' : 'console.chatgpt.login', loginPrimary: !a.loggedIn, logoutEnabled: !!(a.loggedIn || a.pending) };
 }
+// Memória da página (critério 34): conversa aberta e preferência de detalhes; armazenamento bloqueado não quebra nada.
+function restore(get) {
+  try { return { session: get('rb.session', null) || null, details: get('rb.details', 'closed') === 'open', route: get('rb.route', '') || '' }; }
+  catch { return { session: null, details: false, route: '' }; }
+}
+function elapsedText(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return s < 60 ? s + ' s' : Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' s';
+}
+// Cadência do texto ao vivo: cerca de 60 caracteres por segundo, acelerando com o atraso para nunca ficar
+// mais de ~1,5 s atrás do que já chegou; o fim (uma palavra) sai de uma vez.
+function revealStep(shown, total, dtMs) {
+  const behind = total - shown;
+  if (behind <= 12) return total;
+  const rate = Math.max(60, behind / 1.5);
+  return Math.min(total, shown + Math.max(1, Math.ceil((rate * dtMs) / 1000)));
+}
+function liveLine(l, ms, t) {
+  const phase = l.phase === 'tool' ? t('console.live.tool', { tool: l.tool || '?' }) : l.phase === 'writing' ? t('console.live.writing') : l.phase === 'approval' ? t('console.live.approval') : t('console.live.thinking');
+  return [phase, elapsedText(ms), l.route].filter(Boolean).join(' · ');
+}
+// Matemática em LaTeX (o ChatGPT escreve \(30 \times 1\)) vira texto legível, sem biblioteca (ensaio da M0.8d).
+const TEX = { times: '×', div: '÷', cdot: '·', approx: '≈', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', to: '→', rightarrow: '→', pm: '±', infty: '∞' };
+function delatex(s) {
+  if (!/\\[([a-zA-Z]/.test(s)) return s;
+  let o = s.replace(/\\\[\s*([\s\S]*?)\s*\\\]/g, '$1').replace(/\\\(\s*([\s\S]*?)\s*\\\)/g, '$1');
+  o = o.replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '$1/$2').replace(/\\text\{([^{}]*)\}/g, '$1').replace(/\\mathbf\{([^{}]*)\}/g, '**$1**').replace(/_\{([^{}]*)\}/g, '($1)');
+  return o.replace(/\\(times|div|cdot|approx|leq|le|geq|ge|neq|to|rightarrow|pm|infty)(?![a-zA-Z])/g, (_m, k) => TEX[k]);
+}
+// Motivo de parada em frase (antes aparecia o código, como "userStopped").
+const REASONS = {
+  userStopped: 'console.reason.userStopped', maxSteps: 'console.reason.maxSteps', sessionPaused: 'console.reason.sessionPaused',
+  'budget.windowExhausted': 'console.reason.windowExhausted', 'provider.unavailable': 'console.reason.providerUnavailable',
+  'effect.unknown': 'console.reason.effectUnknown', needsReconciliation: 'console.reason.needsReconciliation', internalError: 'console.reason.internalError',
+};
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
   const f = document.createDocumentFragment();
-  for (const part of String(text).split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
+  // O LaTeX sai do texto corrido, nunca de dentro do código.
+  const plain = String(text).split(/(`[^`\n]+`)/).map((x) => (/^`[^`]+`$/.test(x) ? x : delatex(x))).join('');
+  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
     if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
     else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
     else if (part) f.append(document.createTextNode(part));
@@ -255,38 +312,59 @@ async function loadLang() {
 }
 
 // Uma linha por evento (o mesmo catálogo do rbuddy log); a conversa vira balões.
+// Raciocínio, comandos, resultados e passos ficam num grupo recolhível entre as falas (rev. 6, critério 32);
+// aberto ou fechado pela preferência do usuário, e o que ele abrir ou fechar à mão é respeitado.
 function feedItems(evs) {
   const out = [];
   const routes = {};
+  let grp = null;
+  let n = 0;
+  const group = () => {
+    if (!grp) {
+      const key = 'g' + (n++);
+      const open = groupOpen.has(key) ? groupOpen.get(key) : prefs.details;
+      const inner = el('div', { class: 'in' });
+      const d = el('details', { class: 'grp', 'data-key': key }, el('summary', {}), inner);
+      d.open = open;
+      d.addEventListener('toggle', () => groupOpen.set(key, d.open));
+      grp = { d, inner, count: 0 };
+      out.push(d);
+    }
+    return grp;
+  };
+  const detail = (node) => { const g = group(); g.inner.append(node); g.count++; g.d.firstChild.textContent = t('console.feed.details', { n: g.count }); };
+  const speak = (node) => { grp = null; out.push(node); };
   for (const e of evs) {
     const p = e.payload || {};
     switch (e.kind) {
       case 'agent.message': {
         if (p.prior) break; // histórico copiado da execução anterior (já está na tela)
         const m = p.message || {};
-        if (m.role === 'user') out.push(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you')), m.content));
+        if (m.role === 'user') speak(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you'), p.steer ? el('span', { class: 'tag' }, t('console.feed.steered')) : null), m.content));
         else if (m.role === 'assistant') {
-          if (m.content) out.push(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), rich(m.content)));
-          for (const c of m.toolCalls || []) out.push(el('div', { class: 'ev tool' }, t('console.feed.tool') + ': ' + c.name + ' ' + String(c.arguments || '').slice(0, 160)));
-        } else if (m.role === 'tool') out.push(el('details', { class: 'res' }, el('summary', {}, t('console.feed.result')), el('pre', {}, String(m.content || '').slice(0, 4000))));
+          if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), rich(m.content)));
+          else if (m.content) detail(el('div', { class: 'ev' }, rich(m.content)));
+          for (const c of m.toolCalls || []) detail(el('div', { class: 'ev tool' }, t('console.feed.tool') + ': ' + c.name + ' ' + String(c.arguments || '').slice(0, 160)));
+        } else if (m.role === 'tool') detail(el('details', { class: 'res' }, el('summary', {}, t('console.feed.result')), el('pre', {}, String(m.content || '').slice(0, 4000))));
         break;
       }
-      case 'run.stopped': out.push(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: p.reason }))); break;
-      case 'run.interrupted': out.push(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
-      case 'run.resumed': out.push(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
-      case 'agent.step': out.push(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
+      case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
+      case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
+      case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
+      case 'run.resumed': detail(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
+      case 'agent.step': detail(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
       case 'budget.reserved': routes[p.reservation] = p.provider + '/' + p.model; break;
-      case 'budget.settled': out.push(el('div', { class: 'ev' }, t('log.settled', { amount: Number(p.actual || 0).toFixed(4), route: routes[p.reservation] || '?' }))); break;
-      case 'provider.error': out.push(el('div', { class: 'ev err' }, t('log.providerError', { route: p.route, code: p.code, message: p.message }))); break;
-      case 'provider.switched': out.push(el('div', { class: 'ev' }, t('log.switched', { from: p.from, to: p.to, reason: p.reason }))); break;
-      case 'effort.dropped': out.push(el('div', { class: 'ev err' }, t('log.effortDropped', { route: p.route, effort: p.effort, code: p.code }))); break;
-      case 'approval.requested': out.push(el('div', { class: 'ev' }, t('log.approvalRequested', { action: p.action }))); break;
-      case 'approval.resolved': out.push(el('div', { class: 'ev' }, t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') }))); break;
-      case 'file.written': out.push(el('div', { class: 'ev' }, t('log.fileWritten', { path: p.path }))); break;
-      case 'command.ran': out.push(el('div', { class: 'ev' }, t('log.commandRan', { command: p.command, code: p.code }))); break;
-      case 'effect.unknown': out.push(el('div', { class: 'ev err' }, t('log.effectUnknown', { effect: p.effect }))); break;
-      case 'effect.reconciled': out.push(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
-      case 'context.compacted': out.push(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
+      case 'budget.settled': detail(el('div', { class: 'ev' }, t('log.settled', { amount: Number(p.actual || 0).toFixed(4), route: routes[p.reservation] || '?' }))); break;
+      case 'provider.error': speak(el('div', { class: 'ev err' }, t('log.providerError', { route: p.route, code: p.code, message: p.message }))); break;
+      case 'provider.switched': detail(el('div', { class: 'ev' }, t('log.switched', { from: p.from, to: p.to, reason: p.reason }))); break;
+      case 'effort.dropped': speak(el('div', { class: 'ev err' }, t('log.effortDropped', { route: p.route, effort: p.effort, code: p.code }))); break;
+      case 'approval.requested': detail(el('div', { class: 'ev' }, t('log.approvalRequested', { action: p.action }))); break;
+      case 'approval.resolved': detail(el('div', { class: 'ev' }, t('log.approvalResolved', { decision: t(p.decision === 'approve' ? 'log.approved' : 'log.denied') }))); break;
+      case 'file.written': detail(el('div', { class: 'ev' }, t('log.fileWritten', { path: p.path }))); break;
+      case 'command.ran': detail(el('div', { class: 'ev' }, t('log.commandRan', { command: p.command, code: p.code }))); break;
+      case 'effect.unknown': speak(el('div', { class: 'ev err' }, t('log.effectUnknown', { effect: p.effect }))); break;
+      case 'effect.reconciled': detail(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
+      case 'context.compacted': detail(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
       default: break;
     }
   }
@@ -294,6 +372,79 @@ function feedItems(evs) {
 }
 
 let lastFeedKey = '';
+
+// ---------- Andamento ao vivo (rev. 6, critério 31) ----------
+// Fase, tempo, raciocínio e texto chegando em cadência; a fila com Direcionar e Cancelar; Parar.
+const liveEl = el('div', { class: 'live' });
+let liveState = null;     // última resposta de run.live
+let shown = 0;            // caracteres do texto ao vivo já revelados
+let liveRun = null;
+let reasonOpen = null;    // aberto à mão no raciocínio ao vivo
+async function refreshLive() {
+  if (!session) { liveState = null; renderLive(); return; }
+  const l = await api('run.live', { session });
+  if (l.running && l.running.run !== liveRun) { liveRun = l.running.run; shown = 0; reasonOpen = null; }
+  if (l.running && liveState && liveState.running && l.running.callStartedAt !== liveState.running.callStartedAt) shown = 0;
+  const was = Boolean(liveState && liveState.running);
+  liveState = l;
+  $('stop').hidden = !l.running;
+  if (!(l.queue || []).length && $('runMsg').textContent === t('console.queue.queued')) $('runMsg').textContent = '';
+  if (was && !l.running) { lastFeedKey = ''; void refreshFeed(); }
+  renderLive();
+}
+function renderLive() {
+  const l = liveState;
+  const kids = [];
+  if (l && l.running) {
+    const r = l.running;
+    kids.push(el('div', { class: 'line', role: 'status' }, el('span', { class: 'spin', 'aria-hidden': 'true' }), el('span', { id: 'liveLine' }, liveLine(r, Date.now() - Date.parse(r.callStartedAt), t))));
+    if (r.reasoning) {
+      const d = el('details', { class: 'grp reason' }, el('summary', {}, t('console.feed.reasoning')), el('pre', { id: 'liveReason' }, r.reasoning));
+      d.open = reasonOpen === null ? prefs.details : reasonOpen;
+      d.addEventListener('toggle', () => { reasonOpen = d.open; });
+      kids.push(d);
+    }
+    if (r.text) kids.push(el('div', { class: 'bubble buddy typing', id: 'liveText' }, el('span', { class: 'who' }, t('console.feed.buddy')), el('span', { id: 'liveTextBody' }, r.text.slice(0, shown))));
+  }
+  for (const q of (l && l.queue) || []) {
+    kids.push(el('div', { class: 'queued' }, el('span', { class: 'who' }, t('console.queue.title')), q.task,
+      el('div', { class: 'actions' },
+        el('button', { class: 'primary', onclick: () => steer(q.id) }, t('console.queue.steer')),
+        el('button', { onclick: () => unqueue(q.id) }, t('console.queue.cancel')))));
+  }
+  const feed = $('feed');
+  const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
+  liveEl.replaceChildren(...kids);
+  if (session && !liveEl.isConnected) feed.append(liveEl);
+  if (atBottom) feed.scrollTop = feed.scrollHeight;
+}
+// Quadro a quadro: o relógio corre e o texto se revela em cadência, sem refazer a conversa.
+let lastFrame = performance.now();
+function frame(now) {
+  const dt = now - lastFrame;
+  lastFrame = now;
+  const r = liveState && liveState.running;
+  if (r) {
+    const line = $('liveLine');
+    if (line) line.textContent = liveLine(r, Date.now() - Date.parse(r.callStartedAt), t);
+    const body = $('liveTextBody');
+    if (body && shown < r.text.length) {
+      shown = revealStep(shown, r.text.length, dt);
+      body.textContent = r.text.slice(0, shown);
+      const feed = $('feed');
+      if (feed.scrollHeight - feed.scrollTop - feed.clientHeight < 80) feed.scrollTop = feed.scrollHeight;
+    }
+    const reason = $('liveReason');
+    if (reason && reason.textContent !== r.reasoning) {
+      const follow = reason.scrollHeight - reason.scrollTop - reason.clientHeight < 40;
+      reason.textContent = r.reasoning;
+      if (follow) reason.scrollTop = reason.scrollHeight;
+    }
+  }
+  requestAnimationFrame(frame);
+}
+async function steer(id) { try { await api('agent.steer', { session, queue: id }); } catch (e) { $('runMsg').className = 'msg bad'; $('runMsg').textContent = t('console.error', { message: e.message }); } void refreshLive(); }
+async function unqueue(id) { try { await api('agent.unqueue', { session, queue: id }); } catch { /* já saiu da fila */ } void refreshLive(); }
 async function refreshFeed() {
   const feed = $('feed');
   if (!session) { if (lastFeedKey !== 'empty') { feed.replaceChildren(el('div', { class: 'note' }, t('console.feed.empty'))); lastFeedKey = 'empty'; } $('sessionLabel').textContent = ''; return; }
@@ -306,9 +457,7 @@ async function refreshFeed() {
   const items = feedItems(evs);
   const runs = evs.filter((e) => e.kind === 'run.started').map((e) => e.payload.run);
   lastRun = runs[runs.length - 1] || null;
-  const running = evs.length && !['run.finished', 'run.stopped', 'run.interrupted'].includes(evs.filter((e) => e.kind.startsWith('run.')).slice(-1)[0]?.kind);
-  if (running) items.push(el('div', { class: 'ev' }, t('console.feed.working')));
-  feed.replaceChildren(...items);
+  feed.replaceChildren(...items, liveEl);
   if (atBottom) feed.scrollTop = feed.scrollHeight;
 }
 
@@ -336,7 +485,8 @@ async function refreshProviders() {
     el('span', { class: 't' }, (i + 1) + '. ' + p.provider + '/' + p.model),
     el('span', { class: 'badge ' + (p.source ? 'ok' : 'warn'), title: sourceText(p.source) }, p.source ? sourceText(p.source) : t('console.route.missing')))));
   const sel = $('route');
-  const cur = sel.value;
+  // Primeira montagem: o provedor escolhido da última vez (critério 34).
+  const cur = sel.options.length ? sel.value : prefs.route;
   const opts = [el('option', { value: '' }, t('console.route.auto'))];
   for (const r of routesCfg) {
     const ready = providerState.find((p) => p.provider === r.provider)?.source;
@@ -372,8 +522,8 @@ async function refreshRuns() {
       canResume ? el('button', { onclick: (ev) => { ev.stopPropagation(); resume(r); } }, t('console.runs.resume')) : null);
   }));
 }
-function openSession(s) { session = s; lastFeedKey = ''; void refreshFeed(); void refreshRuns(); }
-$('newChat').addEventListener('click', () => { session = null; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); $('task').focus(); });
+function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); }
+$('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); $('task').focus(); });
 $('task').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) { ev.preventDefault(); $('run').click(); } });
 async function resume(r) {
   try { await api('agent.resume', { run: r.id, workspace: $('workspace').value, interactive: true }); openSession(r.session); }
@@ -392,15 +542,28 @@ $('run').addEventListener('click', async () => {
   if (cont) params.continueFrom = lastRun;
   $('run').disabled = true;
   try {
-    const { run } = await api('agent.run', params);
+    const r = await api('agent.run', params);
     store.set('rb.workspace', $('workspace').value);
     store.set('rb.effort', $('effort').value);
+    store.set('rb.route', $('route').value);
     $('task').value = '';
-    msg.textContent = '';
+    // Conversa ocupada: a mensagem entrou na fila (Direcionar agora ou Cancelar, logo abaixo da conversa).
+    msg.textContent = r.queued ? t('console.queue.queued') : '';
     $('task').focus();
-    openSession(s);
+    if (r.queued) void refreshLive(); else openSession(s);
   } catch (e) { msg.className = 'msg bad'; msg.textContent = t('console.error', { message: e.message }); }
   finally { $('run').disabled = false; }
+});
+$('stop').addEventListener('click', async () => {
+  try { await api('agent.stop', { session }); } catch (e) { /* já terminou */ }
+  void refreshLive();
+});
+$('detailsToggle').addEventListener('change', () => {
+  prefs.details = $('detailsToggle').checked;
+  store.set('rb.details', prefs.details ? 'open' : 'closed');
+  groupOpen.clear();
+  for (const d of document.querySelectorAll('#feed details.grp')) d.open = prefs.details;
+  reasonOpen = null;
 });
 $('login').addEventListener('click', async () => {
   // A janela abre no clique (senão o bloqueador de pop-up barra) e recebe a URL quando o núcleo responder.
@@ -430,6 +593,7 @@ $('budgetToggle').addEventListener('click', () => { showAll = !showAll; $('budge
 $('lang').addEventListener('change', async () => { lang = $('lang').value; store.set('rb.lang', lang); await loadLang(); lastFeedKey = ''; void slow(); void fast(); });
 
 async function fast() { try { await Promise.all([refreshFeed(), refreshApprovals()]); conn(true); } catch { conn(false); } }
+async function liveTick() { try { await refreshLive(); } catch { /* a conexão é cuidada pelo fast */ } }
 async function slow() { try { await Promise.all([refreshProviders(), refreshAuth(), refreshBudget(), refreshRuns()]); conn(true); } catch { conn(false); } }
 
 (async () => {
@@ -440,10 +604,14 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
     $('workspace').value = store.get('rb.workspace', d.workspace);
     $('effort').value = store.get('rb.effort', 'default');
   } catch { conn(false); }
+  $('detailsToggle').checked = prefs.details;
   await slow();
   await fast();
+  await liveTick();
   setInterval(fast, 800);
+  setInterval(liveTick, 300);
   setInterval(slow, 3000);
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
