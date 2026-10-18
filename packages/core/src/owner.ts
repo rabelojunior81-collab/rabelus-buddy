@@ -210,9 +210,23 @@ export async function startOwner(home: string): Promise<Owner> {
   // Registro do ACP: buscado na primeira consulta e depois no máximo uma vez por dia; uma busca por vez.
   let registryFetch: Promise<RegistryState> | null = null;
   let catalogBuild: Promise<ModelCatalog> | null = null;
-  const registryNow = async (): Promise<RegistryState> => {
+  // Primeira execução por pacote@versão (critério 4): 'approved', 'denied', ou o id da aprovação pendente
+  // (criada aqui quando `ask`, uma só por pacote). O vínculo pacote → aprovação fica no log.
+  const firstRun = (name: string, spec: { package?: string; source: string }, ask = false): string => {
+    const req = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { package?: string }).package === spec.package).at(-1);
+    if (req) {
+      const ap = domain.getApproval(String((req.payload as { approval: string }).approval));
+      if (ap.state !== 'pending') return ap.state;
+      return ap.id;
+    }
+    if (!ask) return 'none';
+    const ap = domain.requestApproval('harness', `Primeira execução de ${name}: baixar e executar ${spec.package} (${spec.source}). Aprovar vale só para esta versão.`);
+    log.append('harness', 'harness.approval.requested', { package: spec.package, source: spec.source, approval: ap.id, name });
+    return ap.id;
+  };
+  const registryNow = async (force = false): Promise<RegistryState> => {
     const reg = readRegistry(home);
-    if (reg.fetchedAt && Date.now() - Date.parse(reg.fetchedAt) <= DAY) return reg;
+    if (!force && reg.fetchedAt && Date.now() - Date.parse(reg.fetchedAt) <= DAY) return reg;
     registryFetch ??= refreshRegistry({ home }).finally(() => { registryFetch = null; });
     return registryFetch;
   };
@@ -296,8 +310,8 @@ export async function startOwner(home: string): Promise<Owner> {
       return out;
     },
     // Harnesses do registro oficial do ACP e da tabela própria, com o que está instalado (SPEC 0002, critérios 1 e 2).
-    'harness.list': async () => {
-      const reg = await registryNow();
+    'harness.list': async (p) => {
+      const reg = await registryNow(p.refresh === true);
       return { registry: { source: reg.source, fetchedAt: reg.fetchedAt, version: reg.version, ...(reg.error ? { error: reg.error } : {}) }, harnesses: detectHarnesses(home, process.env) };
     },
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
@@ -309,8 +323,13 @@ export async function startOwner(home: string): Promise<Owner> {
       const spec = launchFor(v);
       let out: Record<string, unknown>;
       if (!spec) out = { state: 'indisponivel', reason: v.found ? 'sem lançamento local conhecido; o registro pede baixar o binário' : 'não instalado neste computador' };
-      else if (spec.needsApproval) out = { state: 'aprovacao', reason: `a primeira execução baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai`, package: spec.package };
-      else {
+      else if (spec.needsApproval && firstRun(v.name, spec) !== 'approved') {
+        // Primeira execução de pacote que baixa código (SPEC 0002, critério 4): aprovação do Pai por pacote@versão.
+        const fr = firstRun(v.name, spec, true);
+        out = fr === 'denied'
+          ? { state: 'negado', reason: `a primeira execução de ${spec.package} foi negada pelo Pai; nada roda`, package: spec.package }
+          : { state: 'aprovacao', reason: `a primeira execução baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai`, package: spec.package, approval: fr };
+      } else {
         const cwd = join(home, 'area-de-trabalho');
         mkdirSync(cwd, { recursive: true });
         out = { ...(await probeHarness(spec, { cwd })) };
