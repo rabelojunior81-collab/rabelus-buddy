@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `6319c48` (Merge #50: resposta vazia do provedor), CI verde |
-| PRs mergeados | #1–#50, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `8d76307` (Merge #51: catálogo do registro ACP e detecção), CI verde |
+| PRs mergeados | #1–#51, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 

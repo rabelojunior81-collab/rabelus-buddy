@@ -1,0 +1,10 @@
+tempo 1426 ms; erros {}
+chatgpt          8 modelos; 1 labs; visão 8 ; raciocínio 8 ; com esforços 8 ; fontes {"provedor":8}
+opencode-go     37 modelos; 16 labs; visão 21 ; raciocínio 30 ; com esforços 20 ; fontes {"models.dev":30,"nenhuma":7}
+ollama-cloud    22 modelos; 10 labs; visão 12 ; raciocínio 20 ; com esforços 12 ; fontes {"provedor":22}
+openrouter     471 modelos; 58 labs; visão 309 ; raciocínio 341 ; com esforços 209 ; fontes {"provedor":471}
+chatgpt gpt-6.1-sol {"lab":"openai","visao":true,"esforcos":["low","medium","high","xhigh","max","ultra"],"ctx":500000,"fontes":{"caps":"provedor","lab":"provedor"}}
+opencode-go kimi-k3 {"lab":"moonshotai","visao":true,"esforcos":["max"],"ctx":1048576,"fontes":{"caps":"models.dev","lab":"models.dev"}}
+ollama-cloud gpt-oss:20b {"lab":"openai","visao":false,"esforcos":["low","medium","high"],"ctx":131072,"fontes":{"caps":"provedor","lab":"família"}}
+ollama-cloud qwen3-vl:235b ausente
+openrouter nvidia/nemotron-3.5-super-vl:free {"lab":"nvidia","visao":true,"esforcos":[],"ctx":1000000,"fontes":{"caps":"provedor","lab":"provedor"}}
