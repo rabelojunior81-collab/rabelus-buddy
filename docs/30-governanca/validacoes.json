@@ -480,6 +480,47 @@
       "como": "abrir o protótipo v4 no navegador (http://127.0.0.1:8767/prototipo-visual.html), no computador e no celular, ou olhar as capturas prototipo-v4-*.png na pasta da SPEC 0002",
       "preparo": "protótipo v4 ensaiado pelo buddy-dev em 2026-10-18 nos tamanhos reais (1707x769 e 390x844), nos temas escuro e claro, sem erro no console do navegador",
       "evidencia": "Pai, 2026-10-18: \"Visual aprovado, com apenas uma ressalva: logomarca do Rabelus Lab no lugar desse quadrado, ao lado do nome\"; ressalva aplicada no protótipo v4 no mesmo dia (capturas prototipo-v4-*-marca.png)"
+    },
+    {
+      "id": "servidor-com-dono-e-fim",
+      "descricao": "Servidor de conferência registrado, reaproveitado e encerrado com a árvore de processos; session end recusa com servidor da sessão rodando",
+      "quem": "maquina",
+      "onde": [
+        "toda sessão"
+      ],
+      "mecanismo": {
+        "bd": "serve",
+        "teste": "scripts/test/servers.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18 (servidores esquecidos 8765 e 8767)"
+    },
+    {
+      "id": "contexto-na-compactacao",
+      "descricao": "Depois de compactar (e ao abrir ou retomar), o harness recebe o contexto essencial de governança por bd contexto; a compactação fica no ledger e o resumo fora do repositório",
+      "quem": "maquina",
+      "onde": [
+        "toda retomada"
+      ],
+      "mecanismo": {
+        "bd": "contexto",
+        "teste": "scripts/test/contexto.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18"
+    },
+    {
+      "id": "orfaos-e-quebrados",
+      "descricao": "Nenhum link relativo quebrado, nenhum arquivo de documentação sem referência, nenhuma exportação de código sem uso",
+      "quem": "maquina",
+      "onde": [
+        "toda branch",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "orfaos",
+        "ci": "node scripts/bd.mjs orfaos",
+        "teste": "scripts/test/orfaos.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18"
     }
   ]
 }

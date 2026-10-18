@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T145958-0300-claude-code-vs-code-a6ad15-0002",
+  "ts": "2026-10-18T14:59:58-03:00",
+  "utc": "2026-10-18T17:59:58.100Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 2,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/bd-servidores-contexto-orfaos",
+  "type": "erro",
+  "summary": "Dois servidores de conferência meus esquecidos rodando: 8765 (Blog, desde 17/10 18:23) e 8767 (protótipo, desde 17/10 20:29); encerrados. Os do Hermes (58520, 59484) e o núcleo do Pai (47321) intocados. Regra do Pai com mecanismo a seguir (bd serve)",
+  "refs": [],
+  "data": {}
+}

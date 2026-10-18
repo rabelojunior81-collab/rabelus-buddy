@@ -135,3 +135,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0016-#0016
 
 1. **Em 2026-10-15, o STATUS trazia main desatualizada e carimbo à mão no futuro; o bd surfaces nasceu disso.** Em 2026-10-18, o mesmo mecanismo pegou o STATUS atrasado em quase todo PR do dia, e uma vez pegou a si mesmo contando o próprio merge. → Um mecanismo também amadurece: quando ele reprova o que deveria aprovar, corrige-se o mecanismo, com teste do caso real, e não a disciplina de quem o usa.
+
+## lote #0017-#0017
+
+1. **Em 2026-10-15, a cor de autoria (verdete) nasceu medida: 8,11:1 de contraste sobre o fundo do Blog.** Em 2026-10-18, a troca para o oliva repetiu a medida (7,69:1) antes de aplicar. → Decisão visual chega ao Pai com o número que a sustenta, e a troca refaz a medida em vez de herdar a anterior.

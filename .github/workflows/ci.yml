@@ -66,6 +66,9 @@ jobs:
       - name: Nomes na convenção
         run: node scripts/bd.mjs names-check
 
+      - name: Nenhum órfão nem link quebrado (regra do Pai, 2026-10-18)
+        run: node scripts/bd.mjs orfaos
+
       - name: Superfícies coerentes (índices, ADRs, carimbos, STATUS)
         env:
           BASE_REF: ${{ github.base_ref }}
