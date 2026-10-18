@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T201401-0300-claude-code-vs-code-30aa5d-0007",
+  "ts": "2026-10-18T20:14:01-03:00",
+  "utc": "2026-10-18T23:14:01.701Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 7,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-primeira-execucao",
+  "type": "doc",
+  "summary": "Registro do ensaio da M1.2b com captura do pedido no painel Aprovações",
+  "refs": [],
+  "data": {}
+}
