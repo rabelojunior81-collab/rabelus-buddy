@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Os agentes instalados aparecem sozinhos** (M1.1, critérios 1 e 2). O núcleo lê o registro oficial do ACP (42 agentes, com ícone, versão, licença e como iniciar), guarda uma cópia para quando estiver sem rede e reconhece pelo PATH os que já estão no computador, sem instalar nada. No computador do Pai: Claude Code, Codex, Copilot, OpenCode, pi e Hermes (este fora do registro, por tabela própria).
 - **M1.0: contrato tipado da console.** Cada pedido da console é conferido antes de chegar ao núcleo: campo desconhecido, tipo errado ou valor fora da lista volta como erro com mensagem clara em português, e nada é executado nem gravado.
 
 - **M1 em execução** (SPEC 0002 aprovada pelo Pai em 2026-10-18): o SDK oficial do ACP e o `zod` foram instalados. Os alertas de segurança do GitHub (Dependabot) foram ligados.

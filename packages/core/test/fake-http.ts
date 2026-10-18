@@ -7,7 +7,7 @@ export interface Captured { method: string; path: string; headers: http.Incoming
 // drop: a conexão cai sem resposta nenhuma (falha inconclusiva de verdade).
 // sse: eventos em fluxo (string vira `data: <string>`, como o `[DONE]` do Chat Completions);
 // gapMs: intervalo entre os eventos; hold: o fluxo fica aberto depois do último evento (modelo ainda pensando).
-export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; sse?: unknown[]; gapMs?: number; hold?: boolean; hang?: boolean; drop?: boolean };
+export type Responder = (req: Captured) => { status?: number; headers?: Record<string, string>; json?: unknown; text?: string; sse?: unknown[]; gapMs?: number; hold?: boolean; hang?: boolean; drop?: boolean };
 
 interface ChatJson { id?: string; choices?: { finish_reason?: string; message?: { content?: string | null; reasoning?: string; tool_calls?: { id: string; function: { name: string; arguments: string } }[] } }[]; usage?: unknown }
 // Resposta de Chat Completions em pedaços, no formato medido nos servidores reais (2026-10-17): raciocínio
@@ -62,6 +62,8 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
         next();
         return;
       }
+      // Corpo cru (ícones SVG do registro, JSON malformado): sai como veio.
+      if (out.text !== undefined) { res.writeHead(out.status ?? 200, { 'content-type': 'text/plain', ...out.headers }); res.end(out.text); return; }
       res.writeHead(out.status ?? 200, { 'content-type': 'application/json', ...out.headers });
       res.end(JSON.stringify(out.json ?? {}));
     });

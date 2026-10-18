@@ -33,6 +33,7 @@ export const CONSOLE_SCHEMAS = {
   'budget.status': empty,
   'providers.status': empty,
   'providers.usage': empty,
+  'harness.list': empty,
   'keys.set': z.strictObject({ provider: keyProvider, key: z.string().min(1).max(4096) }),
   'keys.remove': z.strictObject({ provider: keyProvider }),
   'auth.chatgpt.start': empty,

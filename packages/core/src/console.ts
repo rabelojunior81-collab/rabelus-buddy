@@ -9,6 +9,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { checkParams } from './contract.ts';
+import { iconPath } from './harness/catalog.ts';
 
 const PAGE_DIR = join(import.meta.dirname, '..', 'console');
 const LOCALES = join(import.meta.dirname, '..', '..', '..', 'locales');
@@ -20,7 +21,7 @@ export const CONSOLE_METHODS = [
   'run.get', 'run.list', 'agent.run', 'agent.resume',
   'run.live', 'agent.steer', 'agent.unqueue', 'agent.stop',
   'approval.list', 'approval.resolve', 'budget.status',
-  'providers.status', 'providers.usage', 'keys.set', 'keys.remove',
+  'providers.status', 'providers.usage', 'harness.list', 'keys.set', 'keys.remove',
   'auth.chatgpt.start', 'auth.chatgpt.status', 'auth.chatgpt.logout',
 ] as const;
 
@@ -67,8 +68,8 @@ export async function startConsole({ home, methods, touch, port = Number(process
   const allowed = new Set<string>(CONSOLE_METHODS);
   let bound = 0;
 
-  const send = (res: http.ServerResponse, status: number, body: string, type = 'application/json; charset=utf-8') => {
-    res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'x-frame-options': 'DENY' });
+  const send = (res: http.ServerResponse, status: number, body: string, type = 'application/json; charset=utf-8', extra: Record<string, string> = {}) => {
+    res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'x-frame-options': 'DENY', ...extra });
     res.end(body);
   };
   const json = (res: http.ServerResponse, status: number, obj: unknown) => send(res, status, JSON.stringify(obj));
@@ -85,6 +86,13 @@ export async function startConsole({ home, methods, touch, port = Number(process
     if (req.method === 'GET' && m) {
       const c = catalog(m[1]!);
       return c ? json(res, 200, c) : json(res, 404, { error: { message: 'idioma' } });
+    }
+    // Ícone de harness (SPEC 0002, escopo 1): imagem guardada localmente, servida isolada, nunca como documento.
+    const ic = /^\/icons\/harness\/([a-z0-9][a-z0-9._-]{0,63})\.svg$/.exec(url.pathname);
+    if (req.method === 'GET' && ic) {
+      const p = iconPath(home, ic[1]!);
+      if (!p || !existsSync(p)) return json(res, 404, { error: { message: 'ícone' } });
+      return send(res, 200, readFileSync(p, 'utf8'), 'image/svg+xml', { 'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox", 'cache-control': 'private, max-age=86400' });
     }
     const a = /^\/api\/([a-z.]+)$/i.exec(url.pathname);
     if (req.method !== 'POST' || !a || !allowed.has(a[1]!) || !methods[a[1]!]) return json(res, 404, { error: { message: 'não encontrado' } });

@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0015 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · decisao
-
-Decisões do Pai registradas: METODO e ADR 0005 aceitos; nome Buddy Fenix (buddy-dev fica como identificador técnico); canal de segurança e denúncia rabelo.work@gmail.com em SECURITY e no Código de Conduta; missões do avatar e da stack mobile antes da SPEC do M0.
-
 ### #0016 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · correcao
 
 STATUS trazia carimbo escrito à mão no futuro (03:05, publicado num merge das 02:59) e main desatualizada (397ea0d); corrigido para d92e297 com carimbo de bd now --verify.
@@ -207,3 +203,7 @@ Plano de minutos da CI: bd ci-plan decide a matriz por evento (PR com código: L
 ### #0062 · 2026-10-18T140220-0300 · claude-code-vs-code-33be25 · correcao
 
 Resposta vazia do provedor (0 tokens, nada) vira falha da rota: troca de provedor ou parada com motivo legível na console, nunca 'concluída' muda (achado no ensaio do M1.0; teste antes; ensaio registrado)
+
+### #0063 · 2026-10-18T142307-0300 · claude-code-vs-code-33be25 · feat
+
+M1.1: catálogo pelo registro oficial do ACP (cópia local, ícones servidos pela console como imagem isolada) e detecção pelo PATH com tabela de sinais nossa; Hermes por ACP (hermes acp) fora do registro. Teste antes; checagem real: 42 agentes, os 6 harnesses do Pai achados sozinhos

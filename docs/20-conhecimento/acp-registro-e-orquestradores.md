@@ -1,6 +1,6 @@
 # ACP: registro oficial de agentes, SDK e o modelo do AionUi
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-17T20:26:17-03:00 · **Estado:** vigente (reverificar a cada marco; o registro muda toda semana)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-18T14:23:06-03:00 · **Estado:** vigente (reverificar a cada marco; o registro muda toda semana)
 
 ## O que importa para o buddy
 
@@ -27,6 +27,9 @@
 | Formato: `id`, `name`, `version`, `description`, `repository`, `website`, `authors`, `license`, `license_url`, `icon`, `distribution.{binary,npx,uvx}`; canal `preview` opcional | `registry/FORMAT.md` (1) | 2026-10-17 |
 | Exigência de autenticação: Agent Auth ou Terminal Auth (o Environment Variable Auth da especificação não é aceito no registro) | `registry/AUTHENTICATION.md` (1) | 2026-10-17 |
 | Exemplos de lançamento no registro: `opencode` binário `opencode.exe acp`; `claude-acp` por npx `@agentclientprotocol/claude-agent-acp@0.93.0`; `codex-acp` por npx `@agentclientprotocol/codex-acp@2.2.2`; `gemini` por npx `@google/gemini-cli@0.64.0 --acp`; `github-copilot-cli` por npx `@github/copilot@1.0.98 --acp`; `pi-acp` por npx `pi-acp@0.0.34`; `goose` binário `goose.exe acp` | `registry.json` (0) | 2026-10-17 |
+| Distribuição medida no catálogo do núcleo: npx 23, binário 19 (2 deles também npx), uvx 2; plataformas `darwin-aarch64`, `darwin-x86_64`, `linux-aarch64`, `linux-x86_64`, `windows-x86_64`, `windows-aarch64`; `uvx` pode trazer `env`; ícones servidos como `image/svg+xml` | CDN oficial, pelo `refreshRegistry` (0) | 2026-10-18 |
+| **Hermes fala ACP:** `hermes acp` (ou `hermes-acp`) sobe um servidor ACP em stdio (`acp_adapter/entry.py`, `prog="hermes-acp"`); licença MIT; repositório `NousResearch/hermes-agent` | instalação local, só leitura, e `LICENSE` (1) | 2026-10-18 |
+| Checagem real do catálogo e da detecção: 42 agentes, 42 ícones; encontrados no PATH do Pai: Claude, Codex, Copilot, OpenCode, pi e Hermes; 37 não instalados ([registro](../registros/2026-10-18T142205-0300-checagem-real-do-catalogo-e-da-deteccao-de-harnesses/README.md)) | núcleo contra a CDN e o PATH reais (0) | 2026-10-18 |
 | `@agentclientprotocol/sdk` 1.9.0, Apache-2.0, sem dependências, `zod` como par | registro do npm (1) | 2026-10-17 |
 | AionCore: catálogo `agent_metadata` com `binary_name`, `command` e `args` (ex.: `qwen --acp`, `goose acp`, `opencode acp`); sonda de disponibilidade | `iOfficeAI/AionCore`, migrações 001, 009 e 025, `services/availability` (1) | 2026-10-17 |
 | Na máquina do Pai, pelo PATH: `claude`, `codex`, `opencode`, `copilot`, `pi`, `hermes`, além de `npx`, `uvx` e `bun` | medição local, só leitura (—) | 2026-10-17 |
@@ -44,12 +47,21 @@
 - **models.dev** (`sst/models.dev`, MIT, ativo em 2026-10-17): `https://models.dev/api.json`, 232 provedores (inclui `opencode-go`, `ollama-cloud`, `openrouter`, `openai`), logos dos labs em `https://models.dev/logos/<lab>.svg`.
 - **Divergência:** para o `minimax-m3`, o Ollama declara `vision` e o models.dev não. Vale a declaração do provedor.
 
+## Tabela de sinais (nossa, em `packages/core/src/harness/catalog.ts`)
+
+O registro não diz como saber se um harness está instalado. O sinal é o executável que o denuncia no PATH; no Windows, pelas extensões do PATHEXT (o `.cmd` do npm, o `.exe`).
+
+- **Confirmados no computador do Pai (2026-10-18):** `claude` (claude-acp), `codex` (codex-acp), `opencode`, `copilot` (github-copilot-cli), `pi` (pi-acp), `hermes` (fora do registro).
+- **Pelo nome do executável de cada CLI, ainda não vistos instalados (PROVÁVEL):** `gemini`, `goose`, `cursor-agent` (cursor), `qwen` (qwen-code), `kimi`, `amp` (amp-acp), `auggie`, `cline`, `droid` (factory-droid), `vibe` (mistral-vibe).
+- Entrada sem sinal aparece como não instalada. Quando um desses for instalado e não for achado, o sinal se corrige aqui, com teste.
+
 ## Lacunas
 
-- O Hermes não está no registro oficial, mas o AionUi o integra por um caminho próprio. Falta descobrir como.
+- ~~O Hermes não está no registro oficial; falta descobrir como integrá-lo.~~ Resolvido em 2026-10-18: `hermes acp`, pela tabela própria.
 - Nem todos os binários do registro rodam no Windows sem baixar o arquivo: o registro traz `sha256`, e baixar é instalar. Instalar exige aprovação (fora do M1, ou com o Pai).
 - O resumo de raciocínio e o fluxo dos agentes ACP vêm por `session/update`, e o formato precisa de leitura na especificação antes da SPEC fechar.
 
 ## Histórico
 
 - 2026-10-17T20:26:17-03:00 · buddy-dev (claude-code-vs-code-569aca) · criada na pesquisa do M1 (ordem C aprovada pelo Pai)
+- 2026-10-18T14:23:06-03:00 · buddy-dev (claude-code-vs-code-33be25) · distribuição medida, Hermes por ACP, tabela de sinais e checagem real do catálogo e da detecção (M1.1)
