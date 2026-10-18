@@ -1,0 +1,14 @@
+{
+  "v": 1,
+  "archivedAt": "2026-10-18T15:10:55-03:00",
+  "reason": "histórico escrito como estado atual no STATUS (Agora: M0 em execução); confundia a retomada e o bd contexto",
+  "session": "claude-code-vs-code-a6ad15",
+  "entries": [
+    {
+      "from": ".buddy-dev/status-fase-atual-ate-o-m0.md",
+      "to": "archive/2026-10-18T151055-0300-status-fase-atual-ate-o-m0/.buddy-dev/status-fase-atual-ate-o-m0.md",
+      "sha256": "2fc07c5d22b0543674870d82cc5d8630b829d669074e16cf94323da3df5ee878",
+      "bytes": 3012
+    }
+  ]
+}

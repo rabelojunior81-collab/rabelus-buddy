@@ -16,7 +16,7 @@ Este arquivo vale para **qualquer agente de IA** neste repositório (Claude Code
 5. [`docs/30-governanca/METODO.md`](./docs/30-governanca/METODO.md) e [`CONVENCOES.md`](./docs/30-governanca/CONVENCOES.md)
 6. O plano ativo apontado em `STATUS.md` (`docs/50-planos/…`)
 
-Retomada depois de compactação de contexto: reler `STATUS.md` e o plano ativo **antes** de agir. A memória de trabalho não é fonte.
+Retomada depois de compactação de contexto: rodar `npm run bd -- contexto` (no Claude Code, roda sozinho pelo gancho em `.claude/settings.json`) e reler `STATUS.md` e o plano ativo **antes** de agir. A memória de trabalho não é fonte. O resumo de uma compactação nunca substitui o contexto de governança (Pai, 2026-10-18).
 
 ## 2. O rito: antes, durante e depois
 
@@ -65,6 +65,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
 | Nunca pedir ao Pai teste que eu não ensaiei, com os mesmos passos e no ambiente dele; nunca por terminal ou CLI (o produto é um agente com UX/UI) | `bd validacoes`: ação do Pai exige `ensaio` registrado e `como` sem terminal/CLI, senão reprova e não aparece como "aguarda o Pai" |
 | Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
+| Compactação de contexto não quebra o mecanismo: a retomada traz o contexto essencial de governança (sessão, escopo, git, claims, servidores, o que aguarda o Pai, próximo passo, últimos registros, o que fazer e o que não fazer) (Pai, 2026-10-18) | `bd contexto` (`scripts/lib/contexto.mjs`, testado); gancho `SessionStart` (startup, resume, clear, compact) e `PostCompact` do Claude Code em `.claude/settings.json`; a compactação fica no ledger, e o resumo, fora do repositório |
 | Servidor de conferência tem dono e fim: registrado, reaproveitado (nunca outro numa porta nova), encerrado com a árvore de processos; nunca esquecido (Pai, 2026-10-18) | `bd serve` (`scripts/lib/servers.mjs`, testado); `bd pre` e `bd post` mostram os vivos; `session end` recusa com servidor da sessão rodando |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`); falso positivo só por impressão digital exata no `.gitleaksignore`, com justificativa (nunca por regra ou arquivo); canário de teste gerado na hora |
 

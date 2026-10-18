@@ -493,6 +493,19 @@
         "teste": "scripts/test/servers.test.mjs"
       },
       "origem": "Regra do Pai, 2026-10-18 (servidores esquecidos 8765 e 8767)"
+    },
+    {
+      "id": "contexto-na-compactacao",
+      "descricao": "Depois de compactar (e ao abrir ou retomar), o harness recebe o contexto essencial de governança por bd contexto; a compactação fica no ledger e o resumo fora do repositório",
+      "quem": "maquina",
+      "onde": [
+        "toda retomada"
+      ],
+      "mecanismo": {
+        "bd": "contexto",
+        "teste": "scripts/test/contexto.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18"
     }
   ]
 }

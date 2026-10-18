@@ -14,6 +14,7 @@ import { testGuard } from './lib/testguard.mjs';
 import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
 import { checkValidations } from './lib/validacoes.mjs';
 import { ciPlan, changedFiles } from './lib/ciplan.mjs';
+import { governanceContext, recordCompaction } from './lib/contexto.mjs';
 import { startServer, listServers, stopServers, serversOf, shellCommand } from './lib/servers.mjs';
 import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
@@ -44,6 +45,7 @@ const HELP = `bd — buddy-dev
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
   ci-plan --event <evento> [--base <ref>]  o que a CI roda neste evento (código? qual matriz?)
+  contexto [--compactou]             contexto essencial de governança (depois de compactar; --compactou registra a compactação)
   serve <pasta> [--port N] | --cmd "<comando>" --name <nome> | --list | --stop [--all|<id>|<pasta>]  servidor de conferência com dono e fim
   test-guard [--base origin/main]    a suíte não perde testes nem asserções; sem skip/todo/only
   prune [--dry-run] [--arquivar a,b] remove branches mergeadas; arquiva (tag) as abandonadas
@@ -56,7 +58,7 @@ const { values: o, positionals: pos } = parseArgs({
   allowPositionals: true,
   options: {
     verify: { type: 'boolean' }, json: { type: 'boolean' }, staged: { type: 'boolean' },
-    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
+    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, compactou: { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
@@ -65,7 +67,9 @@ const { values: o, positionals: pos } = parseArgs({
   },
 });
 
-const root = () => repoRoot();
+// Fora de um repositório (ex.: gancho do harness chamado de outra pasta), vale o repositório onde este script mora;
+// cada worktree tem a sua cópia, então o paralelismo continua certo.
+const root = () => { try { return repoRoot(); } catch { return repoRoot(import.meta.dirname); } };
 const sessionId = (r) => currentSession(r)?.id ?? 'nao-declarada';
 const ok = (m) => console.log(`  ✔ ${m}`);
 const warn = (m) => console.log(`  ⚠ ${m}`);
@@ -167,6 +171,20 @@ const commands = {
     } else if (sub === 'status') {
       console.log(JSON.stringify(status(r), null, 2));
     } else throw new Error('use: session start|log|end|status');
+  },
+
+  // Contexto essencial de governança (regra do Pai, 2026-10-18): roda sozinho depois de cada compactação
+  // (gancho SessionStart do Claude Code). Com --compactou, registra a compactação lida da entrada (PostCompact).
+  contexto() {
+    const r = root();
+    if (o.compactou) {
+      let input = {};
+      try { input = JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { /* entrada vazia ou inválida */ }
+      const { file } = recordCompaction(r, { trigger: input.trigger ?? 'auto', summary: String(input.compact_summary ?? '') });
+      console.log(`compactação registrada: ${file}`);
+      return;
+    }
+    console.log(governanceContext(r));
   },
 
   // Servidores de conferência com dono e fim (regra do Pai, 2026-10-18).

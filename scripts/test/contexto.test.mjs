@@ -41,6 +41,15 @@ test('bd contexto: sessão, escopo, branch, claims, servidores, próximo passo, 
   assert.ok(srv.pid);
 });
 
+// Achado no primeiro uso real (2026-10-18): o STATUS guardava um parágrafo antigo com "Agora: M0 em execução".
+test('bd contexto usa o "Agora" mais recente do STATUS, não um parágrafo antigo esquecido', () => {
+  const r = repo();
+  writeFileSync(join(r, '.buddy-dev/STATUS.md'), '# Estado\n\n## Fase atual\n\n**Histórico:** **Agora: M7 em execução.** coisa velha.\n\n**M8 concluído.** **Agora: M9 em execução**: segue o M9.1.\n\n## Repositório\n');
+  const t = governanceContext(r);
+  assert.match(t, /Agora: M9 em execução/);
+  assert.doesNotMatch(t, /M7 em execução/);
+});
+
 test('bd contexto sem sessão aberta manda abrir uma antes de agir', () => {
   const r = repo();
   assert.match(governanceContext(r), /sem sessão aberta/);
