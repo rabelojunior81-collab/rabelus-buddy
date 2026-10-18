@@ -170,6 +170,7 @@ Percentual de permissões resolvidas por política e por humano; tempo até o pr
 5. **O Buddy não instala harness** sozinho.
 6. **Cor B:** tudo em verde-oliva, o produto e o personagem. A cor de autoria do Buddy Fenix agora é `#a8a640`.
 7. **Alertas do Dependabot ligados.** No OpenCode Go, o bloqueio é o **limite semanal** (volta sozinho), não falta de crédito. A telemetria desse limite deve vir da API, se ela a expuser.
+8. **Visual v4 aprovado** (2026-10-18), com a ressalva aplicada: a **logomarca do Rabelus Lab** (emblema da fênix) ao lado do nome, no lugar do quadrado.
 
 ## Dúvidas para o Pai (não bloqueiam a pesquisa nem os testes)
 
