@@ -7,6 +7,12 @@ import { randomBytes } from 'node:crypto';
 import { basename, join, resolve } from 'node:path';
 import { commonDir } from './git.mjs';
 
+// Programas do sistema pelo caminho, nunca pelo nome (com PATH reduzido, o nome não resolve; achado em 2026-10-18).
+const SYS32 = join(process.env.SystemRoot ?? process.env.windir ?? 'C:\\Windows', 'System32');
+const CMD = process.env.ComSpec ?? join(SYS32, 'cmd.exe');
+const TASKKILL = join(SYS32, 'taskkill.exe');
+const POWERSHELL = join(SYS32, 'WindowsPowerShell', 'v1.0', 'powershell.exe');
+
 const STATIC = join(import.meta.dirname, 'static-server.mjs');
 const dir = (root) => { const d = join(commonDir(root), 'buddy-bus', 'servers'); mkdirSync(d, { recursive: true }); return d; };
 // Vivo de verdade: no Unix, um filho encerrado e ainda não recolhido (zumbi) responde ao sinal 0, mas já morreu.
@@ -42,7 +48,7 @@ function spawnHiddenWindows(cmd, args, { cwd, log, verbatim }) {
   // espera a resposta ficaria preso até ele morrer.
   const pidFile = `${log}.pid`;
   const script = `$p = Start-Process -FilePath ${psq(cmd)}${line ? ` -ArgumentList ${psq(line)}` : ''} -WorkingDirectory ${psq(cwd)} -WindowStyle Hidden -PassThru -RedirectStandardOutput ${psq(log)} -RedirectStandardError ${psq(`${log}.err`)}; Set-Content -LiteralPath ${psq(pidFile)} -Value $p.Id`;
-  execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], { stdio: 'ignore', windowsHide: true, timeout: 20_000 });
+  execFileSync(POWERSHELL, ['-NoProfile', '-NonInteractive', '-Command', script], { stdio: 'ignore', windowsHide: true, timeout: 20_000 });
   const pid = Number(readFileSync(pidFile, 'utf8').trim());
   try { unlinkSync(pidFile); } catch { /* já foi */ }
   return pid;
@@ -52,7 +58,7 @@ export const serversOf = (root, session) => listServers(root).filter((s) => s.se
 
 // Comando de linha (bd serve --cmd) pelo shell do sistema, como uma pessoa o digitaria.
 // No Windows a linha vai intacta, entre um par de aspas que o /s do cmd.exe remove (caminhos com espaço).
-export const shellCommand = (line) => (process.platform === 'win32' ? { cmd: 'cmd.exe', args: ['/d', '/s', '/c', `"${line}"`], verbatim: true } : { cmd: 'sh', args: ['-c', line] });
+export const shellCommand = (line) => (process.platform === 'win32' ? { cmd: CMD, args: ['/d', '/s', '/c', `"${line}"`], verbatim: true } : { cmd: 'sh', args: ['-c', line] });
 
 export async function startServer(root, spec, { session = null } = {}) {
   const served = spec.dir ? resolve(spec.dir) : null;
@@ -100,7 +106,7 @@ export function stopServers(root, { id, dir: served, session, all = false } = {}
   const pick = listServers(root).filter((s) => all || (id && s.id === id) || (target && s.dir === target) || (session && s.session === session));
   for (const s of pick) {
     // A árvore inteira: o shell, o núcleo de ensaio que ele iniciou e o que mais vier abaixo.
-    if (process.platform === 'win32') { try { execFileSync('taskkill', ['/pid', String(s.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
+    if (process.platform === 'win32') { try { execFileSync(TASKKILL, ['/pid', String(s.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
     else { try { process.kill(-s.pid, 'SIGTERM'); } catch { try { process.kill(s.pid); } catch { /* já saiu */ } } }
     for (let i = 0; i < 60 && isAlive(s.pid); i++) nap(50);
     for (const x of [`${s.id}.json`, `${s.id}.log`, `${s.id}.log.err`]) { try { unlinkSync(join(dir(root), x)); } catch { /* já foi */ } }
