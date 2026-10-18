@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-18T193908-0300-claude-code-vs-code-a6ad15-0028",
+  "ts": "2026-10-18T19:39:08-03:00",
+  "utc": "2026-10-18T22:39:08.955Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 28,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "pesquisa",
+  "summary": "Auditoria de registros (script cruzando git de todas as branches × barramento, por sessão): 53 commits de código em 14 sessões desde 15/10 sem nenhum registro substantivo entre um commit de código e o anterior; padrão sistemático: changelog e mensagem de commit usados como registro, barramento só para erros e decisões grandes. Gancho Stop do Claude Code verificado na documentação oficial: bloqueia com decision block + reason; stop_hook_active evita laço; teto de 8 continuações",
+  "refs": [
+    "workspace/auditoria-registros.txt"
+  ],
+  "data": {}
+}
