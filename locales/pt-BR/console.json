@@ -108,6 +108,7 @@
       "sessionPaused": "conversa pausada (laço repetido)",
       "windowExhausted": "janela de consumo esgotada em todos os provedores",
       "providerUnavailable": "nenhum provedor disponível",
+      "emptyResponse": "o provedor respondeu vazio (nenhum texto, 0 tokens); tente outro provedor ou repita",
       "effectUnknown": "resultado incerto de uma ação; use Retomar para conferir",
       "needsReconciliation": "precisa da sua confirmação para retomar",
       "internalError": "erro interno do núcleo"

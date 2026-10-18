@@ -229,6 +229,7 @@ export class Agent {
     const { domain, budget, policy, log, routes } = this.o;
     const maxOut = this.o.maxOutputTokens ?? DEFAULT_MAX_OUTPUT;
     let budgetBlocked = false;
+    let emptyResponse = false;
     for (let i = 0; i < routes.length; i++) {
       const r = routes[i]!;
       const name = `${r.provider.id}/${r.model}`;
@@ -257,6 +258,15 @@ export class Agent {
         const response = await r.provider.call(req, { session, ...(this.o.signal ? { signal: this.o.signal } : {}), ...(this.o.onProgress ? { onProgress: (p: Progress) => this.o.onProgress!(run, p) } : {}) });
         domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
         budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
+        // Resposta vazia (nenhum texto, nenhuma ferramenta, 0 tokens de saída): falha da rota, não "concluída"
+        // muda (achado no ensaio do M1.0). Fica no log, e a ordem segue para o próximo provedor.
+        if (!response.text.trim() && !response.toolCalls.length && !(response.usage?.output_tokens ?? 0)) {
+          log.append(session, 'provider.error', { route: name, code: 'emptyResponse', message: 'resposta vazia: nenhum texto, nenhuma ferramenta, 0 tokens de saída' });
+          rejected.add(r.provider.id);
+          emptyResponse = true;
+          skip('emptyResponse');
+          continue;
+        }
         return { response, route: name, ...(effort ? { effort } : {}) };
       } catch (e) {
         // Parada pedida pelo usuário: não é efeito desconhecido; o consumo é incerto e liquida pela estimativa.
@@ -300,7 +310,7 @@ export class Agent {
         return { stop: 'effect.unknown' };
       }
     }
-    return { stop: budgetBlocked ? 'budget.windowExhausted' : 'provider.unavailable' };
+    return { stop: budgetBlocked ? 'budget.windowExhausted' : emptyResponse ? 'provider.emptyResponse' : 'provider.unavailable' };
   }
 
   // Executa uma chamada de ferramenta e devolve o resultado (JSON) para o modelo.

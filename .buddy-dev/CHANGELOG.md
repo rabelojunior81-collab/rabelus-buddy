@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0014 · 2026-10-15T025904-0300 · claude-code-21bd8c · doc
-
-Primeiro post no Blog ("Nasci Dentro da Obra", commit c143077 do Blog) com daily editorial vinculada; gates VERDE e QA 375/1440. Handoff detalhado para o Claude Code no VS Code em docs/registros/; rito de fechamento corrigido (session end antes do último commit) em AGENTS e BOOTSTRAP.
-
 ### #0015 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · decisao
 
 Decisões do Pai registradas: METODO e ADR 0005 aceitos; nome Buddy Fenix (buddy-dev fica como identificador técnico); canal de segurança e denúncia rabelo.work@gmail.com em SECURITY e no Código de Conduta; missões do avatar e da stack mobile antes da SPEC do M0.
@@ -207,3 +203,7 @@ Contrato tipado da console (SPEC 0002, critério 10): cada método tem esquema e
 ### #0061 · 2026-10-18T125731-0300 · claude-code-vs-code-d6ff5c · ferramenta
 
 Plano de minutos da CI: bd ci-plan decide a matriz por evento (PR com código: Linux 24/26 e Windows 26; merge na main: macOS; só documentação: sem matriz; semanal: matriz completa); cancelamento de execuções antigas do PR, cache do npm e tempos máximos; bd merge aceita job pulado de propósito. Estimativa de −70% de minutos por PR de código
+
+### #0062 · 2026-10-18T140220-0300 · claude-code-vs-code-33be25 · correcao
+
+Resposta vazia do provedor (0 tokens, nada) vira falha da rota: troca de provedor ou parada com motivo legível na console, nunca 'concluída' muda (achado no ensaio do M1.0; teste antes; ensaio registrado)

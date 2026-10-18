@@ -123,3 +123,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0013-#0013
 
 1. **Em 2026-10-15, o merge passou a ser do buddy-dev, com CI verde como portão.** Em 2026-10-18, esse portão mostrou dois custos que ninguém olhava: a CI da main reprovava todo merge sem que eu visse, e os minutos do Pai acabaram. → Portão que roda sozinho também se audita: o resultado na main e o custo em minutos entram na rotina, não só o verde do PR.
+
+## lote #0014-#0014
+
+1. **Em 2026-10-15, o rito de fechamento foi corrigido: session end antes do último commit.** Em 2026-10-18, eu o segui ao pé da letra e encerrei a sessão antes de pôr o STATUS em dia; o claim foi recusado sem sessão. → A ordem completa é: superfícies em dia, depois session end, depois o último commit. O session end fecha o trabalho; não o substitui.
