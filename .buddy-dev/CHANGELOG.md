@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0019 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · decisao
-
-Avatar do Buddy Fenix: v3-b, escolhido pelo Pai. Retrato na linguagem da família, gerado com Nano Banana 2.1 usando o avatar do Killian como referência; proveniência com prompt, id, custo (cerca de US$ 0,25) e sha256.
-
 ### #0020 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · aprendizado
 
 Duas tentativas recusadas (canteiro; nave estelar) antes do v3: eu li o meu próprio texto e o acervo errado em vez do artefato irmão. Lição 1 de 2026-10-15 na LEARNING-CURVE: referência é o artefato do mesmo tipo, enviado como imagem, e mostro ao Pai antes de commitar.
@@ -207,3 +203,7 @@ Regras do Pai de 2026-10-18 com mecanismo: bd serve (servidores com dono e fim; 
 ### #0066 · 2026-10-18T194400-0300 · claude-code-vs-code-a6ad15 · ferramenta
 
 Autoverificação: bd verifica (commit de código sem registro reprova no bd post e na CI; sem commit e sem push barram; 30 min sem registro avisa) e gancho Stop do Claude Code ao fim de cada resposta. Auditoria de 2026-10-18: 53 commits de código sem registro em 14 sessões, registrados como atrasados com o hash
+
+### #0067 · 2026-10-18T195549-0300 · claude-code-vs-code-a6ad15 · feat
+
+M1.2a sonda ACP (critério 3): launchFor (executável local preferido; npx/uvx com aprovação), probeHarness (initialize + session/new, pronto/login/falhou, tempo-limite 30 s, sem janela nem sobra), harness.probe no núcleo e na console. Checagem real: OpenCode, Copilot e Hermes prontos; Codex aguarda aprovação do adaptador codex-acp

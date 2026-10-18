@@ -148,3 +148,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0018-#0018
 
 1. **Em 2026-10-15, a geração do avatar parou por teto de gasto do projeto da chave, e não por modelo; trocar de modelo não contornava.** Em 2026-10-18, a CI parou pela cota de minutos do GitHub, e o Go, pelo limite semanal. → Recusa por limite se diagnostica na fonte do limite (a API de uso, a cobrança), não trocando a peça mais próxima.
+
+## lote #0019-#0019
+
+1. **Em 2026-10-15, o avatar entrou com proveniência completa: prompt, id, custo e sha256.** Em 2026-10-18, a marca do Rabelus Lab também entrou com origem registrada. → Todo artefato que não nasce de código traz a proveniência junto, no mesmo commit.
