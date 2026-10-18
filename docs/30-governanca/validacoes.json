@@ -521,6 +521,22 @@
         "teste": "scripts/test/orfaos.test.mjs"
       },
       "origem": "Regra do Pai, 2026-10-18"
+    },
+    {
+      "id": "autoverificacao",
+      "descricao": "Todo commit de código com registro substantivo no barramento; nada sem commit nem sem push ao fim de cada resposta; aviso de 30 min sem registro",
+      "quem": "maquina",
+      "onde": [
+        "toda resposta (gancho Stop)",
+        "bd post",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "verifica",
+        "ci": "node scripts/bd.mjs verifica --registros",
+        "teste": "scripts/test/verifica.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18 (autoverificação fundacional)"
     }
   ]
 }

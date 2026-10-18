@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194249-0300-claude-code-vs-code-a6ad15-0091",
+  "ts": "2026-10-18T19:42:49-03:00",
+  "utc": "2026-10-18T22:42:49.654Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 91,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "claim",
+  "summary": ".buddy-dev/MEMORY.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-18T23:12:49.654Z",
+    "tookOverFrom": null
+  }
+}

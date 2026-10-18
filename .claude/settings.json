@@ -12,6 +12,17 @@
         ]
       }
     ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/bd.mjs\" verifica --hook",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "PostCompact": [
       {
         "matcher": "manual|auto",

@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194214-0300-claude-code-vs-code-a6ad15-0077",
+  "ts": "2026-10-18T19:42:14-03:00",
+  "utc": "2026-10-18T22:42:14.293Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 77,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "processo",
+  "summary": "(registro atrasado, auditoria de 2026-10-18) commit f353ff1 da sessão claude-code-vs-code-822419 em 2026-10-17T18:41Z entrou sem registro no barramento: feat(m0.8d): dono com andamento ao vivo (run.live), fila por conversa no log (run.queued/dequeued), agent.stee",
+  "refs": [
+    "f353ff1"
+  ],
+  "data": {
+    "atrasado": true,
+    "commit": "f353ff1",
+    "sessaoOriginal": "claude-code-vs-code-822419"
+  }
+}

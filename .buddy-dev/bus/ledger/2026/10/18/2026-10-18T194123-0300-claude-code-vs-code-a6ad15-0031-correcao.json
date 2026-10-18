@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194123-0300-claude-code-vs-code-a6ad15-0031",
+  "ts": "2026-10-18T19:41:23-03:00",
+  "utc": "2026-10-18T22:41:23.867Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 31,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "correcao",
+  "summary": "bd verifica no primeiro uso real: nome de arquivo cortado ('cripts/bd.mjs') porque a saída do git chega aparada; teste passou a exigir o nome inteiro (vermelho) e a correção tira o código de estado pelo padrão",
+  "refs": [],
+  "data": {}
+}
