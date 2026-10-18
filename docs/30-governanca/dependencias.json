@@ -122,24 +122,24 @@
       "version": "1.9.0",
       "license": "Apache-2.0",
       "kind": "runtime",
-      "status": "proposta",
+      "status": "aprovada",
       "purpose": "Cliente ACP: conversar com os harnesses detectados (Claude Code, Codex, OpenCode, Copilot, Pi...) com permissões decididas pelo núcleo",
       "phase": "M1",
       "ficha": "docs/20-conhecimento/acp-registro-e-orquestradores.md",
       "verifiedAt": "2026-10-17",
-      "approvedBy": "pendente"
+      "approvedBy": "Pai, 2026-10-18 (\"Aprovados. Pode executar você\")"
     },
     {
       "name": "zod",
       "version": "4.6.7",
       "license": "MIT",
       "kind": "runtime",
-      "status": "proposta",
+      "status": "aprovada",
       "purpose": "Par obrigatório do SDK do ACP; contrato tipado dos métodos da console (axioma T3)",
       "phase": "M1",
       "ficha": "docs/20-conhecimento/acp-registro-e-orquestradores.md",
       "verifiedAt": "2026-10-17",
-      "approvedBy": "pendente"
+      "approvedBy": "Pai, 2026-10-18 (\"Aprovados. Pode executar você\")"
     }
   ]
 }

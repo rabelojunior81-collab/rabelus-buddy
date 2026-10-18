@@ -1,6 +1,6 @@
 # SPEC — M1: Orquestrador e multimodal
 
-**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 1 · **Estado:** rascunho (aguarda a aprovação do Pai)
+**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 1 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste
 **Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-vs-code-569aca` · **Criada em:** 2026-10-17 · **Decisão de origem:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C, aprovada pelo Pai)
 
 ## Problema e resultado
@@ -79,7 +79,11 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
         - as capacidades do modelo escolhido têm **linha própria sob a caixa**, com o nome de cada uma.
       - Ícones servidos pela console (o models.dev não manda CORS); modelo sem dados de capacidade diz "capacidades desconhecidas".
     - A escolha controla o resto da caixa: o botão de imagem só fica ativo com visão, e o esforço só oferece os níveis que o modelo aceita.
-11. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
+11. **Telemetria de uso dos provedores** (pedido do Pai em 2026-10-18: o bloqueio do Go é o limite semanal, e a telemetria deve vir da API).
+    - O OpenCode Go expõe `GET /v1/usage` (autenticado) com as janelas rolante, semanal e mensal: estado, percentual e horário de reinício (medido em 2026-10-18).
+    - Quando o Go recusa (402 ou 429), o núcleo consulta o `/usage`. Se alguma janela estiver bloqueada, marca **o provedor inteiro** como esgotado até o reinício informado, com o motivo em linguagem clara, em vez de chutar uma hora por modelo.
+    - A console mostra as janelas reais do Go (percentual e quando volta).
+12. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
 
 **Fora** (com o marco que entrega):
 - Execução isolada; harness rodando sem pedir permissão a cada passo: **M2**.
@@ -123,6 +127,10 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - a declaração do provedor vence o `models.dev`;
     - o esforço oferecido é o do modelo, e imagem com modelo sem visão é recusada antes de chamar;
     - na console, a busca filtra por nome, lab e capacidade, e as capacidades do escolhido aparecem sob a caixa de mensagem.
+15. **Telemetria do Go:** com um servidor falso que imita o `/v1/usage` medido:
+    - a recusa com janela semanal bloqueada esgota o OpenCode Go inteiro até o `resetsAt` dela, com motivo legível;
+    - sem janela bloqueada (ou com o `/usage` fora do ar), vale o comportamento anterior;
+    - `providers.usage` devolve as janelas, e a chave nunca aparece no log nem na resposta.
 14. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
 
 ## Métricas (registradas)
@@ -143,6 +151,25 @@ Percentual de permissões resolvidas por política e por humano; tempo até o pr
 - **Código baixado por `npx` e `uvx`.** Mitigação: aprovação por versão, versão exata, nunca `latest`, e o pacote e a versão no log.
 - **O vidro pesa em máquina fraca.** Mitigação: desfoque menor com `prefers-reduced-transparency` e uma opção de desligar.
 - **Rollback:** o catálogo e o cliente ACP são aditivos, e a console antiga continua no histórico do git.
+
+## Decisões do Pai (2026-10-18)
+
+1. **SPEC aprovada.**
+2. **Visual:** manter a estrutura (wireframe) e a paleta, com estes ajustes:
+   - **cantos quadrados**, com bordas e cantos refinados;
+   - **glassmorphism no estilo "liquid glass" do macOS**;
+   - espaçamentos e tamanhos menores;
+   - **seletores bem mais compactos e menos gritantes**, ocupando muito menos espaço;
+   - transições, iluminação e retorno visual;
+   - degradê de fundo mais evidente;
+   - a **tipografia do portfólio do Pai (rabelus.com)**.
+
+   Referências novas: o **Kanban** e o framework de **Bots** do Hermes Desktop, com máquina virtual e tela por bot, como modelo de painel e de sandbox por agente.
+3. **Dependências aprovadas**: `@agentclientprotocol/sdk@1.9.0` e `zod@4.6.7`, instaladas em 2026-10-18.
+4. **Só os harnesses já instalados** são configurados, testados e validados; a detecção automática fica pronta para os que vierem.
+5. **O Buddy não instala harness** sozinho.
+6. **Cor B:** tudo em verde-oliva, o produto e o personagem. A cor de autoria do Buddy Fenix agora é `#a8a640`.
+7. **Alertas do Dependabot ligados.** No OpenCode Go, o bloqueio é o **limite semanal** (volta sozinho), não falta de crédito. A telemetria desse limite deve vir da API, se ela a expuser.
 
 ## Dúvidas para o Pai (não bloqueiam a pesquisa nem os testes)
 

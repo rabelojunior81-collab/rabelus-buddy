@@ -418,9 +418,10 @@
         "configuração do GitHub"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "DEPENDENCIAS.md",
-      "tipo": "decisao"
+      "tipo": "decisao",
+      "evidencia": "Pai, 2026-10-18: \"Pode ligar\"; ligado pelo buddy-dev pela API do GitHub (vulnerability-alerts: 204)"
     },
     {
       "id": "claim-documento-vivo",
@@ -459,8 +460,21 @@
         "início do M1"
       ],
       "mecanismo": {},
+      "estado": "feito",
+      "origem": "ADR 0018; SPEC 0002 rev. 1",
+      "evidencia": "Pai, 2026-10-18: \"1. Aprovo\" (SPEC), \"3. Aprovados. Pode executar você\" (dependências); visual aprovado na estrutura e na paleta, com ajustes listados na SPEC"
+    },
+    {
+      "id": "visual-m1-ajustado",
+      "descricao": "Aprovar o visual da console do M1 depois dos ajustes de 2026-10-18 (cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com)",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M1.5"
+      ],
+      "mecanismo": {},
       "estado": "pendente",
-      "origem": "ADR 0018; SPEC 0002 rev. 1"
+      "origem": "SPEC 0002, decisões do Pai de 2026-10-18"
     }
   ]
 }

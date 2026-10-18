@@ -15,8 +15,9 @@ import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
 import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
-import { buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
+import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin } from './providers/siwc.ts';
+import { goUsage, type GoWindow } from './providers/index.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 
@@ -202,6 +203,7 @@ export async function startOwner(home: string): Promise<Owner> {
     return r;
   };
 
+  let usageCache: { at: number; data: unknown } | null = null;
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
       const session = String(p.session);
@@ -266,6 +268,20 @@ export async function startOwner(home: string): Promise<Owner> {
       return { run };
     },
     'run.list': () => domain.listRuns(),
+    // Telemetria de uso dos provedores (SPEC 0002, critério 15). Hoje só o OpenCode Go expõe; a chave não sai daqui.
+    'providers.usage': async () => {
+      // A console consulta a cada 3 s; a API do Go, no máximo uma vez por minuto.
+      if (usageCache && Date.now() - usageCache.at < 60_000) return usageCache.data;
+      const out: { provider: string; windows?: GoWindow[]; error?: string }[] = [];
+      const r = loadConfig(home).routes.find((x) => x.provider === 'opencode-go');
+      const key = apiKeyOf(home, 'opencode-go', process.env);
+      if (r && key) {
+        try { out.push({ provider: 'opencode-go', windows: await goUsage({ apiKey: key, ...(r.baseURL ? { baseURL: r.baseURL } : {}) }) }); }
+        catch (e) { out.push({ provider: 'opencode-go', error: (e as Error).message.slice(0, 80) }); }
+      }
+      usageCache = { at: Date.now(), data: out };
+      return out;
+    },
     'providers.status': () => loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model, source: credentialSource(home, r.provider, process.env) })),
     'keys.set': (p) => { const key = String(p.key ?? '').trim(); if (!key) throw new DomainError(-32602, 'chave vazia'); saveKey(home, keyProvider(p.provider), key); return { ok: true }; },
     'keys.remove': (p) => ({ removed: removeKey(home, keyProvider(p.provider)) }),

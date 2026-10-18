@@ -10,13 +10,13 @@
 <style>
   :root {
     --bg: #0d1113; --panel: #151b1e; --panel2: #1b2327; --line: #263238; --text: #e6eef0; --muted: #8fa3a8;
-    --accent: #3fb8a8; --accent-ink: #062a25; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px; color-scheme: dark;
+    --accent: #a8a640; --accent-ink: #1d1c05; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px; color-scheme: dark;
   }
   /* Tema (critério 35): Sistema segue o navegador; Claro e Escuro escolhidos na console valem acima dele. */
   @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; color-scheme: light; }
+    :root:not([data-theme="dark"]) { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #66641c; color-scheme: light; }
   }
-  :root[data-theme="light"] { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #208a7c; color-scheme: light; }
+  :root[data-theme="light"] { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #66641c; color-scheme: light; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 2; }
@@ -519,8 +519,12 @@ async function refreshAuth() {
 }
 async function refreshBudget() {
   const ws = await api('budget.status');
+  // Telemetria real das janelas do provedor (SPEC 0002, critério 15): o Go diz quanto usou e quando volta.
+  let tele = [];
+  try { tele = await api('providers.usage'); } catch { /* sem telemetria */ }
+  const teleRows = tele.flatMap((p) => (p.windows || []).map((w) => el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, t('console.usage.window', { provider: p.provider, window: ({ rolling: t('console.usage.rolling'), weekly: t('console.usage.weekly'), monthly: t('console.usage.monthly') })[w.window] || w.window })), el('span', { class: 'note' }, w.status === 'ok' ? t('console.usage.ok', { percent: w.percent }) : t('console.usage.blocked', { percent: w.percent, until: new Date(w.resetsAt).toLocaleString(lang) }))), el('div', { class: 'bar' }, el('i', { style: 'width:' + Math.min(100, w.percent) + '%' + (w.status === 'ok' ? '' : ';background:var(--bad)') })))));
   const shown = showAll ? ws : ws.filter((w) => w.used > 0 || w.exhaustedUntil || w.provider !== 'opencode-go');
-  $('budget').replaceChildren(...shown.map((w) => {
+  $('budget').replaceChildren(...teleRows, ...shown.map((w) => {
     const pct = w.capacity ? Math.min(100, (w.used / w.capacity) * 100) : 0;
     const right = w.exhaustedUntil ? t('console.budget.exhausted', { until: new Date(w.exhaustedUntil).toLocaleString(lang) }) : w.capacity === null ? 'US$ ' + w.used.toFixed(4) + ' · ' + t('console.budget.noCap') : 'US$ ' + w.used.toFixed(4) + ' / ' + w.capacity.toFixed(2);
     return el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, w.id), el('span', { class: 'note' }, right)), w.capacity ? el('div', { class: 'bar' }, el('i', { style: 'width:' + pct.toFixed(1) + '%' })) : null);

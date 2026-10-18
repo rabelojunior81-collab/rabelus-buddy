@@ -269,7 +269,7 @@ export class Agent {
           log.append(session, 'provider.error', { route: name, code: 'limit', message: scrub(e.message) });
           domain.failEffect(effect, 'providerLimit');
           budget.release(reservation, 'providerLimit');
-          budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' ? r.model : null, e.until, 'providerLimit');
+          budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' && e.scope !== 'provider' ? r.model : null, e.until, 'providerLimit');
           budgetBlocked = true;
           skip('windowExhausted');
           continue;

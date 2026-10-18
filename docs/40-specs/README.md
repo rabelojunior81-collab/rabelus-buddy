@@ -7,4 +7,4 @@ Uma SPEC por unidade de trabalho (marco, fase ou sub-fase), em `NNNN-slug/SPEC.m
 | SPEC | Marco | Estado |
 |---|---|---|
 | [0001-nucleo-governado](./0001-nucleo-governado/SPEC.md) | M0 — Núcleo governado | **aprovada** pelo Pai em 2026-10-15 (revisão 3); revisão 5 em 2026-10-17 (console web local, ADR 0017) |
-| [0002-orquestrador-e-multimodal](./0002-orquestrador-e-multimodal/SPEC.md) | M1 — Orquestrador e multimodal | **rascunho** (revisão 1, 2026-10-17), aguarda a aprovação do Pai, com o [protótipo visual](./0002-orquestrador-e-multimodal/prototipo-visual.html) |
+| [0002-orquestrador-e-multimodal](./0002-orquestrador-e-multimodal/SPEC.md) | M1 — Orquestrador e multimodal | **aprovada** pelo Pai em 2026-10-18 (revisão 1), visual em ajuste, com o [protótipo visual](./0002-orquestrador-e-multimodal/prototipo-visual.html) |

@@ -42,6 +42,11 @@ function loadKeys(home: string): Record<string, string> {
   return existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as Record<string, string>) : {};
 }
 
+// Chave de API de um provedor: a guardada pela console vale mais que a variável de ambiente (nunca vai ao log).
+export function apiKeyOf(home: string, provider: keyof typeof ENV_KEYS, env: NodeJS.ProcessEnv = process.env): string | undefined {
+  return loadKeys(home)[provider] ?? env[ENV_KEYS[provider]];
+}
+
 // Rotas utilizáveis, na ordem configurada: só entra provedor com credencial. `only`: a rota escolhida
 // para uma execução (provedor e modelo), com o endereço do config.json se houver (rev. 5).
 export function buildRoutes(home: string, config: Config, env: NodeJS.ProcessEnv = process.env, only?: { provider: ProviderId; model: string }): Route[] {
