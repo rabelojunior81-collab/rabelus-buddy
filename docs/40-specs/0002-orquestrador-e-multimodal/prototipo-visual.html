@@ -108,6 +108,7 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 8px; background: var(--glass); border: 1px solid var(--line); font-size: 12.5px; margin-bottom: 6px; }
   .m-only { display: none; }
+  .sheethead, .scrim { display: none; }
   .capsrow { display: none; }
   /* capacidades: uma cor por capacidade */
   .caps { display: inline-flex; align-items: center; gap: 3px; flex: none; }
@@ -201,7 +202,19 @@
     .pfoot > span:not(.src) { display: none; }
     .rail { width: 46px; } .rail button { width: 34px; height: 34px; }
     .hint { display: none; }
-    .pop { left: 8px !important; width: calc(100vw - 16px) !important; max-height: 72vh; }
+    /* Celular: seletores viram folhas de baixo, com alça, título e fechar; fundo escurecido. */
+    .scrim { display: block; position: fixed; inset: 0; z-index: 25; background: oklch(8% .02 120 / .55); }
+    .scrim[hidden] { display: none !important; }
+    .pop { left: 0 !important; right: 0; bottom: 0 !important; width: 100vw !important; max-height: 62vh !important; border-radius: 20px 20px 0 0; border-bottom: 0; }
+    .sheethead { display: flex; align-items: center; gap: 10px; padding: 16px 12px 8px 16px; position: relative; flex: none; }
+    .sheethead b { flex: 1; font-size: 16px; }
+    .sheethead .grab { position: absolute; top: 6px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 4px; background: var(--line); }
+    .pop .ptitle { display: none; }
+    .pbody { flex-direction: column; }
+    .rail { width: auto; flex-direction: row; padding: 6px 10px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; overflow-y: hidden; }
+    .rail hr { width: 1px; height: 22px; border: 0; border-left: 1px solid var(--line); margin: 0 2px; }
+    /* gaveta: a barra lateral desliza da esquerda */
+    aside.open { display: flex; position: fixed; z-index: 28; top: 0; bottom: 0; left: 0; width: min(320px, 86vw); background: var(--pop); box-shadow: 20px 0 60px -20px oklch(5% .02 120 / .8); overflow-y: auto; }
     .proto { display: none; }
   }
 </style>
@@ -220,7 +233,7 @@
     <div class="agents" id="agents"></div>
   </aside>
   <main>
-    <div class="mtop"><button class="ibtn" aria-label="Menu">☰</button><div class="brand"><span class="dot"></span>Rabelus <span>Buddy</span></div><span class="sp"></span><button class="ibtn" id="themeM" aria-label="Tema">◐</button></div>
+    <div class="mtop"><button class="ibtn" id="menuBtn" aria-label="Abrir conversas e harnesses" aria-expanded="false">☰</button><div class="brand"><span class="dot"></span>Rabelus <span>Buddy</span></div><span class="sp"></span><button class="ibtn" id="themeM" aria-label="Tema">◐</button></div>
     <div class="topbtns"><button class="ibtn" id="view" title="Alternar início/conversa">⇄</button><button class="ibtn" id="theme" title="Tema">◐</button></div>
     <div class="scroll"><div class="col" id="content"></div></div>
     <div class="dock"><div class="composer"><div class="box">
@@ -239,12 +252,13 @@
     </div><div class="hint"><span><span class="kbd">Enter</span> envia</span><span><span class="kbd">Shift+Enter</span> quebra a linha</span><span><span class="kbd">Ctrl+K</span> escolher modelo</span></div></div></div>
   </main>
 </div>
-<div class="pop" id="hPop" role="listbox" aria-label="Harness" hidden style="width:400px">
+<div class="scrim" id="scrim" hidden></div>
+<div class="pop" id="hPop" role="listbox" aria-label="Harness" hidden style="width:400px"><div class="sheethead"><span class="grab"></span><b>Harness · quem executa</b><button class="ibtn sclose" aria-label="Fechar">✕</button></div>
   <div class="ptitle">Harness · quem executa</div>
   <div class="plist" id="hList"></div>
   <div class="pfoot">Detectados no seu computador · ícones do registro oficial do ACP</div>
 </div>
-<div class="pop" id="mPop" role="dialog" aria-label="Escolher modelo" hidden>
+<div class="pop" id="mPop" role="dialog" aria-label="Escolher modelo" hidden><div class="sheethead"><span class="grab"></span><b>Escolher modelo</b><button class="ibtn sclose" aria-label="Fechar">✕</button></div>
   <div class="seg" id="seg" role="tablist" aria-label="Provedor ou roteador"></div>
   <div class="srch">⌕<input id="mSearch" placeholder="Buscar modelos…" autocomplete="off" aria-label="Buscar modelos">
     <button class="fbtn" id="fBtn" aria-label="Filtrar por capacidade" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg></button>
@@ -254,8 +268,8 @@
   <div class="pbody"><nav class="rail" id="rail" aria-label="Labs"></nav><div class="list" id="mList" role="listbox"></div></div>
   <div class="pfoot"><span><span class="kbd">↑↓</span> navegar</span><span><span class="kbd">Enter</span> escolher</span><span><span class="kbd">Esc</span> fechar</span><span class="src" id="mSrc">ⓘ fonte</span></div>
 </div>
-<div class="pop" id="ePop" role="menu" hidden style="width:300px"><div class="ptitle">Esforço de raciocínio</div><div class="plist" id="eList"></div></div>
-<div class="pop" id="plusPop" role="menu" hidden style="width:300px"><div class="plist" id="plusList"></div></div>
+<div class="pop" id="ePop" role="menu" hidden style="width:300px"><div class="sheethead"><span class="grab"></span><b>Esforço de raciocínio</b><button class="ibtn sclose" aria-label="Fechar">✕</button></div><div class="ptitle">Esforço de raciocínio</div><div class="plist" id="eList"></div></div>
+<div class="pop" id="plusPop" role="menu" hidden style="width:300px"><div class="sheethead"><span class="grab"></span><b>Anexar e opções</b><button class="ibtn sclose" aria-label="Fechar">✕</button></div><div class="plist" id="plusList"></div></div>
 <div class="proto">Protótipo da SPEC 0002 · sem ligação com o núcleo · catálogo medido ao vivo em <span id="snapDate"></span></div>
 <script src="prototipo-visual.js"></script>
 </body>

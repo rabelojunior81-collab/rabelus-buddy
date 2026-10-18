@@ -71,7 +71,12 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
         - **uma coluna de modelos**, em que cada linha tem logo do lab, nome, preço (só no roteador pago: grátis, $, $$ ou $$$), estrela de favorito, descrição curta, **ícones de capacidade coloridos** (uma cor por capacidade) e contexto.
       - Teclado: ↑ ↓ Enter, Esc, Ctrl+K.
       - Com um harness externo, o popover mostra só os modelos dele, sem provedor nem trilho, e o esforço some.
-      - **Celular:** a caixa vira **[+] · harness · modelo · enviar**; o [+] reúne anexar arquivo, imagem e esforço. As capacidades do modelo escolhido ganham **linha própria sob a caixa**, com o nome de cada uma.
+      - **Celular** (Pai: "sem navegabilidade, tudo tomado pelos modais"):
+        - o ☰ abre uma **gaveta** com as conversas e os harnesses;
+        - cada seletor vira uma **folha de baixo** com alça, título e ✕, até 62% da tela, sobre um fundo escurecido; um toque fora fecha;
+        - os labs viram uma **faixa horizontal** e a lista usa a largura toda;
+        - a caixa é **[+] · harness · modelo · enviar**, e o [+] reúne anexar arquivo, imagem e esforço;
+        - as capacidades do modelo escolhido têm **linha própria sob a caixa**, com o nome de cada uma.
       - Ícones servidos pela console (o models.dev não manda CORS); modelo sem dados de capacidade diz "capacidades desconhecidas".
     - A escolha controla o resto da caixa: o botão de imagem só fica ativo com visão, e o esforço só oferece os níveis que o modelo aceita.
 11. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).

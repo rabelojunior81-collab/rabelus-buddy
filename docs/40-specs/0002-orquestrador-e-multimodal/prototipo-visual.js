@@ -61,6 +61,7 @@ function place(pop, anchor) {
   pop.style.bottom = `${innerHeight - r.top + 8}px`;
   pop.style.maxHeight = `${Math.min(MOBILE() ? innerHeight * .72 : 560, r.top - 16)}px`;
   if (!MOBILE()) pop.style.left = `${Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8))}px`;
+  $('scrim').hidden = !MOBILE();
 }
 function show(pop, anchor, render) {
   if (openPop && openPop.pop === pop) { close(); return; }
@@ -73,6 +74,7 @@ function close() {
   if (!openPop) return;
   openPop.pop.hidden = true; openPop.anchor.setAttribute('aria-expanded', 'false');
   $('fMenu').hidden = true; $('fBtn').setAttribute('aria-expanded', 'false');
+  $('scrim').hidden = true;
   openPop = null;
 }
 const closeFilter = () => { $('fMenu').hidden = true; $('fBtn').setAttribute('aria-expanded', 'false'); };
@@ -82,6 +84,12 @@ document.addEventListener('mousedown', (e) => {
   if (openPop && !openPop.pop.contains(e.target) && !openPop.anchor.contains(e.target)) close();
 });
 addEventListener('resize', () => { if (openPop) place(openPop.pop, openPop.anchor); });
+document.querySelectorAll('.sclose').forEach((b) => { b.onclick = () => close(); });
+// Gaveta do celular: conversas e harnesses (antes o ☰ não fazia nada).
+const drawer = (open) => { document.querySelector('aside').classList.toggle('open', open); $('menuBtn').setAttribute('aria-expanded', String(open)); $('scrim').hidden = !open; };
+$('menuBtn').onclick = () => { close(); drawer(true); };
+$('scrim').onclick = () => { close(); drawer(false); };
+document.querySelector('aside').addEventListener('click', (e) => { if (MOBILE() && e.target.closest('.thread, .agent, .new')) drawer(false); });
 
 // ---------- harness ----------
 function renderHarness() {
