@@ -79,7 +79,11 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
         - as capacidades do modelo escolhido têm **linha própria sob a caixa**, com o nome de cada uma.
       - Ícones servidos pela console (o models.dev não manda CORS); modelo sem dados de capacidade diz "capacidades desconhecidas".
     - A escolha controla o resto da caixa: o botão de imagem só fica ativo com visão, e o esforço só oferece os níveis que o modelo aceita.
-11. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
+11. **Telemetria de uso dos provedores** (pedido do Pai em 2026-10-18: o bloqueio do Go é o limite semanal, e a telemetria deve vir da API).
+    - O OpenCode Go expõe `GET /v1/usage` (autenticado) com as janelas rolante, semanal e mensal: estado, percentual e horário de reinício (medido em 2026-10-18).
+    - Quando o Go recusa (402 ou 429), o núcleo consulta o `/usage`. Se alguma janela estiver bloqueada, marca **o provedor inteiro** como esgotado até o reinício informado, com o motivo em linguagem clara, em vez de chutar uma hora por modelo.
+    - A console mostra as janelas reais do Go (percentual e quando volta).
+12. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
 
 **Fora** (com o marco que entrega):
 - Execução isolada; harness rodando sem pedir permissão a cada passo: **M2**.
@@ -123,6 +127,10 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - a declaração do provedor vence o `models.dev`;
     - o esforço oferecido é o do modelo, e imagem com modelo sem visão é recusada antes de chamar;
     - na console, a busca filtra por nome, lab e capacidade, e as capacidades do escolhido aparecem sob a caixa de mensagem.
+15. **Telemetria do Go:** com um servidor falso que imita o `/v1/usage` medido:
+    - a recusa com janela semanal bloqueada esgota o OpenCode Go inteiro até o `resetsAt` dela, com motivo legível;
+    - sem janela bloqueada (ou com o `/usage` fora do ar), vale o comportamento anterior;
+    - `providers.usage` devolve as janelas, e a chave nunca aparece no log nem na resposta.
 14. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
 
 ## Métricas (registradas)

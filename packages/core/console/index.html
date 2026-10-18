@@ -519,8 +519,12 @@ async function refreshAuth() {
 }
 async function refreshBudget() {
   const ws = await api('budget.status');
+  // Telemetria real das janelas do provedor (SPEC 0002, critério 15): o Go diz quanto usou e quando volta.
+  let tele = [];
+  try { tele = await api('providers.usage'); } catch { /* sem telemetria */ }
+  const teleRows = tele.flatMap((p) => (p.windows || []).map((w) => el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, t('console.usage.window', { provider: p.provider, window: ({ rolling: t('console.usage.rolling'), weekly: t('console.usage.weekly'), monthly: t('console.usage.monthly') })[w.window] || w.window })), el('span', { class: 'note' }, w.status === 'ok' ? t('console.usage.ok', { percent: w.percent }) : t('console.usage.blocked', { percent: w.percent, until: new Date(w.resetsAt).toLocaleString(lang) }))), el('div', { class: 'bar' }, el('i', { style: 'width:' + Math.min(100, w.percent) + '%' + (w.status === 'ok' ? '' : ';background:var(--bad)') })))));
   const shown = showAll ? ws : ws.filter((w) => w.used > 0 || w.exhaustedUntil || w.provider !== 'opencode-go');
-  $('budget').replaceChildren(...shown.map((w) => {
+  $('budget').replaceChildren(...teleRows, ...shown.map((w) => {
     const pct = w.capacity ? Math.min(100, (w.used / w.capacity) * 100) : 0;
     const right = w.exhaustedUntil ? t('console.budget.exhausted', { until: new Date(w.exhaustedUntil).toLocaleString(lang) }) : w.capacity === null ? 'US$ ' + w.used.toFixed(4) + ' · ' + t('console.budget.noCap') : 'US$ ' + w.used.toFixed(4) + ' / ' + w.capacity.toFixed(2);
     return el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, w.id), el('span', { class: 'note' }, right)), w.capacity ? el('div', { class: 'bar' }, el('i', { style: 'width:' + pct.toFixed(1) + '%' })) : null);

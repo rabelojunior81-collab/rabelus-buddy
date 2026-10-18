@@ -391,3 +391,14 @@ test('parar: o sinal aborta a chamada em curso; a execução fica parada com use
   const failed = log.events('s43').find((e) => e.kind === 'effect.failed');
   assert.equal((failed?.payload as { reason?: string }).reason, 'userStopped');
 });
+
+// Critério 15 (SPEC 0002): limite da conta (escopo do provedor) esgota o provedor inteiro, não só o modelo.
+test('limite da conta (escopo provedor) esgota todos os modelos do provedor até o reinício (critério 15)', async () => {
+  const until = Date.parse('2026-10-19T00:00:00.000Z');
+  const go = scripted('opencode-go', [new ProviderLimitError('opencode-go', until, 'limite semanal do OpenCode Go (100%)', 'provider')]);
+  const or = scripted('openrouter', [say('ok')]);
+  const { log, agent } = setup({ routes: [{ provider: go, model: 'kimi-k3' }, { provider: or, model: 'x/y:free' }] });
+  await agent.run('s50', 'tarefa');
+  const ex = log.events('budget').filter((e) => e.kind === 'budget.exhausted').at(-1)?.payload as { provider: string; model: string; until: number };
+  assert.deepEqual([ex.provider, ex.model, ex.until], ['opencode-go', '*', until]);
+});

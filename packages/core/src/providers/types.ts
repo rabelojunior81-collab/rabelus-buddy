@@ -24,13 +24,16 @@ export interface Provider {
 }
 
 // Limite do provedor atingido (HTTP 429 ou erro de limite): esgota a janela até `until`.
+// scope: 'provider' quando o limite é da conta (todos os modelos), como a janela semanal do Go (SPEC 0002, critério 15).
 export class ProviderLimitError extends Error {
   readonly until: number;
   readonly provider: string;
-  constructor(provider: string, until: number, message: string) {
+  readonly scope?: 'provider' | 'model';
+  constructor(provider: string, until: number, message: string, scope?: 'provider' | 'model') {
     super(message);
     this.provider = provider;
     this.until = until;
+    if (scope) this.scope = scope;
   }
 }
 

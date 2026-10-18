@@ -207,3 +207,7 @@ M0 concluído: o Pai validou pela console ('testei todo o resto'); retrospectiva
 ### #0057 · 2026-10-17T203332-0300 · claude-code-vs-code-569aca · spec
 
 SPEC 0002 (M1, rascunho): orquestrador pelo registro oficial do ACP (detecção sem configuração, ícones, sonda, primeira execução aprovada, permissões pelo núcleo, autenticação do agente, delegação), multimodal de entrada, console nova em verde-oliva e vidro (protótipo), contrato tipado (zod), sessão de TUI no fim; dependências propostas: @agentclientprotocol/sdk 1.9.0 e zod 4.6.7.
+
+### #0058 · 2026-10-18T013638-0300 · claude-code-vs-code-59f133 · feat
+
+Telemetria do OpenCode Go (GET /v1/usage, medido ao vivo): limite semanal, mensal e rolante com percentual e reinício; a recusa (402 enganoso ou 429) esgota o Go inteiro até o reinício real, com motivo legível; console mostra as janelas reais; leitura em cache de 1 min. Decisões do Pai de 18/10 aplicadas (SPEC 0002 aprovada, SDK do ACP e zod instalados, cor B oliva, Dependabot).

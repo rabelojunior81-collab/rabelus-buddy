@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import tls from 'node:tls';
 import { fakeHttp, type Captured } from './fake-http.ts';
-import { createGoProvider, createOllamaProvider, createOpenRouterProvider, goRoute, ProviderLimitError, ProviderRejectedError, trustSystemCAs, USER_AGENT } from '../src/providers/index.ts';
+import { goUsage, createGoProvider, createOllamaProvider, createOpenRouterProvider, goRoute, ProviderLimitError, ProviderRejectedError, trustSystemCAs, USER_AGENT } from '../src/providers/index.ts';
 import type { ModelRequest } from '../src/providers/types.ts';
 
 const req = (model: string): ModelRequest => ({
@@ -113,7 +113,8 @@ test('HTTP 429 vira esgotamento com horário (retry-after), sem nova tentativa e
     assert.ok(e.until >= t0 + 119_000 && e.until <= Date.now() + 121_000);
     return true;
   });
-  assert.equal(fake.requests.length, 1);
+  // Uma só chamada ao modelo: a leitura de telemetria (GET /usage, critério 15 da SPEC 0002) não é nova tentativa.
+  assert.equal(fake.requests.filter((r) => !r.path.endsWith('/usage')).length, 1);
   await fake.close();
 });
 
@@ -230,4 +231,41 @@ test('chat em fluxo: "reasoning_content" também é raciocínio; parar aborta a 
   await assert.rejects(p, (e: unknown) => (e as Error).name === 'AbortError' || /abort/i.test((e as Error).message));
   assert.deepEqual(seen, [{ kind: 'reasoning', delta: 'pensando' }]);
   await fake.close();
+});
+
+// Critério 15 (SPEC 0002): telemetria do OpenCode Go, no formato medido em 2026-10-18 (GET /v1/usage).
+const GO_USAGE = { usage: {
+  rolling: { status: 'ok', percent: 0, resetsAt: '2026-10-18T09:22:19.241Z' },
+  weekly: { status: 'rate-limited', percent: 100, resetsAt: '2026-10-19T00:00:00.000Z' },
+  monthly: { status: 'ok', percent: 52, resetsAt: '2026-11-04T05:00:34.000Z' },
+} };
+
+test('telemetria do Go: 402 com a semanal bloqueada esgota o provedor inteiro até o reinício informado, com motivo legível (critério 15)', async () => {
+  const f = await fakeHttp((c) => c.path.endsWith('/usage') ? { json: GO_USAGE } : { status: 402, json: { error: { message: 'Upstream request failed: Insufficient account funds' } } });
+  await assert.rejects(createGoProvider({ apiKey: 'chave-go', baseURL: `${f.url}/v1` }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => {
+    assert.ok(e instanceof ProviderLimitError, String(e));
+    assert.equal(e.until, Date.parse('2026-10-19T00:00:00.000Z'));
+    assert.equal(e.scope, 'provider', 'limite da conta vale para todos os modelos do Go');
+    assert.match(e.message, /limite semanal do OpenCode Go \(100%\)/);
+    return true;
+  });
+  const usageReq = f.requests.find((r) => r.path.endsWith('/usage'))!;
+  assert.equal(usageReq.method, 'GET');
+  assert.equal(usageReq.headers.authorization, 'Bearer chave-go');
+  await f.close();
+});
+
+test('telemetria do Go: goUsage lê as janelas; sem janela bloqueada, a recusa segue como antes (critério 15)', async () => {
+  const ok = { usage: { ...GO_USAGE.usage, weekly: { status: 'ok', percent: 40, resetsAt: '2026-10-19T00:00:00.000Z' } } };
+  const f = await fakeHttp((c) => c.path.endsWith('/usage') ? { json: ok } : { status: 429, headers: { 'retry-after': '30' }, json: { error: { message: 'rate limited' } } });
+  const w = await goUsage({ apiKey: 'k', baseURL: `${f.url}/v1` });
+  assert.deepEqual(w.map((x) => [x.window, x.status, x.percent]), [['rolling', 'ok', 0], ['weekly', 'ok', 40], ['monthly', 'ok', 52]]);
+  const t0 = Date.now();
+  await assert.rejects(createGoProvider({ apiKey: 'k', baseURL: `${f.url}/v1` }).call(req('kimi-k3'), { session: 's' }), (e: unknown) => {
+    assert.ok(e instanceof ProviderLimitError);
+    assert.ok(e.until >= t0 + 29_000 && e.until <= Date.now() + 31_000, 'vale o retry-after da recusa');
+    assert.notEqual(e.scope, 'provider');
+    return true;
+  });
+  await f.close();
 });
