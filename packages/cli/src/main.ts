@@ -25,6 +25,7 @@ function openBrowser(url: string): void {
   const [cmd, args] = process.platform === 'win32' ? ['rundll32', ['url.dll,FileProtocolHandler', url]]
     : process.platform === 'darwin' ? ['open', [url]] : ['xdg-open', [url]];
   try {
+    // rundll32, open e xdg-open: programa sem console (abre o navegador); esconder esconderia o navegador.
     const child = spawn(cmd as string, args as string[], { detached: true, stdio: 'ignore' });
     child.on('error', () => {});
     child.unref();

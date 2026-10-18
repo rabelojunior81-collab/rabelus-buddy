@@ -49,12 +49,12 @@ export function spawnHarness(spec: LaunchSpec, cwd: string): ChildProcess {
     return spawn(spec.cmd, spec.args, { cwd, env, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
   }
   // Grupo próprio no Unix, para encerrar a árvore inteira (o npx inicia outro node).
-  return spawn(spec.cmd, spec.args, { cwd, env, detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+  return spawn(spec.cmd, spec.args, { cwd, env, detached: true, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
 }
 
 export function killTree(child: ChildProcess): void {
   if (!child.pid || child.exitCode !== null) return;
-  if (process.platform === 'win32') { try { execFileSync(TASKKILL, ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
+  if (process.platform === 'win32') { try { execFileSync(TASKKILL, ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true }); } catch { /* já saiu */ } }
   else { try { process.kill(-child.pid, 'SIGTERM'); } catch { try { child.kill('SIGTERM'); } catch { /* já saiu */ } } }
 }
 

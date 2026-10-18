@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T204110-0300-claude-code-vs-code-30aa5d-0032",
+  "ts": "2026-10-18T20:41:10-03:00",
+  "utc": "2026-10-18T23:41:10.687Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 32,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/processos-sem-janela",
+  "type": "correcao",
+  "summary": "Processos sem janela: tools/command.ts (comandos do agente), sonda (taskkill e ramo Unix) com windowsHide; navegador da CLI declarado como programa sem console; varredura verde; 301/301; validação processos-sem-janela",
+  "refs": [],
+  "data": {}
+}
