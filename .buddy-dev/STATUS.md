@@ -16,8 +16,8 @@
 
 | Item | Valor |
 |---|---|
-| `main` | `40a0afe` (Merge #46: fechamento da sessão 59f133), CI verde |
-| PRs mergeados | #1–#46, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `a88f5cc` (Merge #48: plano de minutos da CI), CI verde |
+| PRs mergeados | #1–#48, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
