@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194208-0300-claude-code-vs-code-a6ad15-0047",
+  "ts": "2026-10-18T19:42:08-03:00",
+  "utc": "2026-10-18T22:42:08.367Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 47,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "processo",
+  "summary": "(registro atrasado, auditoria de 2026-10-18) commit ed8cb76 da sessão claude-code-vs-code-fe93fb em 2026-10-16T02:24Z entrou sem registro no barramento: feat(bd): surfaces cobra sub-fase concluída no CHANGELOG do produto e a última no Estado dos READMEs",
+  "refs": [
+    "ed8cb76"
+  ],
+  "data": {
+    "atrasado": true,
+    "commit": "ed8cb76",
+    "sessaoOriginal": "claude-code-vs-code-fe93fb"
+  }
+}
