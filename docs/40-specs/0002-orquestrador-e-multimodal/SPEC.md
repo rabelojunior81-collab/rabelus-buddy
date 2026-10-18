@@ -62,14 +62,17 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
       3. a família do modelo, só para o **lab**.
     - As fontes divergem (ex.: `minimax-m3`), e por isso a fonte aparece junto da capacidade.
     - O catálogo é guardado com data e renovado no máximo uma vez por dia. Os logos dos labs são servidos pela console.
-    - **Ergonomia** (Pai: "usabilidade quase nula" na primeira versão do protótipo, com três colunas espremidas sobre a caixa de mensagem):
-      - **Harness** é um menu próprio, opaco, com ícone, nome, uma linha do que é e o estado.
-      - **Modelo** abre uma **paleta central**: busca com foco automático; filtros de capacidade em pílulas; provedores em abas; labs como títulos de grupo com logo; uma linha por modelo com nome completo, id, ícones, contexto e preço.
-      - A paleta tem **Recentes**, teclado (↑ ↓ Enter, Esc, Ctrl+K) e o escolhido marcado.
-      - No celular, a linha empilha, e filtros e abas rolam de lado.
-      - Vidro só onde não compete com a leitura: camadas sobrepostas são opacas, porque o vidro aninhado não desfoca a página.
-      - Sob a caixa aparecem **só** as capacidades presentes, mais o aviso "sem visão" quando falta, e a fonte num "ⓘ".
-      - Modelo sem dados de capacidade diz "capacidades desconhecidas".
+    - **Ergonomia** (Pai: "usabilidade quase nula", "horrível, tanto desktop quanto mobile"). As duas primeiras versões do protótipo foram descartadas. A terceira copia a medida do seletor do t3.chat (inspecionado no navegador em 2026-10-17, desktop e 390 px):
+      - **Harness** e **Modelo** em pílulas separadas, cada uma com um **popover ancorado nela**, opaco; nada de modal nem de colunas espremidas.
+      - Popover de modelo:
+        - **provedor ou roteador** num controle segmentado no topo;
+        - busca, com **filtro de capacidades em menu**;
+        - **trilho de ícones dos labs** à esquerda (todos, favoritos e um por lab);
+        - **uma coluna de modelos**, em que cada linha tem logo do lab, nome, preço (só no roteador pago: grátis, $, $$ ou $$$), estrela de favorito, descrição curta, **ícones de capacidade coloridos** (uma cor por capacidade) e contexto.
+      - Teclado: ↑ ↓ Enter, Esc, Ctrl+K.
+      - Com um harness externo, o popover mostra só os modelos dele, sem provedor nem trilho, e o esforço some.
+      - **Celular:** a caixa vira **[+] · harness · modelo · enviar**; o [+] reúne anexar arquivo, imagem e esforço. As capacidades do modelo escolhido ganham **linha própria sob a caixa**, com o nome de cada uma.
+      - Ícones servidos pela console (o models.dev não manda CORS); modelo sem dados de capacidade diz "capacidades desconhecidas".
     - A escolha controla o resto da caixa: o botão de imagem só fica ativo com visão, e o esforço só oferece os níveis que o modelo aceita.
 11. **Sessão de TUI com o Pai**, no fim do M1: `ink` × `pi-tui` lado a lado, com as mesmas telas (conversa, aprovação, andamento), para ele decidir (ADR 0016).
 
