@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T130858-0300-claude-code-vs-code-33be25-0001",
+  "ts": "2026-10-18T13:08:58-03:00",
+  "utc": "2026-10-18T16:08:58.306Z",
+  "session": "claude-code-vs-code-33be25",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fecho-sessao-d6ff5c",
+  "type": "session-start",
+  "summary": "M1.1: catálogo e detecção dos harnesses instalados pelo registro oficial do ACP (sem instalar nada), catálogo de modelos provedor → lab → modelo, aviso de resposta vazia do provedor; começa pondo o STATUS na main atual",
+  "refs": [],
+  "data": {}
+}
