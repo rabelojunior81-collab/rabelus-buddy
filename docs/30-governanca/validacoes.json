@@ -537,6 +537,22 @@
         "teste": "scripts/test/verifica.test.mjs"
       },
       "origem": "Regra do Pai, 2026-10-18 (autoverificação fundacional)"
+    },
+    {
+      "id": "aprovar-codex-primeira-execucao",
+      "descricao": "Aprovar a primeira execução do Codex (adaptador @agentclientprotocol/codex-acp@2.2.2, baixado pelo npx) para o Rabelus Buddy conversar com ele",
+      "quem": "pai",
+      "tipo": "acao",
+      "onde": [
+        "M1.2b"
+      ],
+      "como": "Na console do Rabelus Buddy (atalho abrir-rabelus-buddy), no painel Aprovações, clicar em Aprovar no pedido \"Primeira execução de Codex\"",
+      "ensaio": "docs/registros/2026-10-18T201400-0300-ensaio-da-primeira-execucao-aprovada/README.md",
+      "mecanismo": {
+        "teste": "packages/core/test/primeira-execucao.test.ts"
+      },
+      "estado": "pendente",
+      "origem": "SPEC 0002, critério 4; pergunta do Pai sobre o Codex (2026-10-18)"
     }
   ]
 }

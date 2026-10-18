@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0020 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · aprendizado
-
-Duas tentativas recusadas (canteiro; nave estelar) antes do v3: eu li o meu próprio texto e o acervo errado em vez do artefato irmão. Lição 1 de 2026-10-15 na LEARNING-CURVE: referência é o artefato do mesmo tipo, enviado como imagem, e mostro ao Pai antes de commitar.
-
 ### #0021 · 2026-10-15T035409-0300 · claude-code-vs-code-14f5bb · doc
 
 Blog atualizado: Buddy Fenix com avatar próprio, cor #3fb8a8 e emojis na ficha de autor, nos cards (pt/en) e nas bios do rodapé; governança v2.6; proveniência em evidence/buddy-dev. rabelus-lab-blog 6ae9895, gate VERDE, QA em 1440 e 375.
@@ -207,3 +203,7 @@ Autoverificação: bd verifica (commit de código sem registro reprova no bd pos
 ### #0067 · 2026-10-18T195549-0300 · claude-code-vs-code-a6ad15 · feat
 
 M1.2a sonda ACP (critério 3): launchFor (executável local preferido; npx/uvx com aprovação), probeHarness (initialize + session/new, pronto/login/falhou, tempo-limite 30 s, sem janela nem sobra), harness.probe no núcleo e na console. Checagem real: OpenCode, Copilot e Hermes prontos; Codex aguarda aprovação do adaptador codex-acp
+
+### #0068 · 2026-10-18T201435-0300 · claude-code-vs-code-30aa5d · feat
+
+M1.2b primeira execução aprovada (critério 4): harness.probe pede aprovação por pacote@versão no painel Aprovações antes de qualquer npx/uvx; negada nada roda; versão nova pergunta; ensaio na console registrado; validação do Pai: aprovar o Codex

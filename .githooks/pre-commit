@@ -1,0 +1,4 @@
+#!/bin/sh
+# Autoverificação antes de cada commit (regra do Pai, 2026-10-18): superfícies, nomes, órfãos e claims.
+# Reprovou, o commit não entra. Nunca use --no-verify.
+exec node "$(git rev-parse --show-toplevel)/scripts/bd.mjs" verifica --pre-commit

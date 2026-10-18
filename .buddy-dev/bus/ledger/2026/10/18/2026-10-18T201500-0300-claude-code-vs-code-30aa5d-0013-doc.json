@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T201500-0300-claude-code-vs-code-30aa5d-0013",
+  "ts": "2026-10-18T20:15:00-03:00",
+  "utc": "2026-10-18T23:15:00.876Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 13,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-primeira-execucao",
+  "type": "doc",
+  "summary": "Superfícies da M1.2b: validação do Pai aprovar-codex-primeira-execucao (com ensaio e caminho pela console), PLANO, TESTES critério 4, changelogs, lição do lote #0020",
+  "refs": [],
+  "data": {}
+}

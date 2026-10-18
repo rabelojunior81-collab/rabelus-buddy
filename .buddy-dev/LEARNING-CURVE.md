@@ -152,3 +152,11 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0019-#0019
 
 1. **Em 2026-10-15, o avatar entrou com proveniência completa: prompt, id, custo e sha256.** Em 2026-10-18, a marca do Rabelus Lab também entrou com origem registrada. → Todo artefato que não nasce de código traz a proveniência junto, no mesmo commit.
+
+## lote #0020-#0020
+
+1. **Em 2026-10-15, o avatar só acertou quando a referência foi o artefato do mesmo tipo (o avatar do irmão), e não o meu texto.** Em 2026-10-18, o visual da console também só acertou medindo o portfólio real do Pai no navegador. → A referência é o artefato real medido, nunca a minha descrição dele.
+
+## Diferenças de plataforma (2026-10-18)
+
+1. **Duas vezes no mesmo dia, o Linux da CI revelou o que o Windows esconde:** o processo zumbi contado como vivo e o gancho sem permissão de execução ignorado pelo git. → Teste que mexe com processos, sinais ou permissões nasce já prevendo a semântica Unix (zumbi, `+x`, grupo de processos), não só a do Windows onde rodo.

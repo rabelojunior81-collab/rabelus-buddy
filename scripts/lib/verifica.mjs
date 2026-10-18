@@ -4,6 +4,10 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tryGit } from './git.mjs';
+import { surfaceGaps } from './surfaces.mjs';
+import { checkPath } from './names.mjs';
+import { findOrphans } from './orfaos.mjs';
+import { checkClaims } from './claims.mjs';
 
 export const SUBSTANTIVE = new Set(['decisao', 'pesquisa', 'erro', 'aprendizado', 'correcao', 'feat', 'ferramenta', 'processo', 'doc']);
 const CODE = /^(packages|scripts|\.github|locales)\/|^package(-lock)?\.json$/;
@@ -62,6 +66,24 @@ export function selfCheck(root, { base = 'origin/main', now = new Date(), sessio
     if (min !== null && min > 30) warn.push(`${min} min sem registro substantivo na sessão ${session}: registre decisão, pesquisa, erro ou aprendizado no momento do fato`);
   }
   return { block, warn };
+}
+
+// Antes de cada commit (gancho .githooks/pre-commit): as checagens rápidas. Achado de 2026-10-18: commitei com o
+// bd surfaces reprovando, porque a checagem e o commit iam no mesmo comando.
+export function preCommitProblems(root, { base = 'origin/main' } = {}) {
+  const out = [];
+  out.push(...surfaceGaps(root, { base }).map((g) => `superfícies: ${g}`));
+  out.push(...(tryGit(root, 'ls-files') ?? '').split('\n').filter(Boolean).flatMap(checkPath).map((p) => `nome: ${p}`));
+  out.push(...findOrphans(root).map((p) => `órfão ou quebrado: ${p}`));
+  out.push(...checkClaims(root, { base }).problems.map((p) => `claim: ${p}`));
+  return out;
+}
+
+// O worktree usa os ganchos versionados do repositório (garantido pelo bd pre).
+export function ensureHooksPath(root) {
+  if ((tryGit(root, 'config', 'core.hooksPath') ?? '') === '.githooks') return false;
+  tryGit(root, 'config', 'core.hooksPath', '.githooks');
+  return true;
 }
 
 // Gancho Stop: com pendência, barra o fim da resposta e diz o porquê; já continuando por ele, só avisa (sem laço).

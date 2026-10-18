@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Primeira execução aprovada** (M1.2b, critério 4): agente que precisa baixar código (pelo `npx` ou `uvx`) só roda depois de o Pai aprovar na console, com o pacote e a versão exatos; negado, nada roda; uma versão nova pede de novo. Primeiro alvo: o Codex.
 - **Sonda dos agentes** (M1.2a, critério 3): o Buddy inicia cada agente instalado, faz o aperto de mão do protocolo e diz se está pronto, se precisa de login ou por que falhou, sem abrir janela e sem deixar processo vivo. No computador do Pai: OpenCode, Copilot e Hermes prontos; Claude, Codex e pi aguardam a aprovação da primeira execução.
 - **Autoverificação no `bd`** (regra do Pai, 2026-10-18): `bd verifica` acusa commit de código sem registro no barramento, alteração sem commit e commit sem push; roda no `bd post`, na CI e, no Claude Code, ao fim de cada resposta do buddy-dev.
 - **Três regras do Pai com mecanismo no `bd`** (2026-10-18): `bd serve` (servidor de conferência registrado, reaproveitado e encerrado com a árvore de processos; a sessão não fecha com servidor vivo); `bd contexto` (o contexto essencial de governança volta sozinho depois de cada compactação, pelos ganchos do Claude Code); `bd orfaos` (links quebrados, documentação sem referência e exportação sem uso, no `bd post` e na CI).
