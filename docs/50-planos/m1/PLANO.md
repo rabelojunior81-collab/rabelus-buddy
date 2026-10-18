@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-18T01:20:42-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-18T12:08:28-03:00
 
 ## Objetivo
 
@@ -20,7 +20,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
 - [ ] **M1.2 Cliente ACP:** sonda, primeira execução aprovada, conversa com andamento ao vivo, permissões pelo núcleo, autenticação do agente (critérios 3–7); checagem contra um harness real do Pai (OpenCode ou Codex) registrada
 - [ ] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada
 - [ ] **M1.4 Delegação:** ferramenta `delegar` do Buddy (critério 8)
-- [ ] **M1.5 Console nova** (ajustes visuais do Pai de 2026-10-18: cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com; referências do Kanban e dos Bots do Hermes): o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real
+- [ ] **M1.5 Console nova** (protótipo v4 **aprovado** pelo Pai em 2026-10-18, com a logomarca do Rabelus Lab ao lado do nome; ajustes visuais do Pai de 2026-10-18: cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com; referências do Kanban e dos Bots do Hermes): o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real
 - [ ] **M1.6 Ensaio real e demonstração com o Pai** (critério 12); métricas; retrospectiva
 - [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 14; ADR 0016)
 

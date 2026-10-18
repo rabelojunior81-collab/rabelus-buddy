@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0011 · 2026-10-14T120553-0300 · claude-code-671f81 · decisao
-
-Decisões do Pai sobre a 0.2 viraram ADRs 0008–0012: orçamento US$ 50 com trabalho via ChatGPT Plus e OpenCode Go por ACP (conferido ao vivo: codex-acp 2.2.2 com login ChatGPT; opencode acp); aprovações com escopo; núcleo governado + composição; binários rabelus-buddy e rbuddy; canais globais.
-
 ### #0012 · 2026-10-14T120554-0300 · claude-code-671f81 · doc
 
 F0.8: Roadmap v2 e Plano Macro v2 sobre a Revisão 0.2; retrospectiva da Fase 0 (75 commits, 27 testes, 12 ADRs, 10 fichas). PR #7.
@@ -207,3 +203,7 @@ SPEC 0002 (M1, rascunho): orquestrador pelo registro oficial do ACP (detecção 
 ### #0058 · 2026-10-18T013638-0300 · claude-code-vs-code-59f133 · feat
 
 Telemetria do OpenCode Go (GET /v1/usage, medido ao vivo): limite semanal, mensal e rolante com percentual e reinício; a recusa (402 enganoso ou 429) esgota o Go inteiro até o reinício real, com motivo legível; console mostra as janelas reais; leitura em cache de 1 min. Decisões do Pai de 18/10 aplicadas (SPEC 0002 aprovada, SDK do ACP e zod instalados, cor B oliva, Dependabot).
+
+### #0059 · 2026-10-18T120840-0300 · claude-code-vs-code-59f133 · alterado
+
+Protótipo v4 da console do M1 aprovado pelo Pai: cantos retos, vidro no estilo liquid glass, seletores compactos, a tipografia do rabelus.com e a logomarca do Rabelus Lab (emblema da fênix) ao lado do nome

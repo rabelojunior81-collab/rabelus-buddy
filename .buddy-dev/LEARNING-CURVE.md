@@ -111,3 +111,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0010-#0010
 
 1. **No começo, os PRs que o Pai achava mergeados estavam abertos no GitHub.** O estado real se confere na fonte, não na memória de ninguém. Hoje, os "73 commits" eram 73 alterações sem commit, e só a checagem no git mostrou isso.
+
+## lote #0011-#0011
+
+1. **Em 2026-10-14, as decisões do Pai sobre a 0.2 viraram ADRs no mesmo dia, e nenhuma se perdeu.** Em 2026-10-18, a logomarca do Rabelus Lab foi pedida e não virou registro, e o Pai teve de pedir de novo. → Pedido do Pai, mesmo pequeno e visual, entra no corpus (MEMORY ou SPEC) na hora em que chega, não quando for aplicado.

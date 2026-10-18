@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T120552-0300-claude-code-vs-code-59f133-0023",
+  "ts": "2026-10-18T12:05:52-03:00",
+  "utc": "2026-10-18T15:05:52.202Z",
+  "session": "claude-code-vs-code-59f133",
+  "seq": 23,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5-logomarca",
+  "type": "erro",
+  "summary": "A logomarca do Rabelus Lab foi pedida pelo Pai antes e não entrou no corpus nem no protótipo; regra recebida não registrada no mesmo dia. Correção: registrar em MEMORY e aplicar agora",
+  "refs": [],
+  "data": {}
+}

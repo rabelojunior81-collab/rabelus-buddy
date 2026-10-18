@@ -473,10 +473,11 @@
         "M1.5"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "SPEC 0002, decisões do Pai de 2026-10-18",
       "como": "abrir o protótipo v4 no navegador (http://127.0.0.1:8767/prototipo-visual.html), no computador e no celular, ou olhar as capturas prototipo-v4-*.png na pasta da SPEC 0002",
-      "preparo": "protótipo v4 ensaiado pelo buddy-dev em 2026-10-18 nos tamanhos reais (1707x769 e 390x844), nos temas escuro e claro, sem erro no console do navegador"
+      "preparo": "protótipo v4 ensaiado pelo buddy-dev em 2026-10-18 nos tamanhos reais (1707x769 e 390x844), nos temas escuro e claro, sem erro no console do navegador",
+      "evidencia": "Pai, 2026-10-18: \"Visual aprovado, com apenas uma ressalva: logomarca do Rabelus Lab no lugar desse quadrado, ao lado do nome\"; ressalva aplicada no protótipo v4 no mesmo dia (capturas prototipo-v4-*-marca.png)"
     }
   ]
 }

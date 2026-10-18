@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T121033-0300-claude-code-vs-code-59f133-0030",
+  "ts": "2026-10-18T12:10:33-03:00",
+  "utc": "2026-10-18T15:10:33.615Z",
+  "session": "claude-code-vs-code-59f133",
+  "seq": 30,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5-logomarca",
+  "type": "erro",
+  "summary": "Changelog: li o aviso de teto como recusa e adicionei a mesma entrada duas vezes; a duplicata (não commitada) foi retirada antes do commit. Lição: o bd changelog add grava e avisa; ler a saída inteira",
+  "refs": [],
+  "data": {}
+}
