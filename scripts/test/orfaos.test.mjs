@@ -17,7 +17,7 @@ function repo(files) {
 
 test('bd orfaos: link quebrado, arquivo de documentação sem referência e exportação sem uso; o que está ligado passa', () => {
   const r = repo({
-    'README.md': '[spec](./docs/spec.md) · [quebrado](./docs/nao-existe.md) · [fora](https://example.com) · [âncora](#topo) · ![captura](docs/img/usada.png)',
+    'README.md': '[spec](./docs/spec.md) · [quebrado](./docs/nao-existe.md) · [fora](https://example.com) · [âncora](#topo) · ![captura](docs/img/usada.png) · [protótipo](docs/proto.html)',
     'docs/spec.md': '# Spec\n[volta](../README.md) e [sumiu](./sumiu/README.md#parte)',
     'docs/img/usada.png': 'x',
     'docs/img/esquecida.png': 'x',

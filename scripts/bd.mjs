@@ -15,6 +15,7 @@ import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.
 import { checkValidations } from './lib/validacoes.mjs';
 import { ciPlan, changedFiles } from './lib/ciplan.mjs';
 import { governanceContext, recordCompaction } from './lib/contexto.mjs';
+import { findOrphans } from './lib/orfaos.mjs';
 import { startServer, listServers, stopServers, serversOf, shellCommand } from './lib/servers.mjs';
 import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
@@ -45,6 +46,7 @@ const HELP = `bd — buddy-dev
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
   ci-plan --event <evento> [--base <ref>]  o que a CI roda neste evento (código? qual matriz?)
+  orfaos                             links quebrados, documentação sem referência, exportação sem uso
   contexto [--compactou]             contexto essencial de governança (depois de compactar; --compactou registra a compactação)
   serve <pasta> [--port N] | --cmd "<comando>" --name <nome> | --list | --stop [--all|<id>|<pasta>]  servidor de conferência com dono e fim
   test-guard [--base origin/main]    a suíte não perde testes nem asserções; sem skip/todo/only
@@ -171,6 +173,13 @@ const commands = {
     } else if (sub === 'status') {
       console.log(JSON.stringify(status(r), null, 2));
     } else throw new Error('use: session start|log|end|status');
+  },
+
+  // Varredura de órfãos e quebrados (regra do Pai, 2026-10-18).
+  orfaos() {
+    const p = findOrphans(root());
+    p.forEach((x) => console.log(`  ✖ ${x}`));
+    if (p.length) { console.log('órfãos ou quebrados: ligue, corrija ou arquive (nada se apaga)'); process.exitCode = 1; } else console.log('nenhum órfão nem link quebrado');
   },
 
   // Contexto essencial de governança (regra do Pai, 2026-10-18): roda sozinho depois de cada compactação
@@ -384,6 +393,9 @@ const commands = {
     const problems = namesProblems(r);
     if (problems.length) fail(`nomes fora da convenção:\n    ${problems.join('\n    ')}`);
     else ok('nomes na convenção');
+    const orf = findOrphans(r);
+    if (orf.length) fail(`órfãos ou quebrados (regra do Pai, 2026-10-18):\n    ${orf.join('\n    ')}`);
+    else ok('nenhum órfão nem link quebrado');
     for (const x of listServers(r)) warn(`servidor de conferência rodando: ${x.id} ${x.name}${x.port ? ` porta ${x.port}` : ''} (sessão ${x.session ?? '—'}); encerre ao terminar (bd serve --stop)`);
     const d = findDeletions(r, { base: o.base ?? 'origin/main' });
     if (d.length) fail(`exclusões proibidas: ${d.join(', ')}`);

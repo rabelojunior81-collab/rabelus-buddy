@@ -506,6 +506,21 @@
         "teste": "scripts/test/contexto.test.mjs"
       },
       "origem": "Regra do Pai, 2026-10-18"
+    },
+    {
+      "id": "orfaos-e-quebrados",
+      "descricao": "Nenhum link relativo quebrado, nenhum arquivo de documentação sem referência, nenhuma exportação de código sem uso",
+      "quem": "maquina",
+      "onde": [
+        "toda branch",
+        "CI"
+      ],
+      "mecanismo": {
+        "bd": "orfaos",
+        "ci": "node scripts/bd.mjs orfaos",
+        "teste": "scripts/test/orfaos.test.mjs"
+      },
+      "origem": "Regra do Pai, 2026-10-18"
     }
   ]
 }

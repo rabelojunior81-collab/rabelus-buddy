@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0017 · 2026-10-15T033730-0300 · claude-code-vs-code-14f5bb · decisao
-
-Identidade visual do Buddy Fenix por autoria própria: conceito (construtor nascido dentro da obra), cor de autoria verdete #3fb8a8 (8,11:1 sobre o fundo do Blog), emojis 🔥 🖤 🧱 📜. Ficha gemini-imagem com Nano Banana 2.1 via Interactions API.
-
 ### #0018 · 2026-10-15T033730-0300 · claude-code-vs-code-14f5bb · aprendizado
 
 A geração do avatar parou em HTTP 429: o projeto da chave Gemini estourou o teto de gasto mensal; não se contorna trocando de modelo. O 2.1 também recusa PNG na saída (só JPEG). Chave válida não é chave com saldo: conferir o teto antes de planejar geração.
@@ -207,3 +203,7 @@ M1.1: catálogo pelo registro oficial do ACP (cópia local, ícones servidos pel
 ### #0064 · 2026-10-18T143508-0300 · claude-code-vs-code-33be25 · feat
 
 M1.1: catálogo de modelos provedor → lab → modelo (ChatGPT /models, Ollama /api/tags + /api/show, OpenRouter /api/v1/models, OpenCode Go /v1/models + models.dev), fonte por capacidade, provedor vence o models.dev, esforços por modelo; models.list no núcleo e na console, guardado por um dia. Checagem real: 538 modelos, 0 erros
+
+### #0065 · 2026-10-18T151739-0300 · claude-code-vs-code-a6ad15 · ferramenta
+
+Regras do Pai de 2026-10-18 com mecanismo: bd serve (servidores com dono e fim; session end recusa com servidor vivo), bd contexto (contexto essencial na compactação; ganchos SessionStart e PostCompact), bd orfaos (no bd post e na CI). Achados no caminho: dois servidores esquecidos encerrados; STATUS com 'Agora' antigo arquivado; bd acha o repositório pelo próprio script
