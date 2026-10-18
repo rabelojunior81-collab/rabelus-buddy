@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-18T144243-0300-claude-code-vs-code-33be25-0030",
+  "ts": "2026-10-18T14:42:43-03:00",
+  "utc": "2026-10-18T17:42:43.816Z",
+  "session": "claude-code-vs-code-33be25",
+  "seq": 30,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m1-1-fecho-e-sessao-33be25",
+  "type": "claim",
+  "summary": "README.en.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-18T18:12:43.816Z",
+    "tookOverFrom": null
+  }
+}
