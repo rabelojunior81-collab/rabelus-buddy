@@ -103,3 +103,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0008-#0008
 
 1. **A entrada no Blog veio com QA de 375 e 1440 px desde o primeiro post.** Hoje, a mesma conferência pegou o que os testes não pegam em cada entrega da console. Conferir no tamanho e no modo em que a pessoa usa é parte da entrega.
+
+## lote #0009-#0009
+
+1. **A Revisão 0.2 já dizia "núcleo + composição: os gateways MIT existem".** No M1, a composição ficou concreta: o registro oficial do ACP traz 42 agentes prontos para compor. Pesquisar o que já existe antes de construir continua sendo o atalho mais barato.

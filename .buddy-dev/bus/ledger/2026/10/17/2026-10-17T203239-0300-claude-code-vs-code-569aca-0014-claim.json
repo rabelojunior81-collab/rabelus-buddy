@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-17T203239-0300-claude-code-vs-code-569aca-0014",
+  "ts": "2026-10-17T20:32:39-03:00",
+  "utc": "2026-10-17T23:32:39.785Z",
+  "session": "claude-code-vs-code-569aca",
+  "seq": 14,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m1-ordem-c-e-pesquisa",
+  "type": "claim",
+  "summary": "docs/40-specs/README.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-18T01:32:39.785Z",
+    "tookOverFrom": null
+  }
+}

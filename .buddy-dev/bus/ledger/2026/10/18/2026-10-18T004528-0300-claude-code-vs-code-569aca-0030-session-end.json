@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T004528-0300-claude-code-vs-code-569aca-0030",
+  "ts": "2026-10-18T00:45:28-03:00",
+  "utc": "2026-10-18T03:45:28.991Z",
+  "session": "claude-code-vs-code-569aca",
+  "seq": 30,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m1-ordem-c-e-pesquisa",
+  "type": "session-end",
+  "summary": "Ordem C (ADR 0018); pesquisa ao vivo (registro ACP, AionUi, t3.chat, catálogos de modelos); SPEC 0002 rascunho com duas camadas e catálogo de capacidades; protótipo v3 refeito pela ergonomia medida, com celular (gaveta, folhas); falhas de governança registradas e corrigidas. Aguarda o Pai: aprovar SPEC, protótipo e dependências.",
+  "refs": [],
+  "data": {}
+}

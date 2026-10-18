@@ -370,10 +370,10 @@
     },
     {
       "id": "escolha-da-tui",
-      "descricao": "Escolher a biblioteca da TUI (ink × pi-tui) com referências visuais e a avaliação do buddy-dev",
+      "descricao": "Escolher a biblioteca da TUI (ink × pi-tui) numa sessão de exploração visual com o Pai, no fim do M1 (ADR 0016 e 0018)",
       "quem": "pai",
       "onde": [
-        "quando a TUI entrar"
+        "fim do M1 (sessão com o Pai)"
       ],
       "mecanismo": {},
       "estado": "pendente",
@@ -446,8 +446,21 @@
         "fechamento do M0"
       ],
       "mecanismo": {},
+      "estado": "feito",
+      "origem": "adendo do ROADMAP de 2026-10-17; docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md",
+      "evidencia": "Pai, 2026-10-17: \"Vamos prosseguir, com a ordem recomendada C\" (ADR 0018)"
+    },
+    {
+      "id": "spec-0002-e-prototipo",
+      "descricao": "Aprovar a SPEC 0002 (M1), o protótipo visual (verde-oliva, vidro, ergonomia do t3.chat) e as dependências @agentclientprotocol/sdk@1.9.0 e zod@4.6.7",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "início do M1"
+      ],
+      "mecanismo": {},
       "estado": "pendente",
-      "origem": "adendo do ROADMAP de 2026-10-17; docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md"
+      "origem": "ADR 0018; SPEC 0002 rev. 1"
     }
   ]
 }

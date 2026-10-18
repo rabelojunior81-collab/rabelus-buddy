@@ -116,6 +116,30 @@
       "ficha": "docs/20-conhecimento/bibliotecas-do-nucleo.md",
       "verifiedAt": "2026-10-15",
       "approvedBy": "Pai, 2026-10-15 (decisão 8 = A)"
+    },
+    {
+      "name": "@agentclientprotocol/sdk",
+      "version": "1.9.0",
+      "license": "Apache-2.0",
+      "kind": "runtime",
+      "status": "proposta",
+      "purpose": "Cliente ACP: conversar com os harnesses detectados (Claude Code, Codex, OpenCode, Copilot, Pi...) com permissões decididas pelo núcleo",
+      "phase": "M1",
+      "ficha": "docs/20-conhecimento/acp-registro-e-orquestradores.md",
+      "verifiedAt": "2026-10-17",
+      "approvedBy": "pendente"
+    },
+    {
+      "name": "zod",
+      "version": "4.6.7",
+      "license": "MIT",
+      "kind": "runtime",
+      "status": "proposta",
+      "purpose": "Par obrigatório do SDK do ACP; contrato tipado dos métodos da console (axioma T3)",
+      "phase": "M1",
+      "ficha": "docs/20-conhecimento/acp-registro-e-orquestradores.md",
+      "verifiedAt": "2026-10-17",
+      "approvedBy": "pendente"
     }
   ]
 }
