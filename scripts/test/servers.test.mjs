@@ -6,14 +6,15 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { startServer, listServers, stopServers, serversOf, shellCommand } from '../lib/servers.mjs';
+import { startServer, listServers, stopServers, serversOf, shellCommand, isAlive } from '../lib/servers.mjs';
 
 function repo() {
   const r = mkdtempSync(join(tmpdir(), 'buddy-srv-'));
   execFileSync('git', ['init', '-q', '-b', 'main', r]);
   return r;
 }
-const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+// Mesma medida da biblioteca: no Unix, zumbi não conta como vivo.
+const alive = (pid) => isAlive(pid);
 const get = async (port, path) => { const r = await fetch(`http://127.0.0.1:${port}${path}`); return { status: r.status, type: r.headers.get('content-type') ?? '', body: await r.text() }; };
 
 test('serve: pasta servida em 127.0.0.1, com o tipo certo; a mesma pasta reaproveita o servidor (nunca outro numa porta nova)', async () => {

@@ -9,7 +9,15 @@ import { commonDir } from './git.mjs';
 
 const STATIC = join(import.meta.dirname, 'static-server.mjs');
 const dir = (root) => { const d = join(commonDir(root), 'buddy-bus', 'servers'); mkdirSync(d, { recursive: true }); return d; };
-const isAlive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+// Vivo de verdade: no Unix, um filho encerrado e ainda não recolhido (zumbi) responde ao sinal 0, mas já morreu.
+export function isAlive(pid) {
+  try { process.kill(pid, 0); } catch (e) { return e.code === 'EPERM'; }
+  try {
+    if (process.platform === 'linux') return readFileSync(`/proc/${pid}/stat`, 'utf8').replace(/^.*\)\s*/, '')[0] !== 'Z';
+    if (process.platform === 'darwin') return !execFileSync('ps', ['-o', 'stat=', '-p', String(pid)], { encoding: 'utf8' }).trim().startsWith('Z');
+  } catch { return false; }
+  return true;
+}
 const nap = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 
 // Servidores vivos; o registro de quem morreu por fora some aqui.
