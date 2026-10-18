@@ -106,13 +106,15 @@
     },
     {
       "id": "matriz-de-plataformas",
-      "descricao": "Testes e tipos em Windows, Linux e macOS, com Node 24 e 26",
+      "descricao": "Testes e tipos em Windows, Linux e macOS, com Node 24 e 26: a matriz completa toda semana (e sob demanda); em PR e merge, cada combinação onde agrega, pelo plano de minutos (2026-10-18)",
       "quem": "maquina",
       "onde": [
         "CI"
       ],
       "mecanismo": {
-        "ci": "os: [ubuntu-latest, macos-latest, windows-latest]"
+        "ci": "node scripts/bd.mjs ci-plan",
+        "bd": "ci-plan",
+        "teste": "scripts/test/ciplan.test.mjs"
       },
       "origem": "SPEC 0001 (critérios 1–25)"
     },
