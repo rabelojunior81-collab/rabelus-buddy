@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0018 · 2026-10-15T033730-0300 · claude-code-vs-code-14f5bb · aprendizado
-
-A geração do avatar parou em HTTP 429: o projeto da chave Gemini estourou o teto de gasto mensal; não se contorna trocando de modelo. O 2.1 também recusa PNG na saída (só JPEG). Chave válida não é chave com saldo: conferir o teto antes de planejar geração.
-
 ### #0019 · 2026-10-15T034902-0300 · claude-code-vs-code-14f5bb · decisao
 
 Avatar do Buddy Fenix: v3-b, escolhido pelo Pai. Retrato na linguagem da família, gerado com Nano Banana 2.1 usando o avatar do Killian como referência; proveniência com prompt, id, custo (cerca de US$ 0,25) e sha256.
@@ -207,3 +203,7 @@ M1.1: catálogo de modelos provedor → lab → modelo (ChatGPT /models, Ollama 
 ### #0065 · 2026-10-18T151739-0300 · claude-code-vs-code-a6ad15 · ferramenta
 
 Regras do Pai de 2026-10-18 com mecanismo: bd serve (servidores com dono e fim; session end recusa com servidor vivo), bd contexto (contexto essencial na compactação; ganchos SessionStart e PostCompact), bd orfaos (no bd post e na CI). Achados no caminho: dois servidores esquecidos encerrados; STATUS com 'Agora' antigo arquivado; bd acha o repositório pelo próprio script
+
+### #0066 · 2026-10-18T194400-0300 · claude-code-vs-code-a6ad15 · ferramenta
+
+Autoverificação: bd verifica (commit de código sem registro reprova no bd post e na CI; sem commit e sem push barram; 30 min sem registro avisa) e gancho Stop do Claude Code ao fim de cada resposta. Auditoria de 2026-10-18: 53 commits de código sem registro em 14 sessões, registrados como atrasados com o hash

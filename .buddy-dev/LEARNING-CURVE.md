@@ -139,3 +139,12 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0017-#0017
 
 1. **Em 2026-10-15, a cor de autoria (verdete) nasceu medida: 8,11:1 de contraste sobre o fundo do Blog.** Em 2026-10-18, a troca para o oliva repetiu a medida (7,69:1) antes de aplicar. → Decisão visual chega ao Pai com o número que a sustenta, e a troca refaz a medida em vez de herdar a anterior.
+
+## Auditoria de 2026-10-18: trabalho sem registro
+
+1. **Eu usava o changelog e a mensagem de commit como registro, e o barramento só para erros e decisões grandes.** A auditoria, feita por script cruzando o git com o barramento, achou 53 commits de código sem registro em 14 sessões e intervalos de até 451 minutos sem nenhum registro. O Pai teve de cobrar mais de uma vez. → Registrar no momento do fato é o que torna o trabalho auditável. Por isso virou mecanismo que me barra (`bd verifica` no gancho Stop, no `bd post` e na CI), e não promessa.
+2. **Toda falha que o Pai aponta é sinal de uma classe de falhas.** Corrigir só o caso apontado deixa os outros escondidos. → A correção começa pela auditoria do histórico atrás do mesmo tipo de falha.
+
+## lote #0018-#0018
+
+1. **Em 2026-10-15, a geração do avatar parou por teto de gasto do projeto da chave, e não por modelo; trocar de modelo não contornava.** Em 2026-10-18, a CI parou pela cota de minutos do GitHub, e o Go, pelo limite semanal. → Recusa por limite se diagnostica na fonte do limite (a API de uso, a cobrança), não trocando a peça mais próxima.
