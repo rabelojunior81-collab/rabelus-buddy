@@ -5,6 +5,7 @@
 // auth_required (-32000) no session/new.
 
 import { execFileSync, spawn, type ChildProcess } from 'node:child_process';
+import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
 import { client, ndJsonStream, PROTOCOL_VERSION } from '@agentclientprotocol/sdk';
 import { scrub } from '../providers/adapters.ts';
@@ -28,6 +29,11 @@ export function launchFor(v: HarnessView): LaunchSpec | null {
   return null; // binário do registro (baixar e conferir o sha256) ou fora do registro e não instalado
 }
 
+// Pelo caminho do sistema, nunca pelo nome: com o PATH reduzido (ou alterado pelo usuário), "cmd.exe" não resolve.
+const SYS32 = join(process.env.SystemRoot ?? process.env.windir ?? 'C:\\Windows', 'System32');
+const CMD = process.env.ComSpec ?? join(SYS32, 'cmd.exe');
+const TASKKILL = join(SYS32, 'taskkill.exe');
+
 const winArg = (a: string) => (a === '' || /[\s"]/.test(a) ? `"${a.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\+)$/, '$1$1')}"` : a);
 
 // No Windows, .cmd e os lançadores do npm passam pelo cmd.exe. windowsHide cria o console já oculto (nunca janela),
@@ -38,7 +44,7 @@ export function spawnHarness(spec: LaunchSpec, cwd: string): ChildProcess {
     const viaShell = /\.(cmd|bat)$/i.test(spec.cmd) || !/[\\/]/.test(spec.cmd);
     if (viaShell) {
       const line = [winArg(spec.cmd), ...spec.args.map(winArg)].join(' ');
-      return spawn('cmd.exe', ['/d', '/s', '/c', `"${line}"`], { cwd, env, windowsHide: true, windowsVerbatimArguments: true, stdio: ['pipe', 'pipe', 'pipe'] });
+      return spawn(CMD, ['/d', '/s', '/c', `"${line}"`], { cwd, env, windowsHide: true, windowsVerbatimArguments: true, stdio: ['pipe', 'pipe', 'pipe'] });
     }
     return spawn(spec.cmd, spec.args, { cwd, env, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
   }
@@ -48,7 +54,7 @@ export function spawnHarness(spec: LaunchSpec, cwd: string): ChildProcess {
 
 export function killTree(child: ChildProcess): void {
   if (!child.pid || child.exitCode !== null) return;
-  if (process.platform === 'win32') { try { execFileSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
+  if (process.platform === 'win32') { try { execFileSync(TASKKILL, ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
   else { try { process.kill(-child.pid, 'SIGTERM'); } catch { try { child.kill('SIGTERM'); } catch { /* já saiu */ } } }
 }
 
