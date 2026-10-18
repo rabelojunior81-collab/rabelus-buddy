@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T153918-0300-claude-code-vs-code-a6ad15-0018",
+  "ts": "2026-10-18T15:39:18-03:00",
+  "utc": "2026-10-18T18:39:18.780Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 18,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/bd-servidores-contexto-orfaos",
+  "type": "pesquisa",
+  "summary": "Pergunta do Pai sobre dependências na CI, medida: npm ci com cache leva 2-6 s no Linux e 18 s no Windows; os testes levam 57-80 s (Linux) e 148 s (Windows). O ganho está na suíte (muitos núcleos de ensaio), não nas dependências: evolução a investigar",
+  "refs": [],
+  "data": {}
+}

@@ -28,9 +28,24 @@ export function listServers(root) {
     let s;
     try { s = JSON.parse(readFileSync(join(d, f), 'utf8')); } catch { continue; }
     if (isAlive(s.pid)) out.push(s);
-    else for (const x of [f, f.replace(/\.json$/, '.log')]) { try { unlinkSync(join(d, x)); } catch { /* já foi */ } }
+    else for (const x of [f, f.replace(/\.json$/, '.log'), f.replace(/\.json$/, '.log.err')]) { try { unlinkSync(join(d, x)); } catch { /* já foi */ } }
   }
   return out.sort((a, b) => a.startedAt.localeCompare(b.startedAt));
+}
+
+// Linha de comando do Windows: argumento com espaço ou aspas vai entre aspas, com as aspas internas escapadas.
+const winArg = (a) => (a === '' || /[\s"]/.test(a) ? `"${a.replace(/(\\*)"/g, '$1$1\\"').replace(/(\\+)$/, '$1$1')}"` : a);
+const psq = (s) => `'${String(s).replace(/'/g, "''")}'`;
+function spawnHiddenWindows(cmd, args, { cwd, log, verbatim }) {
+  const line = verbatim ? args.join(' ') : args.map(winArg).join(' ');
+  // O pid vai por arquivo: se viesse pela saída do PowerShell, o processo novo herdaria essa saída e quem
+  // espera a resposta ficaria preso até ele morrer.
+  const pidFile = `${log}.pid`;
+  const script = `$p = Start-Process -FilePath ${psq(cmd)}${line ? ` -ArgumentList ${psq(line)}` : ''} -WorkingDirectory ${psq(cwd)} -WindowStyle Hidden -PassThru -RedirectStandardOutput ${psq(log)} -RedirectStandardError ${psq(`${log}.err`)}; Set-Content -LiteralPath ${psq(pidFile)} -Value $p.Id`;
+  execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], { stdio: 'ignore', windowsHide: true, timeout: 20_000 });
+  const pid = Number(readFileSync(pidFile, 'utf8').trim());
+  try { unlinkSync(pidFile); } catch { /* já foi */ }
+  return pid;
 }
 
 export const serversOf = (root, session) => listServers(root).filter((s) => s.session === session);
@@ -51,9 +66,18 @@ export async function startServer(root, spec, { session = null } = {}) {
   const log = join(d, `${id}.log`);
   const fd = openSync(log, 'a');
   const [cmd, args] = served ? [process.execPath, [STATIC, served, String(spec.port ?? 0)]] : [spec.cmd, spec.args ?? []];
-  const child = spawn(cmd, args, { detached: true, stdio: ['ignore', fd, fd], windowsHide: true, windowsVerbatimArguments: Boolean(spec.verbatim), cwd: spec.cwd ?? root });
-  child.unref();
-  closeSync(fd);
+  let child;
+  if (process.platform === 'win32') {
+    // No Windows, um processo desligado do console que inicia um programa de console faz o sistema abrir uma
+    // janela nova (o Windows Terminal), e ela fica aberta (achado do Pai, 2026-10-18). Com Start-Process
+    // -WindowStyle Hidden, o processo ganha um console próprio e invisível, que os filhos herdam.
+    closeSync(fd);
+    child = { pid: spawnHiddenWindows(cmd, args, { cwd: spec.cwd ?? root, log, verbatim: Boolean(spec.verbatim) }) };
+  } else {
+    child = spawn(cmd, args, { detached: true, stdio: ['ignore', fd, fd], cwd: spec.cwd ?? root });
+    child.unref();
+    closeSync(fd);
+  }
 
   let port = spec.port ?? null;
   if (served) {
@@ -79,7 +103,7 @@ export function stopServers(root, { id, dir: served, session, all = false } = {}
     if (process.platform === 'win32') { try { execFileSync('taskkill', ['/pid', String(s.pid), '/T', '/F'], { stdio: 'ignore' }); } catch { /* já saiu */ } }
     else { try { process.kill(-s.pid, 'SIGTERM'); } catch { try { process.kill(s.pid); } catch { /* já saiu */ } } }
     for (let i = 0; i < 60 && isAlive(s.pid); i++) nap(50);
-    for (const x of [`${s.id}.json`, `${s.id}.log`]) { try { unlinkSync(join(dir(root), x)); } catch { /* já foi */ } }
+    for (const x of [`${s.id}.json`, `${s.id}.log`, `${s.id}.log.err`]) { try { unlinkSync(join(dir(root), x)); } catch { /* já foi */ } }
   }
   return pick;
 }
