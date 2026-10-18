@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **M1.0: contrato tipado da console.** Cada pedido da console é conferido antes de chegar ao núcleo: campo desconhecido, tipo errado ou valor fora da lista volta como erro com mensagem clara em português, e nada é executado nem gravado.
 - **M1 em execução** (SPEC 0002 aprovada pelo Pai em 2026-10-18): o SDK oficial do ACP e o `zod` foram instalados. Os alertas de segurança do GitHub (Dependabot) foram ligados.
 
 ### Alterado

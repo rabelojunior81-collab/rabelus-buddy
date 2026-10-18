@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T123543-0300-claude-code-vs-code-d6ff5c-0004",
+  "ts": "2026-10-18T12:35:43-03:00",
+  "utc": "2026-10-18T15:35:43.272Z",
+  "session": "claude-code-vs-code-d6ff5c",
+  "seq": 4,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-0-contrato-tipado",
+  "type": "aprendizado",
+  "summary": "Ensaio do M1.0: o fakeHttp não espera responder assíncrono; com ele, o adaptador em fluxo recebeu JSON e a execução terminou 'concluída' com resposta vazia e 0 tokens, sem aviso. Pendência no PLANO (M1.1), com teste antes",
+  "refs": [],
+  "data": {}
+}

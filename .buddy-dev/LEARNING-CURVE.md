@@ -115,3 +115,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0011-#0011
 
 1. **Em 2026-10-14, as decisões do Pai sobre a 0.2 viraram ADRs no mesmo dia, e nenhuma se perdeu.** Em 2026-10-18, a logomarca do Rabelus Lab foi pedida e não virou registro, e o Pai teve de pedir de novo. → Pedido do Pai, mesmo pequeno e visual, entra no corpus (MEMORY ou SPEC) na hora em que chega, não quando for aplicado.
+
+## lote #0012-#0012
+
+1. **A Fase 0 fechou com uma retrospectiva em números (75 commits, 27 testes, 12 ADRs, 10 fichas), e o M0 repetiu isso com métricas medidas.** Um marco só se fecha com o balanço medido, e o M1 também fecha assim.

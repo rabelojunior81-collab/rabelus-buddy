@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0012 · 2026-10-14T120554-0300 · claude-code-671f81 · doc
-
-F0.8: Roadmap v2 e Plano Macro v2 sobre a Revisão 0.2; retrospectiva da Fase 0 (75 commits, 27 testes, 12 ADRs, 10 fichas). PR #7.
-
 ### #0013 · 2026-10-15T024316-0300 · claude-code-eb8d73 · processo
 
 Merges #1–#7 feitos pelo buddy-dev por ordem do Pai (main em 397ea0d, CI verde). ADR 0003 aceita: o merge é do buddy-dev após validação. Roadmap v2 e Plano Macro v2 aprovados; Fase 0 concluída.
@@ -207,3 +203,7 @@ Telemetria do OpenCode Go (GET /v1/usage, medido ao vivo): limite semanal, mensa
 ### #0059 · 2026-10-18T120840-0300 · claude-code-vs-code-59f133 · alterado
 
 Protótipo v4 da console do M1 aprovado pelo Pai: cantos retos, vidro no estilo liquid glass, seletores compactos, a tipografia do rabelus.com e a logomarca do Rabelus Lab (emblema da fênix) ao lado do nome
+
+### #0060 · 2026-10-18T123544-0300 · claude-code-vs-code-d6ff5c · feat
+
+Contrato tipado da console (SPEC 0002, critério 10): cada método tem esquema estrito; entrada inválida volta 400 com mensagem em português, sem chegar ao núcleo; varredura garante que nenhum método fica sem esquema. Ensaiado no navegador (tarefa, fila, direcionar, aprovar, chave, parar e retomar)
