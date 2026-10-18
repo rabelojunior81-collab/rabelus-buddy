@@ -70,7 +70,8 @@ export interface ProbeResult {
 
 // Sonda: initialize e session/new (numa pasta de trabalho), com tempo-limite; a sessão de teste é fechada quando o
 // harness permite, e o processo é encerrado com a árvore. Nunca lança: falha vem como estado com o motivo.
-export async function probeHarness(spec: LaunchSpec, { cwd, timeoutMs = 20_000 }: { cwd: string; timeoutMs?: number }): Promise<ProbeResult> {
+// Limite padrão de 30 s: o Hermes real levou 14 s para ficar pronto (2026-10-18).
+export async function probeHarness(spec: LaunchSpec, { cwd, timeoutMs = 30_000 }: { cwd: string; timeoutMs?: number }): Promise<ProbeResult> {
   const t0 = Date.now();
   const out: ProbeResult = { state: 'falhou', image: false, authMethods: [], ms: 0 };
   let child: ChildProcess;
