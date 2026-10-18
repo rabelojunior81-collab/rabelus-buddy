@@ -273,7 +273,7 @@ test('console: matemática em LaTeX vira texto legível (o ChatGPT escreve \\(30
       assert.equal(typeof v, 'string', `${lang}: ${code} → ${key}`);
     }
   }
-  for (const code of ['userStopped', 'maxSteps', 'sessionPaused', 'budget.windowExhausted', 'provider.unavailable', 'effect.unknown', 'needsReconciliation', 'internalError']) assert.ok(REASONS[code], `motivo ${code}`);
+  for (const code of ['userStopped', 'maxSteps', 'sessionPaused', 'budget.windowExhausted', 'provider.unavailable', 'provider.emptyResponse', 'effect.unknown', 'needsReconciliation', 'internalError']) assert.ok(REASONS[code], `motivo ${code}`);
   // O aviso "entrou na fila" sai quando a fila esvazia.
   assert.match(html, /if \(!\(l\.queue \|\| \[\]\)\.length && \$\('runMsg'\)\.textContent === t\('console\.queue\.queued'\)\) \$\('runMsg'\)\.textContent = '';/);
 });

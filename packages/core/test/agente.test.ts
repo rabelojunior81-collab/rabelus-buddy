@@ -402,3 +402,36 @@ test('limite da conta (escopo provedor) esgota todos os modelos do provedor até
   const ex = log.events('budget').filter((e) => e.kind === 'budget.exhausted').at(-1)?.payload as { provider: string; model: string; until: number };
   assert.deepEqual([ex.provider, ex.model, ex.until], ['opencode-go', '*', until]);
 });
+
+// Achado no ensaio do M1.0 (2026-10-18): resposta sem texto, sem ferramenta e com 0 tokens de saída
+// terminava como "concluída", sem aviso. Agora é falha da rota: registra, troca de provedor ou para com motivo.
+const empty: ModelResponse = { text: '', toolCalls: [], usage: { input_tokens: 0, cached_tokens: 0, cache_write_tokens: 0, output_tokens: 0 }, finish: 'other' };
+
+test('resposta vazia do provedor (0 tokens, nada) troca para o próximo da ordem e fica no log (M1.1)', async () => {
+  const ollama = scripted('ollama-cloud', [empty]);
+  const chatgpt = scripted('chatgpt', [say('resposta de verdade')]);
+  const { log, agent } = setup({ routes: [{ provider: ollama, model: 'glm-5.3' }, { provider: chatgpt, model: 'gpt-6.1-sol' }] });
+  const r = await agent.run('s60', 'tarefa');
+  assert.equal(r.outcome, 'done');
+  assert.equal(r.text, 'resposta de verdade');
+  const ev = log.events('s60');
+  assert.ok(ev.some((e) => e.kind === 'provider.error' && (e.payload as { code: string }).code === 'emptyResponse'));
+  assert.deepEqual(ev.find((e) => e.kind === 'provider.switched')?.payload, { from: 'ollama-cloud/glm-5.3', to: 'chatgpt/gpt-6.1-sol', reason: 'emptyResponse' });
+  assert.equal(ev.filter((e) => e.kind === 'agent.message' && (e.payload as { message: { role: string; content: string } }).message.role === 'assistant' && (e.payload as { message: { content: string } }).message.content === '').length, 0, 'a resposta vazia não entra na conversa');
+});
+
+test('resposta vazia sem outro provedor: para com motivo legível, nunca "concluída" muda (M1.1)', async () => {
+  const ollama = scripted('ollama-cloud', [empty]);
+  const { agent } = setup({ routes: [{ provider: ollama, model: 'glm-5.3' }] });
+  const r = await agent.run('s61', 'tarefa');
+  assert.equal(r.outcome, 'stopped');
+  assert.equal(r.reason, 'provider.emptyResponse');
+});
+
+test('resposta curta legítima não é confundida com vazia: texto vazio com tokens de saída ainda conclui (M1.1)', async () => {
+  const quiet: ModelResponse = { text: '', toolCalls: [], usage, finish: 'stop' };
+  const ollama = scripted('ollama-cloud', [quiet]);
+  const { agent } = setup({ routes: [{ provider: ollama, model: 'glm-5.3' }] });
+  const r = await agent.run('s62', 'tarefa');
+  assert.equal(r.outcome, 'done');
+});
