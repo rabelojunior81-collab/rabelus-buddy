@@ -1,6 +1,6 @@
 # SPEC — M1: Orquestrador e multimodal
 
-**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 1 · **Estado:** rascunho (aguarda a aprovação do Pai)
+**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 1 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste
 **Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-vs-code-569aca` · **Criada em:** 2026-10-17 · **Decisão de origem:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C, aprovada pelo Pai)
 
 ## Problema e resultado
@@ -143,6 +143,25 @@ Percentual de permissões resolvidas por política e por humano; tempo até o pr
 - **Código baixado por `npx` e `uvx`.** Mitigação: aprovação por versão, versão exata, nunca `latest`, e o pacote e a versão no log.
 - **O vidro pesa em máquina fraca.** Mitigação: desfoque menor com `prefers-reduced-transparency` e uma opção de desligar.
 - **Rollback:** o catálogo e o cliente ACP são aditivos, e a console antiga continua no histórico do git.
+
+## Decisões do Pai (2026-10-18)
+
+1. **SPEC aprovada.**
+2. **Visual:** manter a estrutura (wireframe) e a paleta, com estes ajustes:
+   - **cantos quadrados**, com bordas e cantos refinados;
+   - **glassmorphism no estilo "liquid glass" do macOS**;
+   - espaçamentos e tamanhos menores;
+   - **seletores bem mais compactos e menos gritantes**, ocupando muito menos espaço;
+   - transições, iluminação e retorno visual;
+   - degradê de fundo mais evidente;
+   - a **tipografia do portfólio do Pai (rabelus.com)**.
+
+   Referências novas: o **Kanban** e o framework de **Bots** do Hermes Desktop, com máquina virtual e tela por bot, como modelo de painel e de sandbox por agente.
+3. **Dependências aprovadas**: `@agentclientprotocol/sdk@1.9.0` e `zod@4.6.7`, instaladas em 2026-10-18.
+4. **Só os harnesses já instalados** são configurados, testados e validados; a detecção automática fica pronta para os que vierem.
+5. **O Buddy não instala harness** sozinho.
+6. **Cor B:** tudo em verde-oliva, o produto e o personagem. A cor de autoria do Buddy Fenix agora é `#a8a640`.
+7. **Alertas do Dependabot ligados.** No OpenCode Go, o bloqueio é o **limite semanal** (volta sozinho), não falta de crédito. A telemetria desse limite deve vir da API, se ela a expuser.
 
 ## Dúvidas para o Pai (não bloqueiam a pesquisa nem os testes)
 

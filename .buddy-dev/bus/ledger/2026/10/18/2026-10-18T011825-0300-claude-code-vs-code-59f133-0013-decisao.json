@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T011825-0300-claude-code-vs-code-59f133-0013",
+  "ts": "2026-10-18T01:18:25-03:00",
+  "utc": "2026-10-18T04:18:25.162Z",
+  "session": "claude-code-vs-code-59f133",
+  "seq": 13,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-0-decisoes-e-fundacao",
+  "type": "decisao",
+  "summary": "Pai (18/10): 1 SPEC 0002 aprovada; 2 manter wireframe e paleta, cantos quadrados com bordas refinadas, glassmorphism estilo liquid glass do macOS, espaçamentos e tamanhos menores, seletores bem mais compactos e menos gritantes, transições e iluminação, degradê de fundo mais evidente, tipografia do rabelus.com; explorar o Kanban e os Bots (VM com tela por bot) do Hermes Desktop como referência de painel e sandbox por agente; 3 deps aprovadas, executar; 4 configurar, testar e validar só os harnesses instalados e deixar o auto-detect pronto para os futuros; 5 não instalar sozinho; 6 cor B (tudo oliva, inclusive o personagem); 7 ligar Dependabot; o Go é limite semanal (reseta em <23 h), buscar a telemetria pela API.",
+  "refs": [],
+  "data": {}
+}

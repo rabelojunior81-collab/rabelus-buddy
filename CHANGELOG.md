@@ -10,6 +10,12 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **M1 em execução** (SPEC 0002 aprovada pelo Pai em 2026-10-18): o SDK oficial do ACP e o `zod` foram instalados. Os alertas de segurança do GitHub (Dependabot) foram ligados.
+
+### Alterado
+
+- **Cor do produto e do Buddy Fenix: verde-oliva** (opção B do Pai). A console trocou o verde-água pelo oliva, e o tema claro ganhou contraste: 6,17:1 contra 4,21:1.
+
 - **Ordem dos marcos depois do M0** ([ADR 0018](./docs/60-decisoes/0018-ordem-c-depois-do-m0.md), decisão do Pai): M1 orquestrador e multimodal; M2 isolamento; M3 interface de produto; M4 memória; M5 canais. SPEC 0002 do M1 em rascunho, com protótipo visual em verde-oliva e vidro.
 
 - **M0 concluído** (2026-10-17): o núcleo governado com a console web local, validado pelo Pai pela console ([retrospectiva e métricas](./docs/registros/2026-10-17T193756-0300-retrospectiva-do-m0-e-proposta-de-roadmap/README.md)).
