@@ -16,7 +16,7 @@ import { checkValidations } from './lib/validacoes.mjs';
 import { ciPlan, changedFiles } from './lib/ciplan.mjs';
 import { governanceContext, recordCompaction } from './lib/contexto.mjs';
 import { findOrphans } from './lib/orfaos.mjs';
-import { unrecordedCommits, selfCheck, hookDecision } from './lib/verifica.mjs';
+import { unrecordedCommits, selfCheck, hookDecision, preCommitProblems, ensureHooksPath } from './lib/verifica.mjs';
 import { startServer, listServers, stopServers, serversOf, shellCommand } from './lib/servers.mjs';
 import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
@@ -62,7 +62,7 @@ const { values: o, positionals: pos } = parseArgs({
   allowPositionals: true,
   options: {
     verify: { type: 'boolean' }, json: { type: 'boolean' }, staged: { type: 'boolean' },
-    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, compactou: { type: 'boolean' }, hook: { type: 'boolean' }, registros: { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
+    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, compactou: { type: 'boolean' }, hook: { type: 'boolean' }, registros: { type: 'boolean' }, 'pre-commit': { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
@@ -182,6 +182,12 @@ const commands = {
   verifica() {
     const r = root();
     const base = o.base ?? 'origin/main';
+    if (o['pre-commit']) {
+      const p = preCommitProblems(r, { base });
+      p.forEach((x) => console.log(`  ✖ ${x}`));
+      if (p.length) { console.log('commit barrado pela autoverificação: corrija e faça o commit de novo (nunca --no-verify)'); process.exitCode = 1; }
+      return;
+    }
     if (o.registros) {
       const miss = unrecordedCommits(r, { base });
       miss.forEach((m) => console.log(`  ✖ commit de código sem registro no barramento: ${m.hash} ${m.subject}`));
@@ -406,6 +412,9 @@ const commands = {
     const toPrune = classifyBranches(r, { openPrHeads: openPrHeads(r) }).filter((b) => b.action !== 'manter');
     if (toPrune.length) fail(`branches que já deviam ter saído (rode bd prune): ${toPrune.map((b) => `${b.name} [${b.reason}]`).join(', ')}`);
     else ok('nenhuma branch para podar');
+    // Autoverificação antes de cada commit: o worktree usa os ganchos versionados (.githooks).
+    if (ensureHooksPath(r)) ok('ganchos do repositório ligados (core.hooksPath = .githooks)');
+    else ok('ganchos do repositório ligados');
     const { aguardaPai } = checkValidations(r);
     for (const v of aguardaPai) warn(`aguarda o Pai: ${v.id} — ${v.descricao}`);
     for (const x of listServers(r)) warn(`servidor de conferência rodando: ${x.id} ${x.name}${x.port ? ` porta ${x.port}` : ''} (sessão ${x.session ?? '—'}); reaproveite ou encerre com bd serve --stop`);
