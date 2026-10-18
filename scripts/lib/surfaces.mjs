@@ -122,8 +122,11 @@ export function statusMainLag(root, { statusText, base = 'origin/main' } = {}) {
   if (!tryGit(root, 'cat-file', '-e', `${hash}^{commit}`) && tryGit(root, 'cat-file', '-t', hash) !== 'commit') {
     return { problem: `STATUS: main \`${hash}\` não existe no histórico` };
   }
-  const baseRef = tryGit(root, 'merge-base', 'HEAD', base) ?? tryGit(root, 'rev-parse', base);
+  let baseRef = tryGit(root, 'merge-base', 'HEAD', base) ?? tryGit(root, 'rev-parse', base);
   if (!baseRef) return { problem: null };
+  // Na main, logo depois de um merge, o próprio merge não conta (ele não pode citar a si mesmo): a medida
+  // parte do primeiro pai, a mesma base que o PR enxergou (lacuna de 2026-10-18: a CI da main reprovava todo merge).
+  if (baseRef === tryGit(root, 'rev-parse', 'HEAD') && tryGit(root, 'rev-parse', '--verify', '-q', 'HEAD^2')) baseRef = tryGit(root, 'rev-parse', 'HEAD^1') ?? baseRef;
   const lag = Number(tryGit(root, 'rev-list', '--first-parent', '--count', `${hash}..${baseRef}`) ?? 0);
   return { lag, problem: lag > 1 ? `STATUS: main \`${hash}\` está ${lag} commit(s) de primeiro pai atrás de ${base}; atualize o STATUS` : null };
 }

@@ -81,6 +81,24 @@ test('STATUS com a main mais de um merge atrás da base é lacuna', () => {
   assert.match(lag('deadbee').problem, /não existe/);
 });
 
+// Lacuna de 2026-10-18: a CI da main reprovava todo merge, porque o merge que leva o STATUS não pode
+// citar a si mesmo. Na main, a medida parte do primeiro pai do merge, a mesma base que o PR enxergou.
+test('STATUS na main logo depois do merge: o próprio merge não conta; a regra do PR continua valendo', () => {
+  const git = (r, ...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: r, encoding: 'utf8' }).trim();
+  const r = repo({ 'a.txt': '1' });
+  const mA = commit(r, '2026-10-15T00:30:00-03:00');
+  const m0 = commit(r, '2026-10-15T01:00:00-03:00');
+  commit(r, '2026-10-15T02:00:00-03:00');
+  git(r, 'checkout', '-q', '-b', 'feat/x');
+  commit(r, '2026-10-15T03:00:00-03:00', 'trabalho da branch');
+  git(r, 'checkout', '-q', 'main');
+  git(r, 'merge', '-q', '--no-ff', '-m', 'Merge #2', 'feat/x');
+  const lag = (h) => statusMainLag(r, { statusText: `| \`main\` | \`${h}\` (Merge) |`, base: 'HEAD' });
+  // No PR, o STATUS citando m0 estava 1 atrás da base (tolerado); na main, o merge não pode mudar o veredito.
+  assert.equal(lag(m0).problem, null, 'o mesmo atraso que o PR aprovou');
+  assert.match(lag(mA).problem, /2 commit\(s\) de primeiro pai atrás/, 'dois de atraso continuam reprovados');
+});
+
 test('sub-fase concluída no plano: precisa estar no CHANGELOG da raiz, e a última, no Estado dos dois READMEs', () => {
   const plano = '- [x] **M0.1 CLI**\n- [x] **M0.2 Log**:\n  - [x] **M0.2a Banco**\n  - **M0.2b IPC**\n- [ ] **M0.3 Efeitos**\n';
   const ok = repo({

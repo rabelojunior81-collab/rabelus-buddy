@@ -8,6 +8,7 @@ import type { AddressInfo } from 'node:net';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { checkParams } from './contract.ts';
 
 const PAGE_DIR = join(import.meta.dirname, '..', 'console');
 const LOCALES = join(import.meta.dirname, '..', '..', '..', 'locales');
@@ -93,9 +94,13 @@ export async function startConsole({ home, methods, touch, port = Number(process
     req.on('data', (c: string) => { raw += c; if (raw.length > 1_000_000) req.destroy(); });
     req.on('end', () => {
       void (async () => {
+        // Contrato tipado (SPEC 0002, critério 10): entrada inválida não chega ao núcleo.
+        let input: unknown;
+        try { input = raw ? JSON.parse(raw) : {}; } catch { return json(res, 400, { error: { code: -32602, message: 'JSON inválido', data: {} } }); }
+        const checked = checkParams(a[1] as (typeof CONSOLE_METHODS)[number], input);
+        if (!checked.ok) return json(res, 400, { error: { code: -32602, message: checked.message, data: {} } });
         try {
-          const params = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
-          json(res, 200, { result: await methods[a[1]!]!(params) });
+          json(res, 200, { result: await methods[a[1]!]!(checked.params) });
         } catch (e) {
           const err = e as { code?: number; message?: string; data?: unknown };
           json(res, 400, { error: { code: err.code ?? -32603, message: err.message ?? 'erro', data: err.data ?? {} } });
