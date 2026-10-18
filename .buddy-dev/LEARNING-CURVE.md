@@ -107,3 +107,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0009-#0009
 
 1. **A Revisão 0.2 já dizia "núcleo + composição: os gateways MIT existem".** No M1, a composição ficou concreta: o registro oficial do ACP traz 42 agentes prontos para compor. Pesquisar o que já existe antes de construir continua sendo o atalho mais barato.
+
+## lote #0010-#0010
+
+1. **No começo, os PRs que o Pai achava mergeados estavam abertos no GitHub.** O estado real se confere na fonte, não na memória de ninguém. Hoje, os "73 commits" eram 73 alterações sem commit, e só a checagem no git mostrou isso.
