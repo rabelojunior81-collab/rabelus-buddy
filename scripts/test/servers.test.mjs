@@ -2,11 +2,11 @@
 // nunca esquecido nem duplicado numa porta nova.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { startServer, listServers, stopServers, serversOf } from '../lib/servers.mjs';
+import { startServer, listServers, stopServers, serversOf, shellCommand } from '../lib/servers.mjs';
 
 function repo() {
   const r = mkdtempSync(join(tmpdir(), 'buddy-srv-'));
@@ -83,4 +83,20 @@ test('session end recusa encerrar com servidor da sessão rodando, e diz como en
     stopServers(r, { all: true });
   }
   assert.equal(alive(s.pid), false);
+});
+
+test('serve --stop encerra a árvore inteira: o neto (ex.: núcleo de ensaio) morre junto', async () => {
+  const r = repo();
+  const pidFile = join(r, 'neto.pid');
+  const script = `const { spawn } = require('node:child_process'); const fs = require('node:fs'); const c = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' }); fs.writeFileSync(${JSON.stringify(pidFile)}, String(c.pid)); setInterval(() => {}, 1000);`;
+  // Pelo mesmo caminho do bd serve --cmd: o shell do sistema inicia o node, que inicia o neto.
+  writeFileSync(join(r, 'pai.cjs'), script);
+  const s = await startServer(r, { name: 'arvore', ...shellCommand(`"${process.execPath}" "${join(r, 'pai.cjs')}"`) }, { session: 'sa' });
+  let neto = 0;
+  for (let i = 0; i < 100 && !neto; i++) { await new Promise((ok) => setTimeout(ok, 50)); try { neto = Number(readFileSync(pidFile, 'utf8')); } catch { /* ainda não */ } }
+  assert.ok(neto > 0 && alive(neto), 'o neto subiu');
+  stopServers(r, { session: 'sa' });
+  for (let i = 0; i < 60 && alive(neto); i++) await new Promise((ok) => setTimeout(ok, 50));
+  assert.equal(alive(s.pid), false);
+  assert.equal(alive(neto), false, 'o neto não fica órfão');
 });

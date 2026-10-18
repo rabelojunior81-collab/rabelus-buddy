@@ -30,6 +30,8 @@ npm run bd -- pre             # relógio, branch, sincronia, sessão, paralelos,
 npm run bd -- claim <recurso>                    # antes de editar documento vivo compartilhado
 npm run bd -- session log --type <tipo> --summary "..."   # decisão, pesquisa, erro, aprendizado
 git commit && git push                           # a cada passo, mesmo pequeno
+npm run bd -- serve <pasta> | --cmd "<comando>" --name <nome>   # servidor de conferência: registrado e reaproveitado
+npm run bd -- serve --stop --all                 # ao terminar a conferência; o session end recusa com servidor vivo
 
 # DEPOIS
 npm run bd -- changelog add --type <tipo> --text "..."
@@ -63,6 +65,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
 | Nunca pedir ao Pai teste que eu não ensaiei, com os mesmos passos e no ambiente dele; nunca por terminal ou CLI (o produto é um agente com UX/UI) | `bd validacoes`: ação do Pai exige `ensaio` registrado e `como` sem terminal/CLI, senão reprova e não aparece como "aguarda o Pai" |
 | Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
+| Servidor de conferência tem dono e fim: registrado, reaproveitado (nunca outro numa porta nova), encerrado com a árvore de processos; nunca esquecido (Pai, 2026-10-18) | `bd serve` (`scripts/lib/servers.mjs`, testado); `bd pre` e `bd post` mostram os vivos; `session end` recusa com servidor da sessão rodando |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`); falso positivo só por impressão digital exata no `.gitleaksignore`, com justificativa (nunca por regra ou arquivo); canário de teste gerado na hora |
 
 ## 4. Trabalho em paralelo

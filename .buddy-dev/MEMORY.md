@@ -6,7 +6,7 @@
 
 | Data | Regra | Onde virou mecanismo |
 |---|---|---|
-| 2026-10-18 | **Servidores de conferência têm dono e fim:** todo servidor que eu inicio (prévia de página, Blog, protótipo, núcleo de ensaio) fica registrado, é **reaproveitado** em vez de virar outro numa porta nova e é **encerrado** ao fim; nunca deixar servidor esquecido (achados 8765 e 8767 abertos desde a véspera) | `bd serve` (a construir nesta sessão); `session end` recusa com servidor meu rodando |
+| 2026-10-18 | **Servidores de conferência têm dono e fim:** todo servidor que eu inicio (prévia de página, Blog, protótipo, núcleo de ensaio) fica registrado, é **reaproveitado** em vez de virar outro numa porta nova e é **encerrado** ao fim; nunca deixar servidor esquecido (achados 8765 e 8767 abertos desde a véspera) | `bd serve` (`scripts/lib/servers.mjs`): registra, reaproveita e encerra a árvore; `bd pre`/`post` mostram os vivos; `session end` recusa com servidor da sessão rodando; AGENTS §2 e §3 |
 | 2026-10-18 | **Compactação de contexto não pode quebrar o mecanismo:** a retomada traz o contexto **essencial** de governança (sessão, branch, escopo preciso, claims, servidores, o que aguarda o Pai, próximo passo do plano), não só o resumo do trabalho | `bd contexto` (a construir) e o gancho de retomada do harness |
 | 2026-10-18 | **Varredura de órfãos e quebrados é rotina, sempre:** ligações, lógicas e arquivos órfãos ou quebrados; e atenção granular a toda evolução pertinente, necessária e oportuna (pesquisar, explorar, propor). Vale tanto o que fazer quanto o que não fazer | `bd orfaos` (a construir) no `bd post` e na CI |
 | 2026-10-14 | Nunca apagar; sempre arquivar de forma governada | `bd archive`, `bd guard`, ADR 0004 |
