@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T201033-0300-claude-code-vs-code-30aa5d-0003",
+  "ts": "2026-10-18T20:10:33-03:00",
+  "utc": "2026-10-18T23:10:33.397Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 3,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-primeira-execucao",
+  "type": "feat",
+  "summary": "Teste do critério 4 escrito antes do código (primeira-execucao.test.ts): npx falso no PATH anota a chamada; prova que nada roda antes da aprovação, negada nada roda, versão nova pergunta, aprovada roda e não pergunta de novo. Vermelho confirmado",
+  "refs": [],
+  "data": {}
+}
