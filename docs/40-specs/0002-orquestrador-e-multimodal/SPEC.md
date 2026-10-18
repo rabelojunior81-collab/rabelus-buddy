@@ -11,7 +11,7 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
 - **Detecção sozinha:** na console, os harnesses do Pai aparecem sem configuração. Hoje são Claude Code, Codex, OpenCode, Copilot, Pi e Hermes.
 - **Tarefa por um harness:** uma tarefa vai a um deles, ou o Buddy a delega, e cada permissão pedida passa pela política do núcleo e aparece para o Pai.
 - **Imagem e arquivo:** podem ser anexados na conversa e chegam ao modelo que os entende.
-- **Console nova:** o visual do [protótipo](./prototipo-visual.html), que o Pai aprova com esta SPEC.
+- **Console nova:** o visual do [protótipo](./prototipo-visual.html), v4 aprovada pelo Pai em 2026-10-18; capturas de cada versão em [CAPTURAS.md](./CAPTURAS.md).
 
 ## Escopo
 
