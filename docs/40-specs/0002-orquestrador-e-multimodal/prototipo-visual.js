@@ -59,7 +59,7 @@ let openPop = null;
 function place(pop, anchor) {
   const r = anchor.getBoundingClientRect();
   pop.style.bottom = `${innerHeight - r.top + 8}px`;
-  pop.style.maxHeight = `${Math.min(MOBILE() ? innerHeight * .72 : 560, r.top - 16)}px`;
+  pop.style.maxHeight = `${Math.min(MOBILE() ? innerHeight * .56 : 420, r.top - 16)}px`;
   if (!MOBILE()) pop.style.left = `${Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8))}px`;
   $('scrim').hidden = !MOBILE();
 }
@@ -116,7 +116,7 @@ function renderModel() {
   const buddy = st.harness === 'buddy';
   $('seg').hidden = !buddy; $('rail').hidden = !buddy; $('fBtn').hidden = !buddy;
   if (buddy) {
-    $('seg').innerHTML = cat.providers.map((p) => `<button role="tab" data-p="${p.id}" aria-selected="${st.prov === p.id}"><b>${SHORT[p.id].replace('OpenCode ', '<span class="lg">OpenCode </span>')}</b><small>${p.models.filter(passes).length} · ${p.kind === 'assinatura' ? 'assinatura' : 'roteador'}</small></button>`).join('');
+    $('seg').innerHTML = cat.providers.map((p) => `<button role="tab" data-p="${p.id}" aria-selected="${st.prov === p.id}" title="${esc(SHORT[p.id])} · ${p.kind === 'assinatura' ? 'assinatura' : 'roteador'}"><b>${SHORT[p.id].replace('OpenCode ', '')}</b><small>${p.models.filter(passes).length}</small></button>`).join('');
     const p = P();
     const labs = {}; for (const m of p.models) if (passes(m)) labs[m.lab] = (labs[m.lab] ?? 0) + 1;
     const labIds = Object.keys(labs).sort((a, b) => labs[b] - labs[a]);
@@ -255,8 +255,8 @@ $('task').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shift
 
 // ---------- barra lateral e conversa de exemplo ----------
 $('agents').innerHTML = harnesses.filter((h) => h.id !== 'buddy').map((h) => `<button class="agent ${h.state === 'não instalado' ? 'off' : ''}" data-agent="${h.id}" title="${esc(h.desc)} · ${esc(h.state)}">${hIco(h)}${esc(h.name)}<span class="st ${h.state === 'pronto' ? '' : h.state === 'precisa de login' ? 'warn' : 'off'}"></span></button>`).join('');
-const home = () => `<h1>Como posso ajudar, Pai?</h1>
-  <div class="starters">${harnesses.filter((h) => h.state !== 'não instalado').map((h) => `<button class="starter ${st.harness === h.id ? 'on' : ''}" data-agent="${h.id}">${hIco(h)}${esc(h.name)}</button>`).join('')}</div>
+const home = () => `<span class="eyebrow">Orquestrador · ${harnesses.filter((h) => h.state !== 'não instalado').length - 1} harnesses prontos</span><h1>Como posso ajudar, Pai?</h1>
+  <div class="starters">${harnesses.filter((h) => h.state !== 'não instalado').map((h) => `<button class="starter ${st.harness === h.id ? 'on' : ''}" data-agent="${h.id}">${hIco(h, 14)}${esc(h.name)}</button>`).join('')}</div>
   <button class="sugg">Revise este repositório e proponha melhorias</button>
   <button class="sugg">O que há nesta imagem? (anexe um print)</button>
   <button class="sugg">Peça ao Codex para escrever os testes, e ao Claude Code para revisar</button>
@@ -289,3 +289,6 @@ fetch('catalogo-modelos-instantaneo.json').then((r) => r.json()).then((j) => {
   if (q.get('abrir') === 'modelo') openModel();
   if (q.get('abrir') === 'harness') $('hBtn').click();
 });
+
+// Iluminação: o brilho segue o cursor sobre pílulas, sugestões e linhas (v4).
+document.addEventListener('pointermove', (e) => { const el = e.target.closest('.pill, .starter, .sugg, .row, .mrow, .new, .send'); if (!el) return; el.classList.add('lit'); const r = el.getBoundingClientRect(); el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
