@@ -14,8 +14,8 @@ Cada critério tem um teste nomeado antes do código (METODO §3.5). Usam `node:
 
 | # | Teste | Como | Sub-fase |
 |---|---|---|---|
-| 1 | `catálogo do registro` | `fakeRegistry` → catálogo com id, nome, versão, licença, ícone local e lançamento por plataforma; fora do ar → última cópia com data; malformado → cópia anterior mantida, sem exceção | M1.1 |
-| 2 | `detecção pelo PATH` | `fakePath` com `claude` e `opencode` → só esses encontrados; Hermes pela tabela própria; o resto não instalado | M1.1 |
+| 1 | `catálogo do registro` | `fakeRegistry` → catálogo com id, nome, versão, licença, ícone local e lançamento por plataforma; fora do ar → última cópia com data; malformado → cópia anterior mantida, sem exceção. **Em `harnesses.test.ts`, verde em 2026-10-18** | M1.1 |
+| 2 | `detecção pelo PATH` | `fakePath` com `claude` e `opencode` → só esses encontrados; Hermes pela tabela própria; o resto não instalado. **Em `harnesses.test.ts`, verde em 2026-10-18** | M1.1 |
 | 3 | `sonda de disponibilidade` | `fakeAcpAgent` → pronto; com `AUTH_REQUIRED` → precisa de login; mudo → tempo-limite; saindo → falhou, com o motivo | M1.2 |
 | 4 | `primeira execução aprovada` | lançamento por `npx` falso → aprovação com pacote@versão; negada → nenhum processo; aprovada → a mesma versão não pergunta; versão nova pergunta | M1.2 |
 | 5 | `conversa por ACP` | `session/prompt` → `run.live` com texto, raciocínio e ferramenta na ordem; resposta final na conversa; efeito com identidade no log | M1.2 |

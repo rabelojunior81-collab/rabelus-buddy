@@ -20,6 +20,7 @@ import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin }
 import { goUsage, type GoWindow } from './providers/index.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
+import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -204,6 +205,9 @@ export async function startOwner(home: string): Promise<Owner> {
   };
 
   let usageCache: { at: number; data: unknown } | null = null;
+  // Registro do ACP: buscado na primeira consulta e depois no máximo uma vez por dia; uma busca por vez.
+  let registryFetch: Promise<RegistryState> | null = null;
+  const DAY = 86_400_000;
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
       const session = String(p.session);
@@ -281,6 +285,15 @@ export async function startOwner(home: string): Promise<Owner> {
       }
       usageCache = { at: Date.now(), data: out };
       return out;
+    },
+    // Harnesses do registro oficial do ACP e da tabela própria, com o que está instalado (SPEC 0002, critérios 1 e 2).
+    'harness.list': async () => {
+      let reg = readRegistry(home);
+      if (!reg.fetchedAt || Date.now() - Date.parse(reg.fetchedAt) > DAY) {
+        registryFetch ??= refreshRegistry({ home }).finally(() => { registryFetch = null; });
+        reg = await registryFetch;
+      }
+      return { registry: { source: reg.source, fetchedAt: reg.fetchedAt, version: reg.version, ...(reg.error ? { error: reg.error } : {}) }, harnesses: detectHarnesses(home, process.env) };
     },
     'providers.status': () => loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model, source: credentialSource(home, r.provider, process.env) })),
     'keys.set': (p) => { const key = String(p.key ?? '').trim(); if (!key) throw new DomainError(-32602, 'chave vazia'); saveKey(home, keyProvider(p.provider), key); return { ok: true }; },

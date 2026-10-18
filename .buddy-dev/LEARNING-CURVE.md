@@ -127,3 +127,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0014-#0014
 
 1. **Em 2026-10-15, o rito de fechamento foi corrigido: session end antes do último commit.** Em 2026-10-18, eu o segui ao pé da letra e encerrei a sessão antes de pôr o STATUS em dia; o claim foi recusado sem sessão. → A ordem completa é: superfícies em dia, depois session end, depois o último commit. O session end fecha o trabalho; não o substitui.
+
+## lote #0015-#0015
+
+1. **Em 2026-10-15, cada decisão do Pai foi registrada no mesmo dia (METODO, ADR 0005, nome, canal de segurança).** Em 2026-10-18, a única que escapou (a logomarca) foi a que o Pai teve de repetir. → O registro no mesmo dia não é burocracia: é o que impede o Pai de ter de pedir duas vezes.
