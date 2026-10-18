@@ -3,18 +3,32 @@
 # ficha: docs/20-conhecimento/ci-github-actions.md).
 name: CI
 
+# Minutos (2026-10-18): a cota do mês acabou com ~2.095 minutos ponderados (macOS pesa 10, Windows 2).
+# Cada combinação roda uma vez, onde agrega; o plano por evento é o `bd ci-plan` (scripts/lib/ciplan.mjs, testado).
 on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 13 * * 1' # segunda-feira, 10:00 em Curitiba: matriz completa, contra deriva
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+# Commit novo no mesmo PR cancela a execução anterior (na main, nada se cancela).
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   regras:
     name: Testes, nomes e nenhuma exclusão
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      codigo: ${{ steps.plano.outputs.codigo }}
+      matriz: ${{ steps.plano.outputs.matriz }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -23,6 +37,17 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
+          cache: npm
+
+      - name: Plano desta execução (código mudou? qual matriz?)
+        id: plano
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BASE_REF" ]; then base="origin/$BASE_REF"; else base="$BEFORE"; fi
+          node scripts/bd.mjs ci-plan --event "$EVENT" --base "$base"
 
       - name: Dependências exatas do lockfile
         run: npm ci --no-audit --no-fund
@@ -30,10 +55,12 @@ jobs:
       - name: Vulnerabilidades na árvore inteira (npm audit, alta ou crítica reprova)
         run: npm audit --audit-level=high
 
-      - name: Testes
+      - name: Testes (Linux, Node 24)
+        if: steps.plano.outputs.codigo == 'true'
         run: npm test
 
       - name: Tipos (tsc --noEmit; SPEC 0001, decisão 8)
+        if: steps.plano.outputs.codigo == 'true'
         run: npm run typecheck
 
       - name: Nomes na convenção
@@ -76,18 +103,21 @@ jobs:
 
   matriz:
     name: Testes e tipos (${{ matrix.os }}, Node ${{ matrix.node }})
+    needs: regras
+    if: needs.regras.outputs.matriz != '[]'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node: [24, 26]
+        include: ${{ fromJSON(needs.regras.outputs.matriz) }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
+          cache: npm
 
       - name: Dependências exatas do lockfile
         run: npm ci --no-audit --no-fund
@@ -101,6 +131,7 @@ jobs:
   segredos:
     name: Varredura de segredos (gitleaks)
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

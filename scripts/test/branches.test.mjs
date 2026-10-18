@@ -106,3 +106,12 @@ test('mergeReadiness: só mergeia PR aberto, mergeável e com todas as checagens
   assert.match(mergeReadiness({ ...ok, statusCheckRollup: [] }).join(), /nenhuma checagem/);
   assert.match(mergeReadiness({ ...ok, mergeable: 'CONFLICTING' }).join(), /conflito/);
 });
+
+// Plano da CI (2026-10-18): em PR só de documentação, a matriz é pulada de propósito (SKIPPED).
+test('mergeReadiness: check pulado de propósito não trava o merge; falha, pendente e cancelado travam; só pulados não bastam', () => {
+  const base = { state: 'OPEN', mergeable: 'MERGEABLE', mergeStateStatus: 'CLEAN' };
+  assert.deepEqual(mergeReadiness({ ...base, statusCheckRollup: [{ conclusion: 'SUCCESS' }, { conclusion: 'SKIPPED' }] }), []);
+  assert.match(mergeReadiness({ ...base, statusCheckRollup: [{ conclusion: 'SUCCESS' }, { conclusion: 'SKIPPED' }, { conclusion: 'FAILURE' }] }).join(), /checagens/);
+  assert.match(mergeReadiness({ ...base, statusCheckRollup: [{ conclusion: 'SUCCESS' }, { conclusion: 'CANCELLED' }] }).join(), /checagens/);
+  assert.match(mergeReadiness({ ...base, statusCheckRollup: [{ conclusion: 'SKIPPED' }, { conclusion: 'SKIPPED' }] }).join(), /checagens/);
+});
