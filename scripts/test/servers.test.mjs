@@ -65,3 +65,22 @@ test('serve: comando rastreado (núcleo de ensaio), por sessão; registro de pro
   assert.equal(alive(t.pid), false);
   assert.deepEqual(listServers(r), []);
 });
+
+test('session end recusa encerrar com servidor da sessão rodando, e diz como encerrar', async () => {
+  const r = repo();
+  const bd = join(import.meta.dirname, '..', 'bd.mjs');
+  const run = (...a) => { try { return { code: 0, out: execFileSync(process.execPath, [bd, ...a], { cwd: r, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) }; } catch (e) { return { code: e.status, out: `${e.stdout}${e.stderr}` }; } };
+  run('session', 'start', '--harness', 't', '--model', 'm', '--scope', 'teste');
+  const sid = JSON.parse(run('session', 'status').out).sessions[0].id;
+  const s = await startServer(r, { name: 'ensaio', cmd: process.execPath, args: ['-e', 'setInterval(() => {}, 1000)'] }, { session: sid });
+  try {
+    const end = run('session', 'end', '--summary', 'x');
+    assert.notEqual(end.code, 0);
+    assert.match(end.out, /servidor/);
+    assert.match(end.out, /bd serve --stop/);
+    assert.match(run('serve', '--list').out, /ensaio/);
+  } finally {
+    stopServers(r, { all: true });
+  }
+  assert.equal(alive(s.pid), false);
+});
