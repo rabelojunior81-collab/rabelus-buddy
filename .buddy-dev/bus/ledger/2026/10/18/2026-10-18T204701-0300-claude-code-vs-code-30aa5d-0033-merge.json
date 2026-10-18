@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-18T204701-0300-claude-code-vs-code-30aa5d-0033",
+  "ts": "2026-10-18T20:47:01-03:00",
+  "utc": "2026-10-18T23:47:01.956Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 33,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #59: fix: nenhum processo do produto abre janela de console (comandos do agente, sonda); varredura testada",
+  "refs": [
+    "#59"
+  ],
+  "data": {}
+}
