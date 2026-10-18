@@ -16,8 +16,8 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 
 | Item | Valor |
 |---|---|
-| `main` | `7dc16cd` (Merge #55: autoverificação fundacional), CI verde |
-| PRs mergeados | #1–#55, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `b5a0fbc` (Merge #57: fechamento da sessão a6ad15), CI verde |
+| PRs mergeados | #1–#57, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
