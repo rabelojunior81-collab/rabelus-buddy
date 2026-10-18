@@ -2,7 +2,7 @@
 // versionado em .githooks recusa o commit quando uma checagem rápida reprova; o bd pre garante o hooksPath.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -23,6 +23,8 @@ test('pre-commit: link quebrado barra o commit e diz o porquê; corrigido, o com
   const r = repo();
   mkdirSync(join(r, '.githooks'));
   writeFileSync(join(r, '.githooks', 'pre-commit'), `#!/bin/sh\nexec "${process.execPath.replace(/\\/g, '/')}" "${BD.replace(/\\/g, '/')}" verifica --pre-commit --base origin-main-falso\n`);
+  // No Linux e no macOS, o git ignora gancho sem permissão de execução (a CI do #58 pegou isso).
+  chmodSync(join(r, '.githooks', 'pre-commit'), 0o755);
   ensureHooksPath(r);
   assert.equal(sh(r, 'config', 'core.hooksPath').trim(), '.githooks');
   writeFileSync(join(r, 'README.md'), '# ok\n[quebrado](./nao-existe.md)\n');

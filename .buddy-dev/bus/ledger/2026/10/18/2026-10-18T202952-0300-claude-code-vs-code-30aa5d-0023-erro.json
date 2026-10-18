@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T202952-0300-claude-code-vs-code-30aa5d-0023",
+  "ts": "2026-10-18T20:29:52-03:00",
+  "utc": "2026-10-18T23:29:52.115Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 23,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-primeira-execucao",
+  "type": "erro",
+  "summary": "Causa da falha da CI do #58 (Linux): o teste do pre-commit cria o gancho sem permissão de execução; no Linux o git ignora gancho não executável e o commit com link quebrado passou; no Windows o bit não existe. Correção no cenário do teste (chmod 755), não na asserção; conferindo o modo do gancho real no índice",
+  "refs": [],
+  "data": {}
+}
