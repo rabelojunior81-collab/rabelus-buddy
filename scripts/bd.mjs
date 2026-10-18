@@ -16,6 +16,7 @@ import { checkValidations } from './lib/validacoes.mjs';
 import { ciPlan, changedFiles } from './lib/ciplan.mjs';
 import { governanceContext, recordCompaction } from './lib/contexto.mjs';
 import { findOrphans } from './lib/orfaos.mjs';
+import { unrecordedCommits, selfCheck, hookDecision } from './lib/verifica.mjs';
 import { startServer, listServers, stopServers, serversOf, shellCommand } from './lib/servers.mjs';
 import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
@@ -46,6 +47,7 @@ const HELP = `bd — buddy-dev
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
   ci-plan --event <evento> [--base <ref>]  o que a CI roda neste evento (código? qual matriz?)
+  verifica [--registros|--hook]      autoverificação: commit de código sem registro, sem commit, sem push, 30 min sem registro
   orfaos                             links quebrados, documentação sem referência, exportação sem uso
   contexto [--compactou]             contexto essencial de governança (depois de compactar; --compactou registra a compactação)
   serve <pasta> [--port N] | --cmd "<comando>" --name <nome> | --list | --stop [--all|<id>|<pasta>]  servidor de conferência com dono e fim
@@ -60,7 +62,7 @@ const { values: o, positionals: pos } = parseArgs({
   allowPositionals: true,
   options: {
     verify: { type: 'boolean' }, json: { type: 'boolean' }, staged: { type: 'boolean' },
-    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, compactou: { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
+    ext: { type: 'string' }, cmd: { type: 'string' }, port: { type: 'string' }, list: { type: 'boolean' }, compactou: { type: 'boolean' }, hook: { type: 'boolean' }, registros: { type: 'boolean' }, stop: { type: 'boolean' }, all: { type: 'boolean' }, harness: { type: 'string' }, model: { type: 'string' },
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
@@ -173,6 +175,30 @@ const commands = {
     } else if (sub === 'status') {
       console.log(JSON.stringify(status(r), null, 2));
     } else throw new Error('use: session start|log|end|status');
+  },
+
+  // Autoverificação (regra do Pai, 2026-10-18). --registros: só commits de código sem registro (CI e bd post).
+  // --hook: decisão do gancho Stop do Claude Code (lê a entrada do gancho; barra uma vez, sem laço).
+  verifica() {
+    const r = root();
+    const base = o.base ?? 'origin/main';
+    if (o.registros) {
+      const miss = unrecordedCommits(r, { base });
+      miss.forEach((m) => console.log(`  ✖ commit de código sem registro no barramento: ${m.hash} ${m.subject}`));
+      if (miss.length) { console.log('registre o fato no barramento (atrasado: cite o hash do commit) e mantenha o registro no momento do fato'); process.exitCode = 1; } else console.log('todo commit de código tem registro no barramento');
+      return;
+    }
+    const check = selfCheck(r, { base, session: currentSession(r)?.id ?? null });
+    if (o.hook) {
+      let input = {};
+      try { input = JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { /* sem entrada */ }
+      const d = hookDecision(check, input);
+      if (d) console.log(JSON.stringify(d));
+      return;
+    }
+    check.block.forEach((x) => console.log(`  ✖ ${x}`));
+    check.warn.forEach((x) => console.log(`  ⚠ ${x}`));
+    if (check.block.length) process.exitCode = 1; else console.log('autoverificação limpa');
   },
 
   // Varredura de órfãos e quebrados (regra do Pai, 2026-10-18).
@@ -393,6 +419,9 @@ const commands = {
     const problems = namesProblems(r);
     if (problems.length) fail(`nomes fora da convenção:\n    ${problems.join('\n    ')}`);
     else ok('nomes na convenção');
+    const semRegistro = unrecordedCommits(r, { base: o.base ?? 'origin/main' });
+    if (semRegistro.length) fail(`commits de código sem registro no barramento (autoverificação, regra do Pai):\n    ${semRegistro.map((m) => `${m.hash} ${m.subject}`).join('\n    ')}`);
+    else ok('todo commit de código tem registro no barramento');
     const orf = findOrphans(r);
     if (orf.length) fail(`órfãos ou quebrados (regra do Pai, 2026-10-18):\n    ${orf.join('\n    ')}`);
     else ok('nenhum órfão nem link quebrado');

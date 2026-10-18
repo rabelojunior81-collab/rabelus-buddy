@@ -16,8 +16,8 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 
 | Item | Valor |
 |---|---|
-| `main` | `54d92eb` (Merge #52: catálogo de modelos), CI verde |
-| PRs mergeados | #1–#52, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `fa27379` (Merge #54: bd serve, bd contexto, bd orfaos), CI verde |
+| PRs mergeados | #1–#54, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 

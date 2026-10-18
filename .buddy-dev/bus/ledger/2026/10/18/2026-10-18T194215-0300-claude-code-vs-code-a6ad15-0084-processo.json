@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194215-0300-claude-code-vs-code-a6ad15-0084",
+  "ts": "2026-10-18T19:42:15-03:00",
+  "utc": "2026-10-18T22:42:15.417Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 84,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "processo",
+  "summary": "(registro atrasado, auditoria de 2026-10-18) commit fea9a97 da sessão claude-code-vs-code-a6ad15 em 2026-10-18T15:13Z entrou sem registro no barramento: test(bd): bd orfaos (links quebrados, documentação sem referência, exportação sem uso), antes do código",
+  "refs": [
+    "fea9a97"
+  ],
+  "data": {
+    "atrasado": true,
+    "commit": "fea9a97",
+    "sessaoOriginal": "claude-code-vs-code-a6ad15"
+  }
+}

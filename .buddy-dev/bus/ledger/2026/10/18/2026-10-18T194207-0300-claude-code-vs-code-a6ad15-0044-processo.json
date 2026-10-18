@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194207-0300-claude-code-vs-code-a6ad15-0044",
+  "ts": "2026-10-18T19:42:07-03:00",
+  "utc": "2026-10-18T22:42:07.900Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 44,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "processo",
+  "summary": "(registro atrasado, auditoria de 2026-10-18) commit 21cbcce da sessão claude-code-vs-code-fe93fb em 2026-10-16T02:15Z entrou sem registro no barramento: test(m0.7a): dono executa o agente — aprovação pelo IPC, kill -9 com chamada em curso e agent.resume",
+  "refs": [
+    "21cbcce"
+  ],
+  "data": {
+    "atrasado": true,
+    "commit": "21cbcce",
+    "sessaoOriginal": "claude-code-vs-code-fe93fb"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T194150-0300-claude-code-vs-code-a6ad15-0032",
+  "ts": "2026-10-18T19:41:50-03:00",
+  "utc": "2026-10-18T22:41:50.548Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 32,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/autoverificacao",
+  "type": "ferramenta",
+  "summary": "Gancho Stop do Claude Code (.claude/settings.json) roda bd verifica --hook ao fim de cada resposta: barra com o motivo quando há commit de código sem registro, alteração sem commit ou commit sem push; CI reprova PR com commit de código sem registro (bd verifica --registros). Conferido: chamado de outra pasta, barrou os dois arquivos ainda sem commit",
+  "refs": [],
+  "data": {}
+}

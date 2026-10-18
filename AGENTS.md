@@ -28,7 +28,8 @@ npm run bd -- pre             # relógio, branch, sincronia, sessão, paralelos,
 
 # DURANTE
 npm run bd -- claim <recurso>                    # antes de editar documento vivo compartilhado
-npm run bd -- session log --type <tipo> --summary "..."   # decisão, pesquisa, erro, aprendizado
+npm run bd -- session log --type <tipo> --summary "..."   # decisão, pesquisa, erro, aprendizado: NO MOMENTO DO FATO
+npm run bd -- verifica                           # autoverificação a cada passo (no Claude Code, roda sozinha ao fim de cada resposta)
 git commit && git push                           # a cada passo, mesmo pequeno
 npm run bd -- serve <pasta> | --cmd "<comando>" --name <nome>   # servidor de conferência: registrado e reaproveitado
 npm run bd -- serve --stop --all                 # ao terminar a conferência; o session end recusa com servidor vivo
@@ -65,6 +66,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Aprovado é mergeado na hora; nenhuma branch sobrevive ao merge; nada se perde | `bd merge` (CI verde + `bd post` limpo → merge → `bd prune`); `bd pre` reprova branch para podar; abandonadas viram tag `archive/…`; GitHub com auto-delete e só merge commit |
 | Nunca pedir ao Pai teste que eu não ensaiei, com os mesmos passos e no ambiente dele; nunca por terminal ou CLI (o produto é um agente com UX/UI) | `bd validacoes`: ação do Pai exige `ensaio` registrado e `como` sem terminal/CLI, senão reprova e não aparece como "aguarda o Pai" |
 | Toda validação tem dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão | `bd validacoes` no `bd post` e na CI; [`VALIDACOES.md`](./docs/30-governanca/VALIDACOES.md) |
+| **Autoverificação é fundacional** (Pai, 2026-10-18): o que faço entra no barramento no momento do fato (decisão, pesquisa, medição, erro, aprendizado); código vai para commit e push a cada passo; eu me confiro sozinho, sem esperar cobrança. Cada falha vira mecanismo, lição e auditoria do histórico atrás do mesmo tipo de falha | `bd verifica` (`scripts/lib/verifica.mjs`, testado): commit de código sem registro reprova no `bd post` e na CI (registro atrasado vale se citar o hash); alteração sem commit e commit sem push barram; 30 min sem registro avisa; gancho `Stop` do Claude Code roda ao fim de cada resposta e barra com o motivo |
 | Varredura de órfãos e quebrados é rotina, sempre: ligações, lógicas e arquivos (Pai, 2026-10-18) | `bd orfaos` (`scripts/lib/orfaos.mjs`, testado): links relativos quebrados, documentação sem referência, exportação sem uso; no `bd post` e na CI |
 | Compactação de contexto não quebra o mecanismo: a retomada traz o contexto essencial de governança (sessão, escopo, git, claims, servidores, o que aguarda o Pai, próximo passo, últimos registros, o que fazer e o que não fazer) (Pai, 2026-10-18) | `bd contexto` (`scripts/lib/contexto.mjs`, testado); gancho `SessionStart` (startup, resume, clear, compact) e `PostCompact` do Claude Code em `.claude/settings.json`; a compactação fica no ledger, e o resumo, fora do repositório |
 | Servidor de conferência tem dono e fim: registrado, reaproveitado (nunca outro numa porta nova), encerrado com a árvore de processos; nunca esquecido (Pai, 2026-10-18) | `bd serve` (`scripts/lib/servers.mjs`, testado); `bd pre` e `bd post` mostram os vivos; `session end` recusa com servidor da sessão rodando |
@@ -91,6 +93,7 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 7. Pedido novo do Pai no meio de uma tarefa se absorve **em paralelo**: atender ao pedido e retomar a tarefa em curso, sem esperar outra ordem. O STATUS diz o que segue enquanto algo aguarda o Pai.
 8. **Só parar quando o Pai precisar fazer ou decidir algo** (Pai, 2026-10-16). Plano aprovado se executa sub-fase após sub-fase, com o rito completo em cada uma; a parada vem com o que ele precisa fazer ou decidir, e as validações dele ficam em `validacoes.json` (aparecem em todo `bd pre`).
 9. **Teste com servidor falso prova o contrato que eu imaginei, não o mundo** (2026-10-17). Integração com serviço externo só se declara pronta depois de uma checagem contra o serviço real, até onde dá sem a conta do Pai, registrada em `docs/registros/`.
+10. **Autoverificação, autoaprendizado e autoevolução** (Pai, 2026-10-18). Antes, durante e depois de cada passo, eu me confiro sozinho (`bd verifica`); registro o fato na hora; quando falho, a lição vai para a LEARNING-CURVE, a regra para a MEMORY, o mecanismo para o `bd` com teste, e audito o histórico atrás do mesmo tipo de falha. Falha banal de governança é inaceitável.
 
 ## 6. Mapa
 
