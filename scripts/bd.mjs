@@ -13,13 +13,14 @@ import { checkDeps, latestVersions } from './lib/deps.mjs';
 import { testGuard } from './lib/testguard.mjs';
 import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
 import { checkValidations } from './lib/validacoes.mjs';
+import { ciPlan, changedFiles } from './lib/ciplan.mjs';
 import { checkClaims } from './lib/claims.mjs';
 import { execFileSync } from 'node:child_process';
 import { archivePaths } from './lib/archive.mjs';
 import { addEntry, prune, parse, CAP } from './lib/changelog.mjs';
 import { findDeletions } from './lib/guard.mjs';
 import { git, tryGit, repoRoot, currentBranch } from './lib/git.mjs';
-import { readFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const HELP = `bd — buddy-dev
@@ -41,6 +42,7 @@ const HELP = `bd — buddy-dev
   blog-check                         post e daily da sessão publicados no Blog?
   surfaces [--base origin/main]      superfícies coerentes: índices, ADRs, carimbos, main do STATUS
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
+  ci-plan --event <evento> [--base <ref>]  o que a CI roda neste evento (código? qual matriz?)
   test-guard [--base origin/main]    a suíte não perde testes nem asserções; sem skip/todo/only
   prune [--dry-run] [--arquivar a,b] remove branches mergeadas; arquiva (tag) as abandonadas
   merge <PR>                         CI verde + bd post limpo → merge commit, main atualizada, prune
@@ -56,7 +58,7 @@ const { values: o, positionals: pos } = parseArgs({
     scope: { type: 'string' }, type: { type: 'string' }, summary: { type: 'string' },
     refs: { type: 'string' }, ttl: { type: 'string' }, reason: { type: 'string' },
     name: { type: 'string' }, text: { type: 'string' }, base: { type: 'string' },
-    latest: { type: 'boolean' }, 'dry-run': { type: 'boolean' }, arquivar: { type: 'string' },
+    event: { type: 'string' }, latest: { type: 'boolean' }, 'dry-run': { type: 'boolean' }, arquivar: { type: 'string' },
     help: { type: 'boolean', short: 'h' },
   },
 });
@@ -265,6 +267,13 @@ const commands = {
     for (const v of aguardaPai) console.log(`  ⏳ aguarda o Pai: ${v.id} — ${v.descricao}`);
     if (problems.length) process.exitCode = 1;
     else console.log(`${total} validações registradas, mecanismos ligados`);
+  },
+
+  'ci-plan'() {
+    const plan = ciPlan({ event: o.event ?? 'pull_request', changed: changedFiles(root(), o.base) });
+    const lines = [`codigo=${plan.codigo}`, `matriz=${JSON.stringify(plan.matriz)}`];
+    if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `${lines.join('\n')}\n`);
+    console.log(lines.join('\n'));
   },
 
   'test-guard'() {

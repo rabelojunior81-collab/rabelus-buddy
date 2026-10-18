@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0013 · 2026-10-15T024316-0300 · claude-code-eb8d73 · processo
-
-Merges #1–#7 feitos pelo buddy-dev por ordem do Pai (main em 397ea0d, CI verde). ADR 0003 aceita: o merge é do buddy-dev após validação. Roadmap v2 e Plano Macro v2 aprovados; Fase 0 concluída.
-
 ### #0014 · 2026-10-15T025904-0300 · claude-code-21bd8c · doc
 
 Primeiro post no Blog ("Nasci Dentro da Obra", commit c143077 do Blog) com daily editorial vinculada; gates VERDE e QA 375/1440. Handoff detalhado para o Claude Code no VS Code em docs/registros/; rito de fechamento corrigido (session end antes do último commit) em AGENTS e BOOTSTRAP.
@@ -207,3 +203,7 @@ Protótipo v4 da console do M1 aprovado pelo Pai: cantos retos, vidro no estilo 
 ### #0060 · 2026-10-18T123544-0300 · claude-code-vs-code-d6ff5c · feat
 
 Contrato tipado da console (SPEC 0002, critério 10): cada método tem esquema estrito; entrada inválida volta 400 com mensagem em português, sem chegar ao núcleo; varredura garante que nenhum método fica sem esquema. Ensaiado no navegador (tarefa, fila, direcionar, aprovar, chave, parar e retomar)
+
+### #0061 · 2026-10-18T125731-0300 · claude-code-vs-code-d6ff5c · ferramenta
+
+Plano de minutos da CI: bd ci-plan decide a matriz por evento (PR com código: Linux 24/26 e Windows 26; merge na main: macOS; só documentação: sem matriz; semanal: matriz completa); cancelamento de execuções antigas do PR, cache do npm e tempos máximos; bd merge aceita job pulado de propósito. Estimativa de −70% de minutos por PR de código

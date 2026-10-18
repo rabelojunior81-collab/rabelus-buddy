@@ -78,6 +78,7 @@ export function mergeReadiness(pr) {
   else if (pr.mergeable !== 'MERGEABLE') problems.push(`mergeabilidade ainda não calculada (${pr.mergeable})`);
   const checks = pr.statusCheckRollup ?? [];
   if (!checks.length) problems.push('nenhuma checagem de CI no PR');
-  else if (!checks.every((c) => (c.conclusion ?? c.state) === 'SUCCESS')) problems.push('checagens de CI não estão todas verdes');
+  // SKIPPED: job pulado de propósito pelo plano da CI (ex.: matriz em PR só de documentação); exige ao menos um verde.
+  else if (!checks.every((c) => ['SUCCESS', 'SKIPPED'].includes(c.conclusion ?? c.state)) || !checks.some((c) => (c.conclusion ?? c.state) === 'SUCCESS')) problems.push('checagens de CI não estão todas verdes');
   return problems;
 }

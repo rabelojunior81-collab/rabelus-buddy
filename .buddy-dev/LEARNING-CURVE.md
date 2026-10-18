@@ -119,3 +119,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0012-#0012
 
 1. **A Fase 0 fechou com uma retrospectiva em números (75 commits, 27 testes, 12 ADRs, 10 fichas), e o M0 repetiu isso com métricas medidas.** Um marco só se fecha com o balanço medido, e o M1 também fecha assim.
+
+## lote #0013-#0013
+
+1. **Em 2026-10-15, o merge passou a ser do buddy-dev, com CI verde como portão.** Em 2026-10-18, esse portão mostrou dois custos que ninguém olhava: a CI da main reprovava todo merge sem que eu visse, e os minutos do Pai acabaram. → Portão que roda sozinho também se audita: o resultado na main e o custo em minutos entram na rotina, não só o verde do PR.
