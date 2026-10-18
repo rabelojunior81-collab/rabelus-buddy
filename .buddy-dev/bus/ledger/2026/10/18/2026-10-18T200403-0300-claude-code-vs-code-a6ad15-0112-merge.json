@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-18T200403-0300-claude-code-vs-code-a6ad15-0112",
+  "ts": "2026-10-18T20:04:03-03:00",
+  "utc": "2026-10-18T23:04:03.793Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 112,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #56: feat(m1.2a): sonda ACP dos harnesses (critério 3); Codex explícito na M1.2b",
+  "refs": [
+    "#56"
+  ],
+  "data": {}
+}
