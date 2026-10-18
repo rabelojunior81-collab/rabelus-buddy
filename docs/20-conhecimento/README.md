@@ -46,5 +46,6 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [pi-agent.md](./pi-agent.md) | Pi (earendil-works): harness, extensões, provedores; forkar ou compor | 2026-10-15 |
 | [acp-registro-e-orquestradores.md](./acp-registro-e-orquestradores.md) | Registro oficial do ACP (42 agentes, ícones, como iniciar), SDK TypeScript, o modelo do AionUi; harnesses na máquina do Pai; imagem na entrada | 2026-10-17 |
 | [t3-referencias.md](./t3-referencias.md) | create-t3-app (axiomas, pilha, estado) e t3.chat (layout, tokens, vidro, paleta) | 2026-10-17 |
+| [hermes-desktop-e-rabelus-com.md](./hermes-desktop-e-rabelus-com.md) | Hermes Desktop (Kanban, Bots, backends de sandbox) e rabelus.com (tipografia, cantos, vidro) | 2026-10-18 |
 | [stacks-mobile-e-web.md](./stacks-mobile-e-web.md) | Expo/React Native, Flutter, Compose MP, Capacitor, Tauri, PWA no iOS | 2026-10-15 |
 | [gemini-imagem.md](./gemini-imagem.md) | Geração de imagem com Gemini (Nano Banana), preços e boas práticas | 2026-10-15 |
