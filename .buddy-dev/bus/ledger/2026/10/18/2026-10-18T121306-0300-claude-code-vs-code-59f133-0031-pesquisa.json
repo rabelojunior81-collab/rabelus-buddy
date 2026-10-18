@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T121306-0300-claude-code-vs-code-59f133-0031",
+  "ts": "2026-10-18T12:13:06-03:00",
+  "utc": "2026-10-18T15:13:06.648Z",
+  "session": "claude-code-vs-code-59f133",
+  "seq": 31,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5-logomarca",
+  "type": "pesquisa",
+  "summary": "Varredura de integridade (pedido do Pai): 0 links quebrados nos .md, 0 exportações mortas, typecheck limpo, 250/250 testes; 27 capturas do protótipo sem índice viraram CAPTURAS.md por versão; arquivo solto docs/rabelus-lab-mark-1x1-v1.jpg (não criado pelo buddy-dev, idêntico ao do Blog) deixado intacto, aguardando o Pai",
+  "refs": [],
+  "data": {}
+}
