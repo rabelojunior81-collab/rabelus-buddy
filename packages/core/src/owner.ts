@@ -3,7 +3,7 @@
 // endpoint: se alguém responde nele, já existe um dono.
 
 import net from 'node:net';
-import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { call } from '@rabelus-buddy/client/ipc';
 import { openDatabase } from './db.ts';
@@ -16,8 +16,9 @@ import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
 import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
-import { loadCredentials, logout, startLogin, SiwcAuthError, type PendingLogin } from './providers/siwc.ts';
-import { goUsage, type GoWindow } from './providers/index.ts';
+import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
+import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
+import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
@@ -207,6 +208,7 @@ export async function startOwner(home: string): Promise<Owner> {
   let usageCache: { at: number; data: unknown } | null = null;
   // Registro do ACP: buscado na primeira consulta e depois no máximo uma vez por dia; uma busca por vez.
   let registryFetch: Promise<RegistryState> | null = null;
+  let catalogBuild: Promise<ModelCatalog> | null = null;
   const DAY = 86_400_000;
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
@@ -294,6 +296,35 @@ export async function startOwner(home: string): Promise<Owner> {
         reg = await registryFetch;
       }
       return { registry: { source: reg.source, fetchedAt: reg.fetchedAt, version: reg.version, ...(reg.error ? { error: reg.error } : {}) }, harnesses: detectHarnesses(home, process.env) };
+    },
+    // Catálogo de modelos provedor → lab → modelo (SPEC 0002, critério 13): guardado e renovado no máximo uma vez por dia.
+    'models.list': async () => {
+      const file = join(home, 'models', 'catalog.json');
+      try {
+        const c = JSON.parse(readFileSync(file, 'utf8')) as ModelCatalog;
+        if (Date.now() - Date.parse(c.generatedAt) < DAY) return c;
+      } catch { /* sem cópia ainda */ }
+      catalogBuild ??= (async () => {
+        const routes = loadConfig(home).routes;
+        const baseOf = (p: ProviderId, fallback: string) => routes.find((r) => r.provider === p && r.baseURL)?.baseURL ?? fallback;
+        let chatgpt: { token: string; api: string } | null = null;
+        if (loadCredentials(home)?.refreshToken) {
+          const api = baseOf('chatgpt', SIWC_ENDPOINTS.api);
+          chatgpt = await new SiwcAuth({ home, endpoints: { ...SIWC_ENDPOINTS, api } }).accessToken().then((token) => ({ token, api }), () => null);
+        }
+        const cat = await buildModelCatalog({
+          chatgpt,
+          'opencode-go': { key: apiKeyOf(home, 'opencode-go', process.env) ?? null, baseURL: baseOf('opencode-go', GO_BASE) },
+          'ollama-cloud': { key: apiKeyOf(home, 'ollama-cloud', process.env) ?? null, baseURL: baseOf('ollama-cloud', OLLAMA_BASE) },
+          openrouter: { baseURL: baseOf('openrouter', OPENROUTER_BASE) },
+          ...(process.env.RBUDDY_MODELS_DEV ? { modelsDevURL: process.env.RBUDDY_MODELS_DEV } : {}),
+        });
+        mkdirSync(join(home, 'models'), { recursive: true });
+        writeFileSync(`${file}.tmp`, JSON.stringify(cat));
+        renameSync(`${file}.tmp`, file);
+        return cat;
+      })().finally(() => { catalogBuild = null; });
+      return catalogBuild;
     },
     'providers.status': () => loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model, source: credentialSource(home, r.provider, process.env) })),
     'keys.set': (p) => { const key = String(p.key ?? '').trim(); if (!key) throw new DomainError(-32602, 'chave vazia'); saveKey(home, keyProvider(p.provider), key); return { ok: true }; },

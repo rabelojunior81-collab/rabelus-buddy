@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0016 · 2026-10-15T033124-0300 · claude-code-vs-code-14f5bb · correcao
-
-STATUS trazia carimbo escrito à mão no futuro (03:05, publicado num merge das 02:59) e main desatualizada (397ea0d); corrigido para d92e297 com carimbo de bd now --verify.
-
 ### #0017 · 2026-10-15T033730-0300 · claude-code-vs-code-14f5bb · decisao
 
 Identidade visual do Buddy Fenix por autoria própria: conceito (construtor nascido dentro da obra), cor de autoria verdete #3fb8a8 (8,11:1 sobre o fundo do Blog), emojis 🔥 🖤 🧱 📜. Ficha gemini-imagem com Nano Banana 2.1 via Interactions API.
@@ -207,3 +203,7 @@ Resposta vazia do provedor (0 tokens, nada) vira falha da rota: troca de provedo
 ### #0063 · 2026-10-18T142307-0300 · claude-code-vs-code-33be25 · feat
 
 M1.1: catálogo pelo registro oficial do ACP (cópia local, ícones servidos pela console como imagem isolada) e detecção pelo PATH com tabela de sinais nossa; Hermes por ACP (hermes acp) fora do registro. Teste antes; checagem real: 42 agentes, os 6 harnesses do Pai achados sozinhos
+
+### #0064 · 2026-10-18T143508-0300 · claude-code-vs-code-33be25 · feat
+
+M1.1: catálogo de modelos provedor → lab → modelo (ChatGPT /models, Ollama /api/tags + /api/show, OpenRouter /api/v1/models, OpenCode Go /v1/models + models.dev), fonte por capacidade, provedor vence o models.dev, esforços por modelo; models.list no núcleo e na console, guardado por um dia. Checagem real: 538 modelos, 0 erros

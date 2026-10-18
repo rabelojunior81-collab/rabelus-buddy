@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-18T143440-0300-claude-code-vs-code-33be25-0024",
+  "ts": "2026-10-18T14:34:40-03:00",
+  "utc": "2026-10-18T17:34:40.310Z",
+  "session": "claude-code-vs-code-33be25",
+  "seq": 24,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-1-catalogo-de-modelos",
+  "type": "claim",
+  "summary": ".buddy-dev/LEARNING-CURVE.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-18T18:04:40.310Z",
+    "tookOverFrom": null
+  }
+}

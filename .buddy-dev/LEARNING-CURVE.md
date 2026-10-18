@@ -131,3 +131,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0015-#0015
 
 1. **Em 2026-10-15, cada decisão do Pai foi registrada no mesmo dia (METODO, ADR 0005, nome, canal de segurança).** Em 2026-10-18, a única que escapou (a logomarca) foi a que o Pai teve de repetir. → O registro no mesmo dia não é burocracia: é o que impede o Pai de ter de pedir duas vezes.
+
+## lote #0016-#0016
+
+1. **Em 2026-10-15, o STATUS trazia main desatualizada e carimbo à mão no futuro; o bd surfaces nasceu disso.** Em 2026-10-18, o mesmo mecanismo pegou o STATUS atrasado em quase todo PR do dia, e uma vez pegou a si mesmo contando o próprio merge. → Um mecanismo também amadurece: quando ele reprova o que deveria aprovar, corrige-se o mecanismo, com teste do caso real, e não a disciplina de quem o usa.
