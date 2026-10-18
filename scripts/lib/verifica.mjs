@@ -47,7 +47,8 @@ export function selfCheck(root, { base = 'origin/main', now = new Date(), sessio
   const block = [];
   const warn = [];
   for (const m of unrecordedCommits(root, { base })) block.push(`commit de código sem registro no barramento: ${m.hash} ${m.subject.slice(0, 90)}`);
-  const dirty = (tryGit(root, 'status', '--porcelain') ?? '').split('\n').filter(Boolean).map((l) => l.slice(3)).filter((f) => !f.startsWith('.buddy-dev/bus/ledger/'));
+  // A saída do git chega aparada: a primeira linha perde o espaço do código de estado. Tira o código pelo padrão.
+  const dirty = (tryGit(root, 'status', '--porcelain') ?? '').split('\n').filter(Boolean).map((l) => l.replace(/^\s*\S{1,2}\s+/, '')).filter((f) => !f.startsWith('.buddy-dev/bus/ledger/'));
   if (dirty.length) block.push(`${dirty.length} arquivo(s) alterado(s) sem commit: ${dirty.slice(0, 5).join(', ')}${dirty.length > 5 ? '…' : ''}`);
   const branch = tryGit(root, 'rev-parse', '--abbrev-ref', 'HEAD');
   const ahead = tryGit(root, 'rev-list', '--count', '@{u}..HEAD');

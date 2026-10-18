@@ -59,6 +59,8 @@ test('verifica: alteração sem commit e commit sem push bloqueiam; 30 min sem r
   writeFileSync(join(r, 'packages/core/src/a.ts'), 'mudou e não foi para commit\n');
   const c = selfCheck(r, { base: 'base', now: at(45), session: 's1' });
   assert.ok(c.block.some((x) => /sem commit/.test(x)), c.block.join('\n'));
+  // Achado no primeiro uso real: o nome saía cortado ("cripts/bd.mjs"); o nome tem de vir inteiro.
+  assert.ok(c.block.some((x) => x.includes(': packages/core/src/a.ts')), c.block.join('\n'));
   assert.ok(c.block.some((x) => /sem push|sem upstream/.test(x)), c.block.join('\n'));
   assert.ok(c.warn.some((x) => /44 min sem registro/.test(x)), c.warn.join('\n'));
 });
