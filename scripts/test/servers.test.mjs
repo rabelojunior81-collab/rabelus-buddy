@@ -1,0 +1,67 @@
+// Regra do Pai (2026-10-18): servidor de conferência tem dono e fim. Registrado, reaproveitado, encerrado;
+// nunca esquecido nem duplicado numa porta nova.
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { startServer, listServers, stopServers, serversOf } from '../lib/servers.mjs';
+
+function repo() {
+  const r = mkdtempSync(join(tmpdir(), 'buddy-srv-'));
+  execFileSync('git', ['init', '-q', '-b', 'main', r]);
+  return r;
+}
+const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+const get = async (port, path) => { const r = await fetch(`http://127.0.0.1:${port}${path}`); return { status: r.status, type: r.headers.get('content-type') ?? '', body: await r.text() }; };
+
+test('serve: pasta servida em 127.0.0.1, com o tipo certo; a mesma pasta reaproveita o servidor (nunca outro numa porta nova)', async () => {
+  const r = repo();
+  const site = join(r, 'site');
+  mkdirSync(site);
+  writeFileSync(join(site, 'index.html'), '<h1>oi</h1>');
+  writeFileSync(join(site, 'a.svg'), '<svg/>');
+  const s1 = await startServer(r, { dir: site }, { session: 's1' });
+  try {
+    assert.equal(s1.reused, false);
+    assert.ok(s1.port > 0);
+    const home = await get(s1.port, '/');
+    assert.equal(home.status, 200);
+    assert.match(home.type, /text\/html/);
+    assert.match(home.body, /oi/);
+    assert.match((await get(s1.port, '/a.svg')).type, /image\/svg\+xml/);
+    assert.equal((await get(s1.port, '/..%2F..%2Fetc')).status, 404, 'não sai da pasta servida');
+    assert.equal((await get(s1.port, '/nao-existe.html')).status, 404);
+
+    const s2 = await startServer(r, { dir: site }, { session: 's1' });
+    assert.equal(s2.reused, true);
+    assert.equal(s2.port, s1.port);
+    assert.equal(s2.pid, s1.pid);
+    assert.equal(listServers(r).length, 1);
+  } finally {
+    stopServers(r, { all: true });
+  }
+  assert.equal(alive(s1.pid), false, 'encerrado de verdade');
+  assert.deepEqual(listServers(r), []);
+});
+
+test('serve: comando rastreado (núcleo de ensaio), por sessão; registro de processo morto some sozinho', async () => {
+  const r = repo();
+  const s = await startServer(r, { name: 'ensaio', cmd: process.execPath, args: ['-e', 'setInterval(() => {}, 1000)'] }, { session: 's9' });
+  try {
+    assert.ok(alive(s.pid));
+    assert.deepEqual(serversOf(r, 's9').map((x) => x.name), ['ensaio']);
+    assert.deepEqual(serversOf(r, 'outra'), []);
+  } finally {
+    const stopped = stopServers(r, { session: 's9' });
+    assert.deepEqual(stopped.map((x) => x.name), ['ensaio']);
+  }
+  assert.equal(alive(s.pid), false);
+
+  // Processo que morreu por fora: o registro é limpo na próxima listagem.
+  const t = await startServer(r, { name: 'curto', cmd: process.execPath, args: ['-e', 'setTimeout(() => {}, 200)'] }, { session: 's9' });
+  await new Promise((ok) => setTimeout(ok, 1500));
+  assert.equal(alive(t.pid), false);
+  assert.deepEqual(listServers(r), []);
+});
