@@ -51,7 +51,8 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 | Chaves do OpenCode Go, do OpenRouter e do Ollama Cloud | feito: em `.buddy-dev/.env.local` (Pai, 2026-10-15); conta ChatGPT Plus entra na demonstração | — |
 | Forkar o Pi como CLI/TUI? | feito: não forkar; compor no M1 (ADR 0016, Pai, 2026-10-16) | — |
 | Biblioteca da TUI: `ink` × `pi-tui` | em avaliação; levar ao Pai as referências visuais das duas e a avaliação quando a TUI entrar (ADR 0016) | buddy-dev → Pai |
-| Alertas do Dependabot no repositório (a API respondeu 404: desligados) | proposta; registrada em `validacoes.json` como validação do Pai | Pai |
+| Alertas do Dependabot no repositório | feito: ligados pelo buddy-dev com a aprovação do Pai em 2026-10-18 (API `vulnerability-alerts`: 204) | — |
+| Suíte de testes lenta: 148 s no Windows e 57–80 s no Linux; instalar dependências leva só 2–18 s com o cache (medido na CI em 2026-10-18, pergunta do Pai) | evolução a investigar: medir os testes mais lentos (muitos núcleos de ensaio subindo) e encurtar sem afrouxar nada | buddy-dev |
 | Nome e sobrenome | feito: **Buddy Fenix** (Pai, 2026-10-15) | — |
 | Avatar do Buddy Fenix | feito: v3-b escolhido pelo Pai (2026-10-15), [proveniência](./avatar/PROVENIENCIA.md); aplicado no Blog com nome, cor e emojis (`rabelus-lab-blog` `6ae9895`, governança v2.6) | — |
 | Emojis e cor de autoria | feito: 🔥 🖤 🧱 📜 (2026-10-15); cor de autoria verde-oliva `#a8a640` desde 2026-10-18 (opção B do Pai; antes, verdete `#3fb8a8`), aplicada no Blog e na console | — |
