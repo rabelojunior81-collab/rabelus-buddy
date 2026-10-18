@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T193106-0300-claude-code-vs-code-a6ad15-0022",
+  "ts": "2026-10-18T19:31:06-03:00",
+  "utc": "2026-10-18T22:31:06.136Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 22,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2a-sonda",
+  "type": "pesquisa",
+  "summary": "(registro atrasado, feito ~15:55) Checagem real do initialize do ACP nos harnesses do Pai, sem login nem prompt, processos sem janela e encerrados com a árvore: OpenCode 2.0.31 (0,7 s; imagem; opencode-login), Hermes 0.22.2 (6 s; imagem; openai-codex e hermes-setup tipo terminal), Copilot 1.0.97 (3,3 s; imagem; copilot-login); protocolVersion 1. OpenCode local é mais novo que o do registro (1.19.3). Claude e Codex fora: o adaptador npx baixa código (critério 4)",
+  "refs": [],
+  "data": {}
+}

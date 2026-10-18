@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T193108-0300-claude-code-vs-code-a6ad15-0024",
+  "ts": "2026-10-18T19:31:08-03:00",
+  "utc": "2026-10-18T22:31:08.000Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 24,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2a-sonda",
+  "type": "decisao",
+  "summary": "(registro atrasado) Desenho da sonda (M1.2a): initialize + session/new numa pasta de trabalho, fecha a sessão quando o harness permite; estados pronto/login/falhou com motivo; executável local preferido quando instalado e fala ACP (opencode, copilot, hermes confirmados; gemini, goose pelo registro); npx/uvx só depois da aprovação (critério 4); harness falso dos testes feito com o próprio SDK (agent()), na forma medida nos reais; no Windows, windowsHide sem processo desligado do console",
+  "refs": [],
+  "data": {}
+}

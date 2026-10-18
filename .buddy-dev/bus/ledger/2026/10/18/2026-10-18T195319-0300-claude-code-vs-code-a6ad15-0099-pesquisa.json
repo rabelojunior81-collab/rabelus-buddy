@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T195319-0300-claude-code-vs-code-a6ad15-0099",
+  "ts": "2026-10-18T19:53:19-03:00",
+  "utc": "2026-10-18T22:53:19.100Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 99,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2a-sonda",
+  "type": "pesquisa",
+  "summary": "Checagem real da sonda (núcleo): Copilot 1.0.97 pronto em 4,8 s; OpenCode 2.0.31 pronto em 4,2 s; Hermes 0.22.2 pronto em 14,1 s (sessão de teste fica no histórico do Hermes, que não oferece session/close); claude-acp, codex-acp e pi-acp aguardam aprovação de npx. 0 sobras, 0 janelas. Hermes perto do limite de 20 s: padrão sobe para 30 s",
+  "refs": [],
+  "data": {}
+}

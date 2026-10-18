@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T195443-0300-claude-code-vs-code-a6ad15-0104",
+  "ts": "2026-10-18T19:54:43-03:00",
+  "utc": "2026-10-18T22:54:43.764Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 104,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "pesquisa",
+  "summary": "CONFIRMADO: codex-cli 0.163.0 instalado não tem subcomando ACP (só app-server experimental, protocolo próprio, e exec --json). Caminho do Codex por ACP: adaptador npx @agentclientprotocol/codex-acp@2.2.2 (usa o codex e o login ChatGPT do Pai; conferido em 2026-10-14). Decisão: Codex é o primeiro alvo da M1.2b (primeira execução aprovada pelo Pai na console, com pacote@versão), seguido de Claude e pi; app-server e exec ficam como alternativa registrada, não usada",
+  "refs": [],
+  "data": {}
+}

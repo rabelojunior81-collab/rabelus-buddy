@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T195426-0300-claude-code-vs-code-a6ad15-0103",
+  "ts": "2026-10-18T19:54:26-03:00",
+  "utc": "2026-10-18T22:54:26.211Z",
+  "session": "claude-code-vs-code-a6ad15",
+  "seq": 103,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "decisao",
+  "summary": "Pai perguntou (19:54) por que não há planos e ações para o Codex. Situação: o registro ACP usa o adaptador npx @agentclientprotocol/codex-acp@2.2.2, que baixa código e por isso exige a aprovação do Pai na primeira execução (critério 4, M1.2b); a sonda parou em 'aguarda aprovação'. Verificando se o codex instalado fala ACP direto",
+  "refs": [],
+  "data": {}
+}
