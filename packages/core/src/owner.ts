@@ -22,6 +22,7 @@ import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
+import { launchFor, probeHarness } from './harness/client.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -209,6 +210,12 @@ export async function startOwner(home: string): Promise<Owner> {
   // Registro do ACP: buscado na primeira consulta e depois no máximo uma vez por dia; uma busca por vez.
   let registryFetch: Promise<RegistryState> | null = null;
   let catalogBuild: Promise<ModelCatalog> | null = null;
+  const registryNow = async (): Promise<RegistryState> => {
+    const reg = readRegistry(home);
+    if (reg.fetchedAt && Date.now() - Date.parse(reg.fetchedAt) <= DAY) return reg;
+    registryFetch ??= refreshRegistry({ home }).finally(() => { registryFetch = null; });
+    return registryFetch;
+  };
   const DAY = 86_400_000;
   const methods: Record<string, Handler> = {
     'agent.run': (p) => {
@@ -290,12 +297,27 @@ export async function startOwner(home: string): Promise<Owner> {
     },
     // Harnesses do registro oficial do ACP e da tabela própria, com o que está instalado (SPEC 0002, critérios 1 e 2).
     'harness.list': async () => {
-      let reg = readRegistry(home);
-      if (!reg.fetchedAt || Date.now() - Date.parse(reg.fetchedAt) > DAY) {
-        registryFetch ??= refreshRegistry({ home }).finally(() => { registryFetch = null; });
-        reg = await registryFetch;
-      }
+      const reg = await registryNow();
       return { registry: { source: reg.source, fetchedAt: reg.fetchedAt, version: reg.version, ...(reg.error ? { error: reg.error } : {}) }, harnesses: detectHarnesses(home, process.env) };
+    },
+    // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
+    // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
+    'harness.probe': async (p) => {
+      await registryNow();
+      const v = detectHarnesses(home, process.env).find((h) => h.id === String(p.id));
+      if (!v) throw new DomainError(-32602, `harness desconhecido: ${String(p.id)}`);
+      const spec = launchFor(v);
+      let out: Record<string, unknown>;
+      if (!spec) out = { state: 'indisponivel', reason: v.found ? 'sem lançamento local conhecido; o registro pede baixar o binário' : 'não instalado neste computador' };
+      else if (spec.needsApproval) out = { state: 'aprovacao', reason: `a primeira execução baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai`, package: spec.package };
+      else {
+        const cwd = join(home, 'area-de-trabalho');
+        mkdirSync(cwd, { recursive: true });
+        out = { ...(await probeHarness(spec, { cwd })) };
+        delete out.pid;
+      }
+      log.append('harness', 'harness.probed', { id: v.id, state: out.state, ...(out.reason ? { reason: out.reason } : {}), ...(out.agent ? { agent: out.agent } : {}) });
+      return { id: v.id, ...out };
     },
     // Catálogo de modelos provedor → lab → modelo (SPEC 0002, critério 13): guardado e renovado no máximo uma vez por dia.
     'models.list': async () => {
