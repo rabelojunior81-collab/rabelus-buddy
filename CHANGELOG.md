@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **M1.1 concluída na parte do núcleo** (2026-10-18): detecção dos agentes instalados, catálogo de modelos e aviso de resposta vazia; o seletor e a lista na tela chegam com a console nova (M1.5).
 - **Catálogo de modelos** (M1.1, critério 13): o núcleo monta provedor → lab → modelo, com visão, raciocínio e os níveis de esforço, ferramentas, contexto e preço, consultando cada provedor ao vivo e o models.dev onde o provedor não declara. Cada capacidade diz de onde veio, e a declaração do provedor vence. Hoje são 538 modelos em ChatGPT, OpenCode Go, Ollama Cloud e OpenRouter, renovados no máximo uma vez por dia.
 - **Os agentes instalados aparecem sozinhos** (M1.1, critérios 1 e 2). O núcleo lê o registro oficial do ACP (42 agentes, com ícone, versão, licença e como iniciar), guarda uma cópia para quando estiver sem rede e reconhece pelo PATH os que já estão no computador, sem instalar nada. No computador do Pai: Claude Code, Codex, Copilot, OpenCode, pi e Hermes (este fora do registro, por tabela própria).
 - **M1.0: contrato tipado da console.** Cada pedido da console é conferido antes de chegar ao núcleo: campo desconhecido, tipo errado ou valor fora da lista volta como erro com mensagem clara em português, e nada é executado nem gravado.
