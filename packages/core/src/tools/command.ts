@@ -8,7 +8,8 @@ export interface ExecResult { code: number; stdout: string; stderr: string }
 export type Exec = (command: string, cwd: string) => ExecResult;
 
 const defaultExec: Exec = (command, cwd) => {
-  const r = spawnSync(command, { cwd, shell: true, encoding: 'utf8', timeout: 120_000 });
+  // windowsHide: o núcleo roda desligado do console; sem isso, cada comando abriria uma janela no Windows.
+  const r = spawnSync(command, { cwd, shell: true, encoding: 'utf8', timeout: 120_000, windowsHide: true });
   return { code: r.status ?? 1, stdout: r.stdout ?? '', stderr: r.stderr ?? '' };
 };
 

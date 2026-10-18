@@ -553,6 +553,18 @@
       },
       "estado": "pendente",
       "origem": "SPEC 0002, critério 4; pergunta do Pai sobre o Codex (2026-10-18)"
+    },
+    {
+      "id": "processos-sem-janela",
+      "descricao": "Nenhum processo do produto abre janela de console no Windows: todo processo criado por node:child_process passa windowsHide ou declara que é programa sem console",
+      "quem": "maquina",
+      "onde": [
+        "packages/*/src"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/sem-janela.test.ts"
+      },
+      "origem": "Achado do Pai, 2026-10-18 (janelas do Windows Terminal abertas e esquecidas)"
     }
   ]
 }
