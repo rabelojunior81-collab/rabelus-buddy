@@ -8,7 +8,7 @@ import { formats, verifyClock, isKnownZone, ZONE } from './lib/time.mjs';
 import { stampedName, checkPath } from './lib/names.mjs';
 import { startSession, logEvent, endSession, status, claim, release, currentSession, lastSession } from './lib/bus.mjs';
 import { checkBlogDelivery, blogDir } from './lib/blog.mjs';
-import { surfaceGaps } from './lib/surfaces.mjs';
+import { surfaceGaps, syncStatusMain, statusMainLag } from './lib/surfaces.mjs';
 import { checkDeps, latestVersions } from './lib/deps.mjs';
 import { testGuard } from './lib/testguard.mjs';
 import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
@@ -48,6 +48,7 @@ const HELP = `bd — buddy-dev
   deps [--latest]                    protocolo de dependências (registro, versão exata, licença, prazo)
   ci-plan --event <evento> [--base <ref>]  o que a CI roda neste evento (código? qual matriz?)
   verifica [--registros|--hook]      autoverificação: commit de código sem registro, sem commit, sem push, 30 min sem registro
+  status-main                        reescreve a main e a contagem de PRs do STATUS pelo git
   orfaos                             links quebrados, documentação sem referência, exportação sem uso
   contexto [--compactou]             contexto essencial de governança (depois de compactar; --compactou registra a compactação)
   serve <pasta> [--port N] | --cmd "<comando>" --name <nome> | --list | --stop [--all|<id>|<pasta>]  servidor de conferência com dono e fim
@@ -205,6 +206,12 @@ const commands = {
     check.block.forEach((x) => console.log(`  ✖ ${x}`));
     check.warn.forEach((x) => console.log(`  ⚠ ${x}`));
     if (check.block.length) process.exitCode = 1; else console.log('autoverificação limpa');
+  },
+
+  // STATUS na main atual pelo git (evolução de 2026-10-18). Exige claim do STATUS antes, como toda edição.
+  'status-main'() {
+    const changed = syncStatusMain(root(), { base: o.base ?? 'origin/main' });
+    console.log(changed ? 'STATUS atualizado com a main e a contagem de PRs do git' : 'STATUS já em dia com a main');
   },
 
   // Varredura de órfãos e quebrados (regra do Pai, 2026-10-18).
@@ -412,6 +419,8 @@ const commands = {
     const toPrune = classifyBranches(r, { openPrHeads: openPrHeads(r) }).filter((b) => b.action !== 'manter');
     if (toPrune.length) fail(`branches que já deviam ter saído (rode bd prune): ${toPrune.map((b) => `${b.name} [${b.reason}]`).join(', ')}`);
     else ok('nenhuma branch para podar');
+    const lag = statusMainLag(r, { base: 'origin/main' });
+    if (lag.problem) warn(`${lag.problem}: rode bd claim .buddy-dev/STATUS.md e bd status-main`);
     // Autoverificação antes de cada commit: o worktree usa os ganchos versionados (.githooks).
     if (ensureHooksPath(r)) ok('ganchos do repositório ligados (core.hooksPath = .githooks)');
     else ok('ganchos do repositório ligados');

@@ -22,7 +22,9 @@ import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
-import { launchFor, probeHarness } from './harness/client.ts';
+import { launchFor, probeHarness, type LaunchSpec } from './harness/client.ts';
+import { promptTurn } from './harness/session.ts';
+import { scrub } from './providers/adapters.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -136,7 +138,7 @@ export async function startOwner(home: string): Promise<Owner> {
     else if (x.kind === 'exec') { Object.assign(l, { tool: x.name, phase: 'tool', reasoning: '', text: '' }); }
   };
   const runningIn = (session: string) => domain.listRuns().find((r) => r.session === session && r.state === 'running');
-  interface Queued { queue: string; task: string; effort?: string | null; route?: unknown; workspace?: string; interactive?: boolean }
+  interface Queued { queue: string; task: string; effort?: string | null; route?: unknown; workspace?: string; interactive?: boolean; harness?: string | null }
   const queueOf = (session: string): Queued[] => {
     const q = new Map<string, Queued>();
     for (const e of log.events(session)) {
@@ -189,16 +191,83 @@ export async function startOwner(home: string): Promise<Owner> {
     watch(session, run, done);
     return run;
   };
+  // ---------- Conversa por harness ACP (SPEC 0002, critério 5) ----------
+  // A mesma máquina de execução (run, run.live, fila, parar); o turno vai ao harness por session/prompt.
+  // Lançamento que baixa código só roda com a primeira execução aprovada (critério 4).
+  const harnessFor = async (hid: string): Promise<{ id: string; name: string; spec: LaunchSpec }> => {
+    await registryNow();
+    const v = detectHarnesses(home, process.env).find((h) => h.id === hid);
+    if (!v) throw new DomainError(-32602, `harness desconhecido: ${hid}`);
+    const spec = launchFor(v);
+    if (!spec) throw new DomainError(-32004, `${v.name} não está disponível: ${v.found ? 'sem lançamento local conhecido' : 'não instalado neste computador'}`, { id: hid });
+    if (spec.needsApproval && firstRun(v, spec) !== 'approved') {
+      const fr = firstRun(v, spec, true);
+      throw new DomainError(-32004, fr === 'denied'
+        ? `a primeira execução de ${spec.package} foi negada pelo Pai; a conversa com ${v.name} não roda`
+        : `a primeira execução de ${v.name} baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai, pendente na console`, { id: hid, ...(fr !== 'denied' ? { approval: fr } : {}) });
+    }
+    return { id: v.id, name: v.name, spec };
+  };
+  const startHarnessRun = (session: string, task: string, p: Record<string, unknown>, h: { id: string; name: string; spec: LaunchSpec }): string => {
+    const workspace = String(p.workspace ?? '');
+    if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
+    const ac = new AbortController();
+    const run = domain.startRun(session, task).id;
+    log.append(session, 'agent.message', { run, message: { role: 'user', content: task } });
+    controllers.set(run, ac);
+    inboxes.set(run, []);
+    const routeName = `acp:${h.id}`;
+    liveOf(run).route = routeName;
+    log.append(session, 'run.options', { run, effort: null, route: null, harness: h.id });
+    const done = (async (): Promise<AgentResult> => {
+      const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
+      let reasoning = '';
+      const titles = new Map<string, string>();
+      const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
+      try {
+        const r = await promptTurn(h.spec, {
+          cwd: workspace, task, signal: ac.signal,
+          onUpdate: (u) => {
+            if (u.kind === 'tool') {
+              const title = u.title || titles.get(u.id) || u.id;
+              titles.set(u.id, title);
+              log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
+              onProgress(run, { kind: 'tool', name: title });
+            } else {
+              if (u.kind === 'reasoning') reasoning += u.delta;
+              onProgress(run, u);
+            }
+          },
+          // Até a M1.2d (ponte de permissões pelo núcleo), o pedido do harness é negado e fica registrado.
+          onPermission: (ask) => { log.append(session, 'harness.permission', { run, title: ask.title, outcome: 'cancelled' }); return { outcome: 'cancelled' }; },
+        });
+        domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
+        if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
+        if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
+        if (ac.signal.aborted || r.stopReason === 'cancelled') return stopped('userStopped', r.text);
+        domain.finishRun(run);
+        return { run, outcome: 'done', text: r.text, steps: 1 };
+      } catch (e) {
+        const reason = scrub((e as Error).message).slice(0, 300);
+        domain.failEffect(effect, reason);
+        log.append(session, 'harness.error', { run, id: h.id, reason });
+        return stopped(ac.signal.aborted ? 'userStopped' : 'harnessFailed');
+      }
+    })();
+    watch(session, run, done);
+    return run;
+  };
   const drain = (session: string, prev: string): void => {
     if (runningIn(session)) return;
     const next = queueOf(session)[0];
     if (!next) return;
-    try {
-      const run = startRun(session, next.task, next as unknown as Record<string, unknown>, prev);
-      log.append(session, 'run.dequeued', { queue: next.queue, reason: 'started', run });
-    } catch (e) {
-      log.append(session, 'run.dequeued', { queue: next.queue, reason: 'failed', error: (e as Error)?.name ?? 'Error' });
+    const started = (run: string) => log.append(session, 'run.dequeued', { queue: next.queue, reason: 'started', run });
+    const failed = (e: unknown) => log.append(session, 'run.dequeued', { queue: next.queue, reason: 'failed', error: (e as Error)?.name ?? 'Error' });
+    if (next.harness) {
+      void harnessFor(next.harness).then((h) => { if (!runningIn(session) && !closing) started(startHarnessRun(session, next.task, next as unknown as Record<string, unknown>, h)); }).catch(failed);
+      return;
     }
+    try { started(startRun(session, next.task, next as unknown as Record<string, unknown>, prev)); } catch (e) { failed(e); }
   };
   const busy = (session: string) => {
     const r = runningIn(session);
@@ -256,16 +325,19 @@ export async function startOwner(home: string): Promise<Owner> {
   };
   const DAY = 86_400_000;
   const methods: Record<string, Handler> = {
-    'agent.run': (p) => {
+    'agent.run': async (p) => {
       const session = String(p.session);
+      // Com harness, a conversa vai ao harness por ACP (critério 5); a recusa (aprovação, indisponível) vem antes de tudo.
+      const h = p.harness ? await harnessFor(String(p.harness)) : null;
       // Uma execução por conversa (critério 33): com outra rodando, a mensagem entra na fila (decisão do Pai).
       if (runningIn(session)) {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null });
         return { queued: queue };
       }
+      if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
       return { run: startRun(session, String(p.task), p, p.continueFrom ? String(p.continueFrom) : undefined) };
     },
     'run.live': (p) => {
@@ -310,7 +382,9 @@ export async function startOwner(home: string): Promise<Owner> {
       const run = String(p.run);
       const r = domain.getRun(run);
       if (r.state !== 'interrupted' && r.state !== 'stopped') throw new DomainError(-32004, `execução ${run} está ${r.state}: só se retoma interrompida ou parada`, { id: run, state: r.state });
-      const opts = log.events(r.session).filter((e) => e.kind === 'run.options' && (e.payload as { run?: string }).run === run).at(-1)?.payload as { effort?: string | null; route?: unknown } | undefined;
+      const opts = log.events(r.session).filter((e) => e.kind === 'run.options' && (e.payload as { run?: string }).run === run).at(-1)?.payload as { effort?: string | null; route?: unknown; harness?: string | null } | undefined;
+      // Retomar um turno de harness ainda não existe: o harness não guarda a sessão entre processos (session/load fica para depois).
+      if (opts?.harness) throw new DomainError(-32004, `execução ${run} foi uma conversa com o harness ${opts.harness}: envie a mensagem de novo para começar outro turno`, { id: run });
       const ac = new AbortController();
       controllers.set(run, ac);
       inboxes.set(run, []);

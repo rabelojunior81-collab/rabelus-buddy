@@ -68,7 +68,10 @@ export async function fakeHttp(responder: Responder): Promise<{ url: string; req
       res.end(JSON.stringify(out.json ?? {}));
     });
   });
+  // Nunca segura o processo de teste sozinho: com um teste vermelho, o close() do fim do teste não roda (2026-10-18).
+  server.on('connection', (s) => s.unref());
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', () => r()));
+  server.unref();
   const { port } = server.address() as AddressInfo;
   return { url: `http://127.0.0.1:${port}`, requests, close: () => new Promise((r) => { server.close(() => r()); server.closeAllConnections(); }) };
 }

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T215500-0300-claude-code-vs-code-4efb65-0011",
+  "ts": "2026-10-18T21:55:00-03:00",
+  "utc": "2026-10-19T00:55:00.940Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 11,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "decisao",
+  "summary": "Achado de permissões vira trabalho da M1.2d (não bloqueia a M1.2c, que entrega conversa e andamento): pesquisar modos/config do ACP (session/set_mode, configOptions) do OpenCode e do Codex para que o harness pergunte ao núcleo antes de escrever, e mostrar na console que a conversa por harness age pela política do próprio harness até lá. Separação de parágrafo entre texto e ferramenta entra agora, com teste antes.",
+  "refs": [],
+  "data": {}
+}
