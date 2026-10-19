@@ -208,9 +208,20 @@ export async function startOwner(home: string): Promise<Owner> {
     }
     return { id: v.id, name: v.name, spec };
   };
+  // Permissões do harness pelo núcleo (SPEC 0002, critério 6). Postura ao abrir a sessão, medida em 2026-10-18
+  // (docs/20-conhecimento/acp-permissoes-dos-harnesses.md): o OpenCode pergunta com permission ask, recebida só no
+  // processo filho (a configuração do Pai não é tocada); harness que declara o modo read-only (Codex) o recebe.
+  const OPENCODE_ASK = JSON.stringify({ permission: { edit: 'ask', bash: 'ask', webfetch: 'ask', websearch: 'ask', task: 'ask', external_directory: 'ask' } });
+  const postureOf = (h: { id: string; spec: LaunchSpec }): LaunchSpec => (h.id === 'opencode' ? { ...h.spec, env: { ...h.spec.env, OPENCODE_CONFIG_CONTENT: OPENCODE_ASK } } : h.spec);
+  // Tipo de ação do ACP → ferramenta da política (ADR 0009). Leitura e busca são leitura; edição, remoção e movimento
+  // são escrita; execução e o que não se conhece pedem aprovação de uma vez, como comando.
+  const WRITES = ['edit', 'delete', 'move'];
+  const toolOfKind = (kind?: string): Tool => (kind === 'read' || kind === 'search' ? 'read_file' : WRITES.includes(kind ?? '') ? 'write_file' : 'run_command');
   const startHarnessRun = (session: string, task: string, p: Record<string, unknown>, h: { id: string; name: string; spec: LaunchSpec }): string => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
+    const interactive = p.interactive === true;
+    const policy = new Policy(log, { workspace });
     const ac = new AbortController();
     const run = domain.startRun(session, task).id;
     log.append(session, 'agent.message', { run, message: { role: 'user', content: task } });
@@ -223,28 +234,62 @@ export async function startOwner(home: string): Promise<Owner> {
       const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
       let reasoning = '';
       const titles = new Map<string, string>();
+      const kinds = new Map<string, string>();
+      const asked = new Set<string>();
+      const warned = new Set<string>();
+      let denied = false;
       const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
       try {
-        const r = await promptTurn(h.spec, {
-          cwd: workspace, task, signal: ac.signal,
+        const r = await promptTurn(postureOf(h), {
+          cwd: workspace, task, signal: ac.signal, preferMode: 'read-only',
+          onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
           onUpdate: (u) => {
             if (u.kind === 'tool') {
               const title = u.title || titles.get(u.id) || u.id;
               titles.set(u.id, title);
+              if (u.toolKind) kinds.set(u.id, u.toolKind);
               log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
               onProgress(run, { kind: 'tool', name: title });
+              // Escrita ou execução concluída sem pedido de permissão: a postura não valeu (configuração gerenciada,
+              // harness sem modo). Fica registrado como aviso.
+              const kind = kinds.get(u.id) ?? 'other';
+              if (u.status === 'completed' && (WRITES.includes(kind) || kind === 'execute') && !asked.has(u.id) && !warned.has(u.id)) {
+                warned.add(u.id);
+                log.append(session, 'harness.unasked', { run, id: h.id, title, kind });
+              }
             } else {
               if (u.kind === 'reasoning') reasoning += u.delta;
               onProgress(run, u);
             }
           },
-          // Até a M1.2d (ponte de permissões pelo núcleo), o pedido do harness é negado e fica registrado.
-          onPermission: (ask) => { log.append(session, 'harness.permission', { run, title: ask.title, outcome: 'cancelled' }); return { outcome: 'cancelled' }; },
+          onPermission: async (ask) => {
+            asked.add(ask.toolCallId);
+            const tool = toolOfKind(ask.kind);
+            const raw = tool === 'run_command' ? ask.title : ask.paths[0] ?? ask.title;
+            const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
+            const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
+            const d = policy.decide({ session, tool, target: raw }, { interactive });
+            let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' ? 'allow' : 'deny';
+            if (d.effect === 'ask') {
+              const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${target}`);
+              decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
+            }
+            const pick = decision === 'deny'
+              ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
+              : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
+            if (decision === 'deny') denied = true;
+            const outcome = pick?.optionId ?? 'cancelled';
+            log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome });
+            domain.completeEffect(eff, { decision, outcome });
+            return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
+          },
         });
         domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
         if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
         if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
-        if (ac.signal.aborted || r.stopReason === 'cancelled') return stopped('userStopped', r.text);
+        if (ac.signal.aborted) return stopped('userStopped', r.text);
+        // A recusa encerra o turno nos harnesses reais (stopReason "cancelled", medido em 2026-10-18): o motivo é a recusa.
+        if (r.stopReason === 'cancelled') return stopped(denied ? 'permissionDenied' : 'harnessCancelled', r.text);
         domain.finishRun(run);
         return { run, outcome: 'done', text: r.text, steps: 1 };
       } catch (e) {

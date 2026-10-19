@@ -76,6 +76,19 @@ test('negar na console devolve a recusa ao harness e nada é concedido (critéri
   assert.equal(ev.filter((e) => e.kind === 'policy.grant.created').length, 0);
 });
 
+// Medido em 2026-10-18: no OpenCode e no Codex reais, a recusa encerra o turno com stopReason "cancelled". Isso não é
+// o Pai apertando Parar: a execução para com o motivo da recusa.
+test('recusa que encerra o turno do harness: a execução para por permissão negada, não por parada do Pai (critério 6)', async () => {
+  const { ipc, workspace } = await owner({ FAKE_ACP_PROMPT: 'permission', FAKE_ACP_DENY_ENDS: '1' });
+  const { run } = await ipc('agent.run', { session: 'p7', task: 'edite o README', workspace, harness: 'opencode', interactive: true });
+  const ap = await until(async () => ((await ipc('approval.list')) as any[]).find((a) => a.session === 'p7'));
+  await ipc('approval.resolve', { id: ap.id, decision: 'deny' });
+  await finished(ipc, run);
+  assert.equal((await ipc('run.get', { id: run })).state, 'stopped');
+  const ev = (await ipc('session.events', { session: 'p7' })) as Ev[];
+  assert.equal(ev.find((e) => e.kind === 'run.stopped')!.payload.reason, 'permissionDenied');
+});
+
 test('concessão de sessão vale para o pedido seguinte igual, sem perguntar de novo (critério 6)', async () => {
   const { ipc, workspace } = await owner({ FAKE_ACP_PROMPT: 'permission' });
   await ipc('policy.grant', { scope: 'session', tool: 'write_file', pattern: 'README.md', session: 'p3' });

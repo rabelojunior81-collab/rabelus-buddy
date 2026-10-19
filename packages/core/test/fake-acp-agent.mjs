@@ -15,6 +15,7 @@
 //   FAKE_ACP_ECHO_CONFIG=1: o texto final conta se recebeu OPENCODE_CONFIG_CONTENT com permission ask.
 //   FAKE_ACP_PERM_KIND: tipo da ação pedida na permissão (padrão edit, com o caminho em locations).
 //   FAKE_ACP_PROMPT=unasked: escreve um arquivo (tool_call edit concluído) sem pedir permissão.
+//   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
 import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
 import { agent, ndJsonStream, PROTOCOL_VERSION, RequestError } from '@agentclientprotocol/sdk';
@@ -71,6 +72,8 @@ else {
           options: [{ optionId: 'ok', name: 'Permitir', kind: 'allow_once' }, { optionId: 'always', name: 'Sempre', kind: 'allow_always' }, { optionId: 'no', name: 'Negar', kind: 'reject_once' }],
         });
         extra = ` Permissão: ${r.outcome.outcome === 'selected' ? r.outcome.optionId : r.outcome.outcome}.`;
+        // Como o OpenCode e o Codex reais (2026-10-18): a recusa encerra o turno com stopReason "cancelled".
+        if (process.env.FAKE_ACP_DENY_ENDS && r.outcome.optionId === 'no') return { stopReason: 'cancelled' };
       }
       if (process.env.FAKE_ACP_PROMPT === 'unasked') {
         await send({ sessionUpdate: 'tool_call', toolCallId: 't3', title: 'Escrevendo saida.txt', kind: 'edit', status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'saida.txt') }] });

@@ -11,9 +11,9 @@ import { killTree, spawnHarness, type LaunchSpec } from './client.ts';
 
 export type TurnUpdate =
   | { kind: 'reasoning' | 'text'; delta: string }
-  | { kind: 'tool'; id: string; title: string; status: string };
+  | { kind: 'tool'; id: string; title: string; status: string; toolKind?: string };
 
-export interface PermissionAsk { title: string; kind?: string; options: { optionId: string; name: string; kind: string }[] }
+export interface PermissionAsk { toolCallId: string; title: string; kind?: string; paths: string[]; options: { optionId: string; name: string; kind: string }[] }
 export type PermissionAnswer = { outcome: 'cancelled' } | { outcome: 'selected'; optionId: string };
 
 export interface TurnOptions {
@@ -22,6 +22,10 @@ export interface TurnOptions {
   signal?: AbortSignal;
   onUpdate?: (u: TurnUpdate) => void;
   onPermission?: (ask: PermissionAsk) => PermissionAnswer | Promise<PermissionAnswer>;
+  // Postura (M1.2d): se o harness declara a opção de modo com este valor (o Codex declara "read-only"), o turno
+  // a liga por session/set_config_option antes da tarefa. onPosture conta o modo em vigor (null: não declarado).
+  preferMode?: string;
+  onPosture?: (p: { mode: string | null }) => void;
   // Sem nenhuma mensagem do harness por este tempo, o turno falha (o harness pode pensar por minutos: o relógio
   // reinicia a cada atualização).
   idleMs?: number;
@@ -64,12 +68,13 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
         o.onUpdate?.({ kind: 'text', delta });
       }
       else if (u.sessionUpdate === 'agent_thought_chunk' && u.content.type === 'text') o.onUpdate?.({ kind: 'reasoning', delta: u.content.text });
-      else if (u.sessionUpdate === 'tool_call') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title, status: u.status ?? 'pending' }); }
-      else if (u.sessionUpdate === 'tool_call_update') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title ?? '', status: u.status ?? '' }); }
+      else if (u.sessionUpdate === 'tool_call') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title, status: u.status ?? 'pending', ...(u.kind ? { toolKind: u.kind } : {}) }); }
+      else if (u.sessionUpdate === 'tool_call_update') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title ?? '', status: u.status ?? '', ...(u.kind ? { toolKind: u.kind } : {}) }); }
     })
     .onRequest('session/request_permission', async ({ params }) => {
       touch();
-      const ask: PermissionAsk = { title: params.toolCall.title ?? '', ...(params.toolCall.kind ? { kind: params.toolCall.kind } : {}), options: params.options.map((x) => ({ optionId: x.optionId, name: x.name, kind: x.kind })) };
+      const tc = params.toolCall;
+      const ask: PermissionAsk = { toolCallId: tc.toolCallId, title: tc.title ?? '', ...(tc.kind ? { kind: tc.kind } : {}), paths: (tc.locations ?? []).map((l) => l.path), options: params.options.map((x) => ({ optionId: x.optionId, name: x.name, kind: x.kind })) };
       const answer = o.onPermission ? await o.onPermission(ask) : { outcome: 'cancelled' as const };
       return { outcome: answer };
     });
@@ -82,8 +87,20 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
     const init = await race(conn.agent.request('initialize', { protocolVersion: PROTOCOL_VERSION, clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false } }));
     const agent = init.agentInfo ? { name: init.agentInfo.name, ...(init.agentInfo.version ? { version: init.agentInfo.version } : {}) } : undefined;
     touch();
-    try { sessionId = (await race(conn.agent.request('session/new', { cwd: o.cwd, mcpServers: [] }))).sessionId; }
+    let created;
+    try { created = await race(conn.agent.request('session/new', { cwd: o.cwd, mcpServers: [] })); }
     catch (e) { if ((e as { code?: number }).code === -32000) throw new TurnError('o harness pede login (auth_required)'); throw e; }
+    sessionId = created.sessionId;
+    // Opção de modo declarada (id "mode" ou categoria "mode"); as config options substituem a API antiga de modos.
+    const modeOpt = (created.configOptions ?? []).find((c) => c.id === 'mode' || c.category === 'mode') as { id: string; currentValue?: unknown; options?: unknown[] } | undefined;
+    const values = (modeOpt?.options ?? []).flatMap((x) => (typeof x === 'object' && x && 'value' in x ? [String((x as { value: unknown }).value)] : []));
+    let mode: string | null = modeOpt ? String(modeOpt.currentValue ?? '') || null : null;
+    if (modeOpt && o.preferMode && values.includes(o.preferMode) && mode !== o.preferMode) {
+      touch();
+      await race(conn.agent.request('session/set_config_option', { sessionId, configId: modeOpt.id, value: o.preferMode }));
+      mode = o.preferMode;
+    }
+    o.onPosture?.({ mode });
     if (o.signal?.aborted) return { stopReason: 'cancelled', text, ...(agent ? { agent } : {}) };
     o.signal?.addEventListener('abort', cancel, { once: true });
     touch();
