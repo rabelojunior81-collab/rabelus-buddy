@@ -160,3 +160,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## Diferenças de plataforma (2026-10-18)
 
 1. **Duas vezes no mesmo dia, o Linux da CI revelou o que o Windows esconde:** o processo zumbi contado como vivo e o gancho sem permissão de execução ignorado pelo git. → Teste que mexe com processos, sinais ou permissões nasce já prevendo a semântica Unix (zumbi, `+x`, grupo de processos), não só a do Windows onde rodo.
+
+## lote #0021-#0021
+
+1. **Em 2026-10-15, a identidade do Buddy Fenix entrou no Blog em todas as superfícies de uma vez (ficha, cards em pt e en, bios), conferida em 375 e 1440 px.** Em 2026-10-18, o Pai aprovou o Codex e não viu nenhum efeito na console. → Ação do Pai sempre tem retorno visível na superfície em que ele está; liberar sem mostrar não é entrega.

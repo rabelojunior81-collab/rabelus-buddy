@@ -212,7 +212,7 @@ export async function startOwner(home: string): Promise<Owner> {
   let catalogBuild: Promise<ModelCatalog> | null = null;
   // Primeira execução por pacote@versão (critério 4): 'approved', 'denied', ou o id da aprovação pendente
   // (criada aqui quando `ask`, uma só por pacote). O vínculo pacote → aprovação fica no log.
-  const firstRun = (name: string, spec: { package?: string; source: string }, ask = false): string => {
+  const firstRun = ({ id, name }: { id: string; name: string }, spec: { package?: string; source: string }, ask = false): string => {
     const req = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { package?: string }).package === spec.package).at(-1);
     if (req) {
       const ap = domain.getApproval(String((req.payload as { approval: string }).approval));
@@ -221,8 +221,32 @@ export async function startOwner(home: string): Promise<Owner> {
     }
     if (!ask) return 'none';
     const ap = domain.requestApproval('harness', `Primeira execução de ${name}: baixar e executar ${spec.package} (${spec.source}). Aprovar vale só para esta versão.`);
-    log.append('harness', 'harness.approval.requested', { package: spec.package, source: spec.source, approval: ap.id, name });
+    log.append('harness', 'harness.approval.requested', { package: spec.package, source: spec.source, approval: ap.id, name, id });
     return ap.id;
+  };
+  // Sonda por id (critério 3), com a primeira execução aprovada (critério 4). Usada por harness.probe e pela
+  // aprovação de primeira execução, que roda a sonda na hora para o Pai ver o resultado.
+  const probeById = async (id: string): Promise<Record<string, unknown>> => {
+    await registryNow();
+    const v = detectHarnesses(home, process.env).find((h) => h.id === id);
+    if (!v) throw new DomainError(-32602, `harness desconhecido: ${id}`);
+    const spec = launchFor(v);
+    let out: Record<string, unknown>;
+    if (!spec) out = { state: 'indisponivel', reason: v.found ? 'sem lançamento local conhecido; o registro pede baixar o binário' : 'não instalado neste computador' };
+    else if (spec.needsApproval && firstRun(v, spec) !== 'approved') {
+      // Primeira execução de pacote que baixa código (SPEC 0002, critério 4): aprovação do Pai por pacote@versão.
+      const fr = firstRun(v, spec, true);
+      out = fr === 'denied'
+        ? { state: 'negado', reason: `a primeira execução de ${spec.package} foi negada pelo Pai; nada roda`, package: spec.package }
+        : { state: 'aprovacao', reason: `a primeira execução baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai`, package: spec.package, approval: fr };
+    } else {
+      const cwd = join(home, 'area-de-trabalho');
+      mkdirSync(cwd, { recursive: true });
+      out = { ...(await probeHarness(spec, { cwd })) };
+      delete out.pid;
+    }
+    log.append('harness', 'harness.probed', { id: v.id, state: out.state, ...(out.reason ? { reason: out.reason } : {}), ...(out.agent ? { agent: out.agent } : {}) });
+    return { id: v.id, name: v.name, ...out };
   };
   const registryNow = async (force = false): Promise<RegistryState> => {
     const reg = readRegistry(home);
@@ -316,28 +340,7 @@ export async function startOwner(home: string): Promise<Owner> {
     },
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
     // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
-    'harness.probe': async (p) => {
-      await registryNow();
-      const v = detectHarnesses(home, process.env).find((h) => h.id === String(p.id));
-      if (!v) throw new DomainError(-32602, `harness desconhecido: ${String(p.id)}`);
-      const spec = launchFor(v);
-      let out: Record<string, unknown>;
-      if (!spec) out = { state: 'indisponivel', reason: v.found ? 'sem lançamento local conhecido; o registro pede baixar o binário' : 'não instalado neste computador' };
-      else if (spec.needsApproval && firstRun(v.name, spec) !== 'approved') {
-        // Primeira execução de pacote que baixa código (SPEC 0002, critério 4): aprovação do Pai por pacote@versão.
-        const fr = firstRun(v.name, spec, true);
-        out = fr === 'denied'
-          ? { state: 'negado', reason: `a primeira execução de ${spec.package} foi negada pelo Pai; nada roda`, package: spec.package }
-          : { state: 'aprovacao', reason: `a primeira execução baixa ${spec.package} (${spec.source}) e precisa da aprovação do Pai`, package: spec.package, approval: fr };
-      } else {
-        const cwd = join(home, 'area-de-trabalho');
-        mkdirSync(cwd, { recursive: true });
-        out = { ...(await probeHarness(spec, { cwd })) };
-        delete out.pid;
-      }
-      log.append('harness', 'harness.probed', { id: v.id, state: out.state, ...(out.reason ? { reason: out.reason } : {}), ...(out.agent ? { agent: out.agent } : {}) });
-      return { id: v.id, ...out };
-    },
+    'harness.probe': (p) => probeById(String(p.id)),
     // Catálogo de modelos provedor → lab → modelo (SPEC 0002, critério 13): guardado e renovado no máximo uma vez por dia.
     'models.list': async () => {
       const file = join(home, 'models', 'catalog.json');
@@ -404,7 +407,16 @@ export async function startOwner(home: string): Promise<Owner> {
     'effect.reconcile': (p) => domain.reconcileEffect(String(p.id), p.outcome === 'done' ? 'done' : 'not-done'),
     'effect.get': (p) => domain.getEffect(String(p.id)),
     'approval.request': (p) => domain.requestApproval(String(p.session), String(p.action)),
-    'approval.resolve': (p) => domain.resolveApproval(String(p.id), p.decision === 'approve' ? 'approve' : 'deny'),
+    // Aprovação de primeira execução de harness: roda a sonda na hora e devolve o resultado, para o Pai ver o efeito
+    // do clique (achado do Pai em 2026-10-18: "não houve nenhuma entrega ou mudança").
+    'approval.resolve': async (p) => {
+      const a = domain.resolveApproval(String(p.id), p.decision === 'approve' ? 'approve' : 'deny');
+      const req = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { approval?: string }).approval === a.id).at(-1);
+      const hid = (req?.payload as { id?: string } | undefined)?.id;
+      if (!hid) return a;
+      const r = await probeById(hid);
+      return { ...a, harness: { id: hid, name: r.name, state: r.state, ...(r.reason ? { reason: r.reason } : {}), ...(r.agent ? { agent: r.agent } : {}) } };
+    },
     'approval.get': (p) => domain.getApproval(String(p.id)),
     'approval.list': () => domain.pendingApprovals(),
     'budget.reserve': (p) => ({ reservation: budget.reserve(String(p.session), { provider: String(p.provider), model: String(p.model), estimateUsd: Number(p.estimateUsd) }) }),

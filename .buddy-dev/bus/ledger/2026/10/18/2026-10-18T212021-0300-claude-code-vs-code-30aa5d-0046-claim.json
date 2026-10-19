@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-18T212021-0300-claude-code-vs-code-30aa5d-0046",
+  "ts": "2026-10-18T21:20:21-03:00",
+  "utc": "2026-10-19T00:20:21.590Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 46,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-codex-real",
+  "type": "claim",
+  "summary": "docs/30-governanca/validacoes.json",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-19T00:50:21.590Z",
+    "tookOverFrom": null
+  }
+}

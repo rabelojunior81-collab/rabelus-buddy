@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T212217-0300-claude-code-vs-code-30aa5d-0054",
+  "ts": "2026-10-18T21:22:17-03:00",
+  "utc": "2026-10-19T00:22:17.114Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 54,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-codex-real",
+  "type": "pesquisa",
+  "summary": "M1.2c (pesquisa no SDK ACP 1.9.0): session/update traz agent_message_chunk (texto), agent_thought_chunk (raciocínio), tool_call e tool_call_update (ferramentas), plan/plan_update, usage_update, notice, entre outros; session/prompt termina com stopReason end_turn, max_tokens, max_turn_requests, refusal ou cancelled; cancelamento por session/cancel. Mapeamento previsto: texto→writing, raciocínio→agent.reasoning, ferramenta→exec no run.live",
+  "refs": [],
+  "data": {}
+}

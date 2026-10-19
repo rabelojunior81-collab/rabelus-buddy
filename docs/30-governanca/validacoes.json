@@ -551,8 +551,9 @@
       "mecanismo": {
         "teste": "packages/core/test/primeira-execucao.test.ts"
       },
-      "estado": "pendente",
-      "origem": "SPEC 0002, critério 4; pergunta do Pai sobre o Codex (2026-10-18)"
+      "estado": "feito",
+      "origem": "SPEC 0002, critério 4; pergunta do Pai sobre o Codex (2026-10-18)",
+      "evidencia": "Pai aprovou ap-8d875c4f na console em 2026-10-18 (~20:55); sonda real: codex-acp 2.2.2 pronto em 10,1 s; achado do Pai (sem retorno visível) corrigido: aprovar roda a sonda e mostra o resultado"
     },
     {
       "id": "processos-sem-janela",

@@ -16,3 +16,13 @@ O teste automático cobre o resto do critério: negada, nada roda; com versão n
 ## Para o passo real
 
 O núcleo do Pai rodava desde 01:35 com o código antigo e precisa ser reiniciado com o código novo, do mesmo jeito que o atalho `abrir-rabelus-buddy.cmd` o inicia.
+
+## Passo real com o Pai (2026-10-18, ~20:55–21:13)
+
+- O núcleo do Pai subiu com o código novo, do mesmo jeito que o produto o sobe (oculto e desligado do console). O pedido `ap-8d875c4f` apareceu no painel, e **o Pai aprovou**.
+- **Achado do Pai:** "não houve nenhuma entrega ou mudança". Aprovar só liberava; nada rodava e nada aparecia.
+- **Sonda real do Codex depois da aprovação, CONFIRMADO:** `@agentclientprotocol/codex-acp` 2.2.2 baixado pelo npx e **pronto** em 10,1 s, com o download. Aceita imagem; logins `api-key` e `chat-gpt`. Nenhuma janela abriu e nenhum processo sobrou.
+
+## Retorno visível (correção do achado)
+
+Aprovar agora roda a sonda na hora, e o painel mostra "Preparando a primeira execução…" e depois o resultado, por exemplo "Codex 2.2.2: pronto para conversar com o Buddy.". Foi ensaiado na console a 1707×769 ([captura](./m12b-02-resultado-depois-de-aprovar.png), com o agente falso: versão 0.0.1).

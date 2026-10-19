@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T204742-0300-claude-code-vs-code-30aa5d-0035",
+  "ts": "2026-10-18T20:47:42-03:00",
+  "utc": "2026-10-18T23:47:42.926Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 35,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "pesquisa",
+  "summary": "Núcleo do Pai (pid 42444, desde 01:35) não está mais vivo (canal e porta 47321 livres; provável encerramento por inatividade). Subindo o núcleo com o código da main 000e69e do mesmo jeito que o produto (ensureOwner: daemon start desligado do console, windowsHide), sem abrir navegador",
+  "refs": [],
+  "data": {}
+}
