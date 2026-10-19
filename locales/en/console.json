@@ -118,7 +118,35 @@
       "emptyResponse": "the provider returned an empty answer (no text, 0 tokens); try another provider or retry",
       "effectUnknown": "uncertain result of an action; use Resume to check",
       "needsReconciliation": "needs your confirmation to resume",
-      "internalError": "internal core error"
+      "internalError": "internal core error",
+      "permissionDenied": "permission denied: the agent stopped the task",
+      "harnessCancelled": "the agent ended the task",
+      "harnessFailed": "the agent failed; see the reason in the details",
+      "needsLogin": "the agent asks you to sign in before going on"
+    },
+    "side": {
+      "threads": "Conversations",
+      "agents": "Harnesses found",
+      "none": "No conversations yet.",
+      "noAgents": "No harness found on this computer.",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "menu": "Open conversations and harnesses",
+      "installed": "installed"
+    },
+    "settings": {
+      "title": "Settings",
+      "open": "Open settings",
+      "close": "Close settings",
+      "prefs": "Preferences"
+    },
+    "home": {
+      "eyebrow": "Orchestrator · {{n}} harnesses found",
+      "greeting": "How can I help, Pai?",
+      "sugg1": "Review this repository and suggest improvements",
+      "sugg2": "Summarize what changed today in my projects",
+      "sugg3": "Explain this error and propose the fix",
+      "sugg4": "Write the tests before the code for this task"
     },
     "theme": {
       "title": "Theme",

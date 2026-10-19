@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0025 · 2026-10-15T041437-0300 · claude-code-vs-code-438d04 · decisao
-
-ADR 0013 aceita pelo Pai: stack mobile e Web começa por A (Expo universal sobre pacote de cliente TS) e chega em B (Web UI React DOM separada); spike no M5.
-
 ### #0026 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · correcao
 
 Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en com Fase 0 e sem mapa em inglês, STATUS com ADR 0013 proposta, USER com merge do Pai, fichas do Node e do GitHub, carimbos de ROADMAP/PLANO-MACRO/Fase 0, AGENTS, BOOTSTRAP, PR template, CHANGELOG da raiz, 40-specs, pendência da convenção de código). Plano da conta GitHub medido: Free.
@@ -207,3 +203,7 @@ M1.2d: permissões do harness pelo núcleo (postura read-only/permission ask ao 
 ### #0072 · 2026-10-19T103247-0300 · claude-code-vs-code-51d166 · feat
 
 M1.2e no núcleo: needsLogin com os métodos (sem os de terminal), harness.login com authenticate (o harness guarda a credencial), método de terminal recusado; withAcp reúne sonda e login; checagem real sem efeito para o Pai; núcleo do Pai reiniciado com o código novo; ordem nova do M1 a pedido do Pai (M1.5 antes do login do Pai)
+
+### #0073 · 2026-10-19T105752-0300 · claude-code-vs-code-51d166 · feat
+
+M1.5a: console nova (casca do protótipo v4 com tudo do M0, tokens oliva OKLCH, contraste AA medido por teste, marca servida pela console, conversas por dia e harnesses na lateral, Ajustes em painel, aprovações sobre a caixa); ensaio no navegador real com 7 capturas e 7 correções; núcleo do Pai reiniciado; ordem do M1 nova

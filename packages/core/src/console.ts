@@ -12,6 +12,9 @@ import { checkParams } from './contract.ts';
 import { iconPath } from './harness/catalog.ts';
 
 const PAGE_DIR = join(import.meta.dirname, '..', 'console');
+// Marca do Rabelus Lab (emblema da fênix, pedido do Pai na aprovação do visual v4): lista fechada de arquivos.
+const BRAND_DIR = join(import.meta.dirname, '..', 'assets', 'brand');
+const BRAND = new Set(['emblema-256.png', 'emblema-64.png']);
 const LOCALES = join(import.meta.dirname, '..', '..', '..', 'locales');
 export const DEFAULT_CONSOLE_PORT = 47321;
 
@@ -93,6 +96,11 @@ export async function startConsole({ home, methods, touch, port = Number(process
       const p = iconPath(home, ic[1]!);
       if (!p || !existsSync(p)) return json(res, 404, { error: { message: 'ícone' } });
       return send(res, 200, readFileSync(p, 'utf8'), 'image/svg+xml', { 'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox", 'cache-control': 'private, max-age=86400' });
+    }
+    const br = /^\/brand\/([a-z0-9-]+\.png)$/.exec(url.pathname);
+    if (req.method === 'GET' && br && BRAND.has(br[1]!)) {
+      res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'private, max-age=86400', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer' });
+      return res.end(readFileSync(join(BRAND_DIR, br[1]!)));
     }
     const a = /^\/api\/([a-z.]+)$/i.exec(url.pathname);
     if (req.method !== 'POST' || !a || !allowed.has(a[1]!) || !methods[a[1]!]) return json(res, 404, { error: { message: 'não encontrado' } });

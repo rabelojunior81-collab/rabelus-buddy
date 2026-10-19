@@ -176,3 +176,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0024-#0024
 
 1. **Em 2026-10-15, aprendi que regra sem mecanismo eu esqueço (o post no Blog), e o gate virou código.** Em 2026-10-19, abri uma branch logo depois de um merge sem rodar o `bd pre`, e o STATUS ficou dois merges atrás. Não precisei lembrar: o gancho pre-commit barrou o commit, e o `bd status-main` corrigiu em um passo. → O mecanismo pega o que o hábito deixa passar; quando ele barra, a resposta é corrigir pela ferramenta e registrar, nunca contornar.
+
+## lote #0025-#0025
+
+1. **Em 2026-10-15, o Pai aceitou a ADR 0013: a interface começa pelo caminho mais simples e cresce quando as telas pedirem.** Em 2026-10-19, o protótipo v4 que ele aprovou virou a console de verdade. A medida de contraste reprovou seis tokens do próprio protótipo, e o ensaio no navegador achou dois defeitos que os testes não viam: os ícones sumiam no escuro, e a tela inicial era buscada fora do documento. → Aprovação de visual é aprovação da direção, não dos números. A versão real se mede (contraste, 375 px) e se ensaia no navegador, e cada achado ganha teste antes da correção.
