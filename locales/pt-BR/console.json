@@ -22,7 +22,12 @@
       "default": "Padrão do provedor",
       "low": "Baixo",
       "medium": "Médio",
-      "high": "Alto"
+      "high": "Alto",
+      "none": "Nenhum",
+      "minimal": "Mínimo",
+      "xhigh": "Muito alto",
+      "max": "Máximo",
+      "ultra": "Ultra"
     },
     "route": {
       "auto": "Automático, pela ordem (Go → Ollama → ChatGPT → OpenRouter)",

@@ -10,7 +10,9 @@ export interface ChatMessage {
   toolCallId?: string;
 }
 // Esforço de raciocínio por execução (SPEC 0001 rev. 5, critério 29); ausente = padrão do provedor.
-export type Effort = 'low' | 'medium' | 'high';
+// Os oito níveis que os provedores declaram no catálogo real (M1.5c, medido em 2026-10-19), conforme o modelo.
+export const EFFORTS = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'] as const;
+export type Effort = (typeof EFFORTS)[number];
 export interface ModelRequest { model: string; messages: ChatMessage[]; tools?: ToolSpec[]; maxOutputTokens?: number; effort?: Effort }
 // reasoning: o raciocínio que o provedor expõe (resumo no SIWC; bruto no Ollama e no OpenRouter), para o log (critério 32).
 export interface ModelResponse { text: string; toolCalls: ToolCall[]; usage: Usage; finish: 'stop' | 'tool_calls' | 'length' | 'other'; reasoning?: string }

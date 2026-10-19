@@ -22,7 +22,12 @@
       "default": "Provider default",
       "low": "Low",
       "medium": "Medium",
-      "high": "High"
+      "high": "High",
+      "none": "None",
+      "minimal": "Minimal",
+      "xhigh": "Extra high",
+      "max": "Maximum",
+      "ultra": "Ultra"
     },
     "route": {
       "auto": "Automatic, in order (Go → Ollama → ChatGPT → OpenRouter)",

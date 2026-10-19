@@ -194,7 +194,9 @@ test('níveis de esforço além de baixo, médio e alto chegam a cada rota no fo
   await go.call({ ...req('kimi-k3'), effort: 'none' }, { session: 's' });
   assert.equal(sent(2).reasoning_effort, 'none', 'Chat: none também é declarado pelo provedor');
   const budget = async (effort: string, i: number) => {
-    await go.call({ ...req('claude-haiku-5-5'), effort, maxOutputTokens: 64_000 } as never, { session: 's' });
+    // maxOutputTokens baixo como no teste do critério 29: o SDK da Anthropic recusa, sem streaming, max_tokens que
+    // estime mais de 10 minutos (acima de ~21.333), achado ao rodar este teste em 2026-10-19.
+    await go.call({ ...req('claude-haiku-5-5'), effort, maxOutputTokens: 2000 } as never, { session: 's' });
     return (sent(i).thinking as { budget_tokens?: number } | undefined)?.budget_tokens ?? 0;
   };
   const high = await budget('high', 3);
