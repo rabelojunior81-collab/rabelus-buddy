@@ -22,7 +22,7 @@ export const CONSOLE_SCHEMAS = {
   'session.list': empty,
   'run.get': z.strictObject({ id }),
   'run.list': empty,
-  'agent.run': z.strictObject({ session: id, task: text.min(1), workspace: path, interactive: z.boolean().optional(), effort, route, continueFrom: id.optional() }),
+  'agent.run': z.strictObject({ session: id, task: text.min(1), workspace: path, interactive: z.boolean().optional(), effort, route, continueFrom: id.optional(), harness: id.nullable().optional() }),
   'agent.resume': z.strictObject({ run: id, workspace: path, interactive: z.boolean().optional(), effort, route }),
   'run.live': z.strictObject({ session: id }),
   'agent.steer': z.strictObject({ session: id, text: text.optional(), queue: id.optional() }),
