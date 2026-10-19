@@ -97,6 +97,37 @@ test('estado do harness na pílula: a sonda vira uma palavra e um tom (critério
   assert.deepEqual(probeView({ state: 'indisponivel' }), { key: 'console.harness.state.indisponivel', tone: 'bad' });
 });
 
+// Achados do ensaio com o OpenCode real (2026-10-19): "trabalha com cautela: modo build" era enganoso (a cautela do
+// OpenCode vem do permission ask, e build não é cauteloso), e os estados das ferramentas apareciam em inglês.
+test('postura dita como é: perguntar antes, somente leitura, ou só o modo, sem prometer cautela (critério 6)', () => {
+  const { postureKey } = pure<{ postureKey: (p: { mode: string | null; config: string | null }) => string | null }>(['postureKey']);
+  assert.equal(postureKey({ mode: 'build', config: 'permission ask' }), 'console.harness.postureAsk');
+  assert.equal(postureKey({ mode: 'read-only', config: null }), 'console.harness.postureReadOnly');
+  assert.equal(postureKey({ mode: 'agent', config: null }), 'console.harness.postureMode');
+  assert.equal(postureKey({ mode: null, config: null }), null, 'sem postura conhecida, nada a dizer');
+});
+
+test('estado da ferramenta do harness em palavras do catálogo (critério 11)', () => {
+  const { toolStatusKey } = pure<{ toolStatusKey: (s: string) => string | null }>(['toolStatusKey']);
+  assert.equal(toolStatusKey('pending'), 'console.harness.status.pending');
+  assert.equal(toolStatusKey('in_progress'), 'console.harness.status.in_progress');
+  assert.equal(toolStatusKey('completed'), 'console.harness.status.completed');
+  assert.equal(toolStatusKey('failed'), 'console.harness.status.failed');
+  assert.equal(toolStatusKey('outra-coisa'), null);
+});
+
+// As chaves devolvidas pelas funções acima não passam pela varredura de t('…') da página: conferidas aqui.
+test('as chaves de estado, postura e ferramenta existem nos dois idiomas (critério 28 do M0)', () => {
+  const keys = [...['checking', 'pronto', 'login', 'aprovacao', 'negado', 'falhou', 'indisponivel'].map((s) => `console.harness.state.${s}`),
+    'console.harness.postureAsk', 'console.harness.postureReadOnly', 'console.harness.postureMode',
+    ...['pending', 'in_progress', 'completed', 'failed'].map((s) => `console.harness.status.${s}`)];
+  for (const lang of ['pt-BR', 'en']) {
+    const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as Record<string, unknown>;
+    const get = (k: string) => k.split('.').reduce<unknown>((o, p) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[p] : undefined), cat);
+    assert.deepEqual(keys.filter((k) => typeof get(k) !== 'string'), [], `${lang}: chaves ausentes`);
+  }
+});
+
 test('página: pílula de harness com lista acessível, sonda ao escolher, login pelo Entrar, eventos do harness na conversa (critério 11)', () => {
   assert.match(PAGE, /id="hBtn"[^>]*aria-haspopup="listbox"[^>]*aria-expanded="false"/, 'pílula de harness');
   assert.match(PAGE, /id="hPop"[^>]*role="listbox"/, 'lista de harnesses');
@@ -104,6 +135,9 @@ test('página: pílula de harness com lista acessível, sonda ao escolher, login
   assert.ok(PAGE.includes("api('harness.login', { id"), 'Entrar chama o login do harness');
   assert.match(PAGE, /params\.harness = /, 'a tarefa leva o harness escolhido');
   for (const k of ['harness.tool', 'harness.permission', 'harness.posture', 'harness.unasked', 'harness.error', 'harness.login.required']) assert.ok(PAGE.includes(`case '${k}':`), `a conversa mostra ${k}`);
+  // Ensaio (2026-10-19): a conversa era desenhada antes de chegar a lista de harnesses e mostrava "opencode" no lugar
+  // de "OpenCode"; quando a lista chega, a conversa é redesenhada com os nomes.
+  assert.match(PAGE, /harnesses = r\.harnesses\.filter\(\(h\) => h\.found\);\s*lastFeedKey = '';/, 'a conversa refaz os nomes quando a lista de harnesses chega');
   // O contrato da console aceita o campo que a página manda.
   assert.ok('harness' in (CONSOLE_SCHEMAS['agent.run'] as unknown as { shape: Record<string, unknown> }).shape);
 });

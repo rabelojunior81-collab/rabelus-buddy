@@ -154,7 +154,15 @@
         "approve": "approved by you",
         "deny": "denied"
       },
-      "posture": "{{name}} works cautiously: {{mode}} mode",
+      "postureAsk": "{{name}} asks for permission before editing or running anything",
+      "postureReadOnly": "{{name}} works in read-only mode and asks for permission to edit",
+      "postureMode": "{{name}} works in {{mode}} mode",
+      "status": {
+        "pending": "pending",
+        "in_progress": "in progress",
+        "completed": "completed",
+        "failed": "failed"
+      },
       "unasked": "Heads up: {{name}} did \"{{title}}\" without asking for permission.",
       "error": "{{name}} failed: {{reason}}"
     },

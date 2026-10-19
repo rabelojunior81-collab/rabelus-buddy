@@ -154,7 +154,15 @@
         "approve": "aprovada por você",
         "deny": "negada"
       },
-      "posture": "{{name}} trabalha com cautela: modo {{mode}}",
+      "postureAsk": "{{name}} pede permissão antes de editar ou executar",
+      "postureReadOnly": "{{name}} trabalha em modo somente leitura e pede permissão para editar",
+      "postureMode": "{{name}} trabalha no modo {{mode}}",
+      "status": {
+        "pending": "pendente",
+        "in_progress": "em andamento",
+        "completed": "concluída",
+        "failed": "falhou"
+      },
       "unasked": "Atenção: {{name}} fez \"{{title}}\" sem pedir permissão.",
       "error": "{{name}} falhou: {{reason}}"
     },

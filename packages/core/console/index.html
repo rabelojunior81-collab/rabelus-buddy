@@ -552,6 +552,17 @@ function probeView(r) {
   const state = r && Object.prototype.hasOwnProperty.call(PROBE, r.state) ? r.state : 'falhou';
   return { key: 'console.harness.state.' + state, tone: PROBE[state] };
 }
+// Postura do harness (M1.2d) dita como é: o "perguntar antes" (OpenCode) e o somente leitura (Codex) são cautela;
+// outro modo é só informado, sem prometer cautela (achado do ensaio: "cautela: modo build" enganava).
+function postureKey(p) {
+  if (p && p.config) return 'console.harness.postureAsk';
+  if (p && p.mode === 'read-only') return 'console.harness.postureReadOnly';
+  if (p && p.mode) return 'console.harness.postureMode';
+  return null;
+}
+// Estado da ferramenta do harness (ACP) em palavras do catálogo; desconhecido fica como veio.
+const TOOL_STATUS = { pending: 'console.harness.status.pending', in_progress: 'console.harness.status.in_progress', completed: 'console.harness.status.completed', failed: 'console.harness.status.failed' };
+function toolStatusKey(s) { return Object.prototype.hasOwnProperty.call(TOOL_STATUS, s) ? TOOL_STATUS[s] : null; }
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -652,9 +663,9 @@ function feedItems(evs) {
       case 'effect.reconciled': detail(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
       case 'context.compacted': detail(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
       // Conversa com harness (M1.2c–e): o que ele faz fica nos detalhes; o que pede a atenção do Pai fica à vista.
-      case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: p.status }))); break;
+      case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: toolStatusKey(p.status) ? t(toolStatusKey(p.status)) : p.status }))); break;
       case 'harness.permission': detail(el('div', { class: 'ev' }, t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target }))); break;
-      case 'harness.posture': if (p.mode) detail(el('div', { class: 'ev' }, t('console.harness.posture', { name: harnessName(p.id), mode: p.mode }))); break;
+      case 'harness.posture': if (postureKey(p)) detail(el('div', { class: 'ev' }, t(postureKey(p), { name: harnessName(p.id), mode: p.mode }))); break;
       case 'harness.unasked': speak(el('div', { class: 'ev err' }, t('console.harness.unasked', { name: harnessName(p.id), title: p.title }))); break;
       case 'harness.error': speak(el('div', { class: 'ev err' }, t('console.harness.error', { name: harnessName(p.id), reason: p.reason }))); break;
       case 'harness.login.required': speak(el('div', { class: 'loginbox' }, el('span', {}, t('console.harness.loginRequired', { name: harnessName(p.id) })),
@@ -852,6 +863,7 @@ const harnessIcon = (h) => (h.icon ? el('span', { class: 'ico', 'aria-hidden': '
 async function refreshAgents() {
   const r = await api('harness.list');
   harnesses = r.harnesses.filter((h) => h.found);
+  lastFeedKey = ''; // a conversa refaz os nomes dos harnesses (achado do ensaio: aparecia o id)
   $('agents').replaceChildren(...(harnesses.length ? harnesses.map((h) => el('div', { class: 'agent', title: h.description || h.name },
     harnessIcon(h), h.name, el('span', { class: 'st', title: t('console.side.installed') }))) : [el('div', { class: 'day' }, t('console.side.noAgents'))]));
   renderHome();

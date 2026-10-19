@@ -626,6 +626,21 @@
       },
       "origem": "SPEC 0002, critério 11; protótipo v4 aprovado pelo Pai em 2026-10-18",
       "evidencia": "Ensaio no navegador real em 2026-10-19 (1440 e 375 px, dois temas, sem rolagem horizontal): docs/registros/2026-10-19T105620-0300-ensaio-da-console-nova-m1-5a/README.md"
+    },
+    {
+      "id": "console-harness-na-caixa",
+      "descricao": "Console nova com harness na caixa: pela console (HTTP, contrato, token) a tarefa vai ao harness e a permissão chega como aprovação com o nome dele; pedido de login com os métodos e o Entrar; na página, pílula acessível, sonda ao escolher, eventos do harness na conversa, postura dita como é, estados pelo catálogo e ícone de quem pede na aprovação",
+      "quem": "maquina",
+      "onde": [
+        "M1.5b",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-harness.test.ts"
+      },
+      "origem": "SPEC 0002, critérios 5, 6, 7 e 11",
+      "evidencia": "Ensaio no navegador real com o OpenCode em 2026-10-19: docs/registros/2026-10-19T111729-0300-ensaio-do-harness-na-caixa-m1-5b/README.md"
     }
   ]
 }
