@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T011321-0300-claude-code-vs-code-571284-0001",
+  "ts": "2026-10-19T01:13:21-03:00",
+  "utc": "2026-10-19T04:13:21.064Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 1,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2d-permissoes",
+  "type": "session-start",
+  "summary": "M1.2d: permissões pelo núcleo (critério 6): ao abrir a sessão do harness, o núcleo define a postura que faz o harness perguntar (Codex mode read-only por session/set_config_option; OpenCode permission ask por OPENCODE_CONFIG_CONTENT no processo filho); cada session/request_permission vira aprovação na console com as opções do harness; decisão do Pai responde ao harness; escrita sem pedido detectada e avisada; checagem real com OpenCode e Codex",
+  "refs": [],
+  "data": {}
+}
