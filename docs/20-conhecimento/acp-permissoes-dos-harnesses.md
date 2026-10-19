@@ -1,6 +1,6 @@
 # ACP: como fazer o harness pedir permissão ao núcleo
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-18T22:06:35-03:00 · **Estado:** vigente (reverificar a cada versão nova do harness)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-19T01:22:00-03:00 · **Estado:** vigente (reverificar a cada versão nova do harness)
 
 ## O problema (medido em 2026-10-18)
 
@@ -19,7 +19,7 @@ O protocolo prevê `session/request_permission`, mas quem decide perguntar é o 
   - `agent`, o padrão;
   - `agent-full-access`.
 
-  Devolve também `collaboration_mode` (`default`/`plan`) e `model`.
+  Devolve também `collaboration_mode` (`default`/`plan`), `model`, `reasoning_effort` (categoria `thought_level`: `low`, `medium`, `high`, `xhigh`, `max`, `ultra`; atual `high`) e `fast-mode` (`off`/`on`). As duas últimas foram vistas em 2026-10-19, na listagem sem corte.
 - O cliente troca o modo com `session/set_config_option` `{ sessionId, configId: "mode", value: "read-only" }`. O ACP diz que as *config options* substituem a API antiga de modos, e que os modos sairão do protocolo ([fonte](https://agentclientprotocol.com/protocol/session-config-options), lida em 2026-10-18).
 - **Medido:** em `read-only`, o pedido de escrita virou `session/request_permission` com título "Run command" e `kind: execute`. As opções foram `allow_once`, `accept_execpolicy_amendment` (`allow_always`) e `cancel` (`reject_once`).
   - Negado: nada escrito, `stopReason: cancelled`, em 9,3 s.
@@ -27,7 +27,7 @@ O protocolo prevê `session/request_permission`, mas quem decide perguntar é o 
 
 ## OpenCode: configuração de permissão
 
-- Sem modos ACP: `configOptions` só traz `model`.
+- `configOptions` traz `model` e `mode` (`build`/`plan`, atual `build`), mas **nenhum modo `read-only`**. A primeira leitura, de 2026-10-18, dizia "só `model`". Estava errada: o script cortava a saída, e a lista de 811 modelos escondia o resto. Corrigido em 2026-10-19 com a listagem sem corte.
 - A permissão vem da configuração dele, com a chave `permission` ([fonte](https://opencode.ai/docs/permissions/), lida em 2026-10-18):
   - as chaves são `edit`, `bash`, `webfetch`, `read`, `glob`, `grep`, `task`, `skill`, `lsp`, `question`, `websearch`, `external_directory` e `doom_loop`;
   - os valores são `allow`, `ask` e `deny`, e `"*"` vale para todas;
