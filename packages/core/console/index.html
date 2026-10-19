@@ -5,174 +5,364 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <title>Rabelus Buddy</title>
-<link rel="icon" href="data:,">
+<link rel="icon" id="favicon" href="data:,">
 <script id="tema-cedo">try { var rbT = localStorage.getItem('rb.theme'); if (rbT === 'light' || rbT === 'dark') document.documentElement.setAttribute('data-theme', rbT); } catch (e) { /* sem armazenamento: Sistema */ }</script>
 <style>
+  /*
+    Console nova (SPEC 0002, critério 11; M1.5a): estrutura e tokens do protótipo v4 aprovado pelo Pai em 2026-10-18
+    (cantos retos, liquid glass, compacto, Inter do rabelus.com sem baixar nada, logomarca do Rabelus Lab ao lado do
+    nome). Paleta oliva em OKLCH (matiz 118–125). O contraste AA dos pares principais é medido no teste
+    console-nova.test.ts; em 2026-10-19 a medida pediu mais luz em faint, nos estados e no botão principal.
+  */
   :root {
-    --bg: #0d1113; --panel: #151b1e; --panel2: #1b2327; --line: #263238; --text: #e6eef0; --muted: #8fa3a8;
-    --accent: #a8a640; --accent-ink: #1d1c05; --warn: #e0b04a; --bad: #e0675a; --ok: #59c27a; --radius: 10px; color-scheme: dark;
+    --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+    --bg: oklch(13.5% .022 118);
+    --glow-a: oklch(62% .14 120 / .34);
+    --glow-b: oklch(78% .12 85 / .16);
+    --glow-c: oklch(46% .11 124 / .42);
+    --grid: oklch(100% 0 0 / .022);
+    --glass-fill: linear-gradient(180deg, oklch(100% 0 0 / .075), oklch(100% 0 0 / .022));
+    --glass-tint: oklch(19% .026 118 / .55);
+    --glass-solid: oklch(18% .025 118 / .86);
+    --glass-edge: oklch(100% 0 0 / .11);
+    --glass-spec: linear-gradient(180deg, oklch(100% 0 0 / .22), oklch(100% 0 0 / 0) 40%);
+    --side: oklch(10% .02 118 / .45);
+    --hair: oklch(82% .03 115 / .14);
+    --hair-strong: oklch(82% .05 118 / .26);
+    --hover: oklch(100% 0 0 / .05);
+    --text: oklch(95% .012 110);
+    --muted: oklch(76% .025 115);
+    --faint: oklch(70% .025 115);
+    --accent: oklch(78% .13 118);
+    --olive-300: oklch(86% .11 115);
+    --olive-400: oklch(76% .13 118);
+    --gold: oklch(82% .12 85);
+    --bad: oklch(76% .15 28);
+    --warn: oklch(84% .12 85);
+    --ok: oklch(80% .14 145);
+    --primary-a: oklch(52% .12 121 / .95);
+    --primary-b: oklch(42% .1 124 / .95);
+    --primary-ink: oklch(98% .01 110);
+    --mark-filter: drop-shadow(0 0 6px oklch(82% .12 85 / .35));
+    --shadow: 0 24px 80px -20px oklch(4% .02 120 / .75);
+    --ease: cubic-bezier(.2, .7, .2, 1);
+    color-scheme: dark;
   }
-  /* Tema (critério 35): Sistema segue o navegador; Claro e Escuro escolhidos na console valem acima dele. */
+  /* Tema (critério 35): Sistema segue o navegador; Claro e Escuro escolhidos na console valem acima dele. Os dois
+     blocos claros são iguais (o teste confere). */
   @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #66641c; color-scheme: light; }
+    :root:not([data-theme="dark"]) {
+      --bg: oklch(95% .025 118);
+      --glow-a: oklch(80% .13 118 / .55);
+      --glow-b: oklch(88% .1 85 / .5);
+      --glow-c: oklch(78% .12 122 / .5);
+      --grid: oklch(30% .05 118 / .04);
+      --glass-fill: linear-gradient(180deg, oklch(100% 0 0 / .75), oklch(100% 0 0 / .45));
+      --glass-tint: oklch(99% .01 110 / .55);
+      --glass-solid: oklch(99% .008 110 / .9);
+      --glass-edge: oklch(30% .05 118 / .12);
+      --glass-spec: linear-gradient(180deg, oklch(100% 0 0 / .9), oklch(100% 0 0 / 0) 45%);
+      --side: oklch(98% .01 110 / .55);
+      --hair: oklch(35% .05 118 / .14);
+      --hair-strong: oklch(35% .06 118 / .26);
+      --hover: oklch(30% .05 118 / .06);
+      --text: oklch(23% .035 122);
+      --muted: oklch(40% .04 120);
+      --faint: oklch(45% .03 118);
+      --accent: oklch(41% .1 124);
+      --olive-300: oklch(41% .1 124);
+      --olive-400: oklch(50% .12 121);
+      --gold: oklch(45% .1 75);
+      --bad: oklch(45% .17 28);
+      --warn: oklch(45% .1 75);
+      --ok: oklch(42% .12 145);
+      --primary-a: oklch(50% .12 121);
+      --primary-b: oklch(40% .1 124);
+      --primary-ink: oklch(98% .01 110);
+      --mark-filter: brightness(.62) saturate(1.4) drop-shadow(0 0 4px oklch(70% .12 85 / .25));
+      --shadow: 0 24px 70px -24px oklch(30% .05 118 / .35);
+      color-scheme: light;
+    }
   }
-  :root[data-theme="light"] { --bg: #f4f7f7; --panel: #ffffff; --panel2: #f0f4f4; --line: #d9e2e3; --text: #142024; --muted: #5b6e73; --accent-ink: #ffffff; --accent: #66641c; color-scheme: light; }
+  :root[data-theme="light"] {
+    --bg: oklch(95% .025 118);
+    --glow-a: oklch(80% .13 118 / .55);
+    --glow-b: oklch(88% .1 85 / .5);
+    --glow-c: oklch(78% .12 122 / .5);
+    --grid: oklch(30% .05 118 / .04);
+    --glass-fill: linear-gradient(180deg, oklch(100% 0 0 / .75), oklch(100% 0 0 / .45));
+    --glass-tint: oklch(99% .01 110 / .55);
+    --glass-solid: oklch(99% .008 110 / .9);
+    --glass-edge: oklch(30% .05 118 / .12);
+    --glass-spec: linear-gradient(180deg, oklch(100% 0 0 / .9), oklch(100% 0 0 / 0) 45%);
+    --side: oklch(98% .01 110 / .55);
+    --hair: oklch(35% .05 118 / .14);
+    --hair-strong: oklch(35% .06 118 / .26);
+    --hover: oklch(30% .05 118 / .06);
+    --text: oklch(23% .035 122);
+    --muted: oklch(40% .04 120);
+    --faint: oklch(45% .03 118);
+    --accent: oklch(41% .1 124);
+    --olive-300: oklch(41% .1 124);
+    --olive-400: oklch(50% .12 121);
+    --gold: oklch(45% .1 75);
+    --bad: oklch(45% .17 28);
+    --warn: oklch(45% .1 75);
+    --ok: oklch(42% .12 145);
+    --primary-a: oklch(50% .12 121);
+    --primary-b: oklch(40% .1 124);
+    --primary-ink: oklch(98% .01 110);
+    --mark-filter: brightness(.62) saturate(1.4) drop-shadow(0 0 4px oklch(70% .12 85 / .25));
+    --shadow: 0 24px 70px -24px oklch(30% .05 118 / .35);
+    color-scheme: light;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 2; }
-  header h1 { font-size: 17px; margin: 0; letter-spacing: .3px; }
-  header h1 span { color: var(--accent); }
-  header .sub { color: var(--muted); font-size: 13px; }
-  header .spacer { flex: 1; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); display: inline-block; margin-right: 6px; }
-  .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
-  main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; padding: 16px 20px; max-width: 1400px; margin: 0 auto; }
-  @media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 12px; } header { padding: 10px 12px; flex-wrap: wrap; } }
-  section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body { margin: 0; overflow: hidden; color: var(--text); font: 14px/1.55 var(--font); -webkit-font-smoothing: antialiased; background-color: var(--bg);
+    background-image: radial-gradient(70rem 42rem at 8% -6%, var(--glow-a), transparent 62%), radial-gradient(52rem 34rem at 92% 4%, var(--glow-b), transparent 60%),
+      radial-gradient(60rem 40rem at 70% 112%, var(--glow-c), transparent 62%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: auto, auto, auto, 48px 48px, 48px 48px; }
   textarea, input, select, button { font: inherit; color: inherit; }
-  textarea, input[type=text], input[type=password], select { width: 100%; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
-  textarea { min-height: 84px; resize: vertical; }
-  textarea:focus, input:focus, select:focus, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
-  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .check { display: flex; gap: 8px; align-items: center; margin-top: 10px; font-size: 14px; color: var(--text); }
-  .check input { width: auto; }
-  button { cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: var(--panel2); padding: 8px 14px; }
-  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
-  button.danger { border-color: var(--bad); color: var(--bad); background: transparent; }
+  button { cursor: pointer; }
   button:disabled { opacity: .5; cursor: default; }
-  .actions { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
-  .note { color: var(--muted); font-size: 13px; }
-  .msg { font-size: 13px; margin-top: 8px; min-height: 1em; }
-  .msg.bad { color: var(--bad); }
-  .chat { display: flex; flex-direction: column; height: calc(100vh - 92px); min-height: 460px; margin-bottom: 0; padding: 0; overflow: hidden; }
-  .chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
-  .chat-head h2 { margin: 0; }
-  .chat-head .spacer { flex: 1; }
-  #feed { flex: 1; display: flex; flex-direction: column; gap: 8px; overflow: auto; padding: 14px 16px; }
-  .composer { border-top: 1px solid var(--line); padding: 12px 16px; background: var(--panel); }
-  .composer textarea { min-height: 52px; max-height: 220px; }
-  .composer .controls { display: flex; gap: 10px; align-items: end; margin-top: 8px; flex-wrap: wrap; }
-  .composer .controls > div { flex: 1 1 180px; }
-  .composer .controls button { flex: 0 0 auto; height: 40px; }
-  .composer details { margin-top: 8px; font-size: 13px; color: var(--muted); }
-  .composer details input { margin-top: 6px; }
-  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
-  aside { max-height: calc(100vh - 92px); overflow: auto; }
-  @media (max-width: 900px) { .chat { height: 78vh; } aside { max-height: none; } }
-  .bubble { border-radius: 10px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; }
-  .bubble.you { background: var(--panel2); border: 1px solid var(--line); align-self: flex-end; max-width: 85%; }
-  .bubble.buddy { background: color-mix(in srgb, var(--accent) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); max-width: 92%; }
+  :focus-visible { outline: 1.5px solid var(--olive-400); outline-offset: 2px; }
+  /* liquid glass: preenchimento translúcido, desfoque saturado, borda fina e brilho especular em cima */
+  .glass { position: relative; background: var(--glass-fill), var(--glass-tint); backdrop-filter: blur(22px) saturate(1.7); -webkit-backdrop-filter: blur(22px) saturate(1.7);
+    border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 oklch(100% 0 0 / .14), inset 0 -1px 0 oklch(0% 0 0 / .18), var(--shadow); }
+  .glass::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--glass-spec); opacity: .55; }
+  .glass > * { position: relative; }
+  .app { display: grid; grid-template-columns: 236px minmax(0, 1fr); height: 100%; height: 100dvh; }
+  /* barra lateral */
+  .side { display: flex; flex-direction: column; gap: 6px; padding: 12px 10px; border-right: 1px solid var(--hair); background: var(--side); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); min-height: 0; overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 4px; font-size: 15px; font-weight: 700; letter-spacing: -.035em; white-space: nowrap; }
+  .brand span { color: var(--accent); }
+  .mark { width: 28px; height: 28px; margin: -2px 0; flex: none; filter: var(--mark-filter); }
+  .new { height: 32px; border: 1px solid oklch(80% .12 118 / .35); background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 13px; font-weight: 650;
+    box-shadow: inset 0 1px 0 oklch(100% 0 0 / .2), 0 8px 24px -10px oklch(55% .12 120 / .7); transition: filter .2s var(--ease), transform .2s var(--ease); }
+  .new:hover { filter: brightness(1.08); } .new:active { transform: translateY(1px); }
+  .sect { margin: 10px 6px 2px; font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .day { margin: 6px 8px 0; font-size: 11px; color: var(--faint); }
+  .thread { display: block; width: 100%; padding: 6px 8px; border: 0; border-left: 2px solid transparent; background: none; text-align: left; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); transition: background .18s var(--ease), color .18s var(--ease); }
+  .thread:hover { background: var(--hover); color: var(--text); }
+  .thread.sel { color: var(--text); border-left-color: var(--olive-400); background: var(--hover); }
+  .thread .st { margin-right: 6px; color: var(--accent); }
+  .agents { display: flex; flex-direction: column; }
+  .agent { display: flex; align-items: center; gap: 9px; padding: 5px 8px; font-size: 12.5px; color: var(--muted); }
+  .agent .st { margin-left: auto; width: 6px; height: 6px; background: var(--olive-400); box-shadow: 0 0 8px var(--olive-400); }
+  .ico { display: inline-block; width: 16px; height: 16px; flex: none; object-fit: contain; }
+  .ico.box { border: 1.4px solid currentColor; }
+  .side .foot { margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 8px 4px 0; border-top: 1px solid var(--hair); font-size: 12px; color: var(--muted); }
+  .dot { width: 8px; height: 8px; display: inline-block; background: var(--faint); }
+  .dot.ok { background: var(--ok); box-shadow: 0 0 8px var(--ok); } .dot.bad { background: var(--bad); }
+  /* área principal */
+  main { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+  .top { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; flex: none; }
+  .top .sp { flex: 1; }
+  .ibtn { min-width: 28px; height: 28px; display: inline-grid; place-items: center; padding: 0 6px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .03); font-size: 13px; color: var(--muted); transition: background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease); }
+  .ibtn:hover { color: var(--text); border-color: var(--hair-strong); background: oklch(100% 0 0 / .07); }
+  .mbrand { display: none; }
+  .toggle { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .toggle input { margin: 0; accent-color: var(--olive-400); }
+  .note { color: var(--muted); font-size: 12.5px; }
+  #feed { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 6px max(16px, calc((100% - 760px) / 2)) 16px; }
+  /* início */
+  #home { display: flex; flex-direction: column; }
+  .eyebrow { align-self: flex-start; margin-top: 12vh; padding: 4px 9px; border: 1px solid oklch(82% .12 85 / .4); background: linear-gradient(135deg, oklch(82% .12 85 / .14), oklch(76% .13 118 / .06)); color: var(--gold); font-size: 10.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+  h1 { font-size: 34px; line-height: 1.05; font-weight: 700; letter-spacing: -.055em; margin: 14px 0 18px; color: var(--text); }
+  .starters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .starter { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .03); font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .sugg { display: block; width: 100%; padding: 9px 10px; border: 0; border-top: 1px solid var(--hair); background: none; text-align: left; font-size: 13.5px; color: var(--muted); transition: color .18s var(--ease), background .18s var(--ease), padding-left .18s var(--ease); }
+  .sugg:hover { color: var(--text); background: var(--hover); padding-left: 14px; }
+  /* conversa */
+  .bubble { padding: 9px 12px; white-space: pre-wrap; word-break: break-word; border: 1px solid var(--hair); }
+  .bubble.you { align-self: flex-end; max-width: 85%; background: oklch(100% 0 0 / .045); }
+  .bubble.buddy { max-width: 100%; background: color-mix(in oklch, var(--accent) 7%, transparent); border-color: color-mix(in oklch, var(--accent) 28%, transparent); }
   .bubble p { margin: 0 0 8px; } .bubble p.h { margin-top: 10px; font-size: 1.04em; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
   .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
-  .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; overflow: auto; white-space: pre; }
+  .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: oklch(0% 0 0 / .18); border: 1px solid var(--hair); overflow: auto; white-space: pre; }
   .bubble pre.code code { padding: 0; background: none; }
-  .bubble code { font-family: ui-monospace, Consolas, monospace; font-size: 13px; background: var(--panel2); padding: 1px 5px; border-radius: 4px; }
-  .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .6px; }
-  .ev { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
+  .bubble code, code { font-family: var(--mono); font-size: 12.5px; background: oklch(0% 0 0 / .14); padding: 1px 5px; }
+  .who { display: block; font-size: 10.5px; color: var(--faint); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .1em; }
+  .ev { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--hair); }
   .ev.err { color: var(--bad); border-left-color: var(--bad); }
   .ev.tool { color: var(--text); }
-  details.res { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line); }
+  details.res { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--hair); }
   details.res pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; max-height: 200px; overflow: auto; }
-  details.grp { font-size: 12.5px; color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; }
+  details.grp { font-size: 12.5px; color: var(--muted); border-left: 2px solid var(--hair); padding-left: 10px; }
   details.grp > summary { cursor: pointer; user-select: none; }
   details.grp > .in { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
   details.reason pre, .live .reason pre { white-space: pre-wrap; word-break: break-word; margin: 4px 0 0; max-height: 240px; overflow: auto; font-family: inherit; color: var(--muted); }
   .live { display: flex; flex-direction: column; gap: 8px; }
-  .live .line { font-size: 12.5px; color: var(--accent); display: flex; gap: 8px; align-items: center; }
-  .live .spin { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; animation: rb-spin .8s linear infinite; }
+  .live .line { font-size: 12px; color: var(--accent); display: flex; gap: 8px; align-items: center; }
+  .live .spin { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--accent); border-right-color: transparent; animation: rb-spin .8s linear infinite; }
   @keyframes rb-spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .live .spin { animation: none; } }
   .bubble.buddy.typing::after { content: '▍'; color: var(--accent); }
-  .queued { align-self: flex-end; max-width: 85%; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
+  .queued { align-self: flex-end; max-width: 85%; border: 1px dashed var(--hair-strong); padding: 8px 10px; font-size: 13.5px; }
   .queued .who { color: var(--warn); }
-  .queued .actions { margin-top: 6px; }
   .tag { font-size: 10.5px; color: var(--warn); margin-left: 6px; text-transform: none; letter-spacing: 0; }
-  .toggle { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); margin: 0; }
-  .toggle input { width: auto; margin: 0; }
-  ul.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  ul.list li { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 14px; }
-  ul.list li .t { overflow: hidden; text-overflow: ellipsis; }
-  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
-  .badge.ok { color: var(--ok); border-color: var(--ok); } .badge.warn { color: var(--warn); border-color: var(--warn); } .badge.bad { color: var(--bad); border-color: var(--bad); }
-  .approval { border: 1px solid var(--warn); border-radius: 8px; padding: 10px; }
-  .approval .a { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
-  .bar { height: 6px; background: var(--panel2); border-radius: 99px; overflow: hidden; margin-top: 3px; }
-  .bar i { display: block; height: 100%; background: var(--accent); }
-  .win { font-size: 13px; }
+  .actions { display: flex; gap: 6px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .btn { height: 28px; padding: 0 11px; border: 1px solid var(--hair-strong); background: oklch(100% 0 0 / .04); font-size: 12.5px; font-weight: 600; transition: background .18s var(--ease); }
+  .btn:hover { background: oklch(100% 0 0 / .09); }
+  .btn.pri { border-color: oklch(80% .12 118 / .4); background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); }
+  .btn.danger { border-color: color-mix(in oklch, var(--bad) 55%, transparent); color: var(--bad); background: transparent; }
+  /* aprovações: cartão de vidro sobre a caixa de mensagem, sempre à vista */
+  .dock { flex: none; padding: 0 max(12px, calc((100% - 784px) / 2)) 10px; }
+  #approvals { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .perm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 9px 11px; border: 1px solid oklch(76% .13 118 / .35); background: linear-gradient(135deg, oklch(64% .13 120 / .14), oklch(64% .13 120 / .04)), var(--glass-solid); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); font-size: 13px; }
+  .perm .a { flex: 1 1 220px; min-width: 0; font-family: var(--mono); font-size: 12.5px; word-break: break-all; }
+  .perm .s { color: var(--faint); font-size: 11.5px; }
+  .harness-result { padding: 7px 11px; border: 1px solid var(--hair); background: var(--glass-solid); }
+  /* caixa de mensagem */
+  .composer { padding: 10px 10px 4px; }
+  .composer textarea { display: block; width: 100%; min-height: 44px; max-height: 180px; resize: none; border: 0; outline: 0; background: none; color: var(--text); font-size: 14.5px; padding: 2px 4px; }
+  .composer textarea::placeholder { color: var(--faint); }
+  .bar { display: flex; align-items: center; gap: 5px; margin-top: 6px; min-width: 0; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px 0 9px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .035); font-size: 12px; font-weight: 600; min-width: 0; color: var(--muted); transition: border-color .18s var(--ease), background .18s var(--ease); }
+  .pill:hover, .pill:focus-within { border-color: var(--hair-strong); background: oklch(100% 0 0 / .07); }
+  .pill select { min-width: 0; max-width: 220px; height: 26px; border: 0; background: transparent; color: var(--text); font-size: 12px; font-weight: 600; outline: 0; }
+  .pill select option { background: var(--bg); color: var(--text); }
+  .spacer { flex: 1; }
+  .send { width: 30px; height: 30px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
+    box-shadow: inset 0 1px 0 oklch(100% 0 0 / .22), 0 6px 18px -8px oklch(55% .12 120 / .8); transition: filter .2s var(--ease), transform .15s var(--ease); }
+  .send:hover { filter: brightness(1.1); } .send:active { transform: scale(.96); }
+  .stop { height: 28px; padding: 0 10px; border: 1px solid color-mix(in oklch, var(--bad) 55%, transparent); background: transparent; color: var(--bad); font-size: 12px; font-weight: 600; }
+  .hint { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--faint); padding: 6px 2px 4px; }
+  .msg { min-height: 1em; }
+  .msg.bad { color: var(--bad); }
+  /* ajustes: painel de vidro à direita (no celular, a tela toda) */
+  .settings { position: fixed; z-index: 30; top: 10px; right: 10px; bottom: 10px; width: min(380px, calc(100vw - 20px)); display: flex; flex-direction: column; background: var(--glass-fill), var(--glass-solid); backdrop-filter: blur(24px) saturate(1.7); -webkit-backdrop-filter: blur(24px) saturate(1.7);
+    border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 oklch(100% 0 0 / .16), var(--shadow); animation: popin .18s var(--ease); }
+  @keyframes popin { from { opacity: 0; transform: translateY(6px) scale(.985); } to { opacity: 1; transform: none; } }
+  .settings > header { display: flex; align-items: center; gap: 8px; padding: 10px 10px 8px 14px; border-bottom: 1px solid var(--hair); }
+  .settings > header h2 { flex: 1; margin: 0; font-size: 14px; letter-spacing: -.02em; }
+  .settings .body { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 14px 14px; }
+  .settings section { padding: 10px 0; border-bottom: 1px solid var(--hair); }
+  .settings h3 { margin: 0 0 8px; font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .settings label { display: block; font-size: 12px; color: var(--muted); margin: 8px 0 4px; }
+  .field { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--hair); background: oklch(0% 0 0 / .12); color: var(--text); }
+  select.field option { background: var(--bg); color: var(--text); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  ul.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  ul.list li { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 13px; }
+  ul.list li .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .badge { font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border: 1px solid var(--hair-strong); color: var(--muted); white-space: nowrap; }
+  .badge.ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 45%, transparent); } .badge.warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 45%, transparent); } .badge.bad { color: var(--bad); border-color: color-mix(in oklch, var(--bad) 45%, transparent); }
+  .barw { height: 5px; background: var(--hair); overflow: hidden; margin-top: 3px; }
+  .barw i { display: block; height: 100%; background: var(--olive-400); }
+  .win { font-size: 12.5px; margin-bottom: 6px; }
   .win .n { display: flex; justify-content: space-between; gap: 8px; }
   .runs li { cursor: pointer; }
   .runs li.sel .t { color: var(--accent); font-weight: 600; }
+  .scrim { position: fixed; inset: 0; z-index: 25; background: oklch(6% .02 120 / .5); }
+  @media (prefers-reduced-motion: reduce) { .live .spin { animation: none; } .settings { animation: none; } * { transition: none !important; } }
+  /* celular */
+  @media (max-width: 720px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { display: none; }
+    .side.open { display: flex; position: fixed; z-index: 28; top: 0; bottom: 0; left: 0; width: min(300px, 84vw); background: var(--glass-fill), var(--glass-solid); box-shadow: var(--shadow); }
+    .mbrand { display: flex; }
+    .top { padding: 0 8px; gap: 8px; }
+    .top .toggle span { display: none; }
+    #sessionLabel { display: none; }
+    .eyebrow { margin-top: 5vh; }
+    h1 { font-size: 27px; }
+    #feed { padding: 6px 12px 12px; }
+    .dock { padding: 0 6px 6px; }
+    .pill select { max-width: 120px; }
+    .hint span:first-child { display: none; }
+    .settings { inset: 0; width: 100vw; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Rabelus <span>Buddy</span></h1>
-  <span class="sub" data-i18n="console.subtitle">Console local</span>
-  <span class="spacer"></span>
-  <span class="note"><span id="conn" class="dot"></span><span id="connText"></span></span>
-  <label for="lang" class="note" style="margin:0" data-i18n="console.lang">Idioma</label>
-  <select id="lang" style="width:auto"><option value="pt-BR">pt-BR</option><option value="en">en</option></select>
-  <label for="theme" class="note" style="margin:0" data-i18n="console.theme.title">Tema</label>
-  <select id="theme" style="width:auto"><option value="system" data-i18n="console.theme.system">Sistema</option><option value="light" data-i18n="console.theme.light">Claro</option><option value="dark" data-i18n="console.theme.dark">Escuro</option></select>
-</header>
-<main>
-  <section class="chat" aria-labelledby="hFeed">
-    <div class="chat-head">
-      <h2 id="hFeed" data-i18n="console.feed.title">Conversa</h2>
-      <span id="sessionLabel" class="note"></span>
-      <span class="spacer"></span>
-      <label class="toggle" for="detailsToggle"><input id="detailsToggle" type="checkbox"><span data-i18n="console.feed.showDetails">Mostrar raciocínio e ações</span></label>
-      <button id="newChat" data-i18n="console.feed.new">Nova conversa</button>
-    </div>
-    <div id="feed" aria-live="polite"></div>
-    <div class="composer">
-      <label for="task" class="sr" data-i18n="console.task.title" style="position:absolute;left:-9999px">Mensagem</label>
-      <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
-      <div class="controls">
-        <div><label for="effort" data-i18n="console.task.effort">Esforço</label>
-          <select id="effort">
-            <option value="default" data-i18n="console.effort.default"></option>
-            <option value="low" data-i18n="console.effort.low"></option>
-            <option value="medium" data-i18n="console.effort.medium"></option>
-            <option value="high" data-i18n="console.effort.high"></option>
-          </select></div>
-        <div><label for="route" data-i18n="console.task.route">Provedor</label><select id="route"></select></div>
-        <button id="run" class="primary" data-i18n="console.task.run">Enviar</button>
-        <button id="stop" class="danger" hidden data-i18n="console.task.stop">Parar</button>
-      </div>
-      <details><summary data-i18n="console.task.workspace">Pasta de trabalho</summary><input id="workspace" type="text" spellcheck="false" data-i18n-aria="console.task.workspace"></details>
-      <div class="hint"><span data-i18n="console.task.hint"></span> <span id="runMsg" class="msg"></span></div>
-    </div>
-  </section>
-  <aside>
-    <section aria-labelledby="hAp"><h2 id="hAp" data-i18n="console.approvals.title">Aprovações</h2><div id="approvals"></div></section>
-    <section aria-labelledby="hProv">
-      <h2 id="hProv" data-i18n="console.providers.title">Provedores</h2>
-      <ul id="providers" class="list"></ul>
-      <div style="margin-top:14px">
-        <label data-i18n="console.chatgpt.title">ChatGPT</label>
-        <div id="chatgptState" class="note"></div>
-        <div class="actions"><button id="login" class="primary" data-i18n="console.chatgpt.login">Entrar</button><button id="logout" class="danger" data-i18n="console.chatgpt.logout">Sair</button></div>
-        <div id="loginMsg" class="msg"></div>
-      </div>
-      <div style="margin-top:14px">
-        <label data-i18n="console.keys.title">Chaves</label>
-        <div class="row" style="margin-top:0">
-          <select id="keyProvider" data-i18n-aria="console.keys.provider"><option value="opencode-go">opencode-go</option><option value="ollama-cloud">ollama-cloud</option><option value="openrouter">openrouter</option></select>
-          <input id="keyValue" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.keys.placeholder">
-        </div>
-        <div class="actions"><button id="keySave" data-i18n="console.keys.save">Guardar</button><button id="keyRemove" class="danger" data-i18n="console.keys.remove">Remover</button></div>
-        <div id="keyMsg" class="msg"></div>
-        <p class="note" data-i18n="console.keys.hint"></p>
-      </div>
-    </section>
-    <section aria-labelledby="hBud"><h2 id="hBud" data-i18n="console.budget.title">Consumo</h2><div id="budget"></div><div class="actions"><button id="budgetToggle"></button></div></section>
-    <section aria-labelledby="hRuns"><h2 id="hRuns" data-i18n="console.runs.title">Execuções</h2><ul id="runs" class="list runs"></ul></section>
+<div class="app">
+  <aside id="side" class="side" data-i18n-aria="console.side.menu">
+    <div class="brand"><img id="brandMark" class="mark" alt="Rabelus Lab" width="28" height="28">Rabelus <span>Buddy</span></div>
+    <button id="newChat" class="new" data-i18n="console.feed.new">Nova conversa</button>
+    <div class="sect" data-i18n="console.side.threads">Conversas</div>
+    <nav id="threads" data-i18n-aria="console.side.threads"></nav>
+    <div class="sect" data-i18n="console.side.agents">Harnesses encontrados</div>
+    <div id="agents" class="agents"></div>
+    <div class="foot"><span id="conn" class="dot"></span><span id="connText"></span></div>
   </aside>
-</main>
+  <main>
+    <div class="top">
+      <button id="menuBtn" class="ibtn mbrand" aria-expanded="false" aria-controls="side" data-i18n-aria="console.side.menu">☰</button>
+      <div class="brand mbrand"><img id="brandMarkM" class="mark" alt="Rabelus Lab" width="28" height="28">Rabelus <span>Buddy</span></div>
+      <span id="sessionLabel" class="note"></span>
+      <span class="sp"></span>
+      <label class="toggle" for="detailsToggle"><input id="detailsToggle" type="checkbox"><span data-i18n="console.feed.showDetails">Mostrar raciocínio e ações</span></label>
+      <button id="settingsBtn" class="ibtn" aria-controls="settings" aria-expanded="false" data-i18n-aria="console.settings.open">⚙</button>
+    </div>
+    <div id="feed" aria-live="polite">
+      <section id="home">
+        <span class="eyebrow" id="homeEyebrow"></span>
+        <h1 data-i18n="console.home.greeting">Como posso ajudar, Pai?</h1>
+        <div class="starters" id="starters"></div>
+        <button class="sugg" data-i18n="console.home.sugg1"></button>
+        <button class="sugg" data-i18n="console.home.sugg2"></button>
+        <button class="sugg" data-i18n="console.home.sugg3"></button>
+        <button class="sugg" data-i18n="console.home.sugg4"></button>
+      </section>
+    </div>
+    <div class="dock">
+      <div id="approvals" aria-live="polite"></div>
+      <div class="composer glass">
+        <label for="task" data-i18n="console.task.title" style="position:absolute;left:-9999px">Mensagem</label>
+        <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
+        <div class="bar">
+          <label class="pill" for="effort"><span data-i18n="console.task.effort">Esforço</span>
+            <select id="effort">
+              <option value="default" data-i18n="console.effort.default"></option>
+              <option value="low" data-i18n="console.effort.low"></option>
+              <option value="medium" data-i18n="console.effort.medium"></option>
+              <option value="high" data-i18n="console.effort.high"></option>
+            </select></label>
+          <label class="pill" for="route"><span data-i18n="console.task.route">Provedor</span><select id="route"></select></label>
+          <span class="spacer"></span>
+          <button id="stop" class="stop" hidden data-i18n="console.task.stop">Parar</button>
+          <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
+        </div>
+        <div class="hint"><span data-i18n="console.task.hint"></span><span id="runMsg" class="msg"></span></div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="scrim" class="scrim" hidden></div>
+<aside id="settings" class="settings" hidden role="dialog" aria-labelledby="hSet">
+  <header><h2 id="hSet" data-i18n="console.settings.title">Ajustes</h2><button id="settingsClose" class="ibtn" data-i18n-aria="console.settings.close">✕</button></header>
+  <div class="body">
+    <section aria-labelledby="hProv">
+      <h3 id="hProv" data-i18n="console.providers.title">Provedores</h3>
+      <ul id="providers" class="list"></ul>
+      <label data-i18n="console.chatgpt.title">ChatGPT</label>
+      <div id="chatgptState" class="note"></div>
+      <div class="actions"><button id="login" class="btn pri" data-i18n="console.chatgpt.login">Entrar</button><button id="logout" class="btn danger" data-i18n="console.chatgpt.logout">Sair</button></div>
+      <div id="loginMsg" class="msg note"></div>
+      <label data-i18n="console.keys.title">Chaves</label>
+      <div class="grid2">
+        <select id="keyProvider" class="field" data-i18n-aria="console.keys.provider"><option value="opencode-go">opencode-go</option><option value="ollama-cloud">ollama-cloud</option><option value="openrouter">openrouter</option></select>
+        <input id="keyValue" class="field" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.keys.placeholder">
+      </div>
+      <div class="actions"><button id="keySave" class="btn" data-i18n="console.keys.save">Guardar</button><button id="keyRemove" class="btn danger" data-i18n="console.keys.remove">Remover</button></div>
+      <div id="keyMsg" class="msg note"></div>
+      <p class="note" data-i18n="console.keys.hint"></p>
+    </section>
+    <section aria-labelledby="hBud"><h3 id="hBud" data-i18n="console.budget.title">Consumo</h3><div id="budget"></div><div class="actions"><button id="budgetToggle" class="btn"></button></div></section>
+    <section aria-labelledby="hRuns"><h3 id="hRuns" data-i18n="console.runs.title">Execuções</h3><ul id="runs" class="list runs"></ul></section>
+    <section aria-labelledby="hPrefs">
+      <h3 id="hPrefs" data-i18n="console.settings.prefs">Preferências</h3>
+      <div class="grid2">
+        <div><label for="lang" data-i18n="console.lang">Idioma</label><select id="lang" class="field"><option value="pt-BR">pt-BR</option><option value="en">en</option></select></div>
+        <div><label for="theme" data-i18n="console.theme.title">Tema</label><select id="theme" class="field"><option value="system" data-i18n="console.theme.system">Sistema</option><option value="light" data-i18n="console.theme.light">Claro</option><option value="dark" data-i18n="console.theme.dark">Escuro</option></select></div>
+      </div>
+      <label for="workspace" data-i18n="console.task.workspace">Pasta de trabalho</label>
+      <input id="workspace" class="field" type="text" spellcheck="false">
+    </section>
+  </div>
+</aside>
 <script>
 'use strict';
 const token = new URLSearchParams(location.search).get('t') || '';
@@ -187,6 +377,8 @@ let lastRun = null;        // última execução da sessão aberta
 let showAll = false;
 let routesCfg = [];
 let providerState = [];
+let harnesses = [];        // harnesses encontrados (harness.list)
+const homeEl = $('home');  // tela inicial: volta ao feed quando não há conversa aberta
 
 function t(key, vars) {
   let s = key.split('.').reduce((o, p) => (o && typeof o === 'object' ? o[p] : undefined), cat);
@@ -200,6 +392,8 @@ function el(tag, attrs, ...kids) {
   for (const k of kids) if (k !== null && k !== undefined) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
   return e;
 }
+// Recurso da própria console (marca, ícones): o token vai junto, como em toda requisição.
+const asset = (path) => path + '?t=' + encodeURIComponent(token);
 // <puras> (sem DOM; o teste avalia este trecho)
 // Blocos da resposta: parágrafo, lista e bloco de código cercado por ```.
 function mdBlocks(text) {
@@ -284,7 +478,29 @@ const REASONS = {
   'budget.windowExhausted': 'console.reason.windowExhausted', 'provider.unavailable': 'console.reason.providerUnavailable',
   'provider.emptyResponse': 'console.reason.emptyResponse',
   'effect.unknown': 'console.reason.effectUnknown', needsReconciliation: 'console.reason.needsReconciliation', internalError: 'console.reason.internalError',
+  // Conversa com harness (M1.2c–e).
+  permissionDenied: 'console.reason.permissionDenied', harnessCancelled: 'console.reason.harnessCancelled', harnessFailed: 'console.reason.harnessFailed', needsLogin: 'console.reason.needsLogin',
 };
+// Conversas da barra lateral (M1.5a): uma por sessão, com o título da primeira tarefa e o estado da última, agrupadas
+// pelo dia em que a conversa começou no relógio de quem olha (offsetMin: minutos a somar ao UTC), mais recente primeiro.
+// Sessão sem execução (interna, como "harness") não é conversa.
+function threadsOf(runs, sessions, now, offsetMin) {
+  const dayOf = (ms) => new Date(ms + offsetMin * 60000).toISOString().slice(0, 10);
+  const today = dayOf(now.getTime());
+  const yesterday = dayOf(now.getTime() - 86400000);
+  const created = new Map(sessions.map((s) => [s.id, Date.parse(s.createdTs)]));
+  const by = new Map();
+  for (const r of runs) { const x = by.get(r.session); if (x) x.state = r.state; else by.set(r.session, { session: r.session, title: r.task, state: r.state }); }
+  const items = [...by.values()].map((x) => ({ x, at: created.get(x.session) || 0 })).sort((a, b) => b.at - a.at);
+  const groups = [];
+  for (const { x, at } of items) {
+    const d = dayOf(at);
+    const day = d === today ? 'today' : d === yesterday ? 'yesterday' : d;
+    const g = groups[groups.length - 1];
+    if (g && g.day === day) g.items.push(x); else groups.push({ day, items: [x] });
+  }
+  return groups;
+}
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -325,6 +541,7 @@ async function loadLang() {
   for (const e of document.querySelectorAll('[data-i18n-placeholder]')) e.setAttribute('placeholder', t(e.getAttribute('data-i18n-placeholder')));
   for (const e of document.querySelectorAll('[data-i18n-aria]')) e.setAttribute('aria-label', t(e.getAttribute('data-i18n-aria')));
   $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all');
+  renderHome();
 }
 
 // Uma linha por evento (o mesmo catálogo do rbuddy log); a conversa vira balões.
@@ -425,8 +642,8 @@ function renderLive() {
   for (const q of (l && l.queue) || []) {
     kids.push(el('div', { class: 'queued' }, el('span', { class: 'who' }, t('console.queue.title')), q.task,
       el('div', { class: 'actions' },
-        el('button', { class: 'primary', onclick: () => steer(q.id) }, t('console.queue.steer')),
-        el('button', { onclick: () => unqueue(q.id) }, t('console.queue.cancel')))));
+        el('button', { class: 'btn pri', onclick: () => steer(q.id) }, t('console.queue.steer')),
+        el('button', { class: 'btn', onclick: () => unqueue(q.id) }, t('console.queue.cancel')))));
   }
   const feed = $('feed');
   const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
@@ -463,10 +680,11 @@ async function steer(id) { try { await api('agent.steer', { session, queue: id }
 async function unqueue(id) { try { await api('agent.unqueue', { session, queue: id }); } catch { /* já saiu da fila */ } void refreshLive(); }
 async function refreshFeed() {
   const feed = $('feed');
-  if (!session) { if (lastFeedKey !== 'empty') { feed.replaceChildren(el('div', { class: 'note' }, t('console.feed.empty'))); lastFeedKey = 'empty'; } $('sessionLabel').textContent = ''; return; }
+  // Sem conversa aberta: a tela inicial (saudação, harnesses encontrados e sugestões).
+  if (!session) { if (lastFeedKey !== 'empty') { feed.replaceChildren(homeEl); lastFeedKey = 'empty'; } $('sessionLabel').textContent = ''; return; }
   const evs = await api('session.events', { session });
   const key = session + ':' + evs.length + ':' + lang;
-  $('sessionLabel').textContent = '· ' + t('console.feed.session', { session });
+  $('sessionLabel').textContent = t('console.feed.session', { session });
   if (key === lastFeedKey) return;
   lastFeedKey = key;
   const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 40;
@@ -477,19 +695,18 @@ async function refreshFeed() {
   if (atBottom) feed.scrollTop = feed.scrollHeight;
 }
 
+// Aprovações: cartões de vidro sobre a caixa de mensagem, sempre à vista enquanto houver alguma pendente.
 // Retorno da aprovação de primeira execução de um agente (achado do Pai, 2026-10-18: aprovar sem ver efeito).
 let approvalNote = '';
 async function refreshApprovals() {
   const list = await api('approval.list');
   const box = $('approvals');
   const note = approvalNote ? [el('div', { class: 'note harness-result' }, approvalNote)] : [];
-  if (!list.length) { box.replaceChildren(...note, el('div', { class: 'note' }, t('console.approvals.none'))); return; }
-  box.replaceChildren(...note, ...list.map((a) => el('div', { class: 'approval' },
-    el('div', { class: 'a' }, a.action),
-    el('div', { class: 'note' }, a.session),
-    el('div', { class: 'actions' },
-      el('button', { class: 'primary', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')),
-      el('button', { class: 'danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny'))))));
+  box.replaceChildren(...note, ...list.map((a) => el('div', { class: 'perm' },
+    el('span', { class: 'a' }, a.action),
+    el('span', { class: 's' }, a.session === session ? '' : a.session),
+    el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny')),
+    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')))));
 }
 async function resolve(id, decision) {
   if (decision === 'approve') { approvalNote = t('console.approvals.harness.running'); await refreshApprovals(); }
@@ -527,7 +744,7 @@ async function refreshAuth() {
   const v = authView(await api('auth.chatgpt.status'), t);
   $('chatgptState').textContent = v.text;
   $('login').textContent = t(v.loginKey);
-  $('login').className = v.loginPrimary ? 'primary' : '';
+  $('login').className = v.loginPrimary ? 'btn pri' : 'btn';
   $('logout').disabled = !v.logoutEnabled;
 }
 async function refreshBudget() {
@@ -535,28 +752,52 @@ async function refreshBudget() {
   // Telemetria real das janelas do provedor (SPEC 0002, critério 15): o Go diz quanto usou e quando volta.
   let tele = [];
   try { tele = await api('providers.usage'); } catch { /* sem telemetria */ }
-  const teleRows = tele.flatMap((p) => (p.windows || []).map((w) => el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, t('console.usage.window', { provider: p.provider, window: ({ rolling: t('console.usage.rolling'), weekly: t('console.usage.weekly'), monthly: t('console.usage.monthly') })[w.window] || w.window })), el('span', { class: 'note' }, w.status === 'ok' ? t('console.usage.ok', { percent: w.percent }) : t('console.usage.blocked', { percent: w.percent, until: new Date(w.resetsAt).toLocaleString(lang) }))), el('div', { class: 'bar' }, el('i', { style: 'width:' + Math.min(100, w.percent) + '%' + (w.status === 'ok' ? '' : ';background:var(--bad)') })))));
+  const teleRows = tele.flatMap((p) => (p.windows || []).map((w) => el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, t('console.usage.window', { provider: p.provider, window: ({ rolling: t('console.usage.rolling'), weekly: t('console.usage.weekly'), monthly: t('console.usage.monthly') })[w.window] || w.window })), el('span', { class: 'note' }, w.status === 'ok' ? t('console.usage.ok', { percent: w.percent }) : t('console.usage.blocked', { percent: w.percent, until: new Date(w.resetsAt).toLocaleString(lang) }))), el('div', { class: 'barw' }, el('i', { style: 'width:' + Math.min(100, w.percent) + '%' + (w.status === 'ok' ? '' : ';background:var(--bad)') })))));
   const shown = showAll ? ws : ws.filter((w) => w.used > 0 || w.exhaustedUntil || w.provider !== 'opencode-go');
   $('budget').replaceChildren(...teleRows, ...shown.map((w) => {
     const pct = w.capacity ? Math.min(100, (w.used / w.capacity) * 100) : 0;
     const right = w.exhaustedUntil ? t('console.budget.exhausted', { until: new Date(w.exhaustedUntil).toLocaleString(lang) }) : w.capacity === null ? 'US$ ' + w.used.toFixed(4) + ' · ' + t('console.budget.noCap') : 'US$ ' + w.used.toFixed(4) + ' / ' + w.capacity.toFixed(2);
-    return el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, w.id), el('span', { class: 'note' }, right)), w.capacity ? el('div', { class: 'bar' }, el('i', { style: 'width:' + pct.toFixed(1) + '%' })) : null);
+    return el('div', { class: 'win' }, el('div', { class: 'n' }, el('span', {}, w.id), el('span', { class: 'note' }, right)), w.capacity ? el('div', { class: 'barw' }, el('i', { style: 'width:' + pct.toFixed(1) + '%' })) : null);
   }));
 }
 async function refreshRuns() {
-  const runs = (await api('run.list')).slice(-15).reverse();
-  if (!runs.length) { $('runs').replaceChildren(el('li', { class: 'note' }, t('console.runs.none'))); return; }
-  $('runs').replaceChildren(...runs.map((r) => {
+  const all = await api('run.list');
+  const runs = all.slice(-15).reverse();
+  if (!runs.length) $('runs').replaceChildren(el('li', { class: 'note' }, t('console.runs.none')));
+  else $('runs').replaceChildren(...runs.map((r) => {
     const canResume = r.state === 'interrupted' || r.state === 'stopped';
     return el('li', { class: r.session === session ? 'sel' : '', onclick: () => openSession(r.session) },
       el('span', { class: 't', title: r.task }, r.task.slice(0, 60)),
       el('span', { class: 'badge ' + (r.state === 'done' ? 'ok' : r.state === 'running' ? '' : 'warn') }, t('status.state.' + r.state)),
-      canResume ? el('button', { onclick: (ev) => { ev.stopPropagation(); resume(r); } }, t('console.runs.resume')) : null);
+      canResume ? el('button', { class: 'btn', onclick: (ev) => { ev.stopPropagation(); resume(r); } }, t('console.runs.resume')) : null);
   }));
+  // Conversas da barra lateral (M1.5a), pelo dia em que cada uma começou.
+  let sessions = [];
+  try { sessions = await api('session.list'); } catch { /* sem datas: tudo cai num dia só */ }
+  const groups = threadsOf(all, sessions, new Date(), -new Date().getTimezoneOffset());
+  const dayText = (d) => (d === 'today' ? t('console.side.today') : d === 'yesterday' ? t('console.side.yesterday') : new Date(d + 'T12:00:00').toLocaleDateString(lang));
+  $('threads').replaceChildren(...(groups.length ? groups.flatMap((g) => [el('div', { class: 'day' }, dayText(g.day)),
+    ...g.items.map((x) => el('button', { class: 'thread' + (x.session === session ? ' sel' : ''), title: x.title, onclick: () => { openSession(x.session); drawer(false); } },
+      x.state === 'running' ? el('span', { class: 'st', 'aria-hidden': 'true' }, '●') : null, x.title))]) : [el('div', { class: 'day' }, t('console.side.none'))]));
 }
-function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); }
-$('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); $('task').focus(); });
+// Harnesses encontrados (registro oficial do ACP e tabela própria): ícone servido pela console, sem nada de fora.
+async function refreshAgents() {
+  const r = await api('harness.list');
+  harnesses = r.harnesses.filter((h) => h.found);
+  $('agents').replaceChildren(...(harnesses.length ? harnesses.map((h) => el('div', { class: 'agent', title: h.description || h.name },
+    h.icon ? el('img', { class: 'ico', alt: '', src: asset('/icons/harness/' + h.id + '.svg') }) : el('span', { class: 'ico box' }),
+    h.name, el('span', { class: 'st', title: t('console.side.installed') }))) : [el('div', { class: 'day' }, t('console.side.noAgents'))]));
+  renderHome();
+}
+function renderHome() {
+  $('homeEyebrow').textContent = t('console.home.eyebrow', { n: harnesses.length });
+  $('starters').replaceChildren(el('span', { class: 'starter' }, el('img', { class: 'ico mark', alt: '', src: asset('/brand/emblema-64.png') }), 'Buddy'),
+    ...harnesses.map((h) => el('span', { class: 'starter' }, h.icon ? el('img', { class: 'ico', alt: '', src: asset('/icons/harness/' + h.id + '.svg') }) : el('span', { class: 'ico box' }), h.name)));
+}
+function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); void refreshApprovals(); }
+$('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); drawer(false); $('task').focus(); });
 $('task').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) { ev.preventDefault(); $('run').click(); } });
+for (const b of document.querySelectorAll('.sugg')) b.addEventListener('click', () => { $('task').value = b.textContent; $('task').focus(); });
 async function resume(r) {
   try { await api('agent.resume', { run: r.id, workspace: $('workspace').value, interactive: true }); openSession(r.session); }
   catch (e) { $('runMsg').className = 'msg bad'; $('runMsg').textContent = t('console.error', { message: e.message }); }
@@ -594,6 +835,24 @@ function applyTheme(choice) {
   const v = themeOf(choice);
   if (v) document.documentElement.setAttribute('data-theme', v); else document.documentElement.removeAttribute('data-theme');
 }
+// Ajustes (painel) e gaveta do celular: um por vez, Esc fecha, o foco volta a quem abriu.
+function settingsOpen(open) {
+  $('settings').hidden = !open;
+  $('settingsBtn').setAttribute('aria-expanded', String(open));
+  $('scrim').hidden = !open && !$('side').classList.contains('open');
+  if (open) $('settingsClose').focus(); else $('settingsBtn').focus();
+}
+function drawer(open) {
+  if (!open && !$('side').classList.contains('open')) return;
+  $('side').classList.toggle('open', open);
+  $('menuBtn').setAttribute('aria-expanded', String(open));
+  $('scrim').hidden = !open && $('settings').hidden;
+}
+$('settingsBtn').addEventListener('click', () => settingsOpen($('settings').hidden));
+$('settingsClose').addEventListener('click', () => settingsOpen(false));
+$('menuBtn').addEventListener('click', () => drawer(!$('side').classList.contains('open')));
+$('scrim').addEventListener('click', () => { if (!$('settings').hidden) settingsOpen(false); drawer(false); });
+document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; if (!$('settings').hidden) settingsOpen(false); else drawer(false); });
 $('theme').addEventListener('change', () => { prefs.theme = $('theme').value; store.set('rb.theme', prefs.theme); applyTheme(prefs.theme); });
 $('detailsToggle').addEventListener('change', () => {
   prefs.details = $('detailsToggle').checked;
@@ -605,7 +864,7 @@ $('detailsToggle').addEventListener('change', () => {
 $('login').addEventListener('click', async () => {
   // A janela abre no clique (senão o bloqueador de pop-up barra) e recebe a URL quando o núcleo responder.
   const w = window.open('about:blank', '_blank');
-  $('loginMsg').className = 'msg';
+  $('loginMsg').className = 'msg note';
   $('loginMsg').textContent = '';
   try {
     const { url } = await api('auth.chatgpt.start');
@@ -616,24 +875,29 @@ $('login').addEventListener('click', async () => {
 $('logout').addEventListener('click', async () => { try { await api('auth.chatgpt.logout'); } catch (e) { /* nada */ } void refreshAuth(); void refreshProviders(); });
 $('keySave').addEventListener('click', async () => {
   const m = $('keyMsg');
-  try { await api('keys.set', { provider: $('keyProvider').value, key: $('keyValue').value }); $('keyValue').value = ''; m.className = 'msg'; m.textContent = t('console.keys.saved'); }
+  try { await api('keys.set', { provider: $('keyProvider').value, key: $('keyValue').value }); $('keyValue').value = ''; m.className = 'msg note'; m.textContent = t('console.keys.saved'); }
   catch (e) { m.className = 'msg bad'; m.textContent = t('console.error', { message: e.message }); }
   void refreshProviders();
 });
 $('keyRemove').addEventListener('click', async () => {
   const m = $('keyMsg');
-  try { await api('keys.remove', { provider: $('keyProvider').value }); m.className = 'msg'; m.textContent = t('console.keys.removed'); }
+  try { await api('keys.remove', { provider: $('keyProvider').value }); m.className = 'msg note'; m.textContent = t('console.keys.removed'); }
   catch (e) { m.className = 'msg bad'; m.textContent = t('console.error', { message: e.message }); }
   void refreshProviders();
 });
 $('budgetToggle').addEventListener('click', () => { showAll = !showAll; $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all'); void refreshBudget(); });
 $('lang').addEventListener('change', async () => { lang = $('lang').value; store.set('rb.lang', lang); await loadLang(); lastFeedKey = ''; void slow(); void fast(); });
+$('workspace').addEventListener('change', () => store.set('rb.workspace', $('workspace').value));
 
 async function fast() { try { await Promise.all([refreshFeed(), refreshApprovals()]); conn(true); } catch { conn(false); } }
 async function liveTick() { try { await refreshLive(); } catch { /* a conexão é cuidada pelo fast */ } }
 async function slow() { try { await Promise.all([refreshProviders(), refreshAuth(), refreshBudget(), refreshRuns()]); conn(true); } catch { conn(false); } }
 
 (async () => {
+  // Marca do Rabelus Lab (pedido do Pai, 2026-10-18), servida pela própria console.
+  $('brandMark').src = asset('/brand/emblema-256.png');
+  $('brandMarkM').src = asset('/brand/emblema-256.png');
+  $('favicon').href = asset('/brand/emblema-64.png');
   await loadLang();
   try {
     const d = await api('console.defaults');
@@ -647,9 +911,11 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
   await slow();
   await fast();
   await liveTick();
+  try { await refreshAgents(); } catch { /* sem registro ainda: a lista fica vazia */ }
   setInterval(fast, 800);
   setInterval(liveTick, 300);
   setInterval(slow, 3000);
+  setInterval(() => { void refreshAgents().catch(() => {}); }, 60_000);
   requestAnimationFrame(frame);
 })();
 </script>

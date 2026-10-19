@@ -118,7 +118,35 @@
       "emptyResponse": "o provedor respondeu vazio (nenhum texto, 0 tokens); tente outro provedor ou repita",
       "effectUnknown": "resultado incerto de uma ação; use Retomar para conferir",
       "needsReconciliation": "precisa da sua confirmação para retomar",
-      "internalError": "erro interno do núcleo"
+      "internalError": "erro interno do núcleo",
+      "permissionDenied": "permissão negada: o agente parou a tarefa",
+      "harnessCancelled": "o agente encerrou a tarefa",
+      "harnessFailed": "o agente falhou; veja o motivo nos detalhes",
+      "needsLogin": "o agente pede login antes de continuar"
+    },
+    "side": {
+      "threads": "Conversas",
+      "agents": "Harnesses encontrados",
+      "none": "Nenhuma conversa ainda.",
+      "noAgents": "Nenhum harness encontrado neste computador.",
+      "today": "Hoje",
+      "yesterday": "Ontem",
+      "menu": "Abrir conversas e harnesses",
+      "installed": "instalado"
+    },
+    "settings": {
+      "title": "Ajustes",
+      "open": "Abrir os ajustes",
+      "close": "Fechar os ajustes",
+      "prefs": "Preferências"
+    },
+    "home": {
+      "eyebrow": "Orquestrador · {{n}} harnesses encontrados",
+      "greeting": "Como posso ajudar, Pai?",
+      "sugg1": "Revise este repositório e proponha melhorias",
+      "sugg2": "Resuma o que mudou hoje nos meus projetos",
+      "sugg3": "Explique este erro e proponha a correção",
+      "sugg4": "Escreva os testes antes do código para esta tarefa"
     },
     "theme": {
       "title": "Tema",

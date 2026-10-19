@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T104403-0300-claude-code-vs-code-51d166-0030",
+  "ts": "2026-10-19T10:44:03-03:00",
+  "utc": "2026-10-19T13:44:03.951Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 30,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5-console-nova",
+  "type": "pesquisa",
+  "summary": "Contraste AA medido nos tokens do protótipo v4 (mesma conta do teste: OKLCH → sRGB, composição, WCAG): reprovavam faint (escuro 2,93 sobre o brilho; claro 3,40), texto do botão principal sobre a ponta clara do degradê (escuro 3,37; claro 4,27) e, no claro, warn 3,34, ok 4,21 e bad 4,44 sobre o brilho. Ajuste só de luminosidade, mesmo matiz oliva: escuro muted 76, faint 70, accent 78, bad 76, warn 84, ok 80, primary 52→42; claro muted 40, faint 45, accent 41, bad 45, warn 45, ok 42, primary 50→40. Pior caso agora 4,70 (faint sobre o brilho, escuro).",
+  "refs": [],
+  "data": {}
+}

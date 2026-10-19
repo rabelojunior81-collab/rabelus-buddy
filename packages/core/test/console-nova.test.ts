@@ -52,8 +52,9 @@ test('tokens: paleta oliva em OKLCH nos dois temas (matiz 118–125) e vidro com
   }
   const blurs = [...CSS.matchAll(/backdrop-filter:\s*blur\((\d+)px\)/g)].map((m) => Number(m[1]));
   assert.ok(blurs.length >= 2 && blurs.every((b) => b >= 12 && b <= 24), `desfoque do vidro entre 12 e 24 px (achado: ${blurs.join(', ')})`);
-  // O tema Sistema continua seguindo o navegador (critério 35 do M0).
+  // O tema Sistema continua seguindo o navegador (critério 35 do M0), com os mesmos tokens do Claro escolhido à mão.
   assert.match(CSS, /@media \(prefers-color-scheme: light\) \{\s*:root:not\(\[data-theme="dark"\]\)/);
+  assert.deepEqual(block(':root:not([data-theme="dark"])'), block(':root[data-theme="light"]'), 'os dois blocos do tema claro são iguais');
 });
 
 test('contraste AA medido: texto, secundário, discreto, destaque e estados sobre o fundo, o brilho e o vidro, nos dois temas (critério 11)', () => {
