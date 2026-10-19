@@ -9,12 +9,22 @@
 // (agent_message_chunk) e uma ferramenta (tool_call e tool_call_update). FAKE_ACP_GAP: ms entre atualizações.
 // FAKE_ACP_PROMPT=permission: pede permissão (session/request_permission) e conta a resposta no texto.
 // FAKE_ACP_PREAMBLE: texto antes da ferramenta (o OpenCode real anuncia o que vai fazer, 2026-10-18).
+// M1.2d, na forma medida em 2026-10-18 no Codex e no OpenCode reais:
+//   FAKE_ACP_MODES=1: session/new declara a opção "mode" (read-only, agent) e aceita session/set_config_option;
+//                     o texto final conta o modo em vigor ("Modo: <modo>.").
+//   FAKE_ACP_ECHO_CONFIG=1: o texto final conta se recebeu OPENCODE_CONFIG_CONTENT com permission ask.
+//   FAKE_ACP_PERM_KIND: tipo da ação pedida na permissão (padrão edit, com o caminho em locations).
+//   FAKE_ACP_PROMPT=unasked: escreve um arquivo (tool_call edit concluído) sem pedir permissão.
+import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
 import { agent, ndJsonStream, PROTOCOL_VERSION, RequestError } from '@agentclientprotocol/sdk';
 
 const mode = process.env.FAKE_ACP_MODE ?? 'ok';
 const gap = Number(process.env.FAKE_ACP_GAP ?? 0);
 const cancelled = new Set();
+const cwds = new Map();
+let currentMode = 'agent';
+const modeOption = () => ({ id: 'mode', name: 'Mode', category: 'mode', type: 'select', currentValue: currentMode, options: [{ value: 'read-only', name: 'Read-only' }, { value: 'agent', name: 'Auto review' }] });
 const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 
 if (mode === 'crash') { process.stderr.write('fake: configuração ausente\n'); process.exit(3); }
@@ -27,9 +37,15 @@ else {
       agentCapabilities: { loadSession: false, promptCapabilities: { image: true, embeddedContext: true }, sessionCapabilities: { close: {} } },
       authMethods: [{ id: 'fake-login', name: 'Login with Fake' }],
     }))
-    .onRequest('session/new', () => {
+    .onRequest('session/new', ({ params }) => {
       if (mode === 'auth') throw RequestError.authRequired();
-      return { sessionId: `fake-${process.pid}` };
+      const sessionId = `fake-${process.pid}`;
+      cwds.set(sessionId, params.cwd);
+      return { sessionId, ...(process.env.FAKE_ACP_MODES ? { configOptions: [modeOption()] } : {}) };
+    })
+    .onRequest('session/set_config_option', ({ params }) => {
+      if (params.configId === 'mode') currentMode = String(params.value);
+      return { configOptions: [modeOption()] };
     })
     .onRequest('session/close', () => ({}))
     .onNotification('session/cancel', ({ params }) => { cancelled.add(params.sessionId); })
@@ -46,13 +62,22 @@ else {
       if (stop()) return { stopReason: 'cancelled' };
       let extra = '';
       if (process.env.FAKE_ACP_PROMPT === 'permission') {
+        const kind = process.env.FAKE_ACP_PERM_KIND ?? 'edit';
         const r = await client.request('session/request_permission', {
           sessionId,
-          toolCall: { toolCallId: 't2', title: 'Editar README.md', kind: 'edit', status: 'pending' },
-          options: [{ optionId: 'ok', name: 'Permitir', kind: 'allow_once' }, { optionId: 'no', name: 'Negar', kind: 'reject_once' }],
+          toolCall: kind === 'execute'
+            ? { toolCallId: 't2', title: 'npm install', kind, status: 'pending' }
+            : { toolCallId: 't2', title: 'Editar README.md', kind, status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'README.md') }] },
+          options: [{ optionId: 'ok', name: 'Permitir', kind: 'allow_once' }, { optionId: 'always', name: 'Sempre', kind: 'allow_always' }, { optionId: 'no', name: 'Negar', kind: 'reject_once' }],
         });
         extra = ` Permissão: ${r.outcome.outcome === 'selected' ? r.outcome.optionId : r.outcome.outcome}.`;
       }
+      if (process.env.FAKE_ACP_PROMPT === 'unasked') {
+        await send({ sessionUpdate: 'tool_call', toolCallId: 't3', title: 'Escrevendo saida.txt', kind: 'edit', status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'saida.txt') }] });
+        await send({ sessionUpdate: 'tool_call_update', toolCallId: 't3', status: 'completed' });
+      }
+      if (process.env.FAKE_ACP_MODES) extra += ` Modo: ${currentMode}.`;
+      if (process.env.FAKE_ACP_ECHO_CONFIG) extra += ` Config: ${/"edit":"ask"/.test(process.env.OPENCODE_CONFIG_CONTENT ?? '') ? 'ask' : 'nenhuma'}.`;
       await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: 'Olá, ' } });
       if (stop()) return { stopReason: 'cancelled' };
       await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: `Pai.${extra}` } });
