@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T114458-0300-claude-code-vs-code-51d166-0074",
+  "ts": "2026-10-19T11:44:58-03:00",
+  "utc": "2026-10-19T14:44:58.559Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 74,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5c-seletor-de-modelo",
+  "type": "pesquisa",
+  "summary": "Ensaio do seletor (núcleo temporário, catálogo real): abriu com foco na busca, grupos por lab, rodapé com a data; só a aba OpenRouter (469). catalog.errors: chatgpt sem login, ollama sem chave, opencode-go 401 (a chave do meu ambiente, herdada pelo núcleo temporário, é recusada; o núcleo do Pai usa as chaves dele, 37 modelos às 11:27). Lacuna de interface: provedor fora do catálogo some do seletor sem explicação. Correção com teste antes: o seletor mostra quem ficou de fora e o motivo.",
+  "refs": [],
+  "data": {}
+}

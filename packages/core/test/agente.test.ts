@@ -417,6 +417,20 @@ test('limite da conta (escopo provedor) esgota todos os modelos do provedor até
   assert.deepEqual([ex.provider, ex.model, ex.until], ['opencode-go', '*', until]);
 });
 
+// Ensaio do seletor de modelo (M1.5c, 2026-10-19): o limite de um modelo grátis do OpenRouter esgotava o OpenRouter
+// inteiro, e o modelo escolhido em seguida (outro grátis) parava na hora. No OpenRouter, como no Go, o limite sem escopo
+// de conta vale para o modelo.
+test('limite de um modelo do OpenRouter esgota só esse modelo; outro modelo do OpenRouter segue (M1.5c)', async () => {
+  const busy = scripted('openrouter', [new ProviderLimitError('openrouter', Date.now() + 3_600_000, 'Provider returned error')]);
+  const { log, budget, agent } = setup({ routes: [{ provider: busy, model: 'nvidia/a:free' }] });
+  await agent.run('s70', 'tarefa');
+  const ex = log.events('budget').filter((e) => e.kind === 'budget.exhausted').at(-1)?.payload as { provider: string; model: string };
+  assert.deepEqual([ex.provider, ex.model], ['openrouter', 'nvidia/a:free']);
+  const other = scripted('openrouter', [say('outro modelo respondeu')]);
+  const r = await setupReuse(budget, log, [{ provider: other, model: 'google/b:free' }]).run('s71', 'outra');
+  assert.equal(r.text, 'outro modelo respondeu');
+});
+
 // Achado no ensaio do M1.0 (2026-10-18): resposta sem texto, sem ferramenta e com 0 tokens de saída
 // terminava como "concluída", sem aviso. Agora é falha da rota: registra, troca de provedor ou para com motivo.
 const empty: ModelResponse = { text: '', toolCalls: [], usage: { input_tokens: 0, cached_tokens: 0, cache_write_tokens: 0, output_tokens: 0 }, finish: 'other' };

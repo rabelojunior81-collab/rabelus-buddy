@@ -58,6 +58,15 @@ test('contexto em texto curto (critério 13)', () => {
   assert.equal(ctxText(null), '');
 });
 
+// Ensaio de 2026-10-19: o OpenCode Go ficou fora do catálogo (401) e simplesmente sumiu do seletor. Quem fica de fora
+// aparece com o motivo, para o Pai saber o que fazer (retorno visível).
+test('provedores fora do catálogo aparecem com o motivo (critério 13)', () => {
+  const { catalogLeftOut } = pure<{ catalogLeftOut: (errors: Record<string, string>, names: Record<string, string>) => string[] }>(['catalogLeftOut']);
+  const names = { chatgpt: 'ChatGPT', 'opencode-go': 'OpenCode Go', 'ollama-cloud': 'Ollama Cloud', openrouter: 'OpenRouter', 'models.dev': 'models.dev' };
+  assert.deepEqual(catalogLeftOut({ chatgpt: 'sem login', 'opencode-go': '/inference/go/v1/models respondeu 401' }, names), ['ChatGPT: sem login', 'OpenCode Go: /inference/go/v1/models respondeu 401']);
+  assert.deepEqual(catalogLeftOut({}, names), []);
+});
+
 // As chaves dos filtros chegam por um mapa (não como t('…') literal): conferidas aqui, nos dois idiomas.
 test('os nomes dos filtros de capacidade existem nos dois idiomas (critério 28 do M0)', () => {
   for (const lang of ['pt-BR', 'en']) {
@@ -74,6 +83,7 @@ test('página: pílula de modelo com painel acessível, Ctrl+K, catálogo do nú
   assert.ok(PAGE.includes("api('models.list')"), 'catálogo vem do núcleo');
   assert.match(PAGE, /ev\.key\.toLowerCase\(\) === 'k'/, 'Ctrl+K abre o seletor');
   assert.match(PAGE, /params\.route = picked/, 'a escolha vai como rota');
+  assert.match(PAGE, /id="mLeft"/, 'quem ficou fora do catálogo aparece no seletor');
   assert.doesNotMatch(PAGE, /<select id="route"/, 'o seletor de provedor antigo foi substituído');
   // O esforço que a página oferece passa pelo contrato.
   const eff = (CONSOLE_SCHEMAS['agent.run'] as unknown as { shape: { effort: { safeParse: (v: unknown) => { success: boolean } } } }).shape.effort;

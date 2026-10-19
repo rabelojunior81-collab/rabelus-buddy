@@ -141,6 +141,7 @@
       "empty": "Nenhum modelo com esses filtros. Tire um filtro ou troque de provedor.",
       "noCred": "{{name}} ainda não tem credencial: entre ou guarde a chave em Ajustes.",
       "foot": "Capacidades segundo o provedor e o models.dev · catálogo de {{date}}",
+      "leftOut": "Fora da lista: {{list}}. Entre ou confira a chave em Ajustes.",
       "f": {
         "vision": "Visão",
         "reasoning": "Raciocínio",

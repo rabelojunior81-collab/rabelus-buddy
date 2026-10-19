@@ -208,6 +208,16 @@ test('níveis de esforço além de baixo, médio e alto chegam a cada rota no fo
   await fake.close();
 });
 
+// M1.5c (2026-10-19): sem saldo é da conta, não do modelo; o limite comum (429) fica no modelo (escopo não marcado).
+test('402 (conta sem saldo) tem escopo da conta; 429 não (M1.5c)', async () => {
+  const f402 = await fakeHttp(() => ({ status: 402, json: { error: { message: 'Insufficient account funds' } } }));
+  await assert.rejects(createOpenRouterProvider({ apiKey: 'k', baseURL: `${f402.url}/api/v1` }).call(req('x/y'), { session: 's' }), (e: unknown) => e instanceof ProviderLimitError && e.scope === 'provider');
+  await f402.close();
+  const f429 = await fakeHttp(() => ({ status: 429, json: { error: { message: 'Provider returned error' } } }));
+  await assert.rejects(createOpenRouterProvider({ apiKey: 'k', baseURL: `${f429.url}/api/v1` }).call(req('x/y:free'), { session: 's' }), (e: unknown) => e instanceof ProviderLimitError && e.scope !== 'provider');
+  await f429.close();
+});
+
 test('402 (conta sem saldo) esgota o provedor por uma hora, em vez de ser recusado a cada mensagem', async () => {
   const f = await fakeHttp(() => ({ status: 402, json: { error: { message: 'Upstream request failed: Insufficient account funds' } } }));
   const t0 = Date.now();

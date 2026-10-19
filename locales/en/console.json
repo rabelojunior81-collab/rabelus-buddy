@@ -141,6 +141,7 @@
       "empty": "No model with these filters. Remove a filter or switch provider.",
       "noCred": "{{name}} has no credential yet: sign in or save the key in Settings.",
       "foot": "Capabilities per the provider and models.dev · catalog from {{date}}",
+      "leftOut": "Not listed: {{list}}. Sign in or check the key in Settings.",
       "f": {
         "vision": "Vision",
         "reasoning": "Reasoning",

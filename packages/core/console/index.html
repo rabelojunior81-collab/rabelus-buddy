@@ -397,6 +397,7 @@
   <div class="srch">⌕<input id="mSearch" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.model.search" data-i18n-aria="console.model.search"><button id="fBtn" class="ibtn fbtn" aria-expanded="false" aria-controls="fMenu" data-i18n-aria="console.model.filter">⚲</button></div>
   <div id="fMenu" class="fmenu" hidden></div>
   <div id="mList" class="plist" role="listbox" data-i18n-aria="console.model.title"></div>
+  <div id="mLeft" class="pfoot" hidden></div>
   <div id="mFoot" class="pfoot"></div>
 </div>
 <div id="hPop" class="pop" role="listbox" hidden data-i18n-aria="console.harness.listTitle">
@@ -624,6 +625,8 @@ function effortsFor(m) {
   return ['default', ...EFFORT_ORDER.filter((e) => declared.has(e))];
 }
 function ctxText(n) { return !n ? '' : n >= 1e6 ? Math.round(n / 1e6 * 10) / 10 + 'M' : Math.round(n / 1000) + 'k'; }
+// Provedores que ficaram fora do catálogo, com o motivo (achado do ensaio: o OpenCode Go sumia sem explicação).
+function catalogLeftOut(errors, names) { return Object.entries(errors || {}).map(([id, why]) => (names[id] || id) + ': ' + why); }
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -934,6 +937,9 @@ function renderModelPop() {
   for (const r of $('mList').querySelectorAll('.mrow')) r.classList.toggle('act', Number(r.dataset.i) === mState.act);
   const act = $('mList').querySelector('.mrow.act');
   if (act) act.scrollIntoView({ block: 'nearest' });
+  const left = catalogLeftOut(catalog.errors, { chatgpt: 'ChatGPT', 'opencode-go': 'OpenCode Go', 'ollama-cloud': 'Ollama Cloud', openrouter: 'OpenRouter', 'models.dev': 'models.dev' });
+  $('mLeft').hidden = !left.length;
+  $('mLeft').textContent = left.length ? t('console.model.leftOut', { list: left.join(' · ') }) : '';
   const p = provs.find((x) => x.id === mState.provider);
   $('mFoot').textContent = p ? t(hasCredential(p.id) ? 'console.model.foot' : 'console.model.noCred', { name: p.name, date: new Date(catalog.generatedAt).toLocaleString(lang) }) : '';
 }
