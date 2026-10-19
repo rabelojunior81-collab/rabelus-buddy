@@ -265,7 +265,8 @@ export async function startOwner(home: string): Promise<Owner> {
           onPermission: async (ask) => {
             asked.add(ask.toolCallId);
             const tool = toolOfKind(ask.kind);
-            const raw = tool === 'run_command' ? ask.title : ask.paths[0] ?? ask.title;
+            // O Codex pede com o título genérico "Run command"; o comando veio antes no tool_call de mesmo id (2026-10-19).
+            const raw = tool === 'run_command' ? titles.get(ask.toolCallId) || ask.title : ask.paths[0] ?? ask.title;
             const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
             const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
             const d = policy.decide({ session, tool, target: raw }, { interactive });

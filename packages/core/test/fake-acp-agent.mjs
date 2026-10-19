@@ -15,6 +15,7 @@
 //   FAKE_ACP_ECHO_CONFIG=1: o texto final conta se recebeu OPENCODE_CONFIG_CONTENT com permission ask.
 //   FAKE_ACP_PERM_KIND: tipo da ação pedida na permissão (padrão edit, com o caminho em locations).
 //   FAKE_ACP_PROMPT=unasked: escreve um arquivo (tool_call edit concluído) sem pedir permissão.
+//   FAKE_ACP_GENERIC_TITLE=1: o comando vem antes num tool_call, e o pedido de permissão diz só "Run command" (Codex).
 //   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
 import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
@@ -64,10 +65,13 @@ else {
       let extra = '';
       if (process.env.FAKE_ACP_PROMPT === 'permission') {
         const kind = process.env.FAKE_ACP_PERM_KIND ?? 'edit';
+        // Como o Codex real (2026-10-19): o comando vem no tool_call, e o pedido de permissão do mesmo id diz só "Run command".
+        const generic = Boolean(process.env.FAKE_ACP_GENERIC_TITLE);
+        if (generic) await send({ sessionUpdate: 'tool_call', toolCallId: 't2', title: 'npm install', kind, status: 'in_progress' });
         const r = await client.request('session/request_permission', {
           sessionId,
           toolCall: kind === 'execute'
-            ? { toolCallId: 't2', title: 'npm install', kind, status: 'pending' }
+            ? { toolCallId: 't2', title: generic ? 'Run command' : 'npm install', kind, status: 'pending' }
             : { toolCallId: 't2', title: 'Editar README.md', kind, status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'README.md') }] },
           options: [{ optionId: 'ok', name: 'Permitir', kind: 'allow_once' }, { optionId: 'always', name: 'Sempre', kind: 'allow_always' }, { optionId: 'no', name: 'Negar', kind: 'reject_once' }],
         });

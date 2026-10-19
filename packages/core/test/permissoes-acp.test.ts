@@ -110,6 +110,18 @@ test('comando pedido pelo harness pede aprovação de uma vez, com o comando à 
   assert.match(lastText((await ipc('session.events', { session: 'p4' })) as Ev[]), /Permissão: ok\./);
 });
 
+// Checagem real de 2026-10-19: o Codex pede permissão com o título genérico "Run command"; o comando de verdade veio
+// antes, no tool_call de mesmo id. O Pai precisa ver o que aprova.
+test('pedido com título genérico: a aprovação mostra o comando que o harness anunciou no mesmo id (critério 6)', async () => {
+  const { ipc, workspace } = await owner({ FAKE_ACP_PROMPT: 'permission', FAKE_ACP_PERM_KIND: 'execute', FAKE_ACP_GENERIC_TITLE: '1' });
+  const { run } = await ipc('agent.run', { session: 'p8', task: 'instale', workspace, harness: 'opencode', interactive: true });
+  const ap = await until(async () => ((await ipc('approval.list')) as any[]).find((a) => a.session === 'p8'));
+  assert.match(ap.action, /run_command npm install/);
+  await ipc('approval.resolve', { id: ap.id, decision: 'deny' });
+  await finished(ipc, run);
+  assert.equal(((await ipc('session.events', { session: 'p8' })) as Ev[]).find((e) => e.kind === 'harness.permission')!.payload.target, 'npm install');
+});
+
 test('postura ao abrir a sessão: modo read-only quando o harness declara, permission ask para o OpenCode (critério 6)', async () => {
   const { ipc, workspace } = await owner({ FAKE_ACP_MODES: '1', FAKE_ACP_ECHO_CONFIG: '1' });
   const { run } = await ipc('agent.run', { session: 'p5', task: 'oi', workspace, harness: 'opencode' });
