@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0021 · 2026-10-15T035409-0300 · claude-code-vs-code-14f5bb · doc
-
-Blog atualizado: Buddy Fenix com avatar próprio, cor #3fb8a8 e emojis na ficha de autor, nos cards (pt/en) e nas bios do rodapé; governança v2.6; proveniência em evidence/buddy-dev. rabelus-lab-blog 6ae9895, gate VERDE, QA em 1440 e 375.
-
 ### #0022 · 2026-10-15T035631-0300 · claude-code-vs-code-14f5bb · pesquisa
 
 Stack mobile e Web UI: ficha stacks-mobile-e-web com versões oficiais de 2026-10-15; ADR 0013 proposta (Expo universal sobre pacote de cliente TypeScript; Web UI React DOM separada quando as telas densas pedirem; spike no M5). Aguarda o Pai.
@@ -207,3 +203,7 @@ M1.2a sonda ACP (critério 3): launchFor (executável local preferido; npx/uvx c
 ### #0068 · 2026-10-18T201435-0300 · claude-code-vs-code-30aa5d · feat
 
 M1.2b primeira execução aprovada (critério 4): harness.probe pede aprovação por pacote@versão no painel Aprovações antes de qualquer npx/uvx; negada nada roda; versão nova pergunta; ensaio na console registrado; validação do Pai: aprovar o Codex
+
+### #0069 · 2026-10-18T212108-0300 · claude-code-vs-code-30aa5d · feat
+
+M1.2b no mundo real: o Pai aprovou o Codex na console e o codex-acp 2.2.2 ficou pronto (10,1 s); achado do Pai (aprovar sem retorno) corrigido: approval.resolve roda a sonda e a console mostra o resultado; varredura de processos sem janela; gancho pre-commit

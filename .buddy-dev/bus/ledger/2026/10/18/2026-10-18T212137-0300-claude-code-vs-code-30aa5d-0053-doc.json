@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T212137-0300-claude-code-vs-code-30aa5d-0053",
+  "ts": "2026-10-18T21:21:37-03:00",
+  "utc": "2026-10-19T00:21:37.896Z",
+  "session": "claude-code-vs-code-30aa5d",
+  "seq": 53,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2b-codex-real",
+  "type": "doc",
+  "summary": "Superfícies da M1.2b real: registro do passo real e do retorno visível, validação aprovar-codex-primeira-execucao feita, PLANO (M1.2a e M1.2b [x]), README pt/en, CHANGELOG, STATUS (segue M1.2c), lição do lote #0021",
+  "refs": [],
+  "data": {}
+}
