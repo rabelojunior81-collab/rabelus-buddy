@@ -45,6 +45,7 @@
     --primary-b: oklch(42% .1 124 / .95);
     --primary-ink: oklch(98% .01 110);
     --mark-filter: drop-shadow(0 0 6px oklch(82% .12 85 / .35));
+    --c-vision: oklch(80% .11 185); --c-reason: oklch(77% .13 300); --c-tools: oklch(80% .13 60); --c-video: oklch(77% .12 245); --c-open: oklch(83% .13 125);
     --shadow: 0 24px 80px -20px oklch(4% .02 120 / .75);
     --ease: cubic-bezier(.2, .7, .2, 1);
     color-scheme: dark;
@@ -81,6 +82,7 @@
       --primary-b: oklch(40% .1 124);
       --primary-ink: oklch(98% .01 110);
       --mark-filter: brightness(.62) saturate(1.4) drop-shadow(0 0 4px oklch(70% .12 85 / .25));
+      --c-vision: oklch(48% .11 190); --c-reason: oklch(47% .17 300); --c-tools: oklch(53% .15 55); --c-video: oklch(47% .14 250); --c-open: oklch(45% .12 128);
       --shadow: 0 24px 70px -24px oklch(30% .05 118 / .35);
       color-scheme: light;
     }
@@ -114,6 +116,7 @@
     --primary-b: oklch(40% .1 124);
     --primary-ink: oklch(98% .01 110);
     --mark-filter: brightness(.62) saturate(1.4) drop-shadow(0 0 4px oklch(70% .12 85 / .25));
+    --c-vision: oklch(48% .11 190); --c-reason: oklch(47% .17 300); --c-tools: oklch(53% .15 55); --c-video: oklch(47% .14 250); --c-open: oklch(45% .12 128);
     --shadow: 0 24px 70px -24px oklch(30% .05 118 / .35);
     color-scheme: light;
   }
@@ -247,6 +250,31 @@
   button.starter:hover { color: var(--text); border-color: var(--hair-strong); }
   button.starter[aria-pressed="true"] { color: var(--primary-ink); background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); border-color: oklch(80% .12 118 / .4); }
   .perm .ico, .perm .mark { width: 18px; height: 18px; margin: 0; }
+  /* seletor de modelo (M1.5c): abas por provedor, busca, filtros, lista por lab com capacidades em ícones */
+  .mpop { width: 420px; max-height: min(460px, 72vh); }
+  .tabs { display: flex; padding: 6px 8px 0; border-bottom: 1px solid var(--hair); overflow-x: auto; scrollbar-width: none; }
+  .tabs button { position: relative; flex: 1 0 auto; display: flex; align-items: baseline; justify-content: center; gap: 5px; padding: 6px 8px 7px; border: 0; background: none; color: var(--faint); font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .tabs button small { font-size: 10.5px; font-weight: 500; }
+  .tabs button:hover, .tabs button[aria-selected="true"] { color: var(--text); }
+  .tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 10%; right: 10%; bottom: -1px; height: 2px; background: var(--olive-400); }
+  .tabs button .nocred { color: var(--warn); }
+  .srch { position: relative; display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 12px; border-bottom: 1px solid var(--hair); color: var(--faint); }
+  .srch input { flex: 1; min-width: 0; height: 34px; border: 0; outline: 0; background: none; color: var(--text); font-size: 13px; }
+  .srch input::placeholder { color: var(--faint); }
+  .fbtn[aria-expanded="true"], .fbtn.on { color: var(--text); border-color: var(--hair-strong); background: oklch(100% 0 0 / .08); }
+  .fmenu { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 10px; border-bottom: 1px solid var(--hair); }
+  .fmenu button { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 7px; border: 1px solid var(--hair); background: none; color: var(--muted); font-size: 11.5px; }
+  .fmenu button[aria-pressed="true"] { color: var(--text); border-color: oklch(76% .13 118 / .6); background: oklch(70% .13 120 / .12); }
+  .gh { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 6px; padding: 7px 6px 3px; background: var(--glass-solid); font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .labfb { display: inline-grid; place-items: center; width: 14px; height: 14px; flex: none; font-size: 7.5px; font-weight: 800; border: 1.2px solid currentColor; color: var(--faint); }
+  .mrow .ctx { flex: none; font-size: 10.5px; color: var(--faint); min-width: 30px; text-align: right; }
+  .caps { display: inline-flex; align-items: center; gap: 2px; flex: none; }
+  .cap { display: inline-grid; place-items: center; width: 17px; height: 17px; background: color-mix(in oklch, currentColor 14%, transparent); }
+  .cap svg { width: 11px; height: 11px; }
+  .cap.vision { color: var(--c-vision); } .cap.reasoning { color: var(--c-reason); } .cap.tools { color: var(--c-tools); } .cap.big { color: var(--c-video); }
+  .cap.free { color: var(--c-open); font-size: 10px; font-weight: 800; }
+  .mrow.act { background: var(--hover); }
+  .empty { padding: 18px 12px; text-align: center; color: var(--muted); font-size: 12.5px; }
   .loginbox { display: flex; flex-direction: column; gap: 6px; padding: 9px 11px; border: 1px solid color-mix(in oklch, var(--warn) 45%, transparent); background: var(--glass-solid); font-size: 13px; }
   .send { width: 30px; height: 30px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
     box-shadow: inset 0 1px 0 oklch(100% 0 0 / .22), 0 6px 18px -8px oklch(55% .12 120 / .8); transition: filter .2s var(--ease), transform .15s var(--ease); }
@@ -353,7 +381,7 @@
               <option value="medium" data-i18n="console.effort.medium"></option>
               <option value="high" data-i18n="console.effort.high"></option>
             </select></label>
-          <label class="pill" id="routePill" for="route"><span class="plab" data-i18n="console.task.route">Provedor</span><select id="route"></select></label>
+          <button id="mBtn" class="pill" aria-haspopup="dialog" aria-expanded="false" aria-controls="mPop" data-i18n-title="console.model.pick"></button>
           <span class="spacer"></span>
           <button id="stop" class="stop" hidden data-i18n="console.task.stop">Parar</button>
           <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
@@ -364,6 +392,13 @@
   </main>
 </div>
 <div id="scrim" class="scrim" hidden></div>
+<div id="mPop" class="pop mpop" role="dialog" hidden data-i18n-aria="console.model.title">
+  <div id="mTabs" class="tabs" role="tablist" data-i18n-aria="console.model.providers"></div>
+  <div class="srch">⌕<input id="mSearch" autocomplete="off" spellcheck="false" data-i18n-placeholder="console.model.search" data-i18n-aria="console.model.search"><button id="fBtn" class="ibtn fbtn" aria-expanded="false" aria-controls="fMenu" data-i18n-aria="console.model.filter">⚲</button></div>
+  <div id="fMenu" class="fmenu" hidden></div>
+  <div id="mList" class="plist" role="listbox" data-i18n-aria="console.model.title"></div>
+  <div id="mFoot" class="pfoot"></div>
+</div>
 <div id="hPop" class="pop" role="listbox" hidden data-i18n-aria="console.harness.listTitle">
   <div class="ptitle" data-i18n="console.harness.listTitle">Harness · quem executa</div>
   <div class="plist" id="hList"></div>
@@ -413,7 +448,6 @@ let session = prefs.session; // sessão aberta na conversa (lembrada ao recarreg
 const groupOpen = new Map();  // grupos abertos ou fechados à mão pelo usuário
 let lastRun = null;        // última execução da sessão aberta
 let showAll = false;
-let routesCfg = [];
 let providerState = [];
 let harnesses = [];        // harnesses encontrados (harness.list)
 const homeEl = $('home');  // tela inicial: volta ao feed quando não há conversa aberta
@@ -563,6 +597,33 @@ function postureKey(p) {
 // Estado da ferramenta do harness (ACP) em palavras do catálogo; desconhecido fica como veio.
 const TOOL_STATUS = { pending: 'console.harness.status.pending', in_progress: 'console.harness.status.in_progress', completed: 'console.harness.status.completed', failed: 'console.harness.status.failed' };
 function toolStatusKey(s) { return Object.prototype.hasOwnProperty.call(TOOL_STATUS, s) ? TOOL_STATUS[s] : null; }
+// Seletor de modelo (M1.5c). Filtros por capacidade: visão, raciocínio, ferramentas, grátis e contexto de 1M+.
+const MODEL_FILTERS = { vision: (m) => Boolean(m.vision), reasoning: (m) => Boolean(m.reasoning), tools: (m) => Boolean(m.tools), free: (m) => Boolean(m.free), big: (m) => (m.ctx || 0) >= 1e6 };
+// Modelos de um provedor, agrupados por lab (o maior grupo primeiro), pela busca (nome, id ou lab) e pelos filtros.
+function modelGroups(cat, o) {
+  const p = ((cat && cat.providers) || []).find((x) => x.id === o.provider);
+  if (!p) return [];
+  const q = String(o.query || '').trim().toLowerCase();
+  const fs = (o.filters || []).filter((f) => MODEL_FILTERS[f]);
+  const labName = (l) => ((cat.labs || {})[l] || {}).name || l;
+  const by = new Map();
+  for (const m of p.models) {
+    if (q && !(m.name + ' ' + m.id + ' ' + labName(m.lab)).toLowerCase().includes(q)) continue;
+    if (!fs.every((f) => MODEL_FILTERS[f](m))) continue;
+    if (!by.has(m.lab)) by.set(m.lab, []);
+    by.get(m.lab).push(m);
+  }
+  return [...by.entries()].sort((a, b) => b[1].length - a[1].length).map(([lab, models]) => ({ lab, title: labName(lab), models }));
+}
+// Esforço que a console oferece: o que o modelo declara, na ordem do mais leve ao mais pesado, só os que o núcleo
+// conhece; Automático (sem modelo): padrão, baixo, médio e alto.
+const EFFORT_ORDER = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'];
+function effortsFor(m) {
+  if (!m) return ['default', 'low', 'medium', 'high'];
+  const declared = new Set(m.efforts || []);
+  return ['default', ...EFFORT_ORDER.filter((e) => declared.has(e))];
+}
+function ctxText(n) { return !n ? '' : n >= 1e6 ? Math.round(n / 1e6 * 10) / 10 + 'M' : Math.round(n / 1000) + 'k'; }
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -806,17 +867,121 @@ async function refreshProviders() {
   $('providers').replaceChildren(...providerState.map((p, i) => el('li', {},
     el('span', { class: 't' }, (i + 1) + '. ' + p.provider + '/' + p.model),
     el('span', { class: 'badge ' + (p.source ? 'ok' : 'warn'), title: sourceText(p.source) }, p.source ? sourceText(p.source) : t('console.route.missing')))));
-  const sel = $('route');
-  // Primeira montagem: o provedor escolhido da última vez (critério 34).
-  const cur = sel.options.length ? sel.value : prefs.route;
-  const opts = [el('option', { value: '' }, t('console.route.auto'))];
-  for (const r of routesCfg) {
-    const ready = providerState.find((p) => p.provider === r.provider)?.source;
-    opts.push(el('option', { value: JSON.stringify(r) }, r.provider + ' · ' + r.model + ' (' + t(ready ? 'console.route.ready' : 'console.route.missing') + ')'));
-  }
-  sel.replaceChildren(...opts);
-  sel.value = [...sel.options].some((o) => o.value === cur) ? cur : '';
 }
+
+// ---------- Seletor de modelo (M1.5c): provedor → lab → modelo, pelo catálogo do núcleo ----------
+// A escolha vira a rota da execução ({provider, model}); null = Automático (a ordem dos provedores). Lembrada (critério 34).
+let picked = (() => { try { const r = JSON.parse(prefs.route || 'null'); return r && r.provider && r.model ? { provider: r.provider, model: r.model } : null; } catch { return null; } })();
+let catalog = null;
+let catalogLoading = null;
+const mState = { provider: picked ? picked.provider : null, filters: new Set(), act: 0 };
+const CAP_SVG = {
+  vision: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  reasoning: '<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+  tools: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>',
+  big: '<path d="M4 12h16M4 12l4-4M4 12l4 4M20 12l-4-4M20 12l-4 4"/>',
+};
+const FILTER_KEYS = { vision: 'console.model.f.vision', reasoning: 'console.model.f.reasoning', tools: 'console.model.f.tools', free: 'console.model.f.free', big: 'console.model.f.big' };
+// Ícones das capacidades (SVG da própria página, nada de fora), com o nome no título.
+function capIcon(k) {
+  const s = el('span', { class: 'cap ' + k, title: t(FILTER_KEYS[k]) });
+  if (k === 'free') s.textContent = '$';
+  else { const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2'); svg.setAttribute('aria-hidden', 'true'); svg.innerHTML = CAP_SVG[k]; s.append(svg); }
+  return s;
+}
+const capsOf = (m) => el('span', { class: 'caps' }, ...['vision', 'reasoning', 'tools', 'free', 'big'].filter((k) => MODEL_FILTERS[k](m)).map(capIcon));
+const labBox = (lab) => el('span', { class: 'labfb', 'aria-hidden': 'true' }, String(((catalog && catalog.labs[lab]) || {}).name || lab).slice(0, 2).toUpperCase());
+const pickedModel = () => { if (!picked || !catalog) return null; const p = catalog.providers.find((x) => x.id === picked.provider); return (p && p.models.find((m) => m.id === picked.model)) || null; };
+const hasCredential = (id) => Boolean((providerState.find((p) => p.provider === id) || {}).source);
+async function loadCatalog() {
+  if (catalog) return catalog;
+  catalogLoading = catalogLoading || api('models.list').then((c) => { catalog = c; return c; }).finally(() => { catalogLoading = null; });
+  return catalogLoading;
+}
+function renderModelPill() {
+  const m = pickedModel();
+  $('mBtn').replaceChildren(m ? labBox(m.lab) : el('span', { class: 'cap reasoning', 'aria-hidden': 'true' }, '∗'),
+    el('span', { class: 'nm' }, m ? m.name : picked ? picked.model : t('console.model.auto')), m ? capsOf(m) : null, el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
+  // Esforço conforme o modelo (Automático: padrão, baixo, médio, alto); a escolha anterior fica se ainda valer.
+  const sel = $('effort');
+  const cur = sel.value || store.get('rb.effort', 'default');
+  const list = effortsFor(m);
+  sel.replaceChildren(...list.map((e) => el('option', { value: e }, t('console.effort.' + e))));
+  sel.value = list.includes(cur) ? cur : 'default';
+  $('effortPill').hidden = chosen !== 'buddy' || list.length === 1;
+}
+function renderModelPop() {
+  if (!catalog) { $('mList').replaceChildren(el('div', { class: 'empty' }, t('console.model.loading'))); return; }
+  const provs = catalog.providers;
+  if (!mState.provider || !provs.some((p) => p.id === mState.provider)) mState.provider = (provs.find((p) => hasCredential(p.id)) || provs[0] || {}).id || null;
+  const q = $('mSearch').value;
+  const fs = [...mState.filters];
+  $('mTabs').replaceChildren(...provs.map((p) => el('button', { role: 'tab', 'aria-selected': String(p.id === mState.provider), title: hasCredential(p.id) ? p.name : t('console.model.noCred', { name: p.name }), onclick: () => { mState.provider = p.id; mState.act = 0; renderModelPop(); } },
+    p.name, el('small', {}, String(modelGroups(catalog, { provider: p.id, query: q, filters: fs }).reduce((n, g) => n + g.models.length, 0))), hasCredential(p.id) ? null : el('small', { class: 'nocred', 'aria-hidden': 'true' }, '!'))));
+  $('fBtn').classList.toggle('on', mState.filters.size > 0);
+  $('fMenu').replaceChildren(...Object.keys(MODEL_FILTERS).map((k) => el('button', { 'aria-pressed': String(mState.filters.has(k)), onclick: () => { if (mState.filters.has(k)) mState.filters.delete(k); else mState.filters.add(k); mState.act = 0; renderModelPop(); } }, capIcon(k), t(FILTER_KEYS[k]))));
+  const groups = modelGroups(catalog, { provider: mState.provider, query: q, filters: fs });
+  const flat = [];
+  const rows = [];
+  if (!q && !fs.length) { flat.push(null); rows.push(modelRow(null, 0)); }
+  for (const g of groups) {
+    rows.push(el('div', { class: 'gh' }, labBox(g.lab), g.title));
+    for (const m of g.models) { flat.push(m); rows.push(modelRow(m, flat.length - 1)); }
+  }
+  mState.flat = flat;
+  mState.act = Math.min(mState.act, Math.max(0, flat.length - 1));
+  $('mList').replaceChildren(...(flat.length ? rows : [el('div', { class: 'empty' }, t('console.model.empty'))]));
+  for (const r of $('mList').querySelectorAll('.mrow')) r.classList.toggle('act', Number(r.dataset.i) === mState.act);
+  const act = $('mList').querySelector('.mrow.act');
+  if (act) act.scrollIntoView({ block: 'nearest' });
+  const p = provs.find((x) => x.id === mState.provider);
+  $('mFoot').textContent = p ? t(hasCredential(p.id) ? 'console.model.foot' : 'console.model.noCred', { name: p.name, date: new Date(catalog.generatedAt).toLocaleString(lang) }) : '';
+}
+function modelRow(m, i) {
+  const sel = m ? Boolean(picked && picked.provider === mState.provider && picked.model === m.id) : !picked;
+  return el('button', { class: 'mrow', role: 'option', 'aria-selected': String(sel), 'data-i': String(i), title: m ? m.id : '', onclick: () => chooseModel(m) },
+    m ? labBox(m.lab) : el('span', { class: 'cap reasoning', 'aria-hidden': 'true' }, '∗'),
+    el('span', { class: 'tx' }, el('b', {}, m ? m.name : t('console.model.auto')), el('small', {}, m ? (m.desc || m.id) : t('console.model.autoDesc'))),
+    m ? capsOf(m) : null, m ? el('span', { class: 'ctx' }, ctxText(m.ctx)) : null);
+}
+function chooseModel(m) {
+  picked = m ? { provider: mState.provider, model: m.id } : null;
+  store.set('rb.route', picked ? JSON.stringify(picked) : '');
+  mPop(false);
+  renderModelPill();
+  $('task').focus();
+}
+async function mPop(open) {
+  const pop = $('mPop');
+  pop.hidden = !open;
+  $('mBtn').setAttribute('aria-expanded', String(open));
+  if (!open) { $('fMenu').hidden = true; $('fBtn').setAttribute('aria-expanded', 'false'); return; }
+  hPop(false);
+  $('mSearch').value = '';
+  mState.act = 0;
+  if (picked) mState.provider = picked.provider;
+  renderModelPop();
+  const r = $('mBtn').getBoundingClientRect();
+  pop.style.bottom = (innerHeight - r.top + 8) + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8)) + 'px';
+  $('mSearch').focus();
+  try { await loadCatalog(); } catch (e) { $('mList').replaceChildren(el('div', { class: 'empty' }, t('console.error', { message: e.message }))); return; }
+  if (!pop.hidden) { renderModelPop(); renderModelPill(); }
+}
+$('mBtn').addEventListener('click', () => mPop($('mPop').hidden));
+$('mSearch').addEventListener('input', () => { mState.act = 0; renderModelPop(); });
+$('fBtn').addEventListener('click', () => { const open = $('fMenu').hidden; $('fMenu').hidden = !open; $('fBtn').setAttribute('aria-expanded', String(open)); });
+document.addEventListener('mousedown', (ev) => { if (!$('mPop').hidden && !$('mPop').contains(ev.target) && !$('mBtn').contains(ev.target)) mPop(false); });
+// Teclado: Ctrl+K abre; ↑↓ andam; Enter escolhe; Esc fecha e devolve o foco à pílula.
+document.addEventListener('keydown', (ev) => {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'k' && chosen === 'buddy') { ev.preventDefault(); void mPop($('mPop').hidden); return; }
+  if ($('mPop').hidden) return;
+  const n = (mState.flat || []).length;
+  if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); void mPop(false); $('mBtn').focus(); }
+  else if (ev.key === 'ArrowDown') { ev.preventDefault(); mState.act = Math.min(n - 1, mState.act + 1); renderModelPop(); }
+  else if (ev.key === 'ArrowUp') { ev.preventDefault(); mState.act = Math.max(0, mState.act - 1); renderModelPop(); }
+  else if (ev.key === 'Enter' && n) { ev.preventDefault(); chooseModel(mState.flat[mState.act]); }
+}, true);
 async function refreshAuth() {
   const v = authView(await api('auth.chatgpt.status'), t);
   $('chatgptState').textContent = v.text;
@@ -889,10 +1054,10 @@ function renderHarnessPill() {
   const v = pr ? probeView(pr) : null;
   $('hBtn').replaceChildren(h ? harnessIcon(h) : buddyMark(), el('span', { class: 'nm' }, h ? h.name : 'Buddy'),
     v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null, el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
-  // Harness usa os próprios modelos e esforço: as pílulas de provedor e esforço são do Buddy.
-  $('effortPill').hidden = Boolean(h);
-  $('routePill').hidden = Boolean(h);
+  // Harness usa os próprios modelos e esforço: as pílulas de modelo e esforço são do Buddy.
+  $('mBtn').hidden = Boolean(h);
   $('task').setAttribute('placeholder', h ? t('console.harness.placeholder', { name: h.name }) : t('console.task.placeholder'));
+  renderModelPill();
 }
 function renderHarnessList() {
   const row = (id, icon, name, desc, pr) => {
@@ -969,7 +1134,7 @@ $('run').addEventListener('click', async () => {
   if (chosen !== 'buddy') params.harness = chosen;
   else {
     params.effort = $('effort').value;
-    if ($('route').value) params.route = JSON.parse($('route').value);
+    if (picked) params.route = picked;
   }
   if (cont) params.continueFrom = lastRun;
   $('run').disabled = true;
@@ -977,7 +1142,6 @@ $('run').addEventListener('click', async () => {
     const r = await api('agent.run', params);
     store.set('rb.workspace', $('workspace').value);
     store.set('rb.effort', $('effort').value);
-    store.set('rb.route', $('route').value);
     $('task').value = '';
     // Conversa ocupada: a mensagem entrou na fila (Direcionar agora ou Cancelar, logo abaixo da conversa).
     msg.textContent = r.queued ? t('console.queue.queued') : '';
@@ -1060,9 +1224,7 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
   await loadLang();
   try {
     const d = await api('console.defaults');
-    routesCfg = d.routes;
     $('workspace').value = store.get('rb.workspace', d.workspace);
-    $('effort').value = store.get('rb.effort', 'default');
   } catch { conn(false); }
   $('detailsToggle').checked = prefs.details;
   $('theme').value = themeOf(prefs.theme) ?? 'system';
@@ -1073,6 +1235,8 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
   try { await refreshAgents(); } catch { /* sem registro ainda: a lista fica vazia */ }
   // Harness lembrado da última vez: conferido de novo ao abrir (uma sonda só).
   if (chosen !== 'buddy') void chooseHarness(chosen);
+  // Catálogo de modelos em segundo plano: a pílula mostra o nome e as capacidades do modelo lembrado.
+  void loadCatalog().then(renderModelPill, () => { /* sem catálogo: a pílula mostra o id */ });
   setInterval(fast, 800);
   setInterval(liveTick, 300);
   setInterval(slow, 3000);

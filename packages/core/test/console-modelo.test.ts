@@ -58,6 +58,14 @@ test('contexto em texto curto (critério 13)', () => {
   assert.equal(ctxText(null), '');
 });
 
+// As chaves dos filtros chegam por um mapa (não como t('…') literal): conferidas aqui, nos dois idiomas.
+test('os nomes dos filtros de capacidade existem nos dois idiomas (critério 28 do M0)', () => {
+  for (const lang of ['pt-BR', 'en']) {
+    const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as { console: { model: { f: Record<string, unknown> } } };
+    for (const k of ['vision', 'reasoning', 'tools', 'free', 'big']) assert.equal(typeof cat.console.model.f[k], 'string', `${lang}: console.model.f.${k}`);
+  }
+});
+
 test('página: pílula de modelo com painel acessível, Ctrl+K, catálogo do núcleo e a escolha como rota; o seletor antigo saiu (critério 11)', () => {
   assert.match(PAGE, /id="mBtn"[^>]*aria-haspopup="dialog"[^>]*aria-expanded="false"/, 'pílula de modelo');
   assert.match(PAGE, /id="mPop"[^>]*role="dialog"/, 'painel do seletor');

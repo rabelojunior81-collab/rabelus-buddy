@@ -129,6 +129,26 @@
       "harnessFailed": "o agente falhou; veja o motivo nos detalhes",
       "needsLogin": "o agente pede login antes de continuar"
     },
+    "model": {
+      "pick": "Modelo: com que cérebro (Ctrl+K)",
+      "title": "Escolher modelo",
+      "providers": "Provedor ou roteador",
+      "search": "Buscar modelos…",
+      "filter": "Filtrar por capacidade",
+      "auto": "Automático",
+      "autoDesc": "pela ordem dos seus provedores, trocando quando um esgota",
+      "loading": "Carregando o catálogo de modelos…",
+      "empty": "Nenhum modelo com esses filtros. Tire um filtro ou troque de provedor.",
+      "noCred": "{{name}} ainda não tem credencial: entre ou guarde a chave em Ajustes.",
+      "foot": "Capacidades segundo o provedor e o models.dev · catálogo de {{date}}",
+      "f": {
+        "vision": "Visão",
+        "reasoning": "Raciocínio",
+        "tools": "Ferramentas",
+        "free": "Grátis",
+        "big": "Contexto de 1M+"
+      }
+    },
     "harness": {
       "pick": "Harness: quem executa",
       "listTitle": "Harness · quem executa",
