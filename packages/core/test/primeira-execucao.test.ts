@@ -77,3 +77,35 @@ test('primeira execução: pede aprovação com pacote@versão sem rodar nada; n
   assert.equal(((await ipc('approval.list')) as unknown as unknown[]).length, 0, 'aprovada: não pergunta de novo');
   await reg.close();
 });
+
+// Achado do Pai (2026-10-18): aprovou o Codex e "não houve nenhuma entrega ou mudança". Aprovar agora roda a sonda
+// na hora e devolve o resultado, que a console mostra no painel Aprovações.
+test('aprovar a primeira execução roda a sonda na hora e devolve o resultado; negar devolve negado (critério 4, retorno visível)', async () => {
+  const reg = await fakeHttp(() => ({ json: { version: '1.0.0', agents: [{ id: 'codex-acp', name: 'Codex', version: '2.2.2', description: 'x', license: 'Apache-2.0', distribution: { npx: { package: '@agentclientprotocol/codex-acp@2.2.2' } } }, { id: 'pi-acp', name: 'pi ACP', version: '0.0.34', description: 'x', license: 'MIT', distribution: { npx: { package: 'pi-acp@0.0.34' } } }] } }));
+  const home = tempHome();
+  const calls = join(home, 'npx-chamadas.txt');
+  const dir = fakePath(calls);
+  writeFileSync(join(dir, process.platform === 'win32' ? 'pi.cmd' : 'pi'), process.platform === 'win32' ? '@echo off\r\n' : '#!/bin/sh\n');
+  if (process.platform !== 'win32') chmodSync(join(dir, 'pi'), 0o755);
+  owners.push(await spawnOwner(home, { PATH: dir, FAKE_ACP_MODE: 'ok', RBUDDY_ACP_REGISTRY: `${reg.url}/registry.json` }));
+  const ipc = (m: string, p: Record<string, unknown> = {}) => call(endpointFor(home), m, p) as Promise<Record<string, any>>;
+  const a = await ipc('harness.probe', { id: 'codex-acp' });
+  const ok = await ipc('approval.resolve', { id: a.approval, decision: 'approve' });
+  assert.equal(ok.state, 'approved');
+  assert.deepEqual([ok.harness?.id, ok.harness?.name, ok.harness?.state], ['codex-acp', 'Codex', 'pronto']);
+  const b = await ipc('harness.probe', { id: 'pi-acp' });
+  const no = await ipc('approval.resolve', { id: b.approval, decision: 'deny' });
+  assert.deepEqual([no.harness?.id, no.harness?.state], ['pi-acp', 'negado']);
+  // Aprovação comum (não de harness) continua igual, sem resultado de harness.
+  await reg.close();
+});
+
+test('a console mostra o resultado da sonda depois de aprovar, nos dois idiomas (retorno visível)', () => {
+  const page = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  assert.match(page, /r\.harness/);
+  for (const lang of ['pt-BR', 'en']) {
+    const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as { console: { approvals: Record<string, unknown> } };
+    const h = cat.console.approvals.harness as Record<string, string>;
+    for (const k of ['pronto', 'login', 'falhou', 'negado']) assert.equal(typeof h?.[k], 'string', `${lang}: console.approvals.harness.${k}`);
+  }
+});
