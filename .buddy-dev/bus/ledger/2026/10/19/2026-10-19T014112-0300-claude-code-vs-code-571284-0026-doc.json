@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T014112-0300-claude-code-vs-code-571284-0026",
+  "ts": "2026-10-19T01:41:12-03:00",
+  "utc": "2026-10-19T04:41:12.518Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 26,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-571284",
+  "type": "doc",
+  "summary": "Post 'Licença Pedida, Licença Decidida' e daily de 19/10 publicados no Blog (346955a; gate VERDE 19/19; QA 375 e 1440 sem transbordo, imagens e 9 links internos ok; índice com o post no topo; o único erro de console é o favicon ausente, pendência antiga; servidor srv-44dfc4 por bd serve, encerrado; navegador fechado).",
+  "refs": [],
+  "data": {}
+}
