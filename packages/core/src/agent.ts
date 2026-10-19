@@ -24,7 +24,9 @@ const DEFAULT_MAX_STEPS = 50;
 export const CONSERVATIVE_PRICE: Price = { input: 15, cachedInput: 15, cacheWrite: 15, output: 75 };
 const PAID = new Set(['openrouter']);
 // Códigos de recusa que podem ser do campo de esforço (corpo inválido), não da conta.
-const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability']);
+// Recusa do esforço pelo provedor: a chamada se repete sem ele. invalid_value e unsupported_value medidos no ChatGPT
+// real em 2026-10-19 ("ultra"; "none" e "minimal" no gpt-6.1-sol), M1.5c.
+const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability', 'invalid_value', 'unsupported_value']);
 const FREE: Price = { input: 0, cachedInput: 0, cacheWrite: 0, output: 0 };
 // Raciocínio registrado por passo (critério 32): teto para o log não crescer sem limite.
 const REASONING_MAX = 20_000;

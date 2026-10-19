@@ -18,7 +18,7 @@ import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
-import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
+import { buildModelCatalog, CATALOG_VERSION, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
@@ -487,7 +487,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const file = join(home, 'models', 'catalog.json');
       try {
         const c = JSON.parse(readFileSync(file, 'utf8')) as ModelCatalog;
-        if (Date.now() - Date.parse(c.generatedAt) < DAY) return c;
+        // Cópia de outra versão do catálogo (regras corrigidas) é montada de novo, sem esperar o dia (M1.5c).
+        if (c.version === CATALOG_VERSION && Date.now() - Date.parse(c.generatedAt) < DAY) return c;
       } catch { /* sem cópia ainda */ }
       catalogBuild ??= (async () => {
         const routes = loadConfig(home).routes;

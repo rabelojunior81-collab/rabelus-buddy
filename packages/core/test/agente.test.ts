@@ -312,6 +312,20 @@ test('esforço da execução chega ao provedor; recusado, a chamada se repete um
   assert.equal((step?.payload as { effort?: string }).effort, null);
 });
 
+// Checagem real de 2026-10-19 (M1.5c): o ChatGPT recusa o nível que não aceita com 400 e os códigos invalid_value
+// ("ultra") e unsupported_value ("none" e "minimal" no gpt-6.1-sol). Também é recusa do esforço: repete sem ele.
+test('esforço recusado com invalid_value ou unsupported_value também repete sem ele, com evento (M1.5c)', async () => {
+  for (const code of ['invalid_value', 'unsupported_value']) {
+    const p = scripted('chatgpt', [new ProviderRejectedError('chatgpt', code, "400 Invalid value: 'ultra'"), say('ok sem esforço')]);
+    const { log, agent } = setup({ routes: [{ provider: p, model: 'gpt-6.1-sol' }] });
+    (agent as unknown as { o: { effort?: string } }).o.effort = 'ultra';
+    const r = await agent.run(`s-${code}`, 'tarefa');
+    assert.equal(r.text, 'ok sem esforço', code);
+    assert.equal(p.seen[1]?.effort, undefined, code);
+    assert.equal((log.events(`s-${code}`).find((e) => e.kind === 'effort.dropped')?.payload as { code?: string })?.code, code);
+  }
+});
+
 test('conversa contínua: a nova mensagem leva o histórico da execução anterior ao modelo (critério 30)', async () => {
   const p = scripted('opencode-go', [say('primeira resposta'), say('segunda resposta')]);
   const { agent } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });

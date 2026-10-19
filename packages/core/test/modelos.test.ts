@@ -4,7 +4,7 @@
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ChildProcess } from 'node:child_process';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { call } from '../../client/src/ipc.ts';
 import { endpointFor } from '../src/paths.ts';
@@ -99,6 +99,18 @@ test('catálogo de modelos: provedor → lab → modelo, com capacidades e a fon
   await f.close();
 });
 
+// Checagem real de 2026-10-19 (M1.5c): o /models do ChatGPT declara "ultra", mas a API de respostas que o Buddy usa
+// recusa com 400 invalid_value. O catálogo oferece no ChatGPT só os níveis que a API de respostas aceita, na ordem.
+test('catálogo: no ChatGPT, só os níveis de esforço que a API de respostas aceita (M1.5c)', async () => {
+  const f = await fakeHttp((c: Captured) => (c.path === '/chatgpt/models'
+    ? { json: { models: [{ slug: 'gpt-6.1-sol', display_name: 'GPT-6.1 Sol', visibility: 'list', input_modalities: ['text'], supported_reasoning_levels: ['low', 'medium', 'high', 'xhigh', 'max', 'ultra'].map((effort) => ({ effort })), context_window: 400000 }] } }
+    : { status: 404 }));
+  const cat = await buildModelCatalog({ chatgpt: { token: 't', api: `${f.url}/chatgpt` }, 'opencode-go': null, 'ollama-cloud': null, openrouter: null, modelsDevURL: `${f.url}/api.json` });
+  const sol = cat.providers.find((p) => p.id === 'chatgpt')!.models.find((m) => m.id === 'gpt-6.1-sol')!;
+  assert.deepEqual(sol.efforts, ['low', 'medium', 'high', 'xhigh', 'max']);
+  await f.close();
+});
+
 test('catálogo de modelos: um provedor fora do ar não derruba os outros; sem credencial, o provedor fica de fora com o motivo (critério 13)', async () => {
   const f = await fakeProviders({ ollamaDown: true });
   const cat = await buildModelCatalog({
@@ -130,5 +142,21 @@ test('models.list pelo núcleo: guarda o catálogo e não busca de novo no mesmo
   assert.equal(f.requests.length, n, 'nenhuma busca nova no mesmo dia');
   assert.doesNotMatch(JSON.stringify(cat), /chave-ollama-dono/);
   assert.ok((CONSOLE_METHODS as readonly string[]).includes('models.list'));
+  await f.close();
+});
+
+// M1.5c (2026-10-19): uma correção do catálogo (níveis do ChatGPT) só valia no dia seguinte, porque a cópia de hoje
+// ficava guardada. Cópia de outra versão do catálogo é montada de novo, sem esperar o dia.
+test('models.list: cópia guardada de versão antiga do catálogo é montada de novo na hora (M1.5c)', async () => {
+  const f = await fakeProviders();
+  const home = tempHome();
+  writeFileSync(join(home, 'config.json'), JSON.stringify({ routes: [{ provider: 'ollama-cloud', model: 'gpt-oss:20b', baseURL: `${f.url}/ollama/v1` }] }));
+  mkdirSync(join(home, 'models'), { recursive: true });
+  const old = { generatedAt: new Date().toISOString(), providers: [{ id: 'chatgpt', name: 'ChatGPT', kind: 'assinatura', models: [] }], labs: {}, errors: {} };
+  writeFileSync(join(home, 'models', 'catalog.json'), JSON.stringify(old));
+  owners.push(await spawnOwner(home, { OLLAMA_CLOUD_API_KEY: 'k', OPENROUTER_API_KEY: '', OPENCODE_GO_API_KEY: '', RBUDDY_MODELS_DEV: `${f.url}/api.json` }));
+  const cat = (await call(endpointFor(home), 'models.list', {})) as ModelCatalog & { version?: number };
+  assert.ok(cat.providers.some((p) => p.id === 'ollama-cloud'), 'montado de novo, não a cópia sem versão');
+  assert.equal(typeof cat.version, 'number');
   await f.close();
 });
