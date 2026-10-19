@@ -44,6 +44,7 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [banco-e-ipc.md](./banco-e-ipc.md) | `node:sqlite`, better-sqlite3, IPC por named pipe e socket Unix; spike do M0 | 2026-10-15 |
 | [bibliotecas-do-nucleo.md](./bibliotecas-do-nucleo.md) | CLI, TUI, i18n, SDKs do provedor, limites da OpenAI | 2026-10-15 |
 | [pi-agent.md](./pi-agent.md) | Pi (earendil-works): harness, extensões, provedores; forkar ou compor | 2026-10-15 |
+| [acp-permissoes-dos-harnesses.md](./acp-permissoes-dos-harnesses.md) | Como fazer o harness pedir permissão ao núcleo: modo `read-only` do Codex por `session/set_config_option`; `permission: ask` do OpenCode por `OPENCODE_CONFIG_CONTENT`; medido ao vivo | 2026-10-18 |
 | [acp-registro-e-orquestradores.md](./acp-registro-e-orquestradores.md) | Registro oficial do ACP (42 agentes, ícones, como iniciar), SDK TypeScript, o modelo do AionUi; harnesses na máquina do Pai; imagem na entrada | 2026-10-18 |
 | [t3-referencias.md](./t3-referencias.md) | create-t3-app (axiomas, pilha, estado) e t3.chat (layout, tokens, vidro, paleta) | 2026-10-17 |
 | [hermes-desktop-e-rabelus-com.md](./hermes-desktop-e-rabelus-com.md) | Hermes Desktop (Kanban, Bots, backends de sandbox) e rabelus.com (tipografia, cantos, vidro) | 2026-10-18 |
