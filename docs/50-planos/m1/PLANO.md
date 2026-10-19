@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T10:32:06-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T10:39:50-03:00
 
 ## Objetivo
 
@@ -28,6 +28,16 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
 - [ ] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada
 - [ ] **M1.4 Delegação:** ferramenta `delegar` do Buddy (critério 8)
 - [ ] **M1.5 Console nova** (inclui os níveis de esforço além de baixo, médio e alto que o ChatGPT declara: `xhigh`, `max`, `ultra`, executados no núcleo com teste antes de a console oferecê-los) (protótipo v4 **aprovado** pelo Pai em 2026-10-18, com a logomarca do Rabelus Lab ao lado do nome; ajustes visuais do Pai de 2026-10-18: cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com; referências do Kanban e dos Bots do Hermes): o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real
+  - [ ] **M1.5a Casca nova com tudo do M0:**
+    - barra lateral com a marca, "Nova conversa", conversas e harnesses encontrados;
+    - início com saudação, e a conversa;
+    - caixa de mensagem ancorada, de vidro, com esforço, provedor, Enviar e Parar;
+    - painel de Ajustes com provedores, ChatGPT, chaves, consumo, idioma, tema e pasta de trabalho;
+    - aprovação também dentro da conversa;
+    - paleta oliva OKLCH nos dois temas, contraste AA medido por teste, 375 px sem rolagem horizontal, nada de fora (a marca é servida pela própria console).
+  - [ ] **M1.5b Harness na caixa:** pílula de harness com ícone e estado; conversa com o harness escolhido; cartão de permissão com o ícone de quem pede; "Entrar" para o harness que pede login (`harness.login`); avisos de escrita sem pedido.
+  - [ ] **M1.5c Seletor de modelo:** o catálogo real (provedor → lab → modelo, capacidades, busca e filtro) no lugar do seletor de provedor; esforço conforme o modelo; níveis `xhigh`, `max` e `ultra` no núcleo, com teste antes.
+  - [ ] **M1.5d Ensaio completo** no navegador real, a 375 e a 1440 px, nos dois temas, com capturas; depois, a validação do Pai pela console.
 - [ ] **M1.6 Ensaio real e demonstração com o Pai** (critério 12); métricas; retrospectiva
 - [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 14; ADR 0016)
 
