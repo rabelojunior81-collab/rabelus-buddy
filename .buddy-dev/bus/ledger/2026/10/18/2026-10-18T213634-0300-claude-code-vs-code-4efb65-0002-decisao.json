@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T213634-0300-claude-code-vs-code-4efb65-0002",
+  "ts": "2026-10-18T21:36:34-03:00",
+  "utc": "2026-10-19T00:36:34.232Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 2,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "decisao",
+  "summary": "Desenho M1.2c: agent.run com 'harness' usa a máquina de execução existente (domain.startRun, run.live, watch, fila, agent.stop). Novo harness/session.ts roda um turno: initialize, session/new, session/prompt; session/update → onProgress (agent_thought_chunk→reasoning, agent_message_chunk→text, tool_call→tool) e log (agent.reasoning, agent.message, harness.tool); efeito harness.prompt com chave run:acp:id; stopReason end_turn→done, cancelled→userStopped, outros→parada com motivo; parar envia session/cancel; request_permission negado (cancelled) e registrado até a M1.2d; harness que baixa código sem aprovação recusa antes de iniciar. Teste antes, com o agente falso ganhando o modo prompt",
+  "refs": [],
+  "data": {}
+}

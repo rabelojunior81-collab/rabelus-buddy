@@ -5,7 +5,8 @@
 // de ontem em arquivos editados hoje). As checagens abaixo pegam a parte mecânica dessas
 // lacunas; o mapa evento → superfícies fica em docs/30-governanca/SUPERFICIES.md.
 
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
+import { formats } from './time.mjs';
 import { join } from 'node:path';
 import { tryGit } from './git.mjs';
 
@@ -112,6 +113,26 @@ export function stampProblems(root, { now = new Date() } = {}) {
     }
   }
   return gaps;
+}
+
+// 4a. Reescreve a linha da `main` e a contagem de PRs do STATUS pelo próprio git (evolução de 2026-10-18: depois de
+//     cada merge a linha ficava atrasada e o gancho pre-commit barrava o commit). Devolve true se mudou algo.
+export function syncStatusMain(root, { base = 'origin/main' } = {}) {
+  const p = join(root, '.buddy-dev/STATUS.md');
+  if (!existsSync(p)) return false;
+  const hash = tryGit(root, 'rev-parse', '--short=7', base);
+  const subject = tryGit(root, 'log', '-1', '--format=%s', base) ?? '';
+  const pr = /^Merge #(\d+)/.exec(subject)?.[1];
+  if (!hash || !pr) return false;
+  const short = subject.replace(/\s*\(CI verde\)\s*$/, '').replace(/\s*\([^()]*\)\s*$/, '').slice(0, 90);
+  const s = readFileSync(p, 'utf8');
+  const out = s
+    .replace(/^\| `main` \| `[0-9a-f]{7,40}` \([^\n]*\), CI verde \|$/m, `| \`main\` | \`${hash}\` (${short}), CI verde |`)
+    .replace(/^\| PRs mergeados \| #1–#\d+,/m, `| PRs mergeados | #1–#${pr},`);
+  if (out === s) return false;
+  const stamped = out.replace(/\*\*Atualizado em:\*\* [^ ]+ \(`bd now --verify`\)/, `**Atualizado em:** ${formats().iso} (\`bd now --verify\`)`);
+  writeFileSync(p, stamped);
+  return true;
 }
 
 // 4. A `main` registrada no STATUS fica no máximo 1 commit de primeiro pai atrás da base.

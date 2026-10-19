@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { indexGaps, staleProposals, stampProblems, statusMainLag, milestoneGaps } from '../lib/surfaces.mjs';
+import { indexGaps, staleProposals, stampProblems, statusMainLag, milestoneGaps, syncStatusMain } from '../lib/surfaces.mjs';
 
 function repo(files) {
   const r = mkdtempSync(join(tmpdir(), 'buddy-surf-'));
@@ -129,4 +129,24 @@ test('carimbo velho em arquivo alterado e ainda não commitado já é lacuna (pe
   assert.deepEqual(stampProblems(r, { now }), [], 'sem alteração, o último commit manda');
   writeFileSync(join(r, 'docs/50-planos/ROADMAP.md'), '**Atualizado em:** 2026-10-15T03:50:00-03:00\nlinha nova\n');
   assert.match(stampProblems(r, { now }).join('\n'), /ROADMAP\.md.*desatualizado.*alterado e não commitado/);
+});
+
+// Evolução de 2026-10-18: depois de cada merge, a linha da main no STATUS ficava atrasada e o gancho barrava o commit.
+// O bd status-main reescreve a linha da main e a contagem de PRs a partir do próprio git.
+test('status-main: reescreve a main e a contagem de PRs pelo git, com o assunto curto do merge', () => {
+  const git = (r, ...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: r, encoding: 'utf8' }).trim();
+  const r = repo({ '.buddy-dev/STATUS.md': '# STATUS\n\n| Item | Estado |\n|---|---|\n| `main` | `aaaaaaa` (Merge #1: velho), CI verde |\n| PRs mergeados | #1–#1, por merge commit, pelo buddy-dev (ADR 0003) |\n' });
+  commit(r, '2026-10-15T01:00:00-03:00');
+  git(r, 'checkout', '-q', '-b', 'feat/x');
+  commit(r, '2026-10-15T02:00:00-03:00', 'trabalho');
+  git(r, 'checkout', '-q', 'main');
+  git(r, 'merge', '-q', '--no-ff', '-m', 'Merge #61: docs: fechamento da sessão 30aa5d (diário, post) (CI verde)', 'feat/x');
+  const head = git(r, 'rev-parse', '--short=7', 'HEAD');
+  const changed = syncStatusMain(r, { base: 'HEAD' });
+  assert.equal(changed, true);
+  const s = readFileSync(join(r, '.buddy-dev/STATUS.md'), 'utf8');
+  assert.match(s, new RegExp(`\| \`main\` \| \`${head}\` \(Merge #61: docs: fechamento da sessão 30aa5d\), CI verde \|`));
+  assert.match(s, /\| PRs mergeados \| #1–#61,/);
+  assert.equal(statusMainLag(r, { base: 'HEAD' }).problem, null);
+  assert.equal(syncStatusMain(r, { base: 'HEAD' }), false, 'já em dia: nada muda');
 });

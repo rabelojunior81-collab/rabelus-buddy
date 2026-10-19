@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T214118-0300-claude-code-vs-code-4efb65-0004",
+  "ts": "2026-10-18T21:41:18-03:00",
+  "utc": "2026-10-19T00:41:18.401Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 4,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "aprendizado",
+  "summary": "Terceira vez na noite que o gancho pre-commit barra por STATUS atrasado logo depois de um merge: tarefa repetitiva e determinável pelo git. Evolução: bd status-main reescreve a linha da main e a contagem de PRs a partir do git (teste antes); bd pre avisa",
+  "refs": [],
+  "data": {}
+}
