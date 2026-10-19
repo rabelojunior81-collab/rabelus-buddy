@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0023 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · ferramenta
-
-Gate do Blog no bd: session end recusa e post reprova sem post do buddy-dev publicado desde o início da sessão, com daily ligada e manifesto; bd blog-check avulso; 35 testes. Ordem do Pai por enforcement depois de eu fechar uma sessão sem post.
-
 ### #0024 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · aprendizado
 
 Regra sem mecanismo eu esqueci (post no Blog); bloqueio do harness relatado como regra do Lab. Ambas na LEARNING-CURVE de 2026-10-15 (#3, #4).
@@ -207,3 +203,7 @@ M1.2b no mundo real: o Pai aprovou o Codex na console e o codex-acp 2.2.2 ficou 
 ### #0070 · 2026-10-18T220247-0300 · claude-code-vs-code-4efb65 · feat
 
 M1.2c: conversa por ACP (harness/session.ts, agent.run com harness, andamento ao vivo, parar por session/cancel, permissão negada e registrada, recusa sem aprovação); checagem real com OpenCode e Codex registrada (os dois escrevem sem pedir permissão: achado para a M1.2d); parágrafos entre texto e ferramenta; fakeHttp não segura processo de teste; bd status-main
+
+### #0071 · 2026-10-19T013044-0300 · claude-code-vs-code-571284 · feat
+
+M1.2d: permissões do harness pelo núcleo (postura read-only/permission ask ao abrir a sessão; pedido → política → aprovação com nome, ação e alvo; negar para por permissionDenied; comando inteiro na aprovação; escrita sem pedido avisada; relógio parado enquanto o Pai decide); checagem real com OpenCode e Codex; ficha corrigida (saída cortada não prova ausência)

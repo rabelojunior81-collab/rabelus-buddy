@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-18T22:02:35-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T01:30:01-03:00
 
 ## Objetivo
 
@@ -21,7 +21,8 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
   - [x] **M1.2a Sonda** (critério 3): pronto, precisa de login ou falhou; executável local preferido. Checagem real em 2026-10-18: OpenCode, Copilot e Hermes **prontos**
   - [x] **M1.2b Primeira execução aprovada** (critério 4), **começando pelo Codex** (**feita em 2026-10-18**: o Pai aprovou na console e o Codex ficou pronto; aprovar agora roda a sonda e mostra o resultado): o `codex` instalado (0.163.0) não fala ACP direto (sem subcomando `acp`; só `app-server` e `exec`), então o caminho é o adaptador `npx @agentclientprotocol/codex-acp@2.2.2`, que usa o login do ChatGPT do Pai. A aprovação aparece na console com pacote e versão; aprovada, vale para essa versão. Depois, Claude (`claude-agent-acp`) e pi (`pi-acp`)
   - [x] **M1.2c Conversa por ACP** (critério 5): `session/prompt` com andamento ao vivo no `run.live`; checagem real com o OpenCode e com o Codex (**feita em 2026-10-18**: os dois responderam e usaram ferramentas; [registro](../../registros/2026-10-18T220140-0300-checagem-real-da-conversa-por-acp/README.md))
-  - [ ] **M1.2d Permissões pelo núcleo** (critério 6) e **M1.2e Login do harness** (critério 7). Achado da M1.2c: o OpenCode e o Codex **escreveram sem pedir permissão** na configuração do Pai; a M1.2d começa por fazer o harness perguntar ao núcleo (modos e opções de sessão do ACP, configuração de cada harness)
+  - [x] **M1.2d Permissões pelo núcleo** (critério 6) (**feita em 2026-10-19**). Achado da M1.2c: o OpenCode e o Codex **escreviam sem pedir permissão** na configuração do Pai. Agora o núcleo define a postura ao abrir a sessão: Codex em `read-only`; OpenCode com `permission: ask` só no processo filho. Cada pedido passa pela política e, se for `ask`, vira aprovação com o nome do harness e o alvo; negar para a execução por `permissionDenied`; escrita sem pedido vira aviso. Checagem real com os dois ([registro](../../registros/2026-10-19T012430-0300-checagem-real-das-permissoes-pelo-nucleo/README.md)); o ícone e a escolha do harness na tela são da M1.5
+  - [ ] **M1.2e Login do harness** (critério 7)
 - [ ] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada
 - [ ] **M1.4 Delegação:** ferramenta `delegar` do Buddy (critério 8)
 - [ ] **M1.5 Console nova** (inclui os níveis de esforço além de baixo, médio e alto que o ChatGPT declara: `xhigh`, `max`, `ultra`, executados no núcleo com teste antes de a console oferecê-los) (protótipo v4 **aprovado** pelo Pai em 2026-10-18, com a logomarca do Rabelus Lab ao lado do nome; ajustes visuais do Pai de 2026-10-18: cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com; referências do Kanban e dos Bots do Hermes): o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real

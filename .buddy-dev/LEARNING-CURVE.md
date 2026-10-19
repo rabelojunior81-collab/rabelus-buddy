@@ -168,3 +168,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0022-#0022
 
 1. **Em 2026-10-15, a escolha da stack mobile e da Web UI saiu de uma pesquisa com as versões oficiais conferidas ao vivo, e a ADR ficou aguardando o Pai.** Em 2026-10-18, o ACP previa que o harness pedisse permissão antes de escrever (`session/request_permission`), e o teste com o harness falso confirmava esse desenho. Na checagem real, o OpenCode e o Codex do Pai escreveram sem perguntar. → O que o protocolo permite não é o que o produto do outro faz na configuração do usuário. A especificação diz o que é possível; só a checagem real diz o que acontece, e o controle de segurança se desenha a partir do real.
+
+## lote #0023-#0023
+
+1. **Em 2026-10-15, o gate do Blog virou mecanismo no `bd`, depois de eu fechar uma sessão sem post: o fechamento passou a recusar a sessão sem entrega.** Em 2026-10-19, um script de pesquisa cortou a saída em 4000 caracteres, e eu concluí que o OpenCode não declarava modo. A checagem real desmentiu. → Saída cortada não prova ausência. Para concluir que algo não existe, a ferramenta lista tudo o que existe (ids e contagens), e a conclusão de ausência é a mais exigente, não a mais barata.

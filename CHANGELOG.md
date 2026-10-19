@@ -10,6 +10,13 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Permissões dos agentes pelo núcleo** (M1.2d, critério 6). Ao abrir a conversa, o Buddy pede ao agente que pergunte antes de escrever ou executar: o Codex em modo somente leitura; o OpenCode com "perguntar" só para aquela conversa, sem tocar na configuração do Pai. Cada pedido passa pela política do Buddy:
+  - o que ela permite segue sozinho;
+  - o que exige decisão aparece em Aprovações, com o nome do agente, a ação e o alvo (para comando, o comando inteiro);
+  - negar para a tarefa, com o motivo;
+  - escrita feita sem pedir vira aviso.
+
+  No computador do Pai, negar impediu a escrita no OpenCode e no Codex, e aprovar a liberou.
 - **Conversa com os agentes pelo ACP** (M1.2c, critério 5): o núcleo entrega a tarefa a um agente instalado (OpenCode, Codex e outros) e mostra o andamento ao vivo: raciocínio, ferramentas e texto. A resposta entra na conversa, e "Parar" interrompe o agente. Agente que precisa baixar código só conversa depois da aprovação do Pai. No computador do Pai, o OpenCode e o Codex responderam e usaram ferramentas. A escolha do agente na tela chega com a console nova (M1.5). Um achado foi para a M1.2d: na configuração atual, os dois agentes escrevem arquivos sem pedir permissão.
 - **Retorno ao aprovar** (M1.2b): aprovar a primeira execução de um agente roda a verificação na hora, e a console mostra o resultado ("Codex 2.2.2: pronto para conversar com o Buddy."). No computador do Pai, o Codex ficou pronto.
 - **Primeira execução aprovada** (M1.2b, critério 4): agente que precisa baixar código (pelo `npx` ou `uvx`) só roda depois de o Pai aprovar na console, com o pacote e a versão exatos; negado, nada roda; uma versão nova pede de novo. Primeiro alvo: o Codex.
