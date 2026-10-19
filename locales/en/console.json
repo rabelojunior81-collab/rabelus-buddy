@@ -124,6 +124,48 @@
       "harnessFailed": "the agent failed; see the reason in the details",
       "needsLogin": "the agent asks you to sign in before going on"
     },
+    "harness": {
+      "pick": "Harness: who runs it",
+      "listTitle": "Harness · who runs it",
+      "foot": "Found on this computer · icons from the official ACP registry",
+      "buddyDesc": "Rabelus Buddy's own agent, with your providers",
+      "placeholder": "Write to {{name}}…",
+      "state": {
+        "checking": "checking…",
+        "pronto": "ready",
+        "login": "needs sign-in",
+        "aprovacao": "awaiting approval",
+        "negado": "denied",
+        "falhou": "failed",
+        "indisponivel": "unavailable"
+      },
+      "loginRequired": "{{name}} asks you to sign in to go on. Use one of the ways it offers:",
+      "login": "Sign in: {{method}}",
+      "loginRunning": "Opening {{name}}'s sign-in: finish it in the browser it opens…",
+      "loginDone": {
+        "pronto": "{{name}}: signed in, ready to talk. Send your message again.",
+        "login": "{{name}} still asks for sign-in: {{reason}}",
+        "falhou": "{{name}}'s sign-in failed: {{reason}}"
+      },
+      "tool": "{{title}} · {{status}}",
+      "permission": "Permission {{decision}}: {{tool}} {{target}}",
+      "decision": {
+        "allow": "granted by policy",
+        "approve": "approved by you",
+        "deny": "denied"
+      },
+      "postureAsk": "{{name}} asks for permission before editing or running anything",
+      "postureReadOnly": "{{name}} works in read-only mode and asks for permission to edit",
+      "postureMode": "{{name}} works in {{mode}} mode",
+      "status": {
+        "pending": "pending",
+        "in_progress": "in progress",
+        "completed": "completed",
+        "failed": "failed"
+      },
+      "unasked": "Heads up: {{name}} did \"{{title}}\" without asking for permission.",
+      "error": "{{name}} failed: {{reason}}"
+    },
     "side": {
       "threads": "Conversations",
       "agents": "Harnesses found",

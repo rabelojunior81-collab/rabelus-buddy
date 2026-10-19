@@ -10,6 +10,13 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Escolher o harness na caixa de mensagem** (M1.5b). Uma pílula na caixa escolhe quem executa: o Buddy, com os seus provedores, ou um dos harnesses encontrados no computador. Ao escolher, a console confere na hora se ele está pronto, se precisa de login ou de aprovação. A conversa com o harness mostra, à vista:
+  - o pedido de permissão, com o ícone de quem pede;
+  - a escrita sem pedido;
+  - a falha;
+  - o pedido de login, com um botão "Entrar" para cada forma que ele oferece.
+
+  O resto do que ele faz fica nos detalhes. No computador do Pai, com o OpenCode, aprovar pela console liberou a escrita, e a resposta voltou.
 - **Console nova, primeira parte** (M1.5a, critério 11). A console passa a ter a cara do protótipo aprovado pelo Pai:
   - verde-oliva e vidro, nos temas claro e escuro, com a marca do Rabelus Lab ao lado do nome e no ícone da aba;
   - barra lateral com "Nova conversa", as conversas agrupadas por dia e os harnesses encontrados no computador;

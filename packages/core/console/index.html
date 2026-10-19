@@ -226,6 +226,28 @@
   .pill select { min-width: 0; max-width: 220px; height: 26px; border: 0; background: transparent; color: var(--text); font-size: 12px; font-weight: 600; outline: 0; }
   .pill select option { background: var(--bg); color: var(--text); }
   .spacer { flex: 1; }
+  /* pílula de harness (M1.5b): quem executa, com ícone e o estado da sonda */
+  button.pill { padding-right: 9px; color: var(--text); }
+  button.pill[aria-expanded="true"] { border-color: oklch(76% .13 118 / .6); box-shadow: 0 0 0 3px oklch(70% .13 120 / .14); }
+  .pill .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill .chev { opacity: .5; font-size: 9px; }
+  .state { flex: none; font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 0 5px; border: 1px solid var(--hair-strong); color: var(--muted); white-space: nowrap; }
+  .state.ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 45%, transparent); } .state.warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 45%, transparent); } .state.bad { color: var(--bad); border-color: color-mix(in oklch, var(--bad) 45%, transparent); }
+  .pop { position: fixed; z-index: 30; width: 380px; max-width: calc(100vw - 16px); max-height: min(420px, 70vh); display: flex; flex-direction: column; overflow: hidden; background: var(--glass-fill), var(--glass-solid); backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 oklch(100% 0 0 / .16), var(--shadow); animation: popin .18s var(--ease); }
+  .ptitle { padding: 9px 12px 3px; font-size: 9.5px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .12em; }
+  .plist { padding: 2px 4px 6px; overflow-y: auto; }
+  .pfoot { padding: 5px 10px; border-top: 1px solid var(--hair); font-size: 10.5px; color: var(--faint); }
+  .mrow { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 10px; border: 0; border-left: 2px solid transparent; background: none; text-align: left; color: var(--text); transition: background .15s var(--ease); }
+  .mrow:hover, .mrow:focus-visible { background: var(--hover); }
+  .mrow[aria-selected="true"] { border-left-color: var(--olive-400); background: oklch(70% .13 120 / .1); }
+  .mrow .ico, .mrow .mark { width: 20px; height: 20px; margin: 0; }
+  .mrow .tx { flex: 1; min-width: 0; } .mrow .tx b { display: block; font-size: 13px; font-weight: 600; } .mrow .tx small { display: block; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  button.starter { cursor: pointer; transition: color .18s var(--ease), border-color .18s var(--ease); }
+  button.starter:hover { color: var(--text); border-color: var(--hair-strong); }
+  button.starter[aria-pressed="true"] { color: var(--primary-ink); background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); border-color: oklch(80% .12 118 / .4); }
+  .perm .ico, .perm .mark { width: 18px; height: 18px; margin: 0; }
+  .loginbox { display: flex; flex-direction: column; gap: 6px; padding: 9px 11px; border: 1px solid color-mix(in oklch, var(--warn) 45%, transparent); background: var(--glass-solid); font-size: 13px; }
   .send { width: 30px; height: 30px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
     box-shadow: inset 0 1px 0 oklch(100% 0 0 / .22), 0 6px 18px -8px oklch(55% .12 120 / .8); transition: filter .2s var(--ease), transform .15s var(--ease); }
   .send:hover { filter: brightness(1.1); } .send:active { transform: scale(.96); }
@@ -267,7 +289,7 @@
     .mbrand { display: flex; }
     .top { padding: 0 8px; gap: 8px; }
     /* Rótulos escondidos só da vista: o leitor de tela continua lendo (display: none apagaria o nome acessível). */
-    .top .toggle span, .pill > span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .top .toggle span, .pill > .plab { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     /* Uma linha só: as pílulas dividem o espaço e o enviar fica à direita (achado do ensaio a 375 px). */
     .bar { flex-wrap: nowrap; }
     .bar .spacer { display: none; }
@@ -278,6 +300,9 @@
     #feed { padding: 6px 12px 12px; }
     .dock { padding: 0 6px 6px; }
     .pill select { width: 100%; max-width: none; }
+    #hBtn { flex: 0 1 auto; max-width: 46%; }
+    #hBtn .chev, #hBtn .state { display: none; }
+    .pop { left: 0 !important; right: 0; bottom: 0 !important; width: 100vw; max-width: 100vw; max-height: 60vh; }
     .hint span:first-child { display: none; }
     .settings { inset: 0; width: 100vw; }
   }
@@ -320,14 +345,15 @@
         <label for="task" data-i18n="console.task.title" style="position:absolute;left:-9999px">Mensagem</label>
         <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
         <div class="bar">
-          <label class="pill" for="effort"><span data-i18n="console.task.effort">Esforço</span>
+          <button id="hBtn" class="pill" aria-haspopup="listbox" aria-expanded="false" aria-controls="hPop" data-i18n-title="console.harness.pick"></button>
+          <label class="pill" id="effortPill" for="effort"><span class="plab" data-i18n="console.task.effort">Esforço</span>
             <select id="effort">
               <option value="default" data-i18n="console.effort.default"></option>
               <option value="low" data-i18n="console.effort.low"></option>
               <option value="medium" data-i18n="console.effort.medium"></option>
               <option value="high" data-i18n="console.effort.high"></option>
             </select></label>
-          <label class="pill" for="route"><span data-i18n="console.task.route">Provedor</span><select id="route"></select></label>
+          <label class="pill" id="routePill" for="route"><span class="plab" data-i18n="console.task.route">Provedor</span><select id="route"></select></label>
           <span class="spacer"></span>
           <button id="stop" class="stop" hidden data-i18n="console.task.stop">Parar</button>
           <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
@@ -338,6 +364,11 @@
   </main>
 </div>
 <div id="scrim" class="scrim" hidden></div>
+<div id="hPop" class="pop" role="listbox" hidden data-i18n-aria="console.harness.listTitle">
+  <div class="ptitle" data-i18n="console.harness.listTitle">Harness · quem executa</div>
+  <div class="plist" id="hList"></div>
+  <div class="pfoot" data-i18n="console.harness.foot"></div>
+</div>
 <aside id="settings" class="settings" hidden role="dialog" aria-labelledby="hSet">
   <header><h2 id="hSet" data-i18n="console.settings.title">Ajustes</h2><button id="settingsClose" class="ibtn" data-i18n-aria="console.settings.close">✕</button></header>
   <div class="body">
@@ -508,6 +539,30 @@ function threadsOf(runs, sessions, now, offsetMin) {
   }
   return groups;
 }
+// Aprovação pedida por um harness (M1.2d): a ação começa por "Harness <nome>: ". Devolve o id dele, para o ícone.
+function approvalHarness(action, hs) {
+  const m = /^Harness (.+?): /.exec(String(action));
+  if (!m) return null;
+  const h = hs.find((x) => x.name === m[1]);
+  return h ? h.id : null;
+}
+// Resultado da sonda (M1.2a/b) na pílula: a palavra do catálogo e o tom.
+const PROBE = { pronto: 'ok', login: 'warn', aprovacao: 'warn', checking: '', negado: 'bad', falhou: 'bad', indisponivel: 'bad' };
+function probeView(r) {
+  const state = r && Object.prototype.hasOwnProperty.call(PROBE, r.state) ? r.state : 'falhou';
+  return { key: 'console.harness.state.' + state, tone: PROBE[state] };
+}
+// Postura do harness (M1.2d) dita como é: o "perguntar antes" (OpenCode) e o somente leitura (Codex) são cautela;
+// outro modo é só informado, sem prometer cautela (achado do ensaio: "cautela: modo build" enganava).
+function postureKey(p) {
+  if (p && p.config) return 'console.harness.postureAsk';
+  if (p && p.mode === 'read-only') return 'console.harness.postureReadOnly';
+  if (p && p.mode) return 'console.harness.postureMode';
+  return null;
+}
+// Estado da ferramenta do harness (ACP) em palavras do catálogo; desconhecido fica como veio.
+const TOOL_STATUS = { pending: 'console.harness.status.pending', in_progress: 'console.harness.status.in_progress', completed: 'console.harness.status.completed', failed: 'console.harness.status.failed' };
+function toolStatusKey(s) { return Object.prototype.hasOwnProperty.call(TOOL_STATUS, s) ? TOOL_STATUS[s] : null; }
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -547,8 +602,10 @@ async function loadLang() {
   for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = t(e.getAttribute('data-i18n'));
   for (const e of document.querySelectorAll('[data-i18n-placeholder]')) e.setAttribute('placeholder', t(e.getAttribute('data-i18n-placeholder')));
   for (const e of document.querySelectorAll('[data-i18n-aria]')) e.setAttribute('aria-label', t(e.getAttribute('data-i18n-aria')));
+  for (const e of document.querySelectorAll('[data-i18n-title]')) e.setAttribute('title', t(e.getAttribute('data-i18n-title')));
   $('budgetToggle').textContent = t(showAll ? 'console.budget.some' : 'console.budget.all');
   renderHome();
+  renderHarnessPill();
 }
 
 // Uma linha por evento (o mesmo catálogo do rbuddy log); a conversa vira balões.
@@ -605,6 +662,14 @@ function feedItems(evs) {
       case 'effect.unknown': speak(el('div', { class: 'ev err' }, t('log.effectUnknown', { effect: p.effect }))); break;
       case 'effect.reconciled': detail(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
       case 'context.compacted': detail(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
+      // Conversa com harness (M1.2c–e): o que ele faz fica nos detalhes; o que pede a atenção do Pai fica à vista.
+      case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: toolStatusKey(p.status) ? t(toolStatusKey(p.status)) : p.status }))); break;
+      case 'harness.permission': detail(el('div', { class: 'ev' }, t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target }))); break;
+      case 'harness.posture': if (postureKey(p)) detail(el('div', { class: 'ev' }, t(postureKey(p), { name: harnessName(p.id), mode: p.mode }))); break;
+      case 'harness.unasked': speak(el('div', { class: 'ev err' }, t('console.harness.unasked', { name: harnessName(p.id), title: p.title }))); break;
+      case 'harness.error': speak(el('div', { class: 'ev err' }, t('console.harness.error', { name: harnessName(p.id), reason: p.reason }))); break;
+      case 'harness.login.required': speak(el('div', { class: 'loginbox' }, el('span', {}, t('console.harness.loginRequired', { name: harnessName(p.id) })),
+        el('div', { class: 'actions' }, ...(p.methods || []).map((m) => el('button', { class: 'btn pri', onclick: () => loginHarness(p.id, m.id) }, t('console.harness.login', { method: m.name })))))); break;
       default: break;
     }
   }
@@ -612,6 +677,8 @@ function feedItems(evs) {
 }
 
 let lastFeedKey = '';
+const DECISION = { allow: 'console.harness.decision.allow', approve: 'console.harness.decision.approve', deny: 'console.harness.decision.deny' };
+const harnessName = (id) => (harnesses.find((h) => h.id === id) || {}).name || id;
 
 // ---------- Andamento ao vivo (rev. 6, critério 31) ----------
 // Fase, tempo, raciocínio e texto chegando em cadência; a fila com Direcionar e Cancelar; Parar.
@@ -709,7 +776,10 @@ async function refreshApprovals() {
   const list = await api('approval.list');
   const box = $('approvals');
   const note = approvalNote ? [el('div', { class: 'note harness-result' }, approvalNote)] : [];
+  // O cartão mostra quem pede: o ícone do harness (M1.5b) ou a marca do Buddy.
+  const who = (a) => { const hid = approvalHarness(a.action, harnesses); const h = hid && harnesses.find((x) => x.id === hid); return h ? harnessIcon(h) : el('img', { class: 'mark', alt: '', src: asset('/brand/emblema-64.png') }); };
   box.replaceChildren(...note, ...list.map((a) => el('div', { class: 'perm' },
+    who(a),
     el('span', { class: 'a' }, a.action),
     el('span', { class: 's' }, a.session === session ? '' : a.session),
     el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny')),
@@ -793,16 +863,91 @@ const harnessIcon = (h) => (h.icon ? el('span', { class: 'ico', 'aria-hidden': '
 async function refreshAgents() {
   const r = await api('harness.list');
   harnesses = r.harnesses.filter((h) => h.found);
+  lastFeedKey = ''; // a conversa refaz os nomes dos harnesses (achado do ensaio: aparecia o id)
   $('agents').replaceChildren(...(harnesses.length ? harnesses.map((h) => el('div', { class: 'agent', title: h.description || h.name },
     harnessIcon(h), h.name, el('span', { class: 'st', title: t('console.side.installed') }))) : [el('div', { class: 'day' }, t('console.side.noAgents'))]));
   renderHome();
+  renderHarnessPill();
 }
 // A tela inicial sai do documento quando há conversa aberta: atualizada pela referência guardada, nunca por id.
+// As pílulas escolhem quem executa (M1.5b).
 function renderHome() {
   homeEl.querySelector('#homeEyebrow').textContent = t('console.home.eyebrow', { n: harnesses.length });
-  homeEl.querySelector('#starters').replaceChildren(el('span', { class: 'starter' }, el('img', { class: 'ico mark', alt: '', src: asset('/brand/emblema-64.png') }), 'Buddy'),
-    ...harnesses.map((h) => el('span', { class: 'starter' }, harnessIcon(h), h.name)));
+  const pill = (id, icon, name) => el('button', { class: 'starter', 'aria-pressed': String(chosen === id), onclick: () => chooseHarness(id) }, icon, name);
+  homeEl.querySelector('#starters').replaceChildren(pill('buddy', buddyMark(), 'Buddy'), ...harnesses.map((h) => pill(h.id, harnessIcon(h), h.name)));
 }
+
+// ---------- Harness na caixa (M1.5b): quem executa ----------
+// "buddy" é o agente do próprio Rabelus Buddy; os outros, harnesses ACP encontrados. A sonda roda só ao escolher
+// (cada uma inicia um processo), e o resultado aparece na pílula.
+let chosen = store.get('rb.harness', 'buddy') || 'buddy';
+const probes = {};
+const buddyMark = () => el('img', { class: 'ico mark', alt: '', src: asset('/brand/emblema-64.png') });
+function renderHarnessPill() {
+  const h = harnesses.find((x) => x.id === chosen);
+  const pr = h && probes[h.id];
+  const v = pr ? probeView(pr) : null;
+  $('hBtn').replaceChildren(h ? harnessIcon(h) : buddyMark(), el('span', { class: 'nm' }, h ? h.name : 'Buddy'),
+    v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null, el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
+  // Harness usa os próprios modelos e esforço: as pílulas de provedor e esforço são do Buddy.
+  $('effortPill').hidden = Boolean(h);
+  $('routePill').hidden = Boolean(h);
+  $('task').setAttribute('placeholder', h ? t('console.harness.placeholder', { name: h.name }) : t('console.task.placeholder'));
+}
+function renderHarnessList() {
+  const row = (id, icon, name, desc, pr) => {
+    const v = pr ? probeView(pr) : null;
+    return el('button', { class: 'mrow', role: 'option', 'aria-selected': String(chosen === id), onclick: () => { chooseHarness(id); hPop(false); } },
+      icon, el('span', { class: 'tx' }, el('b', {}, name), el('small', {}, desc)), v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null);
+  };
+  $('hList').replaceChildren(row('buddy', buddyMark(), 'Buddy', t('console.harness.buddyDesc'), null),
+    ...harnesses.map((h) => row(h.id, harnessIcon(h), h.name, (probes[h.id] && probes[h.id].reason) || h.description || '', probes[h.id])));
+}
+// Lista ancorada no botão (no celular, folha embaixo); um clique fora, Esc ou a escolha fecham.
+function hPop(open) {
+  const pop = $('hPop');
+  pop.hidden = !open;
+  $('hBtn').setAttribute('aria-expanded', String(open));
+  if (!open) return;
+  renderHarnessList();
+  const r = $('hBtn').getBoundingClientRect();
+  pop.style.bottom = (innerHeight - r.top + 8) + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8)) + 'px';
+  const first = pop.querySelector('[aria-selected="true"]') || pop.querySelector('.mrow');
+  if (first) first.focus();
+}
+async function chooseHarness(id) {
+  chosen = harnesses.some((h) => h.id === id) ? id : 'buddy';
+  store.set('rb.harness', chosen);
+  renderHarnessPill();
+  renderHome();
+  if (chosen === 'buddy') return;
+  const hid = chosen;
+  probes[hid] = { state: 'checking' };
+  renderHarnessPill();
+  try { probes[hid] = await api('harness.probe', { id: hid }); }
+  catch (e) { probes[hid] = { state: 'falhou', reason: e.message }; }
+  renderHarnessPill();
+  if (!$('hPop').hidden) renderHarnessList();
+  void refreshApprovals(); // primeira execução pendente aparece já como aprovação
+}
+// Entrar (M1.2e): o núcleo pede ao harness que faça o login; ele abre o navegador e guarda a própria credencial.
+async function loginHarness(id, method) {
+  const name = harnessName(id);
+  approvalNote = t('console.harness.loginRunning', { name });
+  await refreshApprovals();
+  const DONE = { pronto: 'console.harness.loginDone.pronto', login: 'console.harness.loginDone.login', falhou: 'console.harness.loginDone.falhou' };
+  try {
+    const r = await api('harness.login', { id, method });
+    probes[id] = r;
+    approvalNote = t(DONE[r.state] || DONE.falhou, { name, reason: r.reason || '' });
+  } catch (e) { approvalNote = t(DONE.falhou, { name, reason: e.message }); }
+  renderHarnessPill();
+  await refreshApprovals();
+}
+$('hBtn').addEventListener('click', () => hPop($('hPop').hidden));
+document.addEventListener('mousedown', (ev) => { if (!$('hPop').hidden && !$('hPop').contains(ev.target) && !$('hBtn').contains(ev.target)) hPop(false); });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('hPop').hidden) { ev.stopPropagation(); hPop(false); $('hBtn').focus(); } }, true);
 function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); void refreshApprovals(); }
 $('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); drawer(false); $('task').focus(); });
 $('task').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) { ev.preventDefault(); $('run').click(); } });
@@ -819,8 +964,13 @@ $('run').addEventListener('click', async () => {
   if (!task) { msg.className = 'msg bad'; msg.textContent = t('console.task.empty'); return; }
   const cont = Boolean(session && lastRun);
   const s = cont ? session : 'ses-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('');
-  const params = { session: s, task, workspace: $('workspace').value, interactive: true, effort: $('effort').value };
-  if ($('route').value) params.route = JSON.parse($('route').value);
+  const params = { session: s, task, workspace: $('workspace').value, interactive: true };
+  // Harness escolhido (M1.5b): a tarefa vai a ele, com os modelos e o esforço dele; senão, o Buddy com os provedores.
+  if (chosen !== 'buddy') params.harness = chosen;
+  else {
+    params.effort = $('effort').value;
+    if ($('route').value) params.route = JSON.parse($('route').value);
+  }
   if (cont) params.continueFrom = lastRun;
   $('run').disabled = true;
   try {
@@ -921,6 +1071,8 @@ async function slow() { try { await Promise.all([refreshProviders(), refreshAuth
   await fast();
   await liveTick();
   try { await refreshAgents(); } catch { /* sem registro ainda: a lista fica vazia */ }
+  // Harness lembrado da última vez: conferido de novo ao abrir (uma sonda só).
+  if (chosen !== 'buddy') void chooseHarness(chosen);
   setInterval(fast, 800);
   setInterval(liveTick, 300);
   setInterval(slow, 3000);

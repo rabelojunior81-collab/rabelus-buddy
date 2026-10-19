@@ -124,6 +124,48 @@
       "harnessFailed": "o agente falhou; veja o motivo nos detalhes",
       "needsLogin": "o agente pede login antes de continuar"
     },
+    "harness": {
+      "pick": "Harness: quem executa",
+      "listTitle": "Harness · quem executa",
+      "foot": "Encontrados neste computador · ícones do registro oficial do ACP",
+      "buddyDesc": "o agente do Rabelus Buddy, com os seus provedores",
+      "placeholder": "Escreva para o {{name}}…",
+      "state": {
+        "checking": "conferindo…",
+        "pronto": "pronto",
+        "login": "precisa de login",
+        "aprovacao": "aguarda aprovação",
+        "negado": "negado",
+        "falhou": "falhou",
+        "indisponivel": "indisponível"
+      },
+      "loginRequired": "{{name}} pede login para continuar. Entre por um dos caminhos que ele oferece:",
+      "login": "Entrar: {{method}}",
+      "loginRunning": "Abrindo o login de {{name}}: termine no navegador que ele abrir…",
+      "loginDone": {
+        "pronto": "{{name}}: login feito, pronto para conversar. Envie a mensagem de novo.",
+        "login": "{{name}} continua pedindo login: {{reason}}",
+        "falhou": "O login de {{name}} falhou: {{reason}}"
+      },
+      "tool": "{{title}} · {{status}}",
+      "permission": "Permissão {{decision}}: {{tool}} {{target}}",
+      "decision": {
+        "allow": "liberada pela política",
+        "approve": "aprovada por você",
+        "deny": "negada"
+      },
+      "postureAsk": "{{name}} pede permissão antes de editar ou executar",
+      "postureReadOnly": "{{name}} trabalha em modo somente leitura e pede permissão para editar",
+      "postureMode": "{{name}} trabalha no modo {{mode}}",
+      "status": {
+        "pending": "pendente",
+        "in_progress": "em andamento",
+        "completed": "concluída",
+        "failed": "falhou"
+      },
+      "unasked": "Atenção: {{name}} fez \"{{title}}\" sem pedir permissão.",
+      "error": "{{name}} falhou: {{reason}}"
+    },
     "side": {
       "threads": "Conversas",
       "agents": "Harnesses encontrados",

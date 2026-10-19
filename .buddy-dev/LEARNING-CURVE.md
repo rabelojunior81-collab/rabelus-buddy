@@ -180,3 +180,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0025-#0025
 
 1. **Em 2026-10-15, o Pai aceitou a ADR 0013: a interface começa pelo caminho mais simples e cresce quando as telas pedirem.** Em 2026-10-19, o protótipo v4 que ele aprovou virou a console de verdade. A medida de contraste reprovou seis tokens do próprio protótipo, e o ensaio no navegador achou dois defeitos que os testes não viam: os ícones sumiam no escuro, e a tela inicial era buscada fora do documento. → Aprovação de visual é aprovação da direção, não dos números. A versão real se mede (contraste, 375 px) e se ensaia no navegador, e cada achado ganha teste antes da correção.
+
+## lote #0026-#0026
+
+1. **Em 2026-10-15, uma auditoria a pedido do Pai achou 12 superfícies afirmando um estado velho, e daí nasceu o `bd surfaces`.** Em 2026-10-19, a console nova afirmava "OpenCode trabalha com cautela: modo build". A frase era bonita e estava errada: a cautela do OpenCode vinha de outra coisa. → A tela também é uma superfície que afirma fatos. Cada frase que o produto diz ao Pai precisa ser verdadeira no caso real, e o ensaio com o harness de verdade é onde isso aparece.

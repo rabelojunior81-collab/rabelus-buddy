@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0026 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · correcao
-
-Auditoria de superfícies a pedido do Pai: 12 lacunas corrigidas (README pt/en com Fase 0 e sem mapa em inglês, STATUS com ADR 0013 proposta, USER com merge do Pai, fichas do Node e do GitHub, carimbos de ROADMAP/PLANO-MACRO/Fase 0, AGENTS, BOOTSTRAP, PR template, CHANGELOG da raiz, 40-specs, pendência da convenção de código). Plano da conta GitHub medido: Free.
-
 ### #0027 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · ferramenta
 
 bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.
@@ -207,3 +203,7 @@ M1.2e no núcleo: needsLogin com os métodos (sem os de terminal), harness.login
 ### #0073 · 2026-10-19T105752-0300 · claude-code-vs-code-51d166 · feat
 
 M1.5a: console nova (casca do protótipo v4 com tudo do M0, tokens oliva OKLCH, contraste AA medido por teste, marca servida pela console, conversas por dia e harnesses na lateral, Ajustes em painel, aprovações sobre a caixa); ensaio no navegador real com 7 capturas e 7 correções; núcleo do Pai reiniciado; ordem do M1 nova
+
+### #0074 · 2026-10-19T111833-0300 · claude-code-vs-code-51d166 · feat
+
+M1.5b: harness na caixa da console nova (pílula com sonda, conversa com harness, eventos à vista e nos detalhes, Entrar, ícone de quem pede na aprovação); ensaiada com o OpenCode real; 3 correções do ensaio com teste antes
