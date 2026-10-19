@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T102143-0300-claude-code-vs-code-51d166-0005",
+  "ts": "2026-10-19T10:21:43-03:00",
+  "utc": "2026-10-19T13:21:43.723Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 5,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/nucleo-e-ordem-m1",
+  "type": "decisao",
+  "summary": "Ordem do M1 a partir do pedido do Pai (10:19): M1.2e só no núcleo agora (authenticate com harness falso, sem o Pai); o 'Entrar' na tela vai para a M1.5; o login do Pai num harness real vai para o ensaio da M1.6 (critério 12), depois da M1.5. M1.5 (console nova) vem logo depois da M1.2e e antes de M1.3 e M1.4: o plano já permite M1.5 em paralelo desde a M1.0, e os anexos da M1.3 vivem na caixa de mensagem nova (fazê-los no layout antigo seria retrabalho). Ordem: M1.2e (núcleo) → M1.5 → M1.3 → M1.4 → M1.6 → M1.7.",
+  "refs": [],
+  "data": {}
+}
