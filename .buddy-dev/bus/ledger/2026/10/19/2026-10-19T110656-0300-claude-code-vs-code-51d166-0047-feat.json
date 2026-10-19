@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T110656-0300-claude-code-vs-code-51d166-0047",
+  "ts": "2026-10-19T11:06:56-03:00",
+  "utc": "2026-10-19T14:06:56.664Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 47,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5b-harness-na-caixa",
+  "type": "feat",
+  "summary": "#68 mergeado (main 587b9fc). Núcleo do Pai reiniciado com a main: 21148 encerrado por daemon stop (0 execuções rodando, 0 aprovações); novo pid 25720, oculto, sem janela; mesma porta 47321 e mesmo token; console nova servida (settingsBtn presente) e marca /brand 200; 16 sessões e 1643 eventos preservados. Ao recarregar a aba, o Pai vê a console nova. Branch da M1.5b aberta.",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-19T110655-0300-claude-code-vs-code-51d166-0046",
+  "ts": "2026-10-19T11:06:55-03:00",
+  "utc": "2026-10-19T14:06:55.081Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 46,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5b-harness-na-caixa",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-19T14:36:55.081Z",
+    "tookOverFrom": null
+  }
+}
