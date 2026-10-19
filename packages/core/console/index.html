@@ -477,18 +477,30 @@ async function refreshFeed() {
   if (atBottom) feed.scrollTop = feed.scrollHeight;
 }
 
+// Retorno da aprovação de primeira execução de um agente (achado do Pai, 2026-10-18: aprovar sem ver efeito).
+let approvalNote = '';
 async function refreshApprovals() {
   const list = await api('approval.list');
   const box = $('approvals');
-  if (!list.length) { box.replaceChildren(el('div', { class: 'note' }, t('console.approvals.none'))); return; }
-  box.replaceChildren(...list.map((a) => el('div', { class: 'approval' },
+  const note = approvalNote ? [el('div', { class: 'note harness-result' }, approvalNote)] : [];
+  if (!list.length) { box.replaceChildren(...note, el('div', { class: 'note' }, t('console.approvals.none'))); return; }
+  box.replaceChildren(...note, ...list.map((a) => el('div', { class: 'approval' },
     el('div', { class: 'a' }, a.action),
     el('div', { class: 'note' }, a.session),
     el('div', { class: 'actions' },
       el('button', { class: 'primary', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')),
       el('button', { class: 'danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny'))))));
 }
-async function resolve(id, decision) { try { await api('approval.resolve', { id, decision }); } catch (e) { /* já resolvida */ } await refreshApprovals(); }
+async function resolve(id, decision) {
+  if (decision === 'approve') { approvalNote = t('console.approvals.harness.running'); await refreshApprovals(); }
+  try {
+    const r = await api('approval.resolve', { id, decision });
+    const h = r && r.harness;
+    const HARNESS_NOTE = { pronto: 'console.approvals.harness.pronto', login: 'console.approvals.harness.login', negado: 'console.approvals.harness.negado', falhou: 'console.approvals.harness.falhou' };
+    approvalNote = h ? t(HARNESS_NOTE[h.state] || HARNESS_NOTE.falhou, { name: h.name || h.id, version: (h.agent && h.agent.version) || '', reason: h.reason || '' }) : '';
+  } catch (e) { approvalNote = ''; /* já resolvida */ }
+  await refreshApprovals();
+}
 
 function sourceText(s) {
   if (!s) return '';

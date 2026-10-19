@@ -48,7 +48,14 @@
       "title": "Approvals",
       "none": "Nothing waiting.",
       "approve": "Approve",
-      "deny": "Deny"
+      "deny": "Deny",
+      "harness": {
+        "running": "Preparing the first run (this can take a few seconds)…",
+        "pronto": "{{name}} {{version}}: ready to talk with Buddy.",
+        "login": "{{name}}: needs a login before talking.",
+        "falhou": "{{name}}: did not respond ({{reason}}).",
+        "negado": "{{name}}: denied; nothing was run."
+      }
     },
     "providers": {
       "title": "Providers"

@@ -48,7 +48,14 @@
       "title": "Aprovações",
       "none": "Nada aguardando.",
       "approve": "Aprovar",
-      "deny": "Negar"
+      "deny": "Negar",
+      "harness": {
+        "running": "Preparando a primeira execução (pode levar alguns segundos)…",
+        "pronto": "{{name}} {{version}}: pronto para conversar com o Buddy.",
+        "login": "{{name}}: precisa de login antes de conversar.",
+        "falhou": "{{name}}: não respondeu ({{reason}}).",
+        "negado": "{{name}}: negado; nada foi executado."
+      }
     },
     "providers": {
       "title": "Provedores"
