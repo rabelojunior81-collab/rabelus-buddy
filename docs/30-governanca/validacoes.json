@@ -566,6 +566,21 @@
         "teste": "packages/core/test/sem-janela.test.ts"
       },
       "origem": "Achado do Pai, 2026-10-18 (janelas do Windows Terminal abertas e esquecidas)"
+    },
+    {
+      "id": "conversa-acp",
+      "descricao": "Conversa por ACP: a tarefa vai ao harness por session/prompt, o andamento aparece ao vivo, a resposta entra na conversa, parar envia session/cancel, permissão pedida é negada e registrada, e harness que baixa código sem aprovação é recusado antes de começar",
+      "quem": "maquina",
+      "onde": [
+        "M1.2c",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/conversa-acp.test.ts"
+      },
+      "origem": "SPEC 0002, critério 5",
+      "evidencia": "Checagem real em 2026-10-18 com o OpenCode 2.0.31 e o Codex (codex-acp 2.2.2): docs/registros/2026-10-18T220140-0300-checagem-real-da-conversa-por-acp/README.md"
     }
   ]
 }
