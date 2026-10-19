@@ -13,7 +13,10 @@ import { fakeHttp } from './fake-http.ts';
 import { spawnOwner, killHard, tempHome } from './helpers.ts';
 
 const owners: ChildProcess[] = [];
-after(async () => { for (const o of owners) await killHard(o); });
+// Servidores falsos fechados aqui também: com um teste vermelho, a asserção falha antes do reg.close() do próprio
+// teste e o processo não terminava (2026-10-18).
+const regs: { close: () => Promise<void> }[] = [];
+after(async () => { for (const o of owners) await killHard(o); for (const r of regs) await r.close().catch(() => {}); });
 
 const FAKE = join(import.meta.dirname, 'fake-acp-agent.mjs');
 function fakeOpencode(): string {
@@ -28,6 +31,7 @@ const REG = { version: '1.0.0', agents: [
 ] };
 async function owner(env: NodeJS.ProcessEnv) {
   const reg = await fakeHttp(() => ({ json: REG }));
+  regs.push(reg);
   const home = tempHome();
   owners.push(await spawnOwner(home, { PATH: fakeOpencode(), RBUDDY_ACP_REGISTRY: `${reg.url}/registry.json`, ...env }));
   const ipc = (m: string, p: Record<string, unknown> = {}) => call(endpointFor(home), m, p) as Promise<any>;
@@ -82,6 +86,18 @@ test('permissão pedida pelo harness: negada e registrada até a M1.2d; a conver
   const perm = ev.find((e) => e.kind === 'harness.permission')!.payload;
   assert.deepEqual([perm.title, perm.outcome], ['Editar README.md', 'cancelled']);
   assert.match(ev.filter((e) => e.kind === 'agent.message').at(-1)!.payload.message.content, /Permissão: cancelled/);
+  await reg.close();
+});
+
+// Checagem real de 2026-10-18: o OpenCode anuncia o que vai fazer, usa a ferramenta e responde; sem separação, o texto
+// chegava colado ("...create the output.**O que li:**").
+test('texto antes e depois de uma ferramenta vira parágrafos separados na resposta (critério 5)', async () => {
+  const { ipc, reg } = await owner({ FAKE_ACP_MODE: 'ok', FAKE_ACP_PREAMBLE: 'Vou ler o README.' });
+  const workspace = mkdtempSync(join(tmpdir(), 'rbuddy-ws-'));
+  const { run } = await ipc('agent.run', { session: 's5', task: 'leia', workspace, harness: 'opencode' });
+  await until(async () => ((await ipc('run.get', { id: run })).state === 'done' ? true : undefined));
+  const ev = (await ipc('session.events', { session: 's5' })) as { kind: string; payload: any }[];
+  assert.equal(ev.filter((e) => e.kind === 'agent.message').at(-1)!.payload.message.content, 'Vou ler o README.\n\nOlá, Pai.');
   await reg.close();
 });
 

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T215825-0300-claude-code-vs-code-4efb65-0012",
+  "ts": "2026-10-18T21:58:25-03:00",
+  "utc": "2026-10-19T00:58:25.061Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 12,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "feat",
+  "summary": "Texto antes e depois de ferramenta vira parágrafos separados (achado da checagem real com o OpenCode); teste antes (vermelho: 'Vou ler o README.Olá, Pai.'), depois verde. conversa-acp 5/5.",
+  "refs": [],
+  "data": {}
+}

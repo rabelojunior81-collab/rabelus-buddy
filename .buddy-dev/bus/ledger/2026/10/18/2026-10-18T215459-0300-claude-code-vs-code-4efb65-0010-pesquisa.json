@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T215459-0300-claude-code-vs-code-4efb65-0010",
+  "ts": "2026-10-18T21:54:59-03:00",
+  "utc": "2026-10-19T00:54:59.920Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 10,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "pesquisa",
+  "summary": "Checagem real M1.2c (promptTurn contra os harnesses do Pai, pasta temporária): OpenCode 2.0.31 end_turn em 4,8 s e Codex (codex-acp 2.2.2) em 11,1 s com a resposta pedida. Com ferramenta (ler nota.txt e criar saida.txt): OpenCode 11,2 s, 6 atualizações de ferramenta (read/write pending, in_progress, completed; o tool_call_update vem sem título); Codex 31,1 s, 12 atualizações (leitura falhou e caiu para mcp.node_repl.js, Guardian Review). CONFIRMADO: nenhum dos dois pediu session/request_permission; os dois criaram saida.txt (conteúdo ok). A negação de permissão só vale quando o harness pergunta: o controle real precisa vir do modo ou da política do próprio harness (M1.2d). Texto antes e depois de ferramenta chega colado sem separação.",
+  "refs": [],
+  "data": {}
+}

@@ -8,6 +8,7 @@
 // Conversa (session/prompt), na forma do SDK 1.9.0: raciocínio (agent_thought_chunk), texto em pedaços
 // (agent_message_chunk) e uma ferramenta (tool_call e tool_call_update). FAKE_ACP_GAP: ms entre atualizações.
 // FAKE_ACP_PROMPT=permission: pede permissão (session/request_permission) e conta a resposta no texto.
+// FAKE_ACP_PREAMBLE: texto antes da ferramenta (o OpenCode real anuncia o que vai fazer, 2026-10-18).
 import { Readable, Writable } from 'node:stream';
 import { agent, ndJsonStream, PROTOCOL_VERSION, RequestError } from '@agentclientprotocol/sdk';
 
@@ -39,6 +40,7 @@ else {
       const stop = () => cancelled.has(sessionId);
       await send({ sessionUpdate: 'agent_thought_chunk', content: { type: 'text', text: `Pensando na tarefa: ${task}` } });
       if (stop()) return { stopReason: 'cancelled' };
+      if (process.env.FAKE_ACP_PREAMBLE) await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: process.env.FAKE_ACP_PREAMBLE } });
       await send({ sessionUpdate: 'tool_call', toolCallId: 't1', title: 'Lendo README.md', kind: 'read', status: 'pending' });
       await send({ sessionUpdate: 'tool_call_update', toolCallId: 't1', status: 'completed' });
       if (stop()) return { stopReason: 'cancelled' };

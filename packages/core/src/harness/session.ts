@@ -51,14 +51,21 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
   const race = <T>(p: Promise<T>) => Promise.race([p, ended, idle]);
 
   let text = '';
+  // Texto antes e depois de uma ferramenta são falas separadas: sem isso chegavam coladas (OpenCode real, 2026-10-18).
+  let afterTool = false;
   const app = client({ name: 'rabelus-buddy' })
     .onNotification('session/update', ({ params }) => {
       touch();
       const u = params.update;
-      if (u.sessionUpdate === 'agent_message_chunk' && u.content.type === 'text') { text += u.content.text; o.onUpdate?.({ kind: 'text', delta: u.content.text }); }
+      if (u.sessionUpdate === 'agent_message_chunk' && u.content.type === 'text') {
+        const delta = (afterTool && text && !/\n\s*$/.test(text) ? '\n\n' : '') + u.content.text;
+        afterTool = false;
+        text += delta;
+        o.onUpdate?.({ kind: 'text', delta });
+      }
       else if (u.sessionUpdate === 'agent_thought_chunk' && u.content.type === 'text') o.onUpdate?.({ kind: 'reasoning', delta: u.content.text });
-      else if (u.sessionUpdate === 'tool_call') o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title, status: u.status ?? 'pending' });
-      else if (u.sessionUpdate === 'tool_call_update') o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title ?? '', status: u.status ?? '' });
+      else if (u.sessionUpdate === 'tool_call') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title, status: u.status ?? 'pending' }); }
+      else if (u.sessionUpdate === 'tool_call_update') { afterTool = true; o.onUpdate?.({ kind: 'tool', id: u.toolCallId, title: u.title ?? '', status: u.status ?? '' }); }
     })
     .onRequest('session/request_permission', async ({ params }) => {
       touch();
