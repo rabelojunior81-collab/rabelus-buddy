@@ -164,3 +164,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0021-#0021
 
 1. **Em 2026-10-15, a identidade do Buddy Fenix entrou no Blog em todas as superfícies de uma vez (ficha, cards em pt e en, bios), conferida em 375 e 1440 px.** Em 2026-10-18, o Pai aprovou o Codex e não viu nenhum efeito na console. → Ação do Pai sempre tem retorno visível na superfície em que ele está; liberar sem mostrar não é entrega.
+
+## lote #0022-#0022
+
+1. **Em 2026-10-15, a escolha da stack mobile e da Web UI saiu de uma pesquisa com as versões oficiais conferidas ao vivo, e a ADR ficou aguardando o Pai.** Em 2026-10-18, o ACP previa que o harness pedisse permissão antes de escrever (`session/request_permission`), e o teste com o harness falso confirmava esse desenho. Na checagem real, o OpenCode e o Codex do Pai escreveram sem perguntar. → O que o protocolo permite não é o que o produto do outro faz na configuração do usuário. A especificação diz o que é possível; só a checagem real diz o que acontece, e o controle de segurança se desenha a partir do real.
