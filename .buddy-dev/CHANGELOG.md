@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0024 · 2026-10-15T040333-0300 · claude-code-vs-code-7e2404 · aprendizado
-
-Regra sem mecanismo eu esqueci (post no Blog); bloqueio do harness relatado como regra do Lab. Ambas na LEARNING-CURVE de 2026-10-15 (#3, #4).
-
 ### #0025 · 2026-10-15T041437-0300 · claude-code-vs-code-438d04 · decisao
 
 ADR 0013 aceita pelo Pai: stack mobile e Web começa por A (Expo universal sobre pacote de cliente TS) e chega em B (Web UI React DOM separada); spike no M5.
@@ -207,3 +203,7 @@ M1.2c: conversa por ACP (harness/session.ts, agent.run com harness, andamento ao
 ### #0071 · 2026-10-19T013044-0300 · claude-code-vs-code-571284 · feat
 
 M1.2d: permissões do harness pelo núcleo (postura read-only/permission ask ao abrir a sessão; pedido → política → aprovação com nome, ação e alvo; negar para por permissionDenied; comando inteiro na aprovação; escrita sem pedido avisada; relógio parado enquanto o Pai decide); checagem real com OpenCode e Codex; ficha corrigida (saída cortada não prova ausência)
+
+### #0072 · 2026-10-19T103247-0300 · claude-code-vs-code-51d166 · feat
+
+M1.2e no núcleo: needsLogin com os métodos (sem os de terminal), harness.login com authenticate (o harness guarda a credencial), método de terminal recusado; withAcp reúne sonda e login; checagem real sem efeito para o Pai; núcleo do Pai reiniciado com o código novo; ordem nova do M1 a pedido do Pai (M1.5 antes do login do Pai)
