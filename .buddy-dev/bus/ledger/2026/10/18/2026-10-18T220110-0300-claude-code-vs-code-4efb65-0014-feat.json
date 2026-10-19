@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T220110-0300-claude-code-vs-code-4efb65-0014",
+  "ts": "2026-10-18T22:01:10-03:00",
+  "utc": "2026-10-19T01:01:10.895Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 14,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "feat",
+  "summary": "Auditoria da classe 'servidor falso segura o processo de teste vermelho': a causa está no fakeHttp (15 arquivos o usam). Correção na raiz: servidor e conexões com unref. Teste novo fake-http.test.ts (processo filho com o servidor atendido e esquecido aberto precisa terminar): vermelho sem a correção (15 s, ETIMEDOUT), verde com ela. O primeiro desenho do teste (fetch pendente do próprio processo) era errado: aquele socket é do cliente e segura o processo de propósito; corrigi antes do primeiro commit. Suíte 310/310.",
+  "refs": [],
+  "data": {}
+}
