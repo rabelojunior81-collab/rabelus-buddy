@@ -21,7 +21,7 @@ export const CONSOLE_METHODS = [
   'run.get', 'run.list', 'agent.run', 'agent.resume',
   'run.live', 'agent.steer', 'agent.unqueue', 'agent.stop',
   'approval.list', 'approval.resolve', 'budget.status',
-  'providers.status', 'providers.usage', 'harness.list', 'harness.probe', 'models.list', 'keys.set', 'keys.remove',
+  'providers.status', 'providers.usage', 'harness.list', 'harness.probe', 'harness.login', 'models.list', 'keys.set', 'keys.remove',
   'auth.chatgpt.start', 'auth.chatgpt.status', 'auth.chatgpt.logout',
 ] as const;
 

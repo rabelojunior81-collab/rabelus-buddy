@@ -76,7 +76,8 @@ test('login recusado no navegador: volta "login" com o motivo, e nada fica pront
   assert.match(r.reason, /recusado/);
 });
 
-test('método do tipo terminal é recusado antes de iniciar; método desconhecido também (critério 7)', async () => {
+// O harness precisa iniciar para declarar os métodos (initialize); a recusa vem antes do authenticate.
+test('método do tipo terminal é recusado antes do authenticate; método desconhecido também (critério 7)', async () => {
   const { ipc } = await owner({ FAKE_ACP_TERMINAL_AUTH: '1' });
   await assert.rejects(ipc('harness.login', { id: 'opencode', method: 'fake-terminal' }), /terminal/);
   await assert.rejects(ipc('harness.login', { id: 'opencode', method: 'nao-existe' }), /método de login desconhecido/);

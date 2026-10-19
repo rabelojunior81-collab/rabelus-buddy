@@ -35,6 +35,7 @@ export const CONSOLE_SCHEMAS = {
   'providers.usage': empty,
   'harness.list': z.strictObject({ refresh: z.boolean().optional() }),
   'harness.probe': z.strictObject({ id: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/) }),
+  'harness.login': z.strictObject({ id: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/), method: id }),
   'models.list': empty,
   'keys.set': z.strictObject({ provider: keyProvider, key: z.string().min(1).max(4096) }),
   'keys.remove': z.strictObject({ provider: keyProvider }),
