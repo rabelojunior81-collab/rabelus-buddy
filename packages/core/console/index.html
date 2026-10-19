@@ -252,6 +252,9 @@
   .perm .ico, .perm .mark { width: 18px; height: 18px; margin: 0; }
   /* seletor de modelo (M1.5c): abas por provedor, busca, filtros, lista por lab com capacidades em ícones */
   .mpop { width: 420px; max-height: min(460px, 72vh); }
+  /* Coluna do painel: só a lista rola; abas, busca, filtros e rodapés não encolhem (achado do ensaio: as abas sumiam). */
+  .pop > .tabs, .pop > .srch, .pop > .fmenu, .pop > .pfoot, .pop > .ptitle { flex: none; }
+  .pop > .plist { flex: 1 1 auto; min-height: 0; }
   .tabs { display: flex; padding: 6px 8px 0; border-bottom: 1px solid var(--hair); overflow-x: auto; scrollbar-width: none; }
   .tabs button { position: relative; flex: 1 0 auto; display: flex; align-items: baseline; justify-content: center; gap: 5px; padding: 6px 8px 7px; border: 0; background: none; color: var(--faint); font-size: 12px; font-weight: 600; white-space: nowrap; }
   .tabs button small { font-size: 10.5px; font-weight: 500; }
@@ -903,8 +906,9 @@ async function loadCatalog() {
 }
 function renderModelPill() {
   const m = pickedModel();
-  $('mBtn').replaceChildren(m ? labBox(m.lab) : el('span', { class: 'cap reasoning', 'aria-hidden': 'true' }, '∗'),
-    el('span', { class: 'nm' }, m ? m.name : picked ? picked.model : t('console.model.auto')), m ? capsOf(m) : null, el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
+  // replaceChildren escreveria um null como o texto "null" (achado do ensaio): só os nós que existem.
+  $('mBtn').replaceChildren(...[m ? labBox(m.lab) : el('span', { class: 'cap reasoning', 'aria-hidden': 'true' }, '∗'),
+    el('span', { class: 'nm' }, m ? m.name : picked ? picked.model : t('console.model.auto')), m && capsOf(m), el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾')].filter(Boolean));
   // Esforço conforme o modelo (Automático: padrão, baixo, médio, alto); a escolha anterior fica se ainda valer.
   const sel = $('effort');
   const cur = sel.value || store.get('rb.effort', 'default');
@@ -1058,8 +1062,8 @@ function renderHarnessPill() {
   const h = harnesses.find((x) => x.id === chosen);
   const pr = h && probes[h.id];
   const v = pr ? probeView(pr) : null;
-  $('hBtn').replaceChildren(h ? harnessIcon(h) : buddyMark(), el('span', { class: 'nm' }, h ? h.name : 'Buddy'),
-    v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null, el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
+  $('hBtn').replaceChildren(...[h ? harnessIcon(h) : buddyMark(), el('span', { class: 'nm' }, h ? h.name : 'Buddy'),
+    v && el('span', { class: 'state ' + v.tone }, t(v.key)), el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾')].filter(Boolean));
   // Harness usa os próprios modelos e esforço: as pílulas de modelo e esforço são do Buddy.
   $('mBtn').hidden = Boolean(h);
   $('task').setAttribute('placeholder', h ? t('console.harness.placeholder', { name: h.name }) : t('console.task.placeholder'));

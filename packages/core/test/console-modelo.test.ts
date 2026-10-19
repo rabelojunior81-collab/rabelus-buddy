@@ -84,6 +84,8 @@ test('página: pílula de modelo com painel acessível, Ctrl+K, catálogo do nú
   assert.match(PAGE, /ev\.key\.toLowerCase\(\) === 'k'/, 'Ctrl+K abre o seletor');
   assert.match(PAGE, /params\.route = picked/, 'a escolha vai como rota');
   assert.match(PAGE, /id="mLeft"/, 'quem ficou fora do catálogo aparece no seletor');
+  // Ensaio (2026-10-19): replaceChildren escreve "null" como texto ("Buddy null" na pílula); nulos ficam de fora antes.
+  assert.doesNotMatch(PAGE, /\.replaceChildren\([^;]*\? [^;]*: null/, 'replaceChildren com null condicional vira o texto "null"');
   assert.doesNotMatch(PAGE, /<select id="route"/, 'o seletor de provedor antigo foi substituído');
   // O esforço que a página oferece passa pelo contrato.
   const eff = (CONSOLE_SCHEMAS['agent.run'] as unknown as { shape: { effort: { safeParse: (v: unknown) => { success: boolean } } } }).shape.effort;
