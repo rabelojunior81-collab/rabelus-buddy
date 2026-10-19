@@ -51,7 +51,7 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
   let idleFail: (e: Error) => void = () => {};
   const idle = new Promise<never>((_, no) => { idleFail = no; });
   idle.catch(() => { /* tratado na corrida */ });
-  const touch = () => { clearTimeout(timer); timer = setTimeout(() => idleFail(new TurnError(`${Math.round(idleMs / 1000)} s sem resposta do harness`)), idleMs); };
+  const touch = () => { clearTimeout(timer); timer = setTimeout(() => idleFail(new TurnError(`${+(idleMs / 1000).toFixed(1)} s sem resposta do harness`)), idleMs); };
   const race = <T>(p: Promise<T>) => Promise.race([p, ended, idle]);
 
   let text = '';
@@ -75,8 +75,12 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
       touch();
       const tc = params.toolCall;
       const ask: PermissionAsk = { toolCallId: tc.toolCallId, title: tc.title ?? '', ...(tc.kind ? { kind: tc.kind } : {}), paths: (tc.locations ?? []).map((l) => l.path), options: params.options.map((x) => ({ optionId: x.optionId, name: x.name, kind: x.kind })) };
-      const answer = o.onPermission ? await o.onPermission(ask) : { outcome: 'cancelled' as const };
-      return { outcome: answer };
+      // Enquanto o Pai decide, o silêncio é dele, não do harness: o relógio para e volta depois da resposta.
+      clearTimeout(timer);
+      try {
+        const answer = o.onPermission ? await o.onPermission(ask) : { outcome: 'cancelled' as const };
+        return { outcome: answer };
+      } finally { touch(); }
     });
   const conn = app.connect(ndJsonStream(Writable.toWeb(child.stdin!) as WritableStream<Uint8Array>, Readable.toWeb(child.stdout!) as ReadableStream<Uint8Array>));
   conn.closed.catch(() => { /* fim da conexão */ });
