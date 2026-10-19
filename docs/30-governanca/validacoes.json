@@ -656,6 +656,22 @@
       },
       "origem": "SPEC 0002, critérios 11, 13 e 29; catálogo e ChatGPT medidos ao vivo em 2026-10-19",
       "evidencia": "docs/registros/2026-10-19T115201-0300-ensaio-do-seletor-de-modelo-m1-5c/README.md"
+    },
+    {
+      "id": "validar-console-nova-m1-5",
+      "descricao": "Validar a console nova (M1.5): o visual aprovado na prática, um modelo do ChatGPT com esforço Muito alto escolhido no seletor, e o OpenCode escolhido na pílula de harness com a escrita aprovada pelo cartão",
+      "quem": "pai",
+      "onde": [
+        "M1.5d"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-modelo.test.ts"
+      },
+      "estado": "pendente",
+      "origem": "SPEC 0002, critério 11; pedido do Pai em 2026-10-19 (ver, testar e validar no layout novo)",
+      "tipo": "acao",
+      "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); em Ajustes, conferir a pasta de trabalho; na pílula do modelo (ou Ctrl+K), aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar \"Responda em texto, sem usar ferramentas: diga olá em uma frase.\"; Nova conversa, na pílula Buddy escolher OpenCode e esperar \"pronto\", enviar \"Crie o arquivo teste-do-pai.txt com a palavra ok e diga se conseguiu.\" e clicar em Aprovar no cartão",
+      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md"
     }
   ]
 }
