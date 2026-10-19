@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-19T102325-0300-claude-code-vs-code-51d166-0008",
+  "ts": "2026-10-19T10:23:25-03:00",
+  "utc": "2026-10-19T13:23:25.304Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 8,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #66: docs: núcleo do Pai reiniciado; ordem do M1 com a M1.5 antes do login do Pai",
+  "refs": [
+    "#66"
+  ],
+  "data": {}
+}

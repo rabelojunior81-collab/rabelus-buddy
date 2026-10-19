@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T102357-0300-claude-code-vs-code-51d166-0010",
+  "ts": "2026-10-19T10:23:57-03:00",
+  "utc": "2026-10-19T13:23:57.885Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 10,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2e-login",
+  "type": "decisao",
+  "summary": "Desenho M1.2e (critério 7, só núcleo): (1) conversa com harness que responde auth_required para com motivo needsLogin e evento harness.login.required {id, métodos sem os do tipo terminal}; (2) novo método harness.login {id, method}: inicia o harness, initialize, authenticate {methodId} (o harness abre o navegador, Agent Auth), confere com session/new; devolve pronto, login ou falhou; tempo-limite de 5 min (o Pai entra no navegador); evento harness.login {id, method, state}; nenhuma credencial passa pelo núcleo; (3) método do tipo terminal é recusado antes de iniciar (o ACP proíbe passá-lo ao authenticate, e o Pai não faz nada por terminal); método desconhecido, -32602. Contrato e lista da console recebem harness.login para a M1.5. Testes antes, com o harness falso (arquivo de marca como 'sessão logada').",
+  "refs": [],
+  "data": {}
+}
