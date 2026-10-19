@@ -7,7 +7,7 @@ import type { ChildProcess } from 'node:child_process';
 import { Readable, Writable } from 'node:stream';
 import { client, ndJsonStream, PROTOCOL_VERSION } from '@agentclientprotocol/sdk';
 import { scrub } from '../providers/adapters.ts';
-import { killTree, spawnHarness, type LaunchSpec } from './client.ts';
+import { killTree, loginMethods, spawnHarness, type LaunchSpec } from './client.ts';
 
 export type TurnUpdate =
   | { kind: 'reasoning' | 'text'; delta: string }
@@ -34,6 +34,11 @@ export interface TurnOptions {
 export interface TurnResult { stopReason: string; text: string; agent?: { name: string; version?: string } }
 
 export class TurnError extends Error {}
+// O harness pede login (auth_required no session/new): leva os métodos que o Pai pode usar (critério 7).
+export class NeedsLogin extends TurnError {
+  readonly methods: { id: string; name: string }[];
+  constructor(methods: { id: string; name: string }[]) { super('o harness pede login (auth_required)'); this.methods = methods; }
+}
 
 export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<TurnResult> {
   const idleMs = o.idleMs ?? 10 * 60_000;
@@ -93,7 +98,7 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
     touch();
     let created;
     try { created = await race(conn.agent.request('session/new', { cwd: o.cwd, mcpServers: [] })); }
-    catch (e) { if ((e as { code?: number }).code === -32000) throw new TurnError('o harness pede login (auth_required)'); throw e; }
+    catch (e) { if ((e as { code?: number }).code === -32000) throw new NeedsLogin(loginMethods(init)); throw e; }
     sessionId = created.sessionId;
     // Opção de modo declarada (id "mode" ou categoria "mode"); as config options substituem a API antiga de modos.
     const modeOpt = (created.configOptions ?? []).find((c) => c.id === 'mode' || c.category === 'mode') as { id: string; currentValue?: unknown; options?: unknown[] } | undefined;

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T102503-0300-claude-code-vs-code-51d166-0011",
+  "ts": "2026-10-19T10:25:03-03:00",
+  "utc": "2026-10-19T13:25:03.844Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 11,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2e-login",
+  "type": "feat",
+  "summary": "Testes do critério 7 antes do código (login-acp.test.ts): needsLogin com os métodos sem os de terminal; harness.login chama authenticate e o harness fica pronto, com a conversa seguinte rodando e a credencial fora do banco do núcleo; login recusado volta 'login' com motivo; método terminal e desconhecido recusados antes de iniciar. Harness falso com authenticate, arquivo de credencial do próprio harness e método terminal opcional. 4 vermelhos; sonda 5/5 verde.",
+  "refs": [],
+  "data": {}
+}

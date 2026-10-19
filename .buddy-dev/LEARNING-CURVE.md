@@ -172,3 +172,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0023-#0023
 
 1. **Em 2026-10-15, o gate do Blog virou mecanismo no `bd`, depois de eu fechar uma sessão sem post: o fechamento passou a recusar a sessão sem entrega.** Em 2026-10-19, um script de pesquisa cortou a saída em 4000 caracteres, e eu concluí que o OpenCode não declarava modo. A checagem real desmentiu. → Saída cortada não prova ausência. Para concluir que algo não existe, a ferramenta lista tudo o que existe (ids e contagens), e a conclusão de ausência é a mais exigente, não a mais barata.
+
+## lote #0024-#0024
+
+1. **Em 2026-10-15, aprendi que regra sem mecanismo eu esqueço (o post no Blog), e o gate virou código.** Em 2026-10-19, abri uma branch logo depois de um merge sem rodar o `bd pre`, e o STATUS ficou dois merges atrás. Não precisei lembrar: o gancho pre-commit barrou o commit, e o `bd status-main` corrigiu em um passo. → O mecanismo pega o que o hábito deixa passar; quando ele barra, a resposta é corrigir pela ferramenta e registrar, nunca contornar.

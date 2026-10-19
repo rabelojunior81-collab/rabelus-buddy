@@ -68,6 +68,17 @@ test('contrato: a checagem pura diz o campo e o motivo, em português (critério
   assert.match(!notObj.ok ? notObj.message : '', /esperado um objeto/);
 });
 
+// M1.2e: o "Entrar" da console nova (M1.5) chama harness.login com o harness e o método; nada além disso passa.
+test('contrato: harness.login aceita só o harness e o método de login (critérios 7 e 10)', () => {
+  assert.equal(checkParams('harness.login', { id: 'opencode', method: 'opencode-login' }).ok, true);
+  const missing = checkParams('harness.login', { id: 'opencode' });
+  assert.match(!missing.ok ? missing.message : '', /method: obrigatório/);
+  const extra = checkParams('harness.login', { id: 'opencode', method: 'm', token: 'x' });
+  assert.match(!extra.ok ? extra.message : '', /campo desconhecido: token/);
+  const badId = checkParams('harness.login', { id: '../x', method: 'm' });
+  assert.equal(badId.ok, false);
+});
+
 test('contrato: entrada inválida pela console volta 400, código -32602, e nada entra no log (critério 10)', async () => {
   const home = tempHome();
   owners.push(await spawnOwner(home, { RBUDDY_CONSOLE_PORT: '0' }));

@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Login dos agentes pelo núcleo** (M1.2e, critério 7). Quando um agente pede para entrar, a conversa para e diz quais formas de entrar ele oferece. O núcleo pede ao agente que faça o login: o próprio agente abre o navegador e guarda a credencial dele, que nunca passa pelo Buddy. Formas de entrar que exigem terminal são recusadas com explicação. O botão "Entrar" chega com a console nova (M1.5), e o primeiro login do Pai vai para o ensaio (M1.6), por decisão dele.
 - **Permissões dos agentes pelo núcleo** (M1.2d, critério 6). Ao abrir a conversa, o Buddy pede ao agente que pergunte antes de escrever ou executar: o Codex em modo somente leitura; o OpenCode com "perguntar" só para aquela conversa, sem tocar na configuração do Pai. Cada pedido passa pela política do Buddy:
   - o que ela permite segue sozinho;
   - o que exige decisão aparece em Aprovações, com o nome do agente, a ação e o alvo (para comando, o comando inteiro);

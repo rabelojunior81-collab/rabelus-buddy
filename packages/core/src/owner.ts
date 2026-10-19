@@ -22,8 +22,8 @@ import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
-import { launchFor, probeHarness, type LaunchSpec } from './harness/client.ts';
-import { promptTurn } from './harness/session.ts';
+import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec } from './harness/client.ts';
+import { NeedsLogin, promptTurn } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
@@ -296,6 +296,11 @@ export async function startOwner(home: string): Promise<Owner> {
       } catch (e) {
         const reason = scrub((e as Error).message).slice(0, 300);
         domain.failEffect(effect, reason);
+        // Harness pede login (critério 7): a conversa para com os métodos que o Pai pode usar para entrar.
+        if (e instanceof NeedsLogin) {
+          log.append(session, 'harness.login.required', { run, id: h.id, methods: e.methods });
+          return stopped('needsLogin');
+        }
         log.append(session, 'harness.error', { run, id: h.id, reason });
         return stopped(ac.signal.aborted ? 'userStopped' : 'harnessFailed');
       }
@@ -461,6 +466,20 @@ export async function startOwner(home: string): Promise<Owner> {
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
     // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
     'harness.probe': (p) => probeById(String(p.id)),
+    // Login do harness (SPEC 0002, critério 7): authenticate com o método escolhido; o harness abre o navegador e guarda a
+    // própria credencial. Lançamento que baixa código continua exigindo a primeira execução aprovada (critério 4).
+    'harness.login': async (p) => {
+      const id = String(p.id);
+      const method = String(p.method);
+      const h = await harnessFor(id);
+      const cwd = join(home, 'area-de-trabalho');
+      mkdirSync(cwd, { recursive: true });
+      let r;
+      try { r = await loginHarness(h.spec, { cwd, methodId: method }); }
+      catch (e) { if (e instanceof HarnessRefusal) throw new DomainError(-32602, e.message, { id, method }); throw e; }
+      log.append('harness', 'harness.login', { id, method, state: r.state, ...(r.reason ? { reason: r.reason } : {}), ...(r.agent ? { agent: r.agent } : {}) });
+      return { id, name: h.name, method, ...r };
+    },
     // Catálogo de modelos provedor → lab → modelo (SPEC 0002, critério 13): guardado e renovado no máximo uma vez por dia.
     'models.list': async () => {
       const file = join(home, 'models', 'catalog.json');

@@ -596,6 +596,21 @@
       },
       "origem": "SPEC 0002, critério 6; achado da checagem real da M1.2c (harnesses escreviam sem pedir)",
       "evidencia": "Checagem real em 2026-10-19 com o OpenCode e o Codex pelo dono do núcleo: docs/registros/2026-10-19T012430-0300-checagem-real-das-permissoes-pelo-nucleo/README.md"
+    },
+    {
+      "id": "login-harness",
+      "descricao": "Login do harness pelo núcleo: auth_required para a conversa por needsLogin com os métodos (sem os de terminal); harness.login chama authenticate e o harness guarda a própria credencial, que não entra no banco do núcleo; método de terminal ou desconhecido recusado antes do authenticate",
+      "quem": "maquina",
+      "onde": [
+        "M1.2e",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/login-acp.test.ts"
+      },
+      "origem": "SPEC 0002, critério 7; o login do Pai num harness real foi para o ensaio da M1.6 por decisão dele (2026-10-19)",
+      "evidencia": "Checagem real sem efeito para o Pai em 2026-10-19: docs/registros/2026-10-19T103147-0300-checagem-real-do-login-do-harness-sem-efeito/README.md"
     }
   ]
 }

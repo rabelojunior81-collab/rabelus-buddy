@@ -16,7 +16,13 @@
 //   FAKE_ACP_PERM_KIND: tipo da ação pedida na permissão (padrão edit, com o caminho em locations).
 //   FAKE_ACP_PROMPT=unasked: escreve um arquivo (tool_call edit concluído) sem pedir permissão.
 //   FAKE_ACP_GENERIC_TITLE=1: o comando vem antes num tool_call, e o pedido de permissão diz só "Run command" (Codex).
+// M1.2e (login do harness):
+//   FAKE_ACP_AUTH_FILE: no modo auth, a sessão só abre depois de authenticate, que grava ali a credencial do harness
+//                       (só o harness a guarda; ela nunca vai ao cliente).
+//   FAKE_ACP_TERMINAL_AUTH=1: declara também um método do tipo terminal, que o cliente não pode passar ao authenticate.
+//   FAKE_ACP_AUTH_FAIL=1: authenticate falha (login recusado no navegador).
 //   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
+import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
 import { agent, ndJsonStream, PROTOCOL_VERSION, RequestError } from '@agentclientprotocol/sdk';
@@ -37,10 +43,16 @@ else {
       protocolVersion: PROTOCOL_VERSION,
       agentInfo: { name: 'Fake', version: '0.0.1' },
       agentCapabilities: { loadSession: false, promptCapabilities: { image: true, embeddedContext: true }, sessionCapabilities: { close: {} } },
-      authMethods: [{ id: 'fake-login', name: 'Login with Fake' }],
+      authMethods: [{ id: 'fake-login', name: 'Login with Fake' }, ...(process.env.FAKE_ACP_TERMINAL_AUTH ? [{ id: 'fake-terminal', name: 'Setup in terminal', type: 'terminal', args: ['setup'] }] : [])],
     }))
+    .onRequest('authenticate', ({ params }) => {
+      if (process.env.FAKE_ACP_AUTH_FAIL) throw RequestError.internalError(undefined, 'login recusado no navegador');
+      if (params.methodId !== 'fake-login') throw RequestError.invalidParams({ methodId: params.methodId });
+      if (process.env.FAKE_ACP_AUTH_FILE) writeFileSync(process.env.FAKE_ACP_AUTH_FILE, 'credencial-do-harness-fake-7f3a9c');
+      return {};
+    })
     .onRequest('session/new', ({ params }) => {
-      if (mode === 'auth') throw RequestError.authRequired();
+      if (mode === 'auth' && !(process.env.FAKE_ACP_AUTH_FILE && existsSync(process.env.FAKE_ACP_AUTH_FILE))) throw RequestError.authRequired();
       const sessionId = `fake-${process.pid}`;
       cwds.set(sessionId, params.cwd);
       return { sessionId, ...(process.env.FAKE_ACP_MODES ? { configOptions: [modeOption()] } : {}) };
