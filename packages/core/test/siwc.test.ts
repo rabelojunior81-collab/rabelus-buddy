@@ -375,6 +375,16 @@ test('siwc: esforço vai como reasoning.effort; padrão não envia (critério 29
   await api.close();
 });
 
+// M1.5c: o ChatGPT declara até ultra (catálogo real, 2026-10-19); o nível vai como veio.
+test('siwc: níveis xhigh, max e ultra vão como reasoning.effort (M1.5c)', async () => {
+  const done = [{ type: 'response.completed', response: completed }];
+  const api = await fakeApi(done);
+  const p = createChatGptProvider({ home: savedHome(false), endpoints: { ...inert, api: `${api.url}/v1` } });
+  for (const effort of ['xhigh', 'max', 'ultra'] as const) await p.call({ ...req(), effort }, { session: 's' });
+  assert.deepEqual(api.requests.map((r) => (r.body.reasoning as { effort: string }).effort), ['xhigh', 'max', 'ultra']);
+  await api.close();
+});
+
 // Critério 31 (rev. 6): sequência medida com o login real (2026-10-17, workspace/diag-fluxo.ts).
 test('siwc: resumo do raciocínio pedido só com esforço; resumo e texto chegam em fragmentos; o resumo volta no resultado (critério 31)', async () => {
   const usage = { input_tokens: 60, output_tokens: 300 };

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T112858-0300-claude-code-vs-code-51d166-0067",
+  "ts": "2026-10-19T11:28:58-03:00",
+  "utc": "2026-10-19T14:28:58.498Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 67,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5c-seletor-de-modelo",
+  "type": "feat",
+  "summary": "Testes dos níveis de esforço da M1.5c antes do código: rotas (Responses e Chat como vieram; Messages com orçamento crescente acima de high, minimal 1024, none sem pensamento), contrato com os 8 níveis, dono com xhigh. 3 vermelhos. O do ChatGPT (siwc) passa desde o início, declarado: o adaptador repassa o texto do nível; só o tipo limitava.",
+  "refs": [],
+  "data": {}
+}

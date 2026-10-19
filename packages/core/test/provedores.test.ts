@@ -180,6 +180,32 @@ test('esforço de raciocínio chega a cada rota no formato dela; "padrão" não 
   await fake.close();
 });
 
+// M1.5c (2026-10-19): o catálogo real declara oito níveis (none, minimal, low, medium, high, xhigh, max, ultra), conforme
+// o modelo. Quem recebe o esforço como texto o recebe como veio; quem recebe orçamento de pensamento: none desliga,
+// minimal usa o menor, e acima de high o orçamento cresce. Recusado, o caminho existente repete sem esforço.
+test('níveis de esforço além de baixo, médio e alto chegam a cada rota no formato dela (M1.5c)', async () => {
+  const fake = await fakeHttp(canned);
+  const go = createGoProvider({ apiKey: 'k', baseURL: fake.url });
+  const sent = (i: number) => fake.requests[i]!.body as Record<string, unknown>;
+  await go.call({ ...req('gpt-6-luna'), effort: 'xhigh' }, { session: 's' });
+  assert.deepEqual(sent(0).reasoning, { effort: 'xhigh' }, 'Responses: como veio');
+  await go.call({ ...req('kimi-k3'), effort: 'max' }, { session: 's' });
+  assert.equal(sent(1).reasoning_effort, 'max', 'Chat: como veio');
+  await go.call({ ...req('kimi-k3'), effort: 'none' }, { session: 's' });
+  assert.equal(sent(2).reasoning_effort, 'none', 'Chat: none também é declarado pelo provedor');
+  const budget = async (effort: string, i: number) => {
+    await go.call({ ...req('claude-haiku-5-5'), effort, maxOutputTokens: 64_000 } as never, { session: 's' });
+    return (sent(i).thinking as { budget_tokens?: number } | undefined)?.budget_tokens ?? 0;
+  };
+  const high = await budget('high', 3);
+  assert.ok((await budget('xhigh', 4)) > high, 'xhigh pensa mais que high');
+  assert.ok((await budget('ultra', 5)) >= (await budget('max', 6)), 'ultra não pensa menos que max');
+  assert.equal(await budget('minimal', 7), 1024, 'minimal: o menor orçamento aceito');
+  await go.call({ ...req('claude-haiku-5-5'), effort: 'none' } as never, { session: 's' });
+  assert.equal(sent(8).thinking, undefined, 'none: sem pensamento');
+  await fake.close();
+});
+
 test('402 (conta sem saldo) esgota o provedor por uma hora, em vez de ser recusado a cada mensagem', async () => {
   const f = await fakeHttp(() => ({ status: 402, json: { error: { message: 'Upstream request failed: Insufficient account funds' } } }));
   const t0 = Date.now();
