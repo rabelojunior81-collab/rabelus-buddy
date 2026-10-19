@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T105132-0300-claude-code-vs-code-51d166-0032",
+  "ts": "2026-10-19T10:51:32-03:00",
+  "utc": "2026-10-19T13:51:32.999Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 32,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5-console-nova",
+  "type": "erro",
+  "summary": "Ensaio da M1.5a no navegador real (núcleo temporário pelo bd serve, porta 47399, 2 conversas e 1 aprovação criadas pelo IPC) achou dois defeitos meus: (1) renderHome busca #homeEyebrow e #starters por id, mas a tela inicial sai do documento quando há conversa aberta; trocar o idioma ou a atualização de harnesses (60 s) com conversa aberta quebraria; (2) os ícones dos harnesses somem no tema escuro: os SVG do registro são pretos e eu usei <img>, que não herda a cor; o protótipo usava máscara CSS em currentColor. Correções com teste antes. Também: o comando de início imprimiu o token da console temporária (não é do Pai, não vai ao repositório); não imprimir mais.",
+  "refs": [],
+  "data": {}
+}

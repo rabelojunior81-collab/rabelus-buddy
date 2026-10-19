@@ -151,8 +151,10 @@
   .agents { display: flex; flex-direction: column; }
   .agent { display: flex; align-items: center; gap: 9px; padding: 5px 8px; font-size: 12.5px; color: var(--muted); }
   .agent .st { margin-left: auto; width: 6px; height: 6px; background: var(--olive-400); box-shadow: 0 0 8px var(--olive-400); }
-  .ico { display: inline-block; width: 16px; height: 16px; flex: none; object-fit: contain; }
-  .ico.box { border: 1.4px solid currentColor; }
+  /* Ícone de harness (SVG preto do registro): máscara na cor do texto, visível nos dois temas (achado do ensaio). */
+  .ico { display: inline-block; width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat; }
+  .ico.box { background: none; -webkit-mask: none; mask: none; border: 1.4px solid currentColor; }
+  img.mark.ico { background: none; -webkit-mask: none; mask: none; filter: var(--mark-filter); }
   .side .foot { margin-top: auto; display: flex; align-items: center; gap: 8px; padding: 8px 4px 0; border-top: 1px solid var(--hair); font-size: 12px; color: var(--muted); }
   .dot { width: 8px; height: 8px; display: inline-block; background: var(--faint); }
   .dot.ok { background: var(--ok); box-shadow: 0 0 8px var(--ok); } .dot.bad { background: var(--bad); }
@@ -181,10 +183,10 @@
   .bubble.buddy { max-width: 100%; background: color-mix(in oklch, var(--accent) 7%, transparent); border-color: color-mix(in oklch, var(--accent) 28%, transparent); }
   .bubble p { margin: 0 0 8px; } .bubble p.h { margin-top: 10px; font-size: 1.04em; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
   .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
-  .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: oklch(0% 0 0 / .18); border: 1px solid var(--hair); overflow: auto; white-space: pre; }
+  /* Código: tom oliva translúcido, leve nos dois temas (no claro, o cinza escuro pesava; achado do ensaio). */
+  .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: oklch(50% .03 118 / .12); border: 1px solid var(--hair); overflow: auto; white-space: pre; }
   .bubble pre.code code { padding: 0; background: none; }
-  .bubble code, code { font-family: var(--mono); font-size: 12.5px; background: oklch(0% 0 0 / .14); padding: 1px 5px; }
-  .who { display: block; font-size: 10.5px; color: var(--faint); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .1em; }
+  .bubble code, code { font-family: var(--mono); font-size: 12.5px; background: oklch(50% .03 118 / .12); padding: 1px 5px; }  .who { display: block; font-size: 10.5px; color: var(--faint); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .1em; }
   .ev { font-size: 12.5px; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--hair); }
   .ev.err { color: var(--bad); border-left-color: var(--bad); }
   .ev.tool { color: var(--text); }
@@ -245,7 +247,7 @@
   select.field option { background: var(--bg); color: var(--text); }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   ul.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-  ul.list li { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 13px; }
+  ul.list li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; justify-content: space-between; font-size: 13px; }
   ul.list li .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .badge { font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 5px; border: 1px solid var(--hair-strong); color: var(--muted); white-space: nowrap; }
   .badge.ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 45%, transparent); } .badge.warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 45%, transparent); } .badge.bad { color: var(--bad); border-color: color-mix(in oklch, var(--bad) 45%, transparent); }
@@ -264,13 +266,18 @@
     .side.open { display: flex; position: fixed; z-index: 28; top: 0; bottom: 0; left: 0; width: min(300px, 84vw); background: var(--glass-fill), var(--glass-solid); box-shadow: var(--shadow); }
     .mbrand { display: flex; }
     .top { padding: 0 8px; gap: 8px; }
-    .top .toggle span { display: none; }
+    /* Rótulos escondidos só da vista: o leitor de tela continua lendo (display: none apagaria o nome acessível). */
+    .top .toggle span, .pill > span { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    /* Uma linha só: as pílulas dividem o espaço e o enviar fica à direita (achado do ensaio a 375 px). */
+    .bar { flex-wrap: nowrap; }
+    .bar .spacer { display: none; }
+    .pill { flex: 1 1 0; padding-left: 4px; }
     #sessionLabel { display: none; }
     .eyebrow { margin-top: 5vh; }
     h1 { font-size: 27px; }
     #feed { padding: 6px 12px 12px; }
     .dock { padding: 0 6px 6px; }
-    .pill select { max-width: 120px; }
+    .pill select { width: 100%; max-width: none; }
     .hint span:first-child { display: none; }
     .settings { inset: 0; width: 100vw; }
   }
@@ -780,19 +787,21 @@ async function refreshRuns() {
     ...g.items.map((x) => el('button', { class: 'thread' + (x.session === session ? ' sel' : ''), title: x.title, onclick: () => { openSession(x.session); drawer(false); } },
       x.state === 'running' ? el('span', { class: 'st', 'aria-hidden': 'true' }, '●') : null, x.title))]) : [el('div', { class: 'day' }, t('console.side.none'))]));
 }
-// Harnesses encontrados (registro oficial do ACP e tabela própria): ícone servido pela console, sem nada de fora.
+// Harnesses encontrados (registro oficial do ACP e tabela própria): ícone servido pela console, sem nada de fora,
+// desenhado como máscara na cor do texto; sem ícone, um quadrado.
+const harnessIcon = (h) => (h.icon ? el('span', { class: 'ico', 'aria-hidden': 'true', style: "--src:url('" + asset('/icons/harness/' + h.id + '.svg') + "')" }) : el('span', { class: 'ico box', 'aria-hidden': 'true' }));
 async function refreshAgents() {
   const r = await api('harness.list');
   harnesses = r.harnesses.filter((h) => h.found);
   $('agents').replaceChildren(...(harnesses.length ? harnesses.map((h) => el('div', { class: 'agent', title: h.description || h.name },
-    h.icon ? el('img', { class: 'ico', alt: '', src: asset('/icons/harness/' + h.id + '.svg') }) : el('span', { class: 'ico box' }),
-    h.name, el('span', { class: 'st', title: t('console.side.installed') }))) : [el('div', { class: 'day' }, t('console.side.noAgents'))]));
+    harnessIcon(h), h.name, el('span', { class: 'st', title: t('console.side.installed') }))) : [el('div', { class: 'day' }, t('console.side.noAgents'))]));
   renderHome();
 }
+// A tela inicial sai do documento quando há conversa aberta: atualizada pela referência guardada, nunca por id.
 function renderHome() {
-  $('homeEyebrow').textContent = t('console.home.eyebrow', { n: harnesses.length });
-  $('starters').replaceChildren(el('span', { class: 'starter' }, el('img', { class: 'ico mark', alt: '', src: asset('/brand/emblema-64.png') }), 'Buddy'),
-    ...harnesses.map((h) => el('span', { class: 'starter' }, h.icon ? el('img', { class: 'ico', alt: '', src: asset('/icons/harness/' + h.id + '.svg') }) : el('span', { class: 'ico box' }), h.name)));
+  homeEl.querySelector('#homeEyebrow').textContent = t('console.home.eyebrow', { n: harnesses.length });
+  homeEl.querySelector('#starters').replaceChildren(el('span', { class: 'starter' }, el('img', { class: 'ico mark', alt: '', src: asset('/brand/emblema-64.png') }), 'Buddy'),
+    ...harnesses.map((h) => el('span', { class: 'starter' }, harnessIcon(h), h.name)));
 }
 function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); void refreshApprovals(); }
 $('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); drawer(false); $('task').focus(); });

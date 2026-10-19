@@ -5,3 +5,5 @@
 - `rabelus-lab-emblema-256.png` e `-64.png`: só o emblema da fênix, sem o letreiro e com fundo transparente. O dourado vira opaco e o azul-marinho vira transparente; o traço foi engrossado em 1 px para ler bem em 28 px. Gerado pelo buddy-dev a partir do original.
 
 Uso: o de 256 px ao lado do nome "Rabelus Buddy" na console (computador e celular), no lugar do quadrado. Pedido do Pai em 2026-10-18, na aprovação do visual v4. No tema claro, o emblema é escurecido por filtro de CSS para manter o contraste. O de 64 px fica reservado para o ícone da aba (favicon) da console real (M1.5).
+
+Na console real (M1.5a, 2026-10-19), os dois emblemas estão copiados em `packages/core/assets/brand/` como `emblema-256.png` e `emblema-64.png`, idênticos byte a byte (sha256 conferido). A console os serve em `/brand/…`, com o mesmo token do resto. Estes daqui continuam como a fonte.

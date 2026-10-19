@@ -91,6 +91,15 @@ test('estrutura do protótipo v4: barra lateral com marca, conversas e harnesses
   assert.match(PAGE, /:focus-visible/, 'foco visível');
 });
 
+// Achados do ensaio no navegador real (2026-10-19): (1) a tela inicial sai do documento quando há conversa aberta,
+// então a página nunca a procura por id; (2) os ícones do registro são SVG pretos: desenhados como máscara na cor do
+// texto (como no protótipo), aparecem nos dois temas; <img> os deixava invisíveis no escuro.
+test('ensaio: a tela inicial é atualizada pela referência guardada, e os ícones de harness seguem a cor do texto (critério 11)', () => {
+  for (const id of ['homeEyebrow', 'starters']) assert.doesNotMatch(PAGE, new RegExp(`\\$\\('${id}'\\)`), `${id} buscado por id com a tela inicial fora do documento`);
+  assert.doesNotMatch(PAGE, /el\('img', \{ class: 'ico'/, 'ícone de harness como <img> some no tema escuro');
+  assert.match(CSS, /\.ico \{[^}]*background: currentColor[^}]*mask: var\(--src\)/, 'ícone desenhado como máscara na cor do texto');
+});
+
 // Funções puras da página (os mesmos marcadores do M0).
 function pure<T>(names: string[]): T {
   const a = PAGE.indexOf('// <puras>');
