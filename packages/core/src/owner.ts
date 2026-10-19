@@ -18,13 +18,14 @@ import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
-import { buildModelCatalog, type ModelCatalog } from './models/catalog.ts';
+import { buildModelCatalog, CATALOG_VERSION, type ModelCatalog } from './models/catalog.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
 import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec } from './harness/client.ts';
 import { NeedsLogin, promptTurn } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
+import { EFFORTS, type Effort } from './providers/types.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -95,9 +96,10 @@ export async function startOwner(home: string): Promise<Owner> {
   };
   // Um agente por pedido: workspace e credenciais podem mudar entre tarefas.
   // Parâmetros da execução vindos da console ou do IPC (SPEC 0001 rev. 5).
-  const effort = (v: unknown): 'low' | 'medium' | 'high' | undefined => {
+  // Os oito níveis que os provedores declaram (M1.5c); a console oferece só os do modelo escolhido.
+  const effort = (v: unknown): Effort | undefined => {
     if (v === undefined || v === null || v === '' || v === 'default') return undefined;
-    if (v === 'low' || v === 'medium' || v === 'high') return v;
+    if ((EFFORTS as readonly unknown[]).includes(v)) return v as Effort;
     throw new DomainError(-32602, `esforço inválido: ${String(v)}`);
   };
   const PROVIDERS: ProviderId[] = ['opencode-go', 'ollama-cloud', 'chatgpt', 'openrouter'];
@@ -485,7 +487,8 @@ export async function startOwner(home: string): Promise<Owner> {
       const file = join(home, 'models', 'catalog.json');
       try {
         const c = JSON.parse(readFileSync(file, 'utf8')) as ModelCatalog;
-        if (Date.now() - Date.parse(c.generatedAt) < DAY) return c;
+        // Cópia de outra versão do catálogo (regras corrigidas) é montada de novo, sem esperar o dia (M1.5c).
+        if (c.version === CATALOG_VERSION && Date.now() - Date.parse(c.generatedAt) < DAY) return c;
       } catch { /* sem cópia ainda */ }
       catalogBuild ??= (async () => {
         const routes = loadConfig(home).routes;

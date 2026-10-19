@@ -173,6 +173,20 @@ test('dono: chaves e provedores pelo núcleo (a chave nunca volta); login do Cha
   await call(ep, 'daemon.stop', {});
 });
 
+// M1.5c: o dono aceita os níveis extras e os entrega à rota; valor fora da lista continua recusado.
+test('dono: agent.run com esforço xhigh chega ao provedor; valor desconhecido é recusado (M1.5c)', async () => {
+  const seen: Record<string, unknown>[] = [];
+  const fake = await fakeHttp((c: Captured) => { if (!c.path.endsWith('/chat/completions')) return { status: 404 }; seen.push(c.body); return chat({ content: 'ok' }, 'stop'); });
+  const { home, workspace } = homeWithFake(fake.url);
+  owners.push(await spawnOwner(home, { OPENCODE_GO_API_KEY: 'chave-falsa' }));
+  const ep = endpointFor(home);
+  const { run } = (await call(ep, 'agent.run', { session: 'sx', task: 'pense muito', workspace, effort: 'xhigh', route: { provider: 'opencode-go', model: 'kimi-k3' } })) as { run: string };
+  await until(async () => { const r = (await call(ep, 'run.get', { id: run })) as Run; return r.state === 'running' ? undefined : r; });
+  assert.equal(seen[0]?.reasoning_effort, 'xhigh');
+  await assert.rejects(call(ep, 'agent.run', { session: 'sx2', task: 'x', workspace, effort: 'altíssimo' }), /esforço/);
+  await fake.close();
+});
+
 test('retomar mantém o esforço e a rota escolhidos para a execução (achado no ensaio da console)', async () => {
   const seen: Record<string, unknown>[] = [];
   let hang = true;

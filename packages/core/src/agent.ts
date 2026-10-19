@@ -24,7 +24,10 @@ const DEFAULT_MAX_STEPS = 50;
 export const CONSERVATIVE_PRICE: Price = { input: 15, cachedInput: 15, cacheWrite: 15, output: 75 };
 const PAID = new Set(['openrouter']);
 // Códigos de recusa que podem ser do campo de esforço (corpo inválido), não da conta.
-const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability']);
+// Recusa do esforço pelo provedor: a chamada se repete sem ele. invalid_value e unsupported_value medidos no ChatGPT
+// real em 2026-10-19 ("ultra"; "none" e "minimal" no gpt-6.1-sol), M1.5c.
+const PER_MODEL_LIMIT = new Set(['opencode-go', 'openrouter']);
+const EFFORT_REFUSAL = new Set(['http_400', 'http_422', 'subscription_sharing_unsupported_capability', 'invalid_value', 'unsupported_value']);
 const FREE: Price = { input: 0, cachedInput: 0, cacheWrite: 0, output: 0 };
 // Raciocínio registrado por passo (critério 32): teto para o log não crescer sem limite.
 const REASONING_MAX = 20_000;
@@ -279,7 +282,9 @@ export class Agent {
           log.append(session, 'provider.error', { route: name, code: 'limit', message: scrub(e.message) });
           domain.failEffect(effect, 'providerLimit');
           budget.release(reservation, 'providerLimit');
-          budget.markExhausted(r.provider.id, r.provider.id === 'opencode-go' && e.scope !== 'provider' ? r.model : null, e.until, 'providerLimit');
+          // No Go e no OpenRouter o limite comum é do modelo (um grátis ocupado não bloqueia os outros, achado da M1.5c);
+          // limite da conta (escopo provider: janela semanal, sem saldo) esgota o provedor inteiro.
+          budget.markExhausted(r.provider.id, PER_MODEL_LIMIT.has(r.provider.id) && e.scope !== 'provider' ? r.model : null, e.until, 'providerLimit');
           budgetBlocked = true;
           skip('windowExhausted');
           continue;

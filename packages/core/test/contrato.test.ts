@@ -68,6 +68,14 @@ test('contrato: a checagem pura diz o campo e o motivo, em português (critério
   assert.match(!notObj.ok ? notObj.message : '', /esperado um objeto/);
 });
 
+// M1.5c: os oito níveis que os provedores declaram passam pelo contrato; outro valor continua recusado.
+test('contrato: agent.run aceita os níveis de esforço declarados pelos provedores (M1.5c)', () => {
+  for (const effort of ['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra', 'default']) {
+    assert.equal(checkParams('agent.run', { session: 's', task: 't', workspace: 'w', effort }).ok, true, effort);
+  }
+  assert.equal(checkParams('agent.run', { session: 's', task: 't', workspace: 'w', effort: 'altíssimo' }).ok, false);
+});
+
 // M1.2e: o "Entrar" da console nova (M1.5) chama harness.login com o harness e o método; nada além disso passa.
 test('contrato: harness.login aceita só o harness e o método de login (critérios 7 e 10)', () => {
   assert.equal(checkParams('harness.login', { id: 'opencode', method: 'opencode-login' }).ok, true);

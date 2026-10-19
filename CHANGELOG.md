@@ -10,6 +10,13 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Escolher o modelo na caixa de mensagem** (M1.5c, critérios 11 e 13). Uma pílula (ou Ctrl+K) abre o catálogo real de modelos:
+  - uma aba por provedor, com busca e filtros por capacidade (visão, raciocínio, ferramentas, grátis, contexto grande);
+  - os modelos agrupados por lab, com as capacidades em ícones e o tamanho do contexto;
+  - "Automático" segue a ordem dos provedores;
+  - o seletor diz quem ficou de fora da lista e por quê.
+
+  O esforço passa a oferecer os níveis que o modelo escolhido declara, inclusive "muito alto" e "máximo" no ChatGPT, medidos ao vivo. Quando um provedor recusa um nível, o Buddy repete sem ele e avisa. No OpenRouter, o limite de um modelo grátis não bloqueia mais os outros.
 - **Escolher o harness na caixa de mensagem** (M1.5b). Uma pílula na caixa escolhe quem executa: o Buddy, com os seus provedores, ou um dos harnesses encontrados no computador. Ao escolher, a console confere na hora se ele está pronto, se precisa de login ou de aprovação. A conversa com o harness mostra, à vista:
   - o pedido de permissão, com o ícone de quem pede;
   - a escrita sem pedido;

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T114704-0300-claude-code-vs-code-51d166-0075",
+  "ts": "2026-10-19T11:47:04-03:00",
+  "utc": "2026-10-19T14:47:04.563Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 75,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5c-seletor-de-modelo",
+  "type": "erro",
+  "summary": "Defeito achado no ensaio do seletor (M1.5c): o limite (429) de um modelo grátis do OpenRouter ('Provider returned error') marcou o OpenRouter inteiro como esgotado (agent.ts só marca por modelo no opencode-go), e a escolha seguinte, outro modelo grátis do OpenRouter, parou na hora com 'janela de consumo esgotada em todos os provedores'. Latente no sentido oposto: 402 (conta sem saldo) vale para a conta toda, mas no Go marcava só o modelo. Correção com teste antes: limite por modelo também no OpenRouter; 402 com escopo de provedor.",
+  "refs": [],
+  "data": {}
+}

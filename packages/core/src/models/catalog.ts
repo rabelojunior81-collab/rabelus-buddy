@@ -16,7 +16,11 @@ export interface ModelEntry {
   sources: { caps: CapSource; lab: LabSource };
 }
 export type ProviderKey = 'chatgpt' | 'opencode-go' | 'ollama-cloud' | 'openrouter';
+// Versão do formato e das regras do catálogo: cópia guardada de outra versão é montada de novo (M1.5c). Sobe a cada
+// correção que muda o que o catálogo diz. 2: níveis de esforço do ChatGPT pela API de respostas (2026-10-19).
+export const CATALOG_VERSION = 2;
 export interface ModelCatalog {
+  version: number;
   generatedAt: string;
   providers: { id: ProviderKey; name: string; kind: 'assinatura' | 'roteador'; models: ModelEntry[] }[];
   labs: Record<string, { name: string }>;
@@ -70,12 +74,16 @@ async function getJson(url: string, init: RequestInit = {}, timeoutMs = 10_000):
 }
 const auth = (key: string) => ({ Authorization: `Bearer ${key}` });
 
+// Níveis que a API de respostas do ChatGPT aceita, pela própria mensagem de recusa medida em 2026-10-19 ("Supported
+// values are: none, minimal, low, medium, high, xhigh, max"): o /models declara também "ultra", que ela recusa (M1.5c).
+// Um nível que o modelo não aceita ainda é recusado na hora, e o núcleo repete sem esforço.
+const RESPONSES_EFFORTS = new Set(['none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']);
 async function chatgpt(c: { token: string; api: string }): Promise<ModelEntry[]> {
   const j = await getJson(`${c.api.replace(/\/$/, '')}/models`, { headers: auth(c.token) });
   return ((j.models ?? []) as any[]).filter((m) => m.visibility === 'list').map((m) => ({
     id: String(m.slug), name: String(m.display_name ?? m.slug), desc: short(m.description), lab: 'openai',
     vision: Boolean(m.input_modalities?.includes('image')), video: false,
-    reasoning: (m.supported_reasoning_levels ?? []).length > 0, efforts: (m.supported_reasoning_levels ?? []).map((x: any) => String(x.effort ?? x)),
+    reasoning: (m.supported_reasoning_levels ?? []).length > 0, efforts: (m.supported_reasoning_levels ?? []).map((x: any) => String(x.effort ?? x)).filter((e: string) => RESPONSES_EFFORTS.has(e)),
     tools: true, ctx: m.context_window ?? null, free: false, open: false, tier: null, sources: { caps: 'provedor', lab: 'provedor' },
   }));
 }
@@ -158,5 +166,5 @@ export async function buildModelCatalog(src: CatalogSources): Promise<ModelCatal
   const providers = results.filter((r): r is NonNullable<typeof r> => r !== null);
   const labs: ModelCatalog['labs'] = {};
   for (const p of providers) for (const m of p.models) labs[m.lab] ??= { name: LAB_NAME[m.lab] ?? m.lab };
-  return { generatedAt: new Date().toISOString(), providers, labs, errors };
+  return { version: CATALOG_VERSION, generatedAt: new Date().toISOString(), providers, labs, errors };
 }

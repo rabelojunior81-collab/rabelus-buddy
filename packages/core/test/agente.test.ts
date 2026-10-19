@@ -312,6 +312,20 @@ test('esforço da execução chega ao provedor; recusado, a chamada se repete um
   assert.equal((step?.payload as { effort?: string }).effort, null);
 });
 
+// Checagem real de 2026-10-19 (M1.5c): o ChatGPT recusa o nível que não aceita com 400 e os códigos invalid_value
+// ("ultra") e unsupported_value ("none" e "minimal" no gpt-6.1-sol). Também é recusa do esforço: repete sem ele.
+test('esforço recusado com invalid_value ou unsupported_value também repete sem ele, com evento (M1.5c)', async () => {
+  for (const code of ['invalid_value', 'unsupported_value']) {
+    const p = scripted('chatgpt', [new ProviderRejectedError('chatgpt', code, "400 Invalid value: 'ultra'"), say('ok sem esforço')]);
+    const { log, agent } = setup({ routes: [{ provider: p, model: 'gpt-6.1-sol' }] });
+    (agent as unknown as { o: { effort?: string } }).o.effort = 'ultra';
+    const r = await agent.run(`s-${code}`, 'tarefa');
+    assert.equal(r.text, 'ok sem esforço', code);
+    assert.equal(p.seen[1]?.effort, undefined, code);
+    assert.equal((log.events(`s-${code}`).find((e) => e.kind === 'effort.dropped')?.payload as { code?: string })?.code, code);
+  }
+});
+
 test('conversa contínua: a nova mensagem leva o histórico da execução anterior ao modelo (critério 30)', async () => {
   const p = scripted('opencode-go', [say('primeira resposta'), say('segunda resposta')]);
   const { agent } = setup({ routes: [{ provider: p, model: 'kimi-k3' }] });
@@ -401,6 +415,20 @@ test('limite da conta (escopo provedor) esgota todos os modelos do provedor até
   await agent.run('s50', 'tarefa');
   const ex = log.events('budget').filter((e) => e.kind === 'budget.exhausted').at(-1)?.payload as { provider: string; model: string; until: number };
   assert.deepEqual([ex.provider, ex.model, ex.until], ['opencode-go', '*', until]);
+});
+
+// Ensaio do seletor de modelo (M1.5c, 2026-10-19): o limite de um modelo grátis do OpenRouter esgotava o OpenRouter
+// inteiro, e o modelo escolhido em seguida (outro grátis) parava na hora. No OpenRouter, como no Go, o limite sem escopo
+// de conta vale para o modelo.
+test('limite de um modelo do OpenRouter esgota só esse modelo; outro modelo do OpenRouter segue (M1.5c)', async () => {
+  const busy = scripted('openrouter', [new ProviderLimitError('openrouter', Date.now() + 3_600_000, 'Provider returned error')]);
+  const { log, budget, agent } = setup({ routes: [{ provider: busy, model: 'nvidia/a:free' }] });
+  await agent.run('s70', 'tarefa');
+  const ex = log.events('budget').filter((e) => e.kind === 'budget.exhausted').at(-1)?.payload as { provider: string; model: string };
+  assert.deepEqual([ex.provider, ex.model], ['openrouter', 'nvidia/a:free']);
+  const other = scripted('openrouter', [say('outro modelo respondeu')]);
+  const r = await setupReuse(budget, log, [{ provider: other, model: 'google/b:free' }]).run('s71', 'outra');
+  assert.equal(r.text, 'outro modelo respondeu');
 });
 
 // Achado no ensaio do M1.0 (2026-10-18): resposta sem texto, sem ferramenta e com 0 tokens de saída

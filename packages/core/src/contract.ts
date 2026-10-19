@@ -4,6 +4,7 @@
 
 import { z } from 'zod';
 import type { CONSOLE_METHODS } from './console.ts';
+import { EFFORTS } from './providers/types.ts';
 
 type ConsoleMethod = (typeof CONSOLE_METHODS)[number];
 
@@ -11,7 +12,7 @@ const id = z.string().min(1).max(200);
 const path = z.string().min(1).max(4096);
 const text = z.string().max(100_000);
 const empty = z.strictObject({});
-const effort = z.enum(['low', 'medium', 'high', 'default', '']).nullable().optional();
+const effort = z.enum([...EFFORTS, 'default', '']).nullable().optional();
 const route = z.strictObject({ provider: z.enum(['opencode-go', 'ollama-cloud', 'chatgpt', 'openrouter']), model: z.string().min(1).max(200) }).nullable().optional();
 const keyProvider = z.enum(['opencode-go', 'ollama-cloud', 'openrouter']);
 

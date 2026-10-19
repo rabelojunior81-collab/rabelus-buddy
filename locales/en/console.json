@@ -22,7 +22,12 @@
       "default": "Provider default",
       "low": "Low",
       "medium": "Medium",
-      "high": "High"
+      "high": "High",
+      "none": "None",
+      "minimal": "Minimal",
+      "xhigh": "Extra high",
+      "max": "Maximum",
+      "ultra": "Ultra"
     },
     "route": {
       "auto": "Automatic, in order (Go → Ollama → ChatGPT → OpenRouter)",
@@ -123,6 +128,27 @@
       "harnessCancelled": "the agent ended the task",
       "harnessFailed": "the agent failed; see the reason in the details",
       "needsLogin": "the agent asks you to sign in before going on"
+    },
+    "model": {
+      "pick": "Model: which brain (Ctrl+K)",
+      "title": "Choose a model",
+      "providers": "Provider or router",
+      "search": "Search models…",
+      "filter": "Filter by capability",
+      "auto": "Automatic",
+      "autoDesc": "in the order of your providers, switching when one runs out",
+      "loading": "Loading the model catalog…",
+      "empty": "No model with these filters. Remove a filter or switch provider.",
+      "noCred": "{{name}} has no credential yet: sign in or save the key in Settings.",
+      "foot": "Capabilities per the provider and models.dev · catalog from {{date}}",
+      "leftOut": "Not listed: {{list}}. Sign in or check the key in Settings.",
+      "f": {
+        "vision": "Vision",
+        "reasoning": "Reasoning",
+        "tools": "Tools",
+        "free": "Free",
+        "big": "1M+ context"
+      }
     },
     "harness": {
       "pick": "Harness: who runs it",

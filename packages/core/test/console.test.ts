@@ -83,7 +83,8 @@ test('console: toda chave de catálogo usada pela página existe em pt-BR e en (
     const cat = JSON.parse(r.body) as Record<string, unknown>;
     const has = (k: string) => k.split('.').reduce<unknown>((o, p) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[p] : undefined), cat) !== undefined;
     // Chave montada (termina em "."): todos os valores possíveis precisam existir; outra montagem reprova.
-    const DYN: Record<string, string[]> = { 'console.effort.': ['default', 'low', 'medium', 'high'], 'status.state.': ['running', 'done', 'interrupted', 'stopped'] };
+    // Esforço: os oito níveis que os provedores declaram (M1.5c) e o padrão.
+    const DYN: Record<string, string[]> = { 'console.effort.': ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'], 'status.state.': ['running', 'done', 'interrupted', 'stopped'] };
     const expanded = [...used].flatMap((k) => (k.endsWith('.') ? (DYN[k] ?? [`${k}<montagem desconhecida>`]).map((v) => k + v) : [k]));
     assert.deepEqual(expanded.filter((k) => !has(k)).sort(), [], `${lang}: chaves ausentes`);
   }

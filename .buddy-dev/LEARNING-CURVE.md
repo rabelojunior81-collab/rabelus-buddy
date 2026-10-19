@@ -184,3 +184,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0026-#0026
 
 1. **Em 2026-10-15, uma auditoria a pedido do Pai achou 12 superfícies afirmando um estado velho, e daí nasceu o `bd surfaces`.** Em 2026-10-19, a console nova afirmava "OpenCode trabalha com cautela: modo build". A frase era bonita e estava errada: a cautela do OpenCode vinha de outra coisa. → A tela também é uma superfície que afirma fatos. Cada frase que o produto diz ao Pai precisa ser verdadeira no caso real, e o ensaio com o harness de verdade é onde isso aparece.
+
+## lote #0027-#0027
+
+1. **Em 2026-10-15, nasceu o `bd surfaces`, que confere se cada superfície afirma o estado verdadeiro.** Em 2026-10-19, o próprio ChatGPT declarou no `/models` um nível de esforço (`ultra`) que a API de respostas dele recusa. → Declaração de um sistema de fora é uma superfície que pode estar errada, como as nossas. O que o produto oferece ao Pai vem do que foi medido funcionando, com a data da medida, e o recuo cobre o que mudar depois.

@@ -6,14 +6,17 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenAI } from '@google/genai';
 import type { Usage } from '../budget.ts';
-import { ProviderLimitError, ProviderRejectedError, type CallContext, type ChatMessage, type ModelRequest, type ModelResponse, type Provider, type ToolCall } from './types.ts';
+import { ProviderLimitError, ProviderRejectedError, type CallContext, type ChatMessage, type Effort, type ModelRequest, type ModelResponse, type Provider, type ToolCall } from './types.ts';
 
 export type HeadersFor = (ctx: CallContext) => Record<string, string>;
 export interface AdapterOptions { id: string; apiKey: string; baseURL: string; headers: HeadersFor }
 
 const DEFAULT_LIMIT_WAIT_MS = 5 * 60_000;
 // Orçamento de pensamento por nível, para as rotas que medem esforço em tokens (Messages, Google).
-export const THINKING_BUDGET: Record<'low' | 'medium' | 'high', number> = { low: 1024, medium: 4096, high: 16_000 };
+// Orçamento de pensamento (Messages, Gemini) por nível: none desliga; minimal usa o menor aceito (1024); acima de high
+// cresce (M1.5c). Os valores acima de high são HIPÓTESE nossa: se o provedor recusar, a chamada se repete sem esforço.
+export const THINKING_BUDGET: Record<Effort, number> = { none: 0, minimal: 1024, low: 1024, medium: 4096, high: 16_000, xhigh: 32_000, max: 48_000, ultra: 64_000 };
+const MESSAGES_MAX_BUDGET = 20_000;
 
 // Resposta HTTP é conclusiva (o provedor recebeu e respondeu): 429 esgota a janela; 401, 403 e os
 // demais 4xx são recusa (não se repete igual); 5xx deixa o provedor indisponível por um tempo.
@@ -32,7 +35,8 @@ function mapError(id: string, e: unknown): never {
   const message = scrub(err.error?.message ?? String(err.message ?? '').replace(/^\d{3}\s*/, ''));
   if (err.status === 429) throw new ProviderLimitError(id, wait(DEFAULT_LIMIT_WAIT_MS), message || 'limite do provedor');
   // 402: conta sem saldo (observado no Go em 2026-10-17). Não se resolve na próxima mensagem: sai da frente por 1 h.
-  if (err.status === 402) throw new ProviderLimitError(id, wait(60 * 60_000), message || 'conta sem saldo');
+  // É da conta, não do modelo: todos os modelos do provedor (escopo provider, M1.5c).
+  if (err.status === 402) throw new ProviderLimitError(id, wait(60 * 60_000), message || 'conta sem saldo', 'provider');
   if (err.status >= 500) throw new ProviderLimitError(id, wait(TEMPORARY_WAIT_MS), message || `provedor indisponível (${err.status})`);
   throw new ProviderRejectedError(id, `http_${err.status}`, message || `recusado (${err.status})`);
 }
@@ -167,8 +171,9 @@ export function anthropicAdapter(o: AdapterOptions & { maxTokens?: number }): Pr
         return { role: m.role as 'user' | 'assistant', content: m.content };
       });
       try {
-        // Messages: o esforço vira orçamento de pensamento, e max_tokens precisa ficar acima dele.
-        const budget = req.effort ? THINKING_BUDGET[req.effort] : 0;
+        // Messages: o esforço vira orçamento de pensamento, e max_tokens precisa ficar acima dele. Sem streaming, o SDK
+        // recusa max_tokens que estime mais de 10 minutos (acima de ~21.333): o orçamento fica em até 20.000 (M1.5c).
+        const budget = req.effort ? Math.min(THINKING_BUDGET[req.effort], MESSAGES_MAX_BUDGET) : 0;
         const r = await client.messages.create({
           model: req.model,
           max_tokens: Math.max(req.maxOutputTokens ?? o.maxTokens ?? 4096, budget + 1024),

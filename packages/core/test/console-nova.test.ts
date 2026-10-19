@@ -77,7 +77,8 @@ test('contraste AA medido: texto, secundário, discreto, destaque e estados sobr
 });
 
 test('estrutura do protótipo v4: barra lateral com marca, conversas e harnesses; início; caixa ancorada; Ajustes; tudo do M0 com os mesmos ids (critério 11)', () => {
-  for (const id of ['side', 'brandMark', 'newChat', 'threads', 'agents', 'menuBtn', 'home', 'feed', 'task', 'effort', 'route', 'run', 'stop', 'settingsBtn', 'settings',
+  // 'route' (select de provedor) foi substituído pelo seletor de modelo 'mBtn' na M1.5c (decisão registrada).
+  for (const id of ['side', 'brandMark', 'newChat', 'threads', 'agents', 'menuBtn', 'home', 'feed', 'task', 'effort', 'mBtn', 'run', 'stop', 'settingsBtn', 'settings',
     'approvals', 'providers', 'login', 'logout', 'chatgptState', 'keyProvider', 'keyValue', 'keySave', 'keyRemove', 'budget', 'budgetToggle', 'runs',
     'lang', 'theme', 'workspace', 'detailsToggle', 'conn']) {
     assert.match(PAGE, new RegExp(`id="${id}"`), `id ${id}`);

@@ -641,6 +641,21 @@
       },
       "origem": "SPEC 0002, critérios 5, 6, 7 e 11",
       "evidencia": "Ensaio no navegador real com o OpenCode em 2026-10-19: docs/registros/2026-10-19T111729-0300-ensaio-do-harness-na-caixa-m1-5b/README.md"
+    },
+    {
+      "id": "seletor-de-modelo-e-esforcos",
+      "descricao": "Seletor de modelo do catálogo real (grupos por lab, busca, filtros, quem ficou de fora, escolha como rota, sem texto null, Ctrl+K) e os oito níveis de esforço no núcleo (contrato, dono, cada rota no formato dela, teto do Messages, recusa invalid_value/unsupported_value repete sem esforço, catálogo do ChatGPT só com o aceito, versão do catálogo, limite do OpenRouter por modelo)",
+      "quem": "maquina",
+      "onde": [
+        "M1.5c",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-modelo.test.ts"
+      },
+      "origem": "SPEC 0002, critérios 11, 13 e 29; catálogo e ChatGPT medidos ao vivo em 2026-10-19",
+      "evidencia": "docs/registros/2026-10-19T115201-0300-ensaio-do-seletor-de-modelo-m1-5c/README.md"
     }
   ]
 }
