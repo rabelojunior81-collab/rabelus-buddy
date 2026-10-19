@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T012804-0300-claude-code-vs-code-571284-0010",
+  "ts": "2026-10-19T01:28:04-03:00",
+  "utc": "2026-10-19T04:28:04.322Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 10,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2d-permissoes",
+  "type": "erro",
+  "summary": "Registro 0009 dizia verde, mas na suíte inteira o teste 'decisão demorada do Pai' falhou: '0.4 s sem resposta do harness'. Com a máquina carregada, iniciar o harness falso passa de 0,4 s, e o relógio do teste disparava antes do pedido. Não é falha do código. A folga do teste vai a relógio de 2 s e espera de 5 s (a espera continua maior que o relógio, a asserção não muda). Lição: teste de tempo com margem menor que o custo de iniciar processo é instável sob carga.",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T011657-0300-claude-code-vs-code-571284-0003",
+  "ts": "2026-10-19T01:16:57-03:00",
+  "utc": "2026-10-19T04:16:57.696Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 3,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2d-permissoes",
+  "type": "feat",
+  "summary": "Testes do critério 6 antes do código (permissoes-acp.test.ts: aprovação com nome, ação e alvo; aprovar devolve allow_once; negar devolve reject_once sem concessão; concessão de sessão dispensa a pergunta; comando pede aprovação com o comando à vista; postura read-only e permission ask; escrita sem pedido avisada). Teste antigo de permissão da conversa-acp reescrito para o comportamento novo (negado pela política sem quem aprove). Harness falso ganhou configOptions/set_config_option, locations, kind execute e escrita sem pedido. 7 vermelhos, 4 verdes.",
+  "refs": [],
+  "data": {}
+}

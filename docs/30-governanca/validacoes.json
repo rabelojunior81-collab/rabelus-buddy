@@ -581,6 +581,21 @@
       },
       "origem": "SPEC 0002, critério 5",
       "evidencia": "Checagem real em 2026-10-18 com o OpenCode 2.0.31 e o Codex (codex-acp 2.2.2): docs/registros/2026-10-18T220140-0300-checagem-real-da-conversa-por-acp/README.md"
+    },
+    {
+      "id": "permissoes-harness",
+      "descricao": "Permissões do harness pelo núcleo: postura ao abrir a sessão (modo read-only quando declarado; permission ask no OpenCode), cada pedido decidido pela política, aprovação com nome, ação e alvo (comando inteiro), negar para por permissionDenied, concessão de sessão vale para os pedidos iguais, escrita sem pedido avisada, decisão demorada não derruba o turno",
+      "quem": "maquina",
+      "onde": [
+        "M1.2d",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/permissoes-acp.test.ts"
+      },
+      "origem": "SPEC 0002, critério 6; achado da checagem real da M1.2c (harnesses escreviam sem pedir)",
+      "evidencia": "Checagem real em 2026-10-19 com o OpenCode e o Codex pelo dono do núcleo: docs/registros/2026-10-19T012430-0300-checagem-real-das-permissoes-pelo-nucleo/README.md"
     }
   ]
 }

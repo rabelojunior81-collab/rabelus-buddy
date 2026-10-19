@@ -77,15 +77,17 @@ test('parar a conversa por ACP envia session/cancel e a execução para por quem
   await reg.close();
 });
 
-test('permissão pedida pelo harness: negada e registrada até a M1.2d; a conversa termina (critério 5)', async () => {
+// Até a M1.2c, todo pedido era respondido "cancelled". Desde a M1.2d (critério 6), o pedido passa pela política:
+// sem ninguém para aprovar (não interativo), escrita é negada sem perguntar, e o harness recebe a opção de recusa.
+test('permissão pedida pelo harness sem quem aprove: negada pela política e registrada; a conversa termina (critérios 5 e 6)', async () => {
   const { ipc, reg } = await owner({ FAKE_ACP_MODE: 'ok', FAKE_ACP_PROMPT: 'permission' });
   const workspace = mkdtempSync(join(tmpdir(), 'rbuddy-ws-'));
   const { run } = await ipc('agent.run', { session: 's3', task: 'edite o README', workspace, harness: 'opencode' });
   await until(async () => ((await ipc('run.get', { id: run })).state === 'done' ? true : undefined));
   const ev = (await ipc('session.events', { session: 's3' })) as { kind: string; payload: any }[];
   const perm = ev.find((e) => e.kind === 'harness.permission')!.payload;
-  assert.deepEqual([perm.title, perm.outcome], ['Editar README.md', 'cancelled']);
-  assert.match(ev.filter((e) => e.kind === 'agent.message').at(-1)!.payload.message.content, /Permissão: cancelled/);
+  assert.deepEqual([perm.title, perm.decision, perm.outcome], ['Editar README.md', 'deny', 'no']);
+  assert.match(ev.filter((e) => e.kind === 'agent.message').at(-1)!.payload.message.content, /Permissão: no/);
   await reg.close();
 });
 

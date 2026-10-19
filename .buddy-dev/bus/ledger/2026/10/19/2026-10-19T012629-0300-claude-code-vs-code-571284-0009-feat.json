@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T012629-0300-claude-code-vs-code-571284-0009",
+  "ts": "2026-10-19T01:26:29-03:00",
+  "utc": "2026-10-19T04:26:29.684Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 9,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2d-permissoes",
+  "type": "feat",
+  "summary": "Lacuna achada na revisão do critério 6, com teste antes (turno-acp.test.ts, vermelho: '0 s sem resposta do harness'): o relógio de inatividade de 10 min corria enquanto o Pai decidia uma permissão, e uma decisão demorada derrubaria o turno. Agora o relógio para durante o pedido e volta depois da resposta; harness mudo continua derrubado (teste). Mensagem do tempo-limite com uma casa decimal.",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T011415-0300-claude-code-vs-code-571284-0002",
+  "ts": "2026-10-19T01:14:15-03:00",
+  "utc": "2026-10-19T04:14:15.412Z",
+  "session": "claude-code-vs-code-571284",
+  "seq": 2,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2d-permissoes",
+  "type": "decisao",
+  "summary": "Desenho M1.2d (critério 6). (1) Postura ao abrir a sessão: genérico, harness que declara configOption de categoria/id mode com valor read-only recebe session/set_config_option (Codex); OpenCode recebe OPENCODE_CONFIG_CONTENT com permission ask para edit, bash, webfetch, websearch, task e external_directory, só no processo filho (as leituras ficam com ele, e o andamento as mostra). (2) Cada session/request_permission vira policy.decide: kind read/search → read_file; edit/delete/move → write_file com alvo no locations[0].path (fora do workspace ou protegido = negado); execute e demais → run_command (ask, só uma vez, como o ADR 0009). allow → opção allow_once; deny → reject_once; ask → aprovação na console 'Harness <nome>: <ferramenta> <alvo>' e, aprovada, concessão once e allow_once. Concessão de sessão (policy.grant) vale para os pedidos seguintes iguais. Não interativo → negado sem perguntar. Cada pedido é efeito com identidade harness.permission (chave run:perm:toolCallId) e evento harness.permission com ferramenta, alvo, decisão e opção. (3) Escrita ou execução concluída sem pedido vira evento harness.unasked (aviso). O teste antigo 'negada e registrada até a M1.2d' passa a esperar o comportamento novo (negado pela política, opção reject), evolução prevista no próprio nome, sem perder asserção.",
+  "refs": [],
+  "data": {}
+}
