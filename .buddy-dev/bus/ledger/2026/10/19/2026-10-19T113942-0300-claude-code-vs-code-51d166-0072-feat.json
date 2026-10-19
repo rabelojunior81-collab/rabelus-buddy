@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T113942-0300-claude-code-vs-code-51d166-0072",
+  "ts": "2026-10-19T11:39:42-03:00",
+  "utc": "2026-10-19T14:39:42.306Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 72,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5c-seletor-de-modelo",
+  "type": "feat",
+  "summary": "Testes do seletor de modelo antes do código (console-modelo.test.ts: modelGroups por lab com busca e filtros, effortsFor conforme o modelo e na ordem dos níveis, ctxText, estrutura com Ctrl+K e a escolha como rota). Lista estrutural da M1.5a: route trocado por mBtn. 5 vermelhos.",
+  "refs": [],
+  "data": {}
+}
