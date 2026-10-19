@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-19T11:52:48-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-51d166
+**Atualizado em:** 2026-10-19T12:05:47-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-51d166
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,8 +16,8 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 
 | Item | Valor |
 |---|---|
-| `main` | `e407be0` (Merge #69: feat: harness na caixa da console nova), CI verde |
-| PRs mergeados | #1–#69, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `ca9be12` (Merge #70: feat: seletor de modelo e os oito níveis de esforço), CI verde |
+| PRs mergeados | #1–#70, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
