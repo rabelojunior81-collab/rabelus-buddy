@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T11:17:57-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T11:52:48-03:00
 
 ## Objetivo
 
@@ -36,7 +36,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
     - aprovação também dentro da conversa;
     - paleta oliva OKLCH nos dois temas, contraste AA medido por teste, 375 px sem rolagem horizontal, nada de fora (a marca é servida pela própria console).
   - [x] **M1.5b Harness na caixa** (**feita em 2026-10-19**, ensaiada com o OpenCode real: [registro](../../registros/2026-10-19T111729-0300-ensaio-do-harness-na-caixa-m1-5b/README.md)): pílula de harness com ícone e estado; conversa com o harness escolhido; cartão de permissão com o ícone de quem pede; "Entrar" para o harness que pede login (`harness.login`); avisos de escrita sem pedido.
-  - [ ] **M1.5c Seletor de modelo:** o catálogo real (provedor → lab → modelo, capacidades, busca e filtro) no lugar do seletor de provedor; esforço conforme o modelo; níveis `xhigh`, `max` e `ultra` no núcleo, com teste antes.
+  - [x] **M1.5c Seletor de modelo** (**feita em 2026-10-19**, com checagem real dos níveis no ChatGPT e ensaio no navegador: [registro](../../registros/2026-10-19T115201-0300-ensaio-do-seletor-de-modelo-m1-5c/README.md)): o catálogo real (provedor → lab → modelo, capacidades, busca e filtro) no lugar do seletor de provedor; esforço conforme o modelo; níveis `xhigh`, `max` e `ultra` no núcleo, com teste antes.
   - [ ] **M1.5d Ensaio completo** no navegador real, a 375 e a 1440 px, nos dois temas, com capturas; depois, a validação do Pai pela console.
 - [ ] **M1.6 Ensaio real e demonstração com o Pai** (critério 12); métricas; retrospectiva
 - [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 14; ADR 0016)

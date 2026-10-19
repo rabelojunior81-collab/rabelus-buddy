@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0027 · 2026-10-15T042516-0300 · claude-code-vs-code-438d04 · ferramenta
-
-bd surfaces: índices completos, ADR aceita citada como proposta, carimbo Atualizado em vs. último commit, main do STATUS no máximo 1 merge atrás; no bd post e na CI. Mapa evento → superfícies em docs/30-governanca/SUPERFICIES.md. 39 testes.
-
 ### #0028 · 2026-10-15T043158-0300 · claude-code-vs-code-438d04 · doc
 
 SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decisões técnicas com fonte (node:sqlite + adaptador, JSON-RPC sobre node:net, GPT-6 Luna via openai, parseArgs/readline, i18next), 4 dúvidas bloqueantes ao Pai. Spike de banco e IPC registrado; fichas banco-e-ipc e bibliotecas-do-nucleo.
@@ -207,3 +203,7 @@ M1.5a: console nova (casca do protótipo v4 com tudo do M0, tokens oliva OKLCH, 
 ### #0074 · 2026-10-19T111833-0300 · claude-code-vs-code-51d166 · feat
 
 M1.5b: harness na caixa da console nova (pílula com sonda, conversa com harness, eventos à vista e nos detalhes, Entrar, ícone de quem pede na aprovação); ensaiada com o OpenCode real; 3 correções do ensaio com teste antes
+
+### #0075 · 2026-10-19T115322-0300 · claude-code-vs-code-51d166 · feat
+
+M1.5c: seletor de modelo do catálogo real e os oito níveis de esforço no núcleo; ChatGPT medido ao vivo (até max; ultra recusado); recusa invalid_value/unsupported_value; catálogo versionado; limite do OpenRouter por modelo; 4 correções do ensaio com teste antes
