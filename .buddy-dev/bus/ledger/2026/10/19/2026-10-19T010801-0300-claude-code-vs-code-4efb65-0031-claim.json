@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-19T010801-0300-claude-code-vs-code-4efb65-0031",
+  "ts": "2026-10-19T01:08:01-03:00",
+  "utc": "2026-10-19T04:08:01.648Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 31,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-4efb65",
+  "type": "claim",
+  "summary": ".buddy-dev/diario/2026-10-18.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-19T04:38:01.648Z",
+    "tookOverFrom": null
+  }
+}

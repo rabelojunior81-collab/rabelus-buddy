@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T010639-0300-claude-code-vs-code-4efb65-0026",
+  "ts": "2026-10-19T01:06:39-03:00",
+  "utc": "2026-10-19T04:06:39.610Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 26,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "decisao",
+  "summary": "Retomada às 01:06 (pausa desde 22:07, sem trabalho no intervalo). Estado conferido: CI do #62 verde (ubuntu, windows, nomes e exclusões, gitleaks); a ficha acp-permissoes-dos-harnesses.md, o índice do conhecimento e os registros 0022-0025 não commitados de propósito, para a branch da M1.2d, sem reiniciar a CI do #62. Plano: stash, bd post, bd merge 62, branch feat/m1-2d-permissoes a partir da main, stash pop, commit.",
+  "refs": [],
+  "data": {}
+}

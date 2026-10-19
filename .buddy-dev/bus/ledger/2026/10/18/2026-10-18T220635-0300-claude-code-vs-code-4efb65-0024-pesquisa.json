@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-18T220635-0300-claude-code-vs-code-4efb65-0024",
+  "ts": "2026-10-18T22:06:35-03:00",
+  "utc": "2026-10-19T01:06:35.387Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 24,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-2c-conversa",
+  "type": "pesquisa",
+  "summary": "M1.2d CONFIRMADO ao vivo: (1) Codex com session/set_config_option mode=read-only pede session/request_permission ('Run command', kind execute; opções allow_once, accept_execpolicy_amendment/allow_always, cancel/reject_once). Negado: nada escrito, stopReason cancelled (9,3 s). Permitido: escreveu ok, end_turn (10,2 s). (2) OpenCode 2.0.31 sem modos, mas com OPENCODE_CONFIG_CONTENT={permission:{edit:ask,bash:ask,webfetch:ask}} só no ambiente do processo filho pede permissão (título = caminho do arquivo, kind edit; opções once/always/reject). Negado: nada escrito, cancelled (4,1 s). Permitido: escreveu, end_turn (7,3 s). Negar com reject_once encerra o turno nos dois. A configuração do Pai fora do repositório não foi tocada.",
+  "refs": [],
+  "data": {}
+}

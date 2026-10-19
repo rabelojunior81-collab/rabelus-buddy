@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T011032-0300-claude-code-vs-code-4efb65-0033",
+  "ts": "2026-10-19T01:10:32-03:00",
+  "utc": "2026-10-19T04:10:32.560Z",
+  "session": "claude-code-vs-code-4efb65",
+  "seq": 33,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-4efb65",
+  "type": "doc",
+  "summary": "Post 'O Agente Que Não Pedia Licença' e daily de 18/10 publicados no Blog (a77f2d0; gate VERDE 18/18; QA 375 e 1440 sem transbordo nem imagem quebrada, índice e link da daily conferidos; o único erro de console é o favicon ausente do Blog, pendência antiga; servidor srv-abccc7 por bd serve, encerrado; navegador fechado).",
+  "refs": [],
+  "data": {}
+}
