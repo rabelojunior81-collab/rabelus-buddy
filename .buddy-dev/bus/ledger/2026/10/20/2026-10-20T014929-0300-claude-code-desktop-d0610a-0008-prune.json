@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014929-0300-claude-code-desktop-d0610a-0008",
+  "ts": "2026-10-20T01:49:29-03:00",
+  "utc": "2026-10-20T04:49:29.474Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 8,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "docs/posse-claude-code-desktop"
+    ],
+    "archived": [],
+    "kept": []
+  }
+}
