@@ -34,7 +34,7 @@ test('passo de CI declarado e ausente no workflow: reprova', () => {
 });
 
 test('validação do Pai pendente aparece na lista de espera, não como problema', () => {
-  const r = checkValidations(repo(files([v(), v({ id: 'demo-m0', quem: 'pai', tipo: 'decisao', mecanismo: {}, estado: 'pendente', onde: ['M0.8'] })])));
+  const r = checkValidations(repo(files([v(), v({ id: 'demo-m0', quem: 'pai', tipo: 'decisao', mecanismo: {}, estado: 'pendente', onde: ['M0.8'], explicacao: EXPLICA })])));
   assert.deepEqual(r.problems, []);
   assert.deepEqual(r.aguardaPai.map((x) => x.id), ['demo-m0']);
 });
@@ -52,7 +52,9 @@ test('validação de máquina sem mecanismo: reprova (regra sem mecanismo é des
 });
 
 // Regra do Pai (2026-10-17): nunca pedir a ele teste que eu não ensaiei, e nunca por CLI.
-const pai = (over) => ({ id: 'p', descricao: 'd', quem: 'pai', onde: ['M0.8'], origem: 'Pai, 2026-10-17', estado: 'pendente', ...over });
+// Desde a regra do Pai de 2026-10-20, pendência do Pai traz explicação em linguagem comum: o dado do teste acompanha o contrato.
+const EXPLICA = 'Explicação de teste em linguagem comum: o que o Pai precisa fazer, por que importa, quais são as opções e o que acontece em cada uma delas.';
+const pai = (over) => ({ id: 'p', descricao: 'd', quem: 'pai', onde: ['M0.8'], origem: 'Pai, 2026-10-17', estado: 'pendente', explicacao: EXPLICA, ...over });
 
 test('validação do Pai sem tipo (decisão ou ação): reprova', () => {
   assert.match(checkValidations(repo(files([pai({})]))).problems.join(), /tipo/);
@@ -97,7 +99,7 @@ test('"clicar" não é CLI: o detector olha palavras inteiras', () => {
 const EXPL_BOA = 'Escolher a biblioteca que desenha a tela de terminal do Buddy, entre as duas opções que estão na mesa. Você olha as duas numa conversa curta comigo, e a escolha vale para os próximos passos da interface.';
 
 test('explicação do Pai: entrada pendente sem o campo reprova e não entra em "aguarda o Pai"', () => {
-  const r = checkValidations(repo(files([pai({ tipo: 'decisao' })])));
+  const r = checkValidations(repo(files([pai({ tipo: 'decisao', explicacao: undefined })])));
   assert.match(r.problems.join(), /p: .*explicação/);
   assert.deepEqual(r.aguardaPai, []);
 });
