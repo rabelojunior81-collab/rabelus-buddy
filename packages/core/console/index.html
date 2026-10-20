@@ -779,7 +779,15 @@ function feedItems(evs) {
       case 'harness.delegated': speak(el('div', { class: 'ev' }, p.phase === 'start' ? t('console.harness.delegatedStart', { name: harnessName(p.id), task: String(p.task || '') }) : p.stopReason === 'end_turn' ? t('console.harness.delegatedDone', { name: harnessName(p.id) }) : t('console.harness.delegatedEnd', { name: harnessName(p.id), stop: String(p.stopReason || '') }))); break;
       case 'harness.reasoning': detail(el('details', { class: 'res reason' }, el('summary', {}, t('console.harness.reasoning', { name: harnessName(p.id) })), el('pre', {}, String(p.text || '')))); break;
       case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: toolStatusKey(p.status) ? t(toolStatusKey(p.status)) : p.status }))); break;
-      case 'harness.permission': detail(el('div', { class: 'ev' }, t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target }))); break;
+      case 'harness.permission': {
+        // Quem negou e por quê (A3): a política (com o motivo) ou o próprio Pai.
+        const denied = p.decision === 'deny';
+        const byPolicy = denied && p.reason && p.reason !== 'aprovação humana';
+        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: p.reason, tool: p.tool, target: p.target })
+          : denied ? t('console.harness.deniedByYou', { tool: p.tool, target: p.target })
+          : t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target });
+        detail(el('div', { class: 'ev' }, text)); break;
+      }
       case 'harness.posture': if (postureKey(p)) detail(el('div', { class: 'ev' }, t(postureKey(p), { name: harnessName(p.id), mode: p.mode }))); break;
       case 'harness.unasked': speak(el('div', { class: 'ev err' }, t('console.harness.unasked', { name: harnessName(p.id), title: p.title }))); break;
       case 'harness.error': speak(el('div', { class: 'ev err' }, t('console.harness.error', { name: harnessName(p.id), reason: p.reason }))); break;

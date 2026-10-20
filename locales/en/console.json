@@ -189,6 +189,8 @@
       },
       "tool": "{{title}} · {{status}}",
       "permission": "Permission {{decision}}: {{tool}} {{target}}",
+      "deniedByPolicy": "Denied by policy ({{reason}}): {{tool}} {{target}}",
+      "deniedByYou": "Denied by you: {{tool}} {{target}}",
       "decision": {
         "allow": "granted by policy",
         "approve": "approved by you",
