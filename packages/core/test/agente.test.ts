@@ -435,6 +435,18 @@ test('limite de um modelo do OpenRouter esgota só esse modelo; outro modelo do 
 // terminava como "concluída", sem aviso. Agora é falha da rota: registra, troca de provedor ou para com motivo.
 const empty: ModelResponse = { text: '', toolCalls: [], usage: { input_tokens: 0, cached_tokens: 0, cache_write_tokens: 0, output_tokens: 0 }, finish: 'other' };
 
+// Checagem real de 2026-10-20 (M1.3): o Nemotron VL gastou o limite inteiro em raciocínio e devolveu texto vazio, sem
+// ferramenta, cortado pelo limite (finish length). Isso também é resposta vazia: troca de rota, não "concluída" muda.
+test('resposta sem texto e sem ferramenta cortada pelo limite também é vazia e troca de rota (M1.3)', async () => {
+  const cut: ModelResponse = { text: '', toolCalls: [], usage: { input_tokens: 50, cached_tokens: 0, cache_write_tokens: 0, output_tokens: 300 }, finish: 'length', reasoning: 'pensando…' };
+  const or = scripted('openrouter', [cut]);
+  const chatgpt = scripted('chatgpt', [say('resposta de verdade')]);
+  const { log, agent } = setup({ routes: [{ provider: or, model: 'nvidia/nemotron-vl:free' }, { provider: chatgpt, model: 'gpt-6.1-sol' }] });
+  const r = await agent.run('s80', 'tarefa');
+  assert.equal(r.text, 'resposta de verdade');
+  assert.equal((log.events('s80').find((e) => e.kind === 'provider.error')?.payload as { code?: string }).code, 'emptyResponse');
+});
+
 test('resposta vazia do provedor (0 tokens, nada) troca para o próximo da ordem e fica no log (M1.1)', async () => {
   const ollama = scripted('ollama-cloud', [empty]);
   const chatgpt = scripted('chatgpt', [say('resposta de verdade')]);

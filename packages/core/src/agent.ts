@@ -279,9 +279,11 @@ export class Agent {
         domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
         budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
         // Resposta vazia (nenhum texto, nenhuma ferramenta, 0 tokens de saída): falha da rota, não "concluída"
-        // muda (achado no ensaio do M1.0). Fica no log, e a ordem segue para o próximo provedor.
-        if (!response.text.trim() && !response.toolCalls.length && !(response.usage?.output_tokens ?? 0)) {
-          log.append(session, 'provider.error', { route: name, code: 'emptyResponse', message: 'resposta vazia: nenhum texto, nenhuma ferramenta, 0 tokens de saída' });
+        // muda (achado no ensaio do M1.0). Fica no log, e a ordem segue para o próximo provedor. Também vazia: sem
+        // texto e sem ferramenta, cortada pelo limite depois de gastá-lo em raciocínio (Nemotron VL real, M1.3).
+        const cutOff = response.finish === 'length';
+        if (!response.text.trim() && !response.toolCalls.length && (!(response.usage?.output_tokens ?? 0) || cutOff)) {
+          log.append(session, 'provider.error', { route: name, code: 'emptyResponse', message: cutOff ? 'resposta vazia: o limite de saída acabou antes do texto (gasto em raciocínio)' : 'resposta vazia: nenhum texto, nenhuma ferramenta, 0 tokens de saída' });
           rejected.add(r.provider.id);
           emptyResponse = true;
           skip('emptyResponse');
