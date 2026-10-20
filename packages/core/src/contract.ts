@@ -23,7 +23,9 @@ export const CONSOLE_SCHEMAS = {
   'session.list': empty,
   'run.get': z.strictObject({ id }),
   'run.list': empty,
-  'agent.run': z.strictObject({ session: id, task: text.min(1), workspace: path, interactive: z.boolean().optional(), effort, route, continueFrom: id.optional(), harness: id.nullable().optional() }),
+  'agent.run': z.strictObject({ session: id, task: text.min(1), workspace: path, interactive: z.boolean().optional(), effort, route, continueFrom: id.optional(), harness: id.nullable().optional(), attachments: z.array(z.string().regex(/^[0-9a-f]{64}$/)).max(10).optional() }),
+  // Anexo (M1.3): o conteúdo em base64; teto de 7,2 milhões de caracteres (imagem de até 5 MB).
+  'attachment.put': z.strictObject({ session: id, workspace: path, name: z.string().min(1).max(200), mime: z.string().min(1).max(100), data: z.string().min(1).max(7_200_000) }),
   'agent.resume': z.strictObject({ run: id, workspace: path, interactive: z.boolean().optional(), effort, route }),
   'run.live': z.strictObject({ session: id }),
   'agent.steer': z.strictObject({ session: id, text: text.optional(), queue: id.optional() }),

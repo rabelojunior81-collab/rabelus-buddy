@@ -5,9 +5,10 @@
 
 import type { ChildProcess } from 'node:child_process';
 import { Readable, Writable } from 'node:stream';
-import { client, ndJsonStream, PROTOCOL_VERSION } from '@agentclientprotocol/sdk';
+import { client, ndJsonStream, PROTOCOL_VERSION, type ContentBlock } from '@agentclientprotocol/sdk';
 import { scrub } from '../providers/adapters.ts';
 import { killTree, loginMethods, spawnHarness, type LaunchSpec } from './client.ts';
+import type { AttachmentFile } from '../attachments.ts';
 
 export type TurnUpdate =
   | { kind: 'reasoning' | 'text'; delta: string }
@@ -19,6 +20,8 @@ export type PermissionAnswer = { outcome: 'cancelled' } | { outcome: 'selected';
 export interface TurnOptions {
   cwd: string;
   task: string;
+  // Anexos (M1.3): imagem vai como bloco image (só se o harness declarar promptCapabilities.image); texto, como texto.
+  files?: AttachmentFile[];
   signal?: AbortSignal;
   onUpdate?: (u: TurnUpdate) => void;
   onPermission?: (ask: PermissionAsk) => PermissionAnswer | Promise<PermissionAnswer>;
@@ -34,6 +37,10 @@ export interface TurnOptions {
 export interface TurnResult { stopReason: string; text: string; agent?: { name: string; version?: string } }
 
 export class TurnError extends Error {}
+// O harness não declara imagem (promptCapabilities.image) e a mensagem traz imagem (M1.3, critério 9).
+export class NoImageSupport extends TurnError {
+  constructor() { super('o harness não declara suporte a imagem: a imagem não foi enviada'); }
+}
 // O harness pede login (auth_required no session/new): leva os métodos que o Pai pode usar (critério 7).
 export class NeedsLogin extends TurnError {
   readonly methods: { id: string; name: string }[];
@@ -94,6 +101,8 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
   try {
     touch();
     const init = await race(conn.agent.request('initialize', { protocolVersion: PROTOCOL_VERSION, clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false } }));
+    // Imagem só vai a quem declara suporte (SPEC 0002, critério 9): sem ele, o turno para antes de abrir a sessão.
+    if (o.files?.some((f) => f.kind === 'image') && !init.agentCapabilities?.promptCapabilities?.image) throw new NoImageSupport();
     const agent = init.agentInfo ? { name: init.agentInfo.name, ...(init.agentInfo.version ? { version: init.agentInfo.version } : {}) } : undefined;
     touch();
     let created;
@@ -113,7 +122,10 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
     if (o.signal?.aborted) return { stopReason: 'cancelled', text, ...(agent ? { agent } : {}) };
     o.signal?.addEventListener('abort', cancel, { once: true });
     touch();
-    const r = await race(conn.agent.request('session/prompt', { sessionId, prompt: [{ type: 'text', text: o.task }] }));
+    const prompt: ContentBlock[] = [{ type: 'text', text: o.task }, ...(o.files ?? []).map((f): ContentBlock => (f.kind === 'image'
+      ? { type: 'image', mimeType: f.mime, data: f.data ?? '' }
+      : { type: 'text', text: `Anexo ${f.name} (${f.mime}):\n${f.text ?? ''}` }))];
+    const r = await race(conn.agent.request('session/prompt', { sessionId, prompt }));
     if (init.agentCapabilities?.sessionCapabilities?.close) await race(conn.agent.request('session/close', { sessionId })).catch(() => {});
     return { stopReason: r.stopReason, text, ...(agent ? { agent } : {}) };
   } catch (e) {

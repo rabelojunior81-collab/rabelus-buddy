@@ -21,7 +21,7 @@ export const DEFAULT_CONSOLE_PORT = 47321;
 // O que a página pode chamar. Fora daqui (eventos crus, efeitos, reservas, daemon.stop): 404.
 export const CONSOLE_METHODS = [
   'daemon.status', 'console.defaults', 'session.events', 'session.list',
-  'run.get', 'run.list', 'agent.run', 'agent.resume',
+  'run.get', 'run.list', 'agent.run', 'agent.resume', 'attachment.put',
   'run.live', 'agent.steer', 'agent.unqueue', 'agent.stop',
   'approval.list', 'approval.resolve', 'budget.status',
   'providers.status', 'providers.usage', 'harness.list', 'harness.probe', 'harness.login', 'models.list', 'keys.set', 'keys.remove',
@@ -107,7 +107,9 @@ export async function startConsole({ home, methods, touch, port = Number(process
 
     let raw = '';
     req.setEncoding('utf8');
-    req.on('data', (c: string) => { raw += c; if (raw.length > 1_000_000) req.destroy(); });
+    // Corpo de até 1 MB; o anexo (M1.3) pode chegar a 7,5 MB (imagem de 5 MB em base64).
+    const limit = a[1] === 'attachment.put' ? 7_500_000 : 1_000_000;
+    req.on('data', (c: string) => { raw += c; if (raw.length > limit) req.destroy(); });
     req.on('end', () => {
       void (async () => {
         // Contrato tipado (SPEC 0002, critério 10): entrada inválida não chega ao núcleo.
