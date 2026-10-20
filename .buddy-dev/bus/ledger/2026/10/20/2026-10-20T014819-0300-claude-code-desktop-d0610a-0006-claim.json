@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014819-0300-claude-code-desktop-d0610a-0006",
+  "ts": "2026-10-20T01:48:19-03:00",
+  "utc": "2026-10-20T04:48:19.392Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 6,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/posse-claude-code-desktop",
+  "type": "claim",
+  "summary": ".buddy-dev/LEARNING-CURVE.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-20T05:18:19.392Z",
+    "tookOverFrom": null
+  }
+}

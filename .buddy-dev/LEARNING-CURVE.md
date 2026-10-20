@@ -200,3 +200,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0030-#0030
 
 1. **Em 2026-10-15, o M0 seguiu sem esperar as respostas do Pai, com o trabalho fatiado em sub-fases que cabiam numa sessão.** Em 2026-10-20, a conversa do harness não foi fatiada: a mesma conversa do VS Code atravessou cinco dias e várias sessões do `bd` (462 MB, quatro compactações) e morreu por "Prompt is too long" no meio da publicação do post, com a sessão aberta e o Blog sujo. O ledger e o `bd contexto` deixaram a retomada exata em minutos, noutro harness. → A sessão do `bd` fatia o trabalho; a conversa do harness também precisa ser fatiada. Fechar a sessão é bom momento para abrir conversa nova, e a entrega que fecha a sessão (post, daily) vai para o disco e para o git o quanto antes, porque a janela pode acabar sem aviso.
+
+## lote #0031-#0031
+
+1. **Em 2026-10-15, as respostas do Pai à SPEC 0001 foram aplicadas com a explicação de build e testes acompanhada da prova executada.** Em 2026-10-20, o `bd status-main` reescreveu a `main` e o carimbo do STATUS, mas deixou o "Por" com a sessão anterior: a linha passou a afirmar que outra sessão escreveu um estado que ela nunca viu. → A ferramenta que reescreve uma superfície responde por todos os campos daquela linha, não só pelo que motivou a chamada. Achado pede teste no `bd` antes da correção.
