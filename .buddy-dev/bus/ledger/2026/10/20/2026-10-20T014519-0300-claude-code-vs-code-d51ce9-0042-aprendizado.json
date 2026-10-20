@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014519-0300-claude-code-vs-code-d51ce9-0042",
+  "ts": "2026-10-20T01:45:19-03:00",
+  "utc": "2026-10-20T04:45:19.609Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 42,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d51ce9",
+  "type": "aprendizado",
+  "summary": "Lição no LEARNING-CURVE (lote #0030): fatiar também a conversa do harness; entrega de fechamento no git o quanto antes. Regra do Pai na MEMORY: no Claude Code Desktop, Blog e Buddy no navegador in-app.",
+  "refs": [],
+  "data": {}
+}
