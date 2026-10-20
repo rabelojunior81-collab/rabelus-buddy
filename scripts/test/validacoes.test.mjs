@@ -92,3 +92,42 @@ test('"clicar" não é CLI: o detector olha palavras inteiras', () => {
   const r = checkValidations(repo({ ...files([pai({ tipo: 'acao', como: 'na console, clicar em Entrar', ensaio: 'docs/registros/x/README.md' })]), 'docs/registros/x/README.md': 'ok' }));
   assert.deepEqual(r.problems, []);
 });
+
+// Regra do Pai (2026-10-20): tudo o que precisa dele vem explicado em linguagem comum.
+const EXPL_BOA = 'Escolher a biblioteca que desenha a tela de terminal do Buddy, entre as duas opções que estão na mesa. Você olha as duas numa conversa curta comigo, e a escolha vale para os próximos passos da interface.';
+
+test('explicação do Pai: entrada pendente sem o campo reprova e não entra em "aguarda o Pai"', () => {
+  const r = checkValidations(repo(files([pai({ tipo: 'decisao' })])));
+  assert.match(r.problems.join(), /p: .*explicação/);
+  assert.deepEqual(r.aguardaPai, []);
+});
+
+test('explicação do Pai curta (menos de 120 caracteres): reprova', () => {
+  const r = checkValidations(repo(files([pai({ tipo: 'decisao', explicacao: 'Escolha a biblioteca.' })])));
+  assert.match(r.problems.join(), /p: .*120/);
+  assert.deepEqual(r.aguardaPai, []);
+});
+
+test('explicação do Pai com código interno (M1.6, critério 12, ADR 0016, SPEC 0002, caminho de arquivo): reprova cada um', () => {
+  const casos = { 'M1.6': /M1\.6/, 'critério 12': /critério 12/, 'ADR 0016': /ADR 0016/, 'SPEC 0002': /SPEC 0002/, 'docs/x/y.md': /docs\/x\/y\.md/ };
+  for (const [codigo, padrao] of Object.entries(casos)) {
+    const r = checkValidations(repo(files([pai({ tipo: 'decisao', explicacao: `${EXPL_BOA} Isso vem de ${codigo}.` })])));
+    assert.match(r.problems.join(), padrao, codigo);
+    assert.match(r.problems.join(), /linguagem comum/, codigo);
+    assert.deepEqual(r.aguardaPai, [], codigo);
+  }
+});
+
+test('explicação do Pai boa (120 caracteres ou mais, sem código interno): passa, aparece em "aguarda o Pai" com a explicação', () => {
+  assert.ok(EXPL_BOA.length >= 120);
+  const r = checkValidations(repo(files([pai({ id: 'boa', tipo: 'decisao', explicacao: EXPL_BOA })])));
+  assert.deepEqual(r.problems, []);
+  assert.deepEqual(r.aguardaPai.map((x) => x.id), ['boa']);
+  assert.equal(r.aguardaPai[0].descricao, EXPL_BOA);
+});
+
+test('entrada do Pai já concluída não precisa de explicação', () => {
+  const r = checkValidations(repo(files([pai({ id: 'feita', tipo: 'decisao', estado: 'feito' })])));
+  assert.deepEqual(r.problems, []);
+  assert.deepEqual(r.aguardaPai, []);
+});
