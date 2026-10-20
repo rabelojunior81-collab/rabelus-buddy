@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0030 · 2026-10-15T044039-0300 · claude-code-vs-code-5cfc7b · doc
-
-M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (store:false vira requisito), decisão 8 (TypeScript sem build), plano de fase M0 (8 sub-fases), desenho dos 21 testes, spike de banco e IPC aprovado em 3 SOs × Node 24/26 no CI.
-
 ### #0031 · 2026-10-15T045425-0300 · claude-code-vs-code-3a6e29 · decisao
 
 Respostas do Pai à SPEC 0001 aplicadas: ADR 0014 (OpenCode Go primeiro, ChatGPT por Sign in with ChatGPT, API paga como reserva), teto US$ 20, convenção de código aceita, SDKs OpenAI/Anthropic/Gemini (+OpenCode no M1). SPEC revisão 2 com 26 critérios; explicação de build e testes com prova executada.
@@ -207,3 +203,7 @@ M1.5d: ensaio da console nova no ambiente do Pai (ChatGPT em Muito alto, OpenCod
 ### #0077 · 2026-10-20T010007-0300 · claude-code-vs-code-d51ce9 · feat
 
 M1.3: anexos no núcleo (hash na pasta de trabalho, referência no log, formato de cada rota, visão por rota, bloco image por ACP) e na console (anexar, arrastar, colar, recusa sem visão); checagem real com ChatGPT, Nemotron VL, OpenCode e Codex; resposta cortada pelo limite conta como vazia; plano com a M1.2 concluída
+
+### #0078 · 2026-10-20T014455-0300 · claude-code-vs-code-d51ce9 · aprendizado
+
+Quebra da sessão d51ce9: a conversa do Claude Code no VS Code atravessou cinco dias e várias sessões do bd (transcript de 462 MB, 4 compactações) e morreu por 'Prompt is too long' às 01:11, no meio da publicação do post. Retomada pelo Claude Code Desktop: QA do post no navegador in-app, Blog b276c36 publicado, sessão encerrada pelo rito. Lição no lote #0030; regra do Pai: verificar e expor o Blog e rodar o Buddy no navegador in-app deste harness.

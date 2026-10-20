@@ -196,3 +196,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0029-#0029
 
 1. **Em 2026-10-15, o Pai ensinou que pedido novo se absorve em paralelo e que a dúvida bloqueante para só o que depende dela.** Em 2026-10-20, a validação da console e a troca do token aguardavam o Pai, e a M1.3 andou inteira em paralelo, do núcleo ao ensaio. → Esperar o Pai não é parar: o que depende dele fica marcado no STATUS, e o resto segue com o rito completo. A retomada começa por conferir o estado real (o Pai já usou? a CI terminou?) antes de supor.
+
+## lote #0030-#0030
+
+1. **Em 2026-10-15, o M0 seguiu sem esperar as respostas do Pai, com o trabalho fatiado em sub-fases que cabiam numa sessão.** Em 2026-10-20, a conversa do harness não foi fatiada: a mesma conversa do VS Code atravessou cinco dias e várias sessões do `bd` (462 MB, quatro compactações) e morreu por "Prompt is too long" no meio da publicação do post, com a sessão aberta e o Blog sujo. O ledger e o `bd contexto` deixaram a retomada exata em minutos, noutro harness. → A sessão do `bd` fatia o trabalho; a conversa do harness também precisa ser fatiada. Fechar a sessão é bom momento para abrir conversa nova, e a entrega que fecha a sessão (post, daily) vai para o disco e para o git o quanto antes, porque a janela pode acabar sem aviso.
