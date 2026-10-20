@@ -246,7 +246,7 @@ export async function startOwner(home: string): Promise<Owner> {
   type HarnessRef = { id: string; name: string; spec: LaunchSpec };
   // Um turno com o harness, com a postura, as permissões pelo núcleo e o andamento no log da execução. Serve à
   // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
-  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[] }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
     const policy = new Policy(log, { workspace: o.workspace });
     let reasoning = '';
     const titles = new Map<string, string>();
@@ -275,7 +275,9 @@ export async function startOwner(home: string): Promise<Owner> {
           }
         } else {
           if (u.kind === 'reasoning') reasoning += u.delta;
-          onProgress(run, u);
+          // Na delegação, o texto do harness não vai ao vivo: ali ele apareceria como fala do Buddy (ensaio real, M1.4).
+          // Ele volta ao Buddy como resultado da ferramenta, e o Buddy responde.
+          if (u.kind === 'reasoning' || o.liveText !== false) onProgress(run, u);
         }
       },
       onPermission: async (ask) => {
@@ -367,7 +369,7 @@ export async function startOwner(home: string): Promise<Owner> {
       log.append(session, 'harness.delegated', { run, id: h.id, phase: 'start', task: a.task.slice(0, 2000) });
       const end = (stopReason: string) => log.append(session, 'harness.delegated', { run, id: h.id, phase: 'end', stopReason });
       try {
-        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task: a.task, workspace, interactive, signal: signal ?? new AbortController().signal });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task: a.task, workspace, interactive, signal: signal ?? new AbortController().signal, liveText: false });
         if (reasoning) log.append(session, 'harness.reasoning', { run, id: h.id, text: reasoning.slice(0, 20_000) });
         end(r.stopReason);
         const text = r.text.slice(0, 20_000);
