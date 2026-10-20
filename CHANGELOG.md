@@ -117,6 +117,11 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Corrigido
 
+- **Correções do uso real do Pai** (2026-10-20):
+  - a negação da primeira execução de um agente agora pode ser revista ("Rever decisão"), e a negação antiga fica no histórico;
+  - um pedido do agente fora da pasta de trabalho chega ao Pai como cartão, com o caminho completo, em vez de ser negado em silêncio;
+  - a tela diz se quem negou foi a política ou o Pai;
+  - a fala de um agente aparece com o nome e o ícone dele, não mais como "BUDDY".
 - **Resposta vazia do provedor não passa mais por "concluída"** (M1.1, achado no ensaio do M1.0). Quando o modelo devolve nada (nenhum texto, nenhuma ferramenta, 0 tokens), o Buddy tenta o próximo provedor da ordem ou para com um motivo claro na console.
 
 - Retomada mais robusta (achados do ensaio): aprovação pendente reaproveitada depois de uma queda; o detector de laço conta só pedidos do modelo; esforço e rota da execução voltam na retomada; conta sem saldo (402) tira o provedor da frente por 1 h.

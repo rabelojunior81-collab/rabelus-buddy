@@ -721,6 +721,66 @@
       },
       "origem": "SPEC 0002, critério 8",
       "evidencia": "docs/registros/2026-10-20T023359-0300-checagem-real-da-delegacao-do-buddy-m1-4/README.md"
+    },
+    {
+      "id": "rever-negacao-da-primeira-execucao",
+      "descricao": "A negação da primeira execução de um harness pode ser revista: harness.firstRun.reset registra o reset e pede aprovação nova; a negação antiga continua no log; só vale para o que está negado",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/rever-negacao.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "quem-fala-na-conversa",
+      "descricao": "O balão da conversa mostra quem falou: o Buddy na execução dele, o harness (nome e ícone) na execução do harness, ao vivo e na resposta final",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-quem-fala.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "fora-da-pasta-pergunta",
+      "descricao": "Pedido de harness fora da pasta de trabalho vira aprovação com o caminho completo quando o Pai está na conversa; sem o Pai, é negado; caminho protegido segue negado; a tela diz se quem negou foi a política ou o Pai",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/permissao-fora-da-pasta.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "explicacao-do-pai",
+      "descricao": "Pendência do Pai não concluída exige explicação em linguagem comum (120 caracteres ou mais, sem código interno nem caminho de arquivo); a lista do que aguarda o Pai mostra a explicação",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "scripts/test/validacoes.test.mjs"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
     }
   ]
 }

@@ -48,14 +48,21 @@ Uma missão boa cabe numa frase de objetivo e tem:
 
 **Lição da onda 1:** relatório de subagente é pista, não fato. Todo achado que vira decisão ou texto público é conferido por mim antes.
 
-### Onda 2 (2026-10-20, em execução): correções, 4 worktrees em paralelo
+### Onda 2 (2026-10-20, concluída): correções, 4 worktrees em paralelo
 
-| Missão | O que resolve |
-|---|---|
-| A1 | Rever a negação da primeira execução de um harness (hoje é definitiva) |
-| A2 | O balão da conversa mostra quem falou (hoje a fala do harness aparece como "BUDDY") |
-| A3 | Fora da pasta de trabalho, o harness pergunta ao Pai em vez de ser negado em silêncio; a tela diz quem negou e por quê |
-| A4 | A regra "explicar em texto" ganha mecanismo: pendência do Pai sem explicação em linguagem comum reprova |
+| Missão | O que resolve | Medida | Conferência |
+|---|---|---|---|
+| A1 | Rever a negação da primeira execução de um harness (era definitiva) | 118 mil tokens, 44 ferramentas, 4,2 min | diff limpo; a negação antiga fica no histórico |
+| A2 | O balão mostra quem falou (a fala do harness aparecia como "BUDDY") | 95 mil tokens, 26 ferramentas, 2,4 min | conferido no navegador |
+| A3 | Fora da pasta, o harness pergunta ao Pai em vez de ser negado em silêncio; a tela diz quem negou | 118 mil tokens, 60 ferramentas, 5,5 min | conferido no navegador com o OpenCode real |
+| A4 | A regra "explicar em texto" ganha mecanismo no `bd validacoes` | 106 mil tokens, 16 ferramentas, 2 min | **parou certo**: três testes antigos montavam pendências sem o campo novo; completei os dados de teste sem tocar asserção |
+
+Integração: as quatro branches entraram sem conflito; 396 testes verdes; [ensaio no navegador](../../registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md).
+
+**Lições da onda 2:**
+- **Os pacotes internos resolvem para o checkout principal.** Num worktree, eles apontam para o código antigo, e o teste roda o núcleo errado. A1 e A3 descobriram isso e montaram ligações por pacote. A receita da missão passa a trazer isso pronto.
+- **Worktrees dentro do repositório.** O `git add -A` os pegou como repositórios embutidos, e o `bd surfaces` lia as cópias. O gancho barrou o commit; a pasta saiu do git e da varredura, com teste.
+- **Missão que para diante de uma decisão é missão bem cortada.** A A4 parou em vez de afrouxar teste.
 
 ### Próximas (depois da decisão do Pai sobre a especificação)
 

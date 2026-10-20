@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T101931-0300-claude-code-desktop-6e2164-0018",
+  "ts": "2026-10-20T10:19:31-03:00",
+  "utc": "2026-10-20T13:19:31.678Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 18,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "feat",
+  "summary": "Onda 2 integrada (merges das missões A1–A4 sem conflito): rever a negação da primeira execução, balão com quem fala, fora da pasta pergunta ao Pai e a tela diz quem negou, regra explicativa no bd validacoes. Conferência: diffs lidos, A4 completada por mim (dados de teste com a explicação, sem tocar asserção), tsc limpo, 396 testes verdes.",
+  "refs": [],
+  "data": {}
+}
