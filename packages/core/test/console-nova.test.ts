@@ -132,22 +132,23 @@ test('conversas na barra lateral: uma por sessão, com o título da primeira tar
   assert.equal(g[1]!.items[0]!.session, 's2');
 });
 
-test('a marca do Rabelus Lab é servida pela própria console, com token, e a página não aponta para fora (critério 11)', async () => {
+test('a marca do Rabelus Lab é servida pela própria console, autenticada, e a página não aponta para fora (critério 11)', async () => {
   const home = tempHome();
   owners.push(await spawnOwner(home, { RBUDDY_CONSOLE_PORT: '0' }));
   const c = JSON.parse(readFileSync(consolePath(home), 'utf8')) as { port: number; token: string };
-  const get = (path: string) => new Promise<{ status: number; type: string; size: number }>((resolve, reject) => {
-    http.get({ host: '127.0.0.1', port: c.port, path, headers: { host: `127.0.0.1:${c.port}` } }, (res) => {
+  const get = (path: string, auth = true) => new Promise<{ status: number; type: string; size: number }>((resolve, reject) => {
+    http.get({ host: '127.0.0.1', port: c.port, path, headers: { host: `127.0.0.1:${c.port}`, ...(auth ? { 'x-rbuddy-token': c.token } : {}) } }, (res) => {
       let n = 0; res.on('data', (d: Buffer) => { n += d.length; }); res.on('end', () => resolve({ status: res.statusCode ?? 0, type: String(res.headers['content-type']), size: n }));
     }).on('error', reject);
   });
   for (const f of ['emblema-256.png', 'emblema-64.png']) {
-    const ok = await get(`/brand/${f}?t=${c.token}`);
+    const ok = await get(`/brand/${f}`);
     assert.deepEqual([ok.status, ok.type], [200, 'image/png'], f);
     assert.ok(ok.size > 1000, `${f} tem a imagem`);
-    assert.equal((await get(`/brand/${f}`)).status, 401, `${f} exige token`);
+    assert.equal((await get(`/brand/${f}`, false)).status, 401, `${f} exige token`);
+    assert.equal((await get(`/brand/${f}?t=${c.token}`, false)).status, 401, `${f}: o ?t= não autoriza recurso (critério 16)`);
   }
-  assert.equal((await get(`/brand/../../package.json?t=${c.token}`)).status, 404, 'só os arquivos da marca');
+  assert.equal((await get('/brand/../../package.json')).status, 404, 'só os arquivos da marca');
   assert.match(PAGE, /\/brand\/emblema-256\.png/);
   assert.match(PAGE, /\/brand\/emblema-64\.png/, 'ícone da aba');
 });

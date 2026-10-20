@@ -14,7 +14,7 @@ const pt = createI18n('pt-BR').t;
 const homes: string[] = [];
 after(async () => { for (const h of homes) { try { await call(endpointFor(h), 'daemon.stop', {}); } catch { /* parado */ } } });
 
-test('rbuddy ui: sobe o núcleo, abre a console no navegador com o endereço e o token', async () => {
+test('rbuddy ui: sobe o núcleo, abre a console por um bilhete de uso único; o token não aparece no endereço nem na saída', async () => {
   const home = mkdtempSync(join(tmpdir(), 'rbuddy-ui-'));
   homes.push(home);
   const env = { ...process.env, RBUDDY_HOME: home, RBUDDY_CONSOLE_PORT: '0' } as NodeJS.ProcessEnv;
@@ -23,10 +23,14 @@ test('rbuddy ui: sobe o núcleo, abre a console no navegador com o endereço e o
   let opened = '';
   assert.equal(await run(['ui'], env, { out: (s) => out.push(s), err: (s) => out.push(s) }, { openUrl: (u) => { opened = u; } }), 0);
   const { port, token } = JSON.parse(readFileSync(join(home, 'console.json'), 'utf8')) as { port: number; token: string };
-  assert.equal(opened, `http://127.0.0.1:${port}/?t=${token}`);
-  assert.ok(out.includes(pt('ui.opened', { url: opened })));
-  const r = await fetch(opened);
-  assert.equal(r.status, 200);
+  assert.match(opened, new RegExp(String.raw`^http://127\.0\.0\.1:${port}/entrar\?c=[A-Za-z0-9_-]{32,}$`));
+  assert.equal(opened.includes(token), false, 'o bilhete não é o token');
+  assert.ok(out.includes(pt('ui.opened', { url: `http://127.0.0.1:${port}/` })), 'a saída mostra só o endereço limpo');
+  assert.equal(out.some((s) => s.includes(token) || s.includes('entrar?c=')), false, 'nem o token nem o bilhete na saída');
+  const r = await fetch(opened, { redirect: 'manual' });
+  assert.equal(r.status, 303);
+  assert.match(r.headers.get('set-cookie') ?? '', /HttpOnly/i);
+  assert.equal((await fetch(opened, { redirect: 'manual' })).status, 401, 'uso único');
 });
 
 test('atalho de duplo clique no Windows chama rbuddy ui a partir da pasta do repositório', () => {

@@ -1,6 +1,6 @@
 # SPEC — M1: Orquestrador e multimodal
 
-**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 1 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste
+**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 2 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste; revisão 2 (critério 16, console sem token na URL) decidida pelo Pai em 2026-10-20
 **Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-vs-code-569aca` · **Criada em:** 2026-10-17 · **Decisão de origem:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C, aprovada pelo Pai)
 
 ## Problema e resultado
@@ -131,6 +131,12 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - a recusa com janela semanal bloqueada esgota o OpenCode Go inteiro até o `resetsAt` dela, com motivo legível;
     - sem janela bloqueada (ou com o `/usage` fora do ar), vale o comportamento anterior;
     - `providers.usage` devolve as janelas, e a chave nunca aparece no log nem na resposta.
+16. **Console sem token na URL** (decisão do Pai, 2026-10-20): o token da console não fica em endereço nenhum.
+    - `GET /?t=<token>` válido troca o token por um cookie `HttpOnly` e `SameSite=Strict`, derivado do token (nunca o próprio), e responde 303 para `/`; o token errado continua 401;
+    - com o cookie, a página, o catálogo, a marca e os ícones respondem sem `?t=`; o `?t=` não autoriza mais recurso nem API;
+    - `POST /api/*` pelo cookie só com `Origin` exato da console e corpo JSON; de outra porta do 127.0.0.1, 403 e nada acontece; o cabeçalho `x-rbuddy-token` continua valendo para o cliente local;
+    - `rbuddy ui` abre um bilhete de uso único e 60 s (`/entrar?c=`), que vira o mesmo cookie; reusado ou vencido, 401;
+    - o `daemon.status` e a mensagem do `rbuddy ui` mostram só o endereço limpo; a página não guarda nem envia o token.
 14. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
 
 ## Métricas (registradas)
@@ -171,6 +177,8 @@ Percentual de permissões resolvidas por política e por humano; tempo até o pr
 6. **Cor B:** tudo em verde-oliva, o produto e o personagem. A cor de autoria do Buddy Fenix agora é `#a8a640`.
 7. **Alertas do Dependabot ligados.** No OpenCode Go, o bloqueio é o **limite semanal** (volta sozinho), não falta de crédito. A telemetria desse limite deve vir da API, se ela a expuser.
 8. **Visual v4 aprovado** (2026-10-18), com a ressalva aplicada: a **logomarca do Rabelus Lab** (emblema da fênix) ao lado do nome, no lugar do quadrado.
+
+9. **Console sem token na URL** (2026-10-20): "Faça primeiro a console sem token na URL (o token entra uma vez e vira cookie), com teste antes; depois abra o Buddy no navegador in-app e siga para a M1.4." Vira o critério 16. Origem: o token apareceu na saída da ferramenta de navegador no ensaio de 19/10.
 
 ## Dúvidas para o Pai (não bloqueiam a pesquisa nem os testes)
 

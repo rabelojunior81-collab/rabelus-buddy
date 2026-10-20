@@ -687,6 +687,21 @@
       },
       "origem": "SPEC 0002, critério 9",
       "evidencia": "docs/registros/2026-10-20T005032-0300-checagem-real-dos-anexos-e-da-imagem/README.md e docs/registros/2026-10-20T005856-0300-ensaio-dos-anexos-na-console-m1-3b/README.md"
+    },
+    {
+      "id": "console-sem-token-na-url",
+      "descricao": "Console sem token na URL: ?t= em GET / vira cookie HttpOnly e SameSite=Strict derivado do token, com 303 para a URL limpa; bilhete de uso único e 60 s no rbuddy ui; recurso e API pelo ?t= recusados; POST pelo cookie só com Origin exato e JSON; daemon.status, saída do rbuddy ui e página sem o token",
+      "quem": "maquina",
+      "onde": [
+        "M1.5e",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-cookie.test.ts"
+      },
+      "origem": "SPEC 0002, critério 16",
+      "evidencia": "docs/registros/2026-10-20T020509-0300-ensaio-da-console-sem-token-na-url-m1-5e/README.md"
     }
   ]
 }

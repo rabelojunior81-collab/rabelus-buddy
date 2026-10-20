@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0028 · 2026-10-15T045853-0300 · claude-code-vs-code-3a6e29 · ferramenta
-
-bd deps (registro com versão exata, licença, ficha, aprovação e prazo de 30 dias; rotina semanal na CI) e bd test-guard (a suíte não perde testes nem asserções; sem skip/todo/only), no bd post e na CI. Ordens do Pai de 2026-10-15. 57 testes.
-
 ### #0029 · 2026-10-15T050153-0300 · claude-code-vs-code-3a6e29 · correcao
 
 bd deps --latest não era aceito pelo parser (opção documentada, não declarada; já na main pelo PR #18). Corrigido, com teste que exige que toda opção da ajuda seja aceita (LEARNING-CURVE #7).
@@ -207,3 +203,7 @@ Quebra da sessão d51ce9: a conversa do Claude Code no VS Code atravessou cinco 
 ### #0079 · 2026-10-20T014801-0300 · claude-code-desktop-d0610a · doc
 
 Posse no Claude Code Desktop (sessão claude-code-desktop-d0610a): harness registrado no STATUS e no BOOTSTRAP; main do STATUS em 4b822b2.
+
+### #0080 · 2026-10-20T020619-0300 · claude-code-desktop-d0610a · feat
+
+M1.5e: console sem token na URL (critério 16, decisão do Pai): cookie HttpOnly/SameSite=Strict derivado do token, bilhete de uso único no rbuddy ui, POST pelo cookie só da própria origem, URL e saída limpas; ensaio no navegador in-app; SPEC 0002 rev. 2.

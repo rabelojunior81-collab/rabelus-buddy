@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T020502-0300-claude-code-desktop-d0610a-0014",
+  "ts": "2026-10-20T02:05:02-03:00",
+  "utc": "2026-10-20T05:05:02.738Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 14,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-console-sem-token-na-url",
+  "type": "ensaio",
+  "summary": "M1.5e ensaiada no navegador in-app com núcleo de ensaio (porta 47399, home própria): bilhete abriu a console e voltou para a URL limpa; document.cookie vazio (HttpOnly); API 200 pelo cookie; recarga mantém; bilhete reusado 401; 375 px sem rolagem horizontal; a própria ferramenta mascarou o bilhete na saída. Núcleo de ensaio encerrado.",
+  "refs": [],
+  "data": {}
+}

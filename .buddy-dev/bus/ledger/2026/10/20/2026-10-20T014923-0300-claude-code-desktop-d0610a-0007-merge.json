@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014923-0300-claude-code-desktop-d0610a-0007",
+  "ts": "2026-10-20T01:49:23-03:00",
+  "utc": "2026-10-20T04:49:23.815Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 7,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #74: docs: posse no Claude Code Desktop (harness nas superfícies, main em dia)",
+  "refs": [
+    "#74"
+  ],
+  "data": {}
+}

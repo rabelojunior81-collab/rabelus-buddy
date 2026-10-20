@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T020641-0300-claude-code-desktop-d0610a-0022",
+  "ts": "2026-10-20T02:06:41-03:00",
+  "utc": "2026-10-20T05:06:41.544Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 22,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-console-sem-token-na-url",
+  "type": "aprendizado",
+  "summary": "Lote #0028: mudança de contrato pede busca pelo contrato em toda a suíte (o teste de ícones de harness com ?t= ficou fora da primeira busca e só a suíte completa pegou).",
+  "refs": [],
+  "data": {}
+}

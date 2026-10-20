@@ -455,7 +455,6 @@
 </aside>
 <script>
 'use strict';
-const token = new URLSearchParams(location.search).get('t') || '';
 const $ = (id) => document.getElementById(id);
 const store = { get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* sem armazenamento */ } } };
 let cat = {};
@@ -481,8 +480,8 @@ function el(tag, attrs, ...kids) {
   for (const k of kids) if (k !== null && k !== undefined) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
   return e;
 }
-// Recurso da própria console (marca, ícones): o token vai junto, como em toda requisição.
-const asset = (path) => path + '?t=' + encodeURIComponent(token);
+// Recurso da própria console (marca, ícones): o cookie da console vai junto; o token não fica na página (critério 16).
+const asset = (path) => path;
 // <puras> (sem DOM; o teste avalia este trecho)
 // Blocos da resposta: parágrafo, lista e bloco de código cercado por ```.
 function mdBlocks(text) {
@@ -690,7 +689,7 @@ function rich(text) {
   return f;
 }
 async function api(method, params) {
-  const r = await fetch('/api/' + method, { method: 'POST', headers: { 'content-type': 'application/json', 'x-rbuddy-token': token }, body: JSON.stringify(params || {}) });
+  const r = await fetch('/api/' + method, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(params || {}) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
   return j.result;
@@ -698,7 +697,7 @@ async function api(method, params) {
 function conn(ok) { $('conn').className = 'dot ' + (ok ? 'ok' : 'bad'); $('connText').textContent = t(ok ? 'console.conn.ok' : 'console.conn.lost'); }
 
 async function loadLang() {
-  const r = await fetch('/i18n/' + lang + '.json', { headers: { 'x-rbuddy-token': token } });
+  const r = await fetch('/i18n/' + lang + '.json');
   cat = await r.json();
   document.documentElement.lang = lang;
   $('lang').value = lang;

@@ -1,11 +1,13 @@
 // Console web local (ADR 0017; SPEC 0001 rev. 5, escopo 19, critérios 27, 28 e 30).
 // Servida pelo dono em 127.0.0.1, sem dependência: a página (packages/core/console/) fala com a
-// mesma API do IPC, por uma lista fechada de métodos. Toda requisição exige o token da console e o
-// cabeçalho Host exato (contra DNS rebinding e contra páginas de terceiros).
+// mesma API do IPC, por uma lista fechada de métodos. Toda requisição exige o cabeçalho Host exato (contra
+// DNS rebinding e contra páginas de terceiros) e uma credencial: o cabeçalho com o token (cliente local) ou
+// o cookie da console (navegador). O token não fica em endereço nenhum (SPEC 0002, critério 16): `?t=` em
+// `GET /` e o bilhete de uso único do `rbuddy ui` viram o cookie e voltam para a URL limpa.
 
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { checkParams } from './contract.ts';
@@ -58,15 +60,22 @@ function catalog(lang: string): Record<string, unknown> | null {
   return out;
 }
 
-export interface ConsoleServer { url: string; port: number; close: () => Promise<void> }
+// Bilhete do `rbuddy ui`: uso único e 60 s; vazar o endereço aberto não abre a console de ninguém.
+const TICKET_MS = 60_000;
 
-export async function startConsole({ home, methods, touch, port = Number(process.env.RBUDDY_CONSOLE_PORT ?? DEFAULT_CONSOLE_PORT) }: {
+export interface ConsoleServer { url: string; port: number; ticket: () => string; close: () => Promise<void> }
+
+export async function startConsole({ home, methods, touch, port = Number(process.env.RBUDDY_CONSOLE_PORT ?? DEFAULT_CONSOLE_PORT), now = Date.now }: {
   home: string;
   methods: Record<string, (p: Record<string, unknown>) => unknown>;
   touch: () => void;
   port?: number;
+  now?: () => number;
 }): Promise<ConsoleServer> {
   const token = loadToken(home);
+  // O cookie é derivado do token, nunca o próprio: o navegador não guarda o segredo do cliente local.
+  const cookieValue = createHmac('sha256', token).update('rbuddy-console-cookie').digest('base64url');
+  const tickets = new Map<string, number>();
   const page = readFileSync(join(PAGE_DIR, 'index.html'), 'utf8');
   const allowed = new Set<string>(CONSOLE_METHODS);
   let bound = 0;
@@ -81,8 +90,37 @@ export async function startConsole({ home, methods, touch, port = Number(process
     touch();
     const url = new URL(req.url ?? '/', `http://127.0.0.1:${bound}`);
     if (req.headers.host !== `127.0.0.1:${bound}`) return json(res, 403, { error: { message: 'host' } });
-    const given = String(req.headers['x-rbuddy-token'] ?? url.searchParams.get('t') ?? '');
-    if (!same(given, token)) return json(res, 401, { error: { message: 'token' } });
+    const cookieName = `rbuddy_console_${bound}`;
+
+    // Entrada: o token (uma vez) ou o bilhete viram o cookie, e a resposta volta para a URL limpa.
+    const enter = () => {
+      res.writeHead(303, { location: '/', 'set-cookie': `${cookieName}=${cookieValue}; HttpOnly; SameSite=Strict; Path=/`, 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' });
+      res.end();
+    };
+    if (req.method === 'GET' && url.pathname === '/entrar') {
+      const c = url.searchParams.get('c') ?? '';
+      const exp = tickets.get(c);
+      tickets.delete(c);
+      if (exp === undefined || now() > exp) return json(res, 401, { error: { message: 'bilhete' } });
+      return enter();
+    }
+    if (req.method === 'GET' && url.pathname === '/' && url.searchParams.has('t')) {
+      return same(url.searchParams.get('t') ?? '', token) ? enter() : json(res, 401, { error: { message: 'token' } });
+    }
+
+    const header = req.headers['x-rbuddy-token'];
+    const byHeader = typeof header === 'string' && same(header, token);
+    const byCookie = !byHeader && (req.headers.cookie ?? '').split(';').some((kv) => {
+      const i = kv.indexOf('=');
+      return i > 0 && kv.slice(0, i).trim() === cookieName && same(kv.slice(i + 1).trim(), cookieValue);
+    });
+    if (!byHeader && !byCookie) return json(res, 401, { error: { message: 'token' } });
+    // O cookie vai junto em pedidos de outra porta do 127.0.0.1 (mesmo site): POST pelo cookie só da
+    // própria origem e com JSON, que força o preflight num pedido de fora.
+    const isJson = /^application\/json(;|$)/i.test(String(req.headers['content-type'] ?? '').trim());
+    if (byCookie && req.method === 'POST' && (req.headers.origin !== `http://127.0.0.1:${bound}` || !isJson)) {
+      return json(res, 403, { error: { message: 'origem' } });
+    }
 
     if (req.method === 'GET' && url.pathname === '/') return send(res, 200, page, 'text/html; charset=utf-8');
     const m = /^\/i18n\/([A-Za-z-]+)\.json$/.exec(url.pathname);
@@ -137,8 +175,15 @@ export async function startConsole({ home, methods, touch, port = Number(process
   }
   saveConsole(home, { port: bound, token });
   return {
-    url: `http://127.0.0.1:${bound}/?t=${token}`,
+    url: `http://127.0.0.1:${bound}/`,
     port: bound,
+    ticket: () => {
+      const t = now();
+      for (const [c, exp] of tickets) if (t > exp) tickets.delete(c);
+      const c = randomBytes(24).toString('base64url');
+      tickets.set(c, t + TICKET_MS);
+      return `http://127.0.0.1:${bound}/entrar?c=${c}`;
+    },
     close: () => new Promise((r) => { server.close(() => r()); server.closeAllConnections(); }),
   };
 }
