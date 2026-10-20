@@ -39,6 +39,7 @@
       "empty": "Escreva uma tarefa ou abra uma execução.",
       "you": "Você",
       "buddy": "Buddy",
+      "harnessSays": "{{name}}",
       "tool": "Ferramenta",
       "result": "Resultado",
       "session": "Sessão {{session}}",

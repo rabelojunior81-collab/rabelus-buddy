@@ -483,6 +483,12 @@ function el(tag, attrs, ...kids) {
 // Recurso da própria console (marca, ícones): o cookie da console vai junto; o token não fica na página (critério 16).
 const asset = (path) => path;
 // <puras> (sem DOM; o teste avalia este trecho)
+// Quem fala num balão (A2): o Buddy, na execução dele, ou o harness que respondeu (id e nome da lista; sem nome, o id).
+const speakerOf = (runHarness, list) => {
+  if (!runHarness) return { kind: 'buddy' };
+  const h = (list || []).find((x) => x.id === runHarness);
+  return { kind: 'harness', id: runHarness, name: (h && h.name) || runHarness };
+};
 // Blocos da resposta: parágrafo, lista e bloco de código cercado por ```.
 function mdBlocks(text) {
   const out = [];
@@ -716,6 +722,7 @@ async function loadLang() {
 function feedItems(evs) {
   const out = [];
   const routes = {};
+  const runHarness = {}; // execução -> harness que a atendeu (run.options com harness; A2)
   let grp = null;
   let n = 0;
   const group = () => {
@@ -743,12 +750,13 @@ function feedItems(evs) {
         if (m.role === 'user') speak(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you'), p.steer ? el('span', { class: 'tag' }, t('console.feed.steered')) : null), m.content,
           (m.attachments || []).length ? el('div', { class: 'atts' }, ...m.attachments.map((a) => el('span', { class: 'chip' }, a.kind === 'image' ? '🖼' : '📄', el('span', { class: 'nm' }, a.name)))) : null));
         else if (m.role === 'assistant') {
-          if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), rich(m.content)));
+          if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: speakerClass(speakerOf(runHarness[p.run] || null, harnesses)) }, speakerWho(speakerOf(runHarness[p.run] || null, harnesses)), rich(m.content)));
           else if (m.content) detail(el('div', { class: 'ev' }, rich(m.content)));
           for (const c of m.toolCalls || []) detail(el('div', { class: 'ev tool' }, t('console.feed.tool') + ': ' + c.name + ' ' + String(c.arguments || '').slice(0, 160)));
         } else if (m.role === 'tool') detail(el('details', { class: 'res' }, el('summary', {}, t('console.feed.result')), el('pre', {}, String(m.content || '').slice(0, 4000))));
         break;
       }
+      case 'run.options': if (p.harness) runHarness[p.run] = p.harness; break;
       case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
       case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
       case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
@@ -786,6 +794,11 @@ function feedItems(evs) {
 let lastFeedKey = '';
 const DECISION = { allow: 'console.harness.decision.allow', approve: 'console.harness.decision.approve', deny: 'console.harness.decision.deny' };
 const harnessName = (id) => (harnesses.find((h) => h.id === id) || {}).name || id;
+// Rótulo e classe do balão de quem fala (A2): o Buddy com o emblema; o harness com o ícone e o nome dele.
+const speakerClass = (sp) => (sp.kind === 'buddy' ? 'bubble buddy' : 'bubble buddy harness');
+const speakerWho = (sp) => (sp.kind === 'buddy'
+  ? el('span', { class: 'who' }, t('console.feed.buddy'))
+  : el('span', { class: 'who' }, harnessIcon((harnesses.find((h) => h.id === sp.id)) || { id: sp.id }), t('console.feed.harnessSays', { name: sp.name })));
 
 // ---------- Andamento ao vivo (rev. 6, critério 31) ----------
 // Fase, tempo, raciocínio e texto chegando em cadência; a fila com Direcionar e Cancelar; Parar.
@@ -818,7 +831,10 @@ function renderLive() {
       d.addEventListener('toggle', () => { reasonOpen = d.open; });
       kids.push(d);
     }
-    if (r.text) kids.push(el('div', { class: 'bubble buddy typing', id: 'liveText' }, el('span', { class: 'who' }, t('console.feed.buddy')), el('span', { id: 'liveTextBody' }, r.text.slice(0, shown))));
+    if (r.text) {
+      const sp = speakerOf(String(r.route || '').startsWith('acp:') ? r.route.slice(4) : null, harnesses);
+      kids.push(el('div', { class: speakerClass(sp) + ' typing', id: 'liveText' }, speakerWho(sp), el('span', { id: 'liveTextBody' }, r.text.slice(0, shown))));
+    }
   }
   for (const q of (l && l.queue) || []) {
     kids.push(el('div', { class: 'queued' }, el('span', { class: 'who' }, t('console.queue.title')), q.task,

@@ -39,6 +39,7 @@
       "empty": "Write a task or open a run.",
       "you": "You",
       "buddy": "Buddy",
+      "harnessSays": "{{name}}",
       "tool": "Tool",
       "result": "Result",
       "session": "Session {{session}}",
