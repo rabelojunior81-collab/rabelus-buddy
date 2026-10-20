@@ -21,6 +21,9 @@
 //                       (só o harness a guarda; ela nunca vai ao cliente).
 //   FAKE_ACP_TERMINAL_AUTH=1: declara também um método do tipo terminal, que o cliente não pode passar ao authenticate.
 //   FAKE_ACP_AUTH_FAIL=1: authenticate falha (login recusado no navegador).
+// M1.3 (anexos):
+//   FAKE_ACP_NO_IMAGE=1: não declara promptCapabilities.image.
+//   FAKE_ACP_ECHO_BLOCKS=1: o texto final conta os blocos recebidos no prompt ("Blocos: text,image:image/png:<tamanho>.").
 //   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -42,7 +45,7 @@ else {
     .onRequest('initialize', () => ({
       protocolVersion: PROTOCOL_VERSION,
       agentInfo: { name: 'Fake', version: '0.0.1' },
-      agentCapabilities: { loadSession: false, promptCapabilities: { image: true, embeddedContext: true }, sessionCapabilities: { close: {} } },
+      agentCapabilities: { loadSession: false, promptCapabilities: { image: !process.env.FAKE_ACP_NO_IMAGE, embeddedContext: true }, sessionCapabilities: { close: {} } },
       authMethods: [{ id: 'fake-login', name: 'Login with Fake' }, ...(process.env.FAKE_ACP_TERMINAL_AUTH ? [{ id: 'fake-terminal', name: 'Setup in terminal', type: 'terminal', args: ['setup'] }] : [])],
     }))
     .onRequest('authenticate', ({ params }) => {
@@ -96,6 +99,7 @@ else {
         await send({ sessionUpdate: 'tool_call_update', toolCallId: 't3', status: 'completed' });
       }
       if (process.env.FAKE_ACP_MODES) extra += ` Modo: ${currentMode}.`;
+      if (process.env.FAKE_ACP_ECHO_BLOCKS) extra += ` Blocos: ${params.prompt.map((b) => b.type + (b.type === 'image' ? `:${b.mimeType}:${b.data.length}` : '')).join(',')}.`;
       if (process.env.FAKE_ACP_ECHO_CONFIG) extra += ` Config: ${/"edit":"ask"/.test(process.env.OPENCODE_CONFIG_CONTENT ?? '') ? 'ask' : 'nenhuma'}.`;
       await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: 'Olá, ' } });
       if (stop()) return { stopReason: 'cancelled' };
