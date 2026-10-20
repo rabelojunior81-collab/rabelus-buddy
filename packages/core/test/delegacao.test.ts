@@ -136,3 +136,19 @@ test('página: a conversa mostra a delegação (a quem, a tarefa, como terminou)
   for (const k of ['harness.delegated', 'harness.reasoning']) assert.ok(PAGE.includes(`case '${k}':`), `a conversa mostra ${k}`);
   for (const k of ['console.harness.delegatedStart', 'console.harness.delegatedDone', 'console.harness.delegatedEnd', 'console.harness.reasoning']) assert.ok(PAGE.includes(`t('${k}'`), `a página usa ${k} (a varredura do critério 28 confere o catálogo)`);
 });
+
+test('delegate: o texto do harness não aparece ao vivo como fala do Buddy; o andamento mostra o raciocínio e as ferramentas (critério 8)', async () => {
+  const { ipc } = await buddy({ FAKE_ACP_MODE: 'ok', FAKE_ACP_GAP: '250' });
+  const workspace = mkdtempSync(join(tmpdir(), 'rbuddy-ws-'));
+  const { run } = await ipc('agent.run', { session: 'd6', task: 'delegue', workspace });
+  const seen: any[] = [];
+  for (;;) {
+    const l = await ipc('run.live', { session: 'd6' });
+    if (l.running) seen.push(l.running);
+    if ((await ipc('run.get', { id: run })).state !== 'running') break;
+    await new Promise((r) => setTimeout(r, 40));
+  }
+  assert.ok(seen.some((x) => String(x.reasoning ?? '').includes('Pensando na tarefa')), 'o raciocínio do harness aparece ao vivo');
+  assert.ok(seen.some((x) => x.tool === 'Lendo README.md'), 'a ferramenta do harness aparece ao vivo');
+  assert.equal(seen.some((x) => String(x.text ?? '').includes('Olá')), false, 'o texto do harness não vira fala do Buddy');
+});
