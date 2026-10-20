@@ -50,3 +50,6 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [hermes-desktop-e-rabelus-com.md](./hermes-desktop-e-rabelus-com.md) | Hermes Desktop (Kanban, Bots, backends de sandbox) e rabelus.com (tipografia, cantos, vidro) | 2026-10-18 |
 | [stacks-mobile-e-web.md](./stacks-mobile-e-web.md) | Expo/React Native, Flutter, Compose MP, Capacitor, Tauri, PWA no iOS | 2026-10-15 |
 | [gemini-imagem.md](./gemini-imagem.md) | Geração de imagem com Gemini (Nano Banana), preços e boas práticas | 2026-10-15 |
+| [modos-de-permissao-dos-agentes.md](./modos-de-permissao-dos-agentes.md) | Modos, regras e escopos de permissão do Claude Code, do Codex e do OpenCode | 2026-10-20 |
+| [acp-opcoes-de-sessao.md](./acp-opcoes-de-sessao.md) | Opções de sessão do ACP (modelo, modo, esforço) e o que cada harness declara | 2026-10-20 |
+| [github-repositorio-publico-e-pages.md](./github-repositorio-publico-e-pages.md) | O que muda ao tornar o repositório público; publicar pelo GitHub Pages | 2026-10-20 |

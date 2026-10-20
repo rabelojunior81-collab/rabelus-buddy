@@ -150,3 +150,15 @@ test('status-main: reescreve a main e a contagem de PRs pelo git, com o assunto 
   assert.equal(statusMainLag(r, { base: 'HEAD' }).problem, null);
   assert.equal(syncStatusMain(r, { base: 'HEAD' }), false, 'já em dia: nada muda');
 });
+
+test('cópias de worktrees de subagentes (.claude/worktrees) não são documento vivo deste checkout (piloto de paralelismo)', () => {
+  const r = repo({
+    'docs/60-decisoes/0013-m.md': '---\nstatus: aceita (2026-10-15)\n---',
+    'docs/50-planos/ROADMAP.md': 'Web UI (stack: ADR 0013, proposta)',
+    '.claude/worktrees/agent-x/docs/50-planos/ROADMAP.md': 'Web UI (stack: ADR 0013, proposta)',
+    '.claude/worktrees/agent-x/.buddy-dev/LEARNING-CURVE.md': 'ADR 0013 (proposta)',
+  });
+  const g = staleProposals(r);
+  assert.equal(g.length, 1, g.join('\n'));
+  assert.match(g[0], /^docs\/50-planos\/ROADMAP\.md/);
+});

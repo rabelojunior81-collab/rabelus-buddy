@@ -65,7 +65,8 @@ function livingDocs(root) {
   const walk = (dir) => {
     for (const e of ls(root, dir)) {
       const p = dir ? `${dir}/${e.name}` : e.name;
-      if (e.isDirectory()) { if (!['node_modules', '.git', 'workspace'].includes(e.name)) walk(p); }
+      // .claude/worktrees: cópias de trabalho dos subagentes (piloto de paralelismo), não documentos deste checkout.
+      if (e.isDirectory()) { if (!['node_modules', '.git', 'workspace'].includes(e.name) && p !== '.claude/worktrees') walk(p); }
       else if (e.name.endsWith('.md') && !HISTORY.test(p)) out.push(p);
     }
   };
