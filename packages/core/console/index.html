@@ -483,6 +483,12 @@ function el(tag, attrs, ...kids) {
 // Recurso da própria console (marca, ícones): o cookie da console vai junto; o token não fica na página (critério 16).
 const asset = (path) => path;
 // <puras> (sem DOM; o teste avalia este trecho)
+// Quem fala num balão (A2): o Buddy, na execução dele, ou o harness que respondeu (id e nome da lista; sem nome, o id).
+const speakerOf = (runHarness, list) => {
+  if (!runHarness) return { kind: 'buddy' };
+  const h = (list || []).find((x) => x.id === runHarness);
+  return { kind: 'harness', id: runHarness, name: (h && h.name) || runHarness };
+};
 // Blocos da resposta: parágrafo, lista e bloco de código cercado por ```.
 function mdBlocks(text) {
   const out = [];
@@ -716,6 +722,7 @@ async function loadLang() {
 function feedItems(evs) {
   const out = [];
   const routes = {};
+  const runHarness = {}; // execução -> harness que a atendeu (run.options com harness; A2)
   let grp = null;
   let n = 0;
   const group = () => {
@@ -743,12 +750,13 @@ function feedItems(evs) {
         if (m.role === 'user') speak(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you'), p.steer ? el('span', { class: 'tag' }, t('console.feed.steered')) : null), m.content,
           (m.attachments || []).length ? el('div', { class: 'atts' }, ...m.attachments.map((a) => el('span', { class: 'chip' }, a.kind === 'image' ? '🖼' : '📄', el('span', { class: 'nm' }, a.name)))) : null));
         else if (m.role === 'assistant') {
-          if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), rich(m.content)));
+          if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: speakerClass(speakerOf(runHarness[p.run] || null, harnesses)) }, speakerWho(speakerOf(runHarness[p.run] || null, harnesses)), rich(m.content)));
           else if (m.content) detail(el('div', { class: 'ev' }, rich(m.content)));
           for (const c of m.toolCalls || []) detail(el('div', { class: 'ev tool' }, t('console.feed.tool') + ': ' + c.name + ' ' + String(c.arguments || '').slice(0, 160)));
         } else if (m.role === 'tool') detail(el('details', { class: 'res' }, el('summary', {}, t('console.feed.result')), el('pre', {}, String(m.content || '').slice(0, 4000))));
         break;
       }
+      case 'run.options': if (p.harness) runHarness[p.run] = p.harness; break;
       case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
       case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
       case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
@@ -771,7 +779,15 @@ function feedItems(evs) {
       case 'harness.delegated': speak(el('div', { class: 'ev' }, p.phase === 'start' ? t('console.harness.delegatedStart', { name: harnessName(p.id), task: String(p.task || '') }) : p.stopReason === 'end_turn' ? t('console.harness.delegatedDone', { name: harnessName(p.id) }) : t('console.harness.delegatedEnd', { name: harnessName(p.id), stop: String(p.stopReason || '') }))); break;
       case 'harness.reasoning': detail(el('details', { class: 'res reason' }, el('summary', {}, t('console.harness.reasoning', { name: harnessName(p.id) })), el('pre', {}, String(p.text || '')))); break;
       case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: toolStatusKey(p.status) ? t(toolStatusKey(p.status)) : p.status }))); break;
-      case 'harness.permission': detail(el('div', { class: 'ev' }, t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target }))); break;
+      case 'harness.permission': {
+        // Quem negou e por quê (A3): a política (com o motivo) ou o próprio Pai.
+        const denied = p.decision === 'deny';
+        const byPolicy = denied && p.reason && p.reason !== 'aprovação humana';
+        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: p.reason, tool: p.tool, target: p.target })
+          : denied ? t('console.harness.deniedByYou', { tool: p.tool, target: p.target })
+          : t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target });
+        detail(el('div', { class: 'ev' }, text)); break;
+      }
       case 'harness.posture': if (postureKey(p)) detail(el('div', { class: 'ev' }, t(postureKey(p), { name: harnessName(p.id), mode: p.mode }))); break;
       case 'harness.unasked': speak(el('div', { class: 'ev err' }, t('console.harness.unasked', { name: harnessName(p.id), title: p.title }))); break;
       case 'harness.error': speak(el('div', { class: 'ev err' }, t('console.harness.error', { name: harnessName(p.id), reason: p.reason }))); break;
@@ -786,6 +802,11 @@ function feedItems(evs) {
 let lastFeedKey = '';
 const DECISION = { allow: 'console.harness.decision.allow', approve: 'console.harness.decision.approve', deny: 'console.harness.decision.deny' };
 const harnessName = (id) => (harnesses.find((h) => h.id === id) || {}).name || id;
+// Rótulo e classe do balão de quem fala (A2): o Buddy com o emblema; o harness com o ícone e o nome dele.
+const speakerClass = (sp) => (sp.kind === 'buddy' ? 'bubble buddy' : 'bubble buddy harness');
+const speakerWho = (sp) => (sp.kind === 'buddy'
+  ? el('span', { class: 'who' }, t('console.feed.buddy'))
+  : el('span', { class: 'who' }, harnessIcon((harnesses.find((h) => h.id === sp.id)) || { id: sp.id }), t('console.feed.harnessSays', { name: sp.name })));
 
 // ---------- Andamento ao vivo (rev. 6, critério 31) ----------
 // Fase, tempo, raciocínio e texto chegando em cadência; a fila com Direcionar e Cancelar; Parar.
@@ -818,7 +839,10 @@ function renderLive() {
       d.addEventListener('toggle', () => { reasonOpen = d.open; });
       kids.push(d);
     }
-    if (r.text) kids.push(el('div', { class: 'bubble buddy typing', id: 'liveText' }, el('span', { class: 'who' }, t('console.feed.buddy')), el('span', { id: 'liveTextBody' }, r.text.slice(0, shown))));
+    if (r.text) {
+      const sp = speakerOf(String(r.route || '').startsWith('acp:') ? r.route.slice(4) : null, harnesses);
+      kids.push(el('div', { class: speakerClass(sp) + ' typing', id: 'liveText' }, speakerWho(sp), el('span', { id: 'liveTextBody' }, r.text.slice(0, shown))));
+    }
   }
   for (const q of (l && l.queue) || []) {
     kids.push(el('div', { class: 'queued' }, el('span', { class: 'who' }, t('console.queue.title')), q.task,
@@ -1115,8 +1139,22 @@ function renderHarnessList() {
     return el('button', { class: 'mrow', role: 'option', 'aria-selected': String(chosen === id), onclick: () => { chooseHarness(id); hPop(false); } },
       icon, el('span', { class: 'tx' }, el('b', {}, name), el('small', {}, desc)), v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null);
   };
+  // Negada a primeira execução, o Pai pode rever a decisão (A1): pede um pedido de aprovação novo.
+  const review = (id) => el('button', { class: 'mrow', onclick: () => { hPop(false); reviewHarness(id); } }, el('span', { class: 'tx' }, el('b', {}, t('console.harness.firstRun.review'))));
   $('hList').replaceChildren(row('buddy', buddyMark(), 'Buddy', t('console.harness.buddyDesc'), null),
-    ...harnesses.map((h) => row(h.id, harnessIcon(h), h.name, (probes[h.id] && probes[h.id].reason) || h.description || '', probes[h.id])));
+    ...harnesses.flatMap((h) => [row(h.id, harnessIcon(h), h.name, (probes[h.id] && probes[h.id].reason) || h.description || '', probes[h.id]),
+      ...(probes[h.id] && probes[h.id].state === 'negado' ? [review(h.id)] : [])]));
+}
+// Rever a negação da primeira execução (A1): o núcleo refaz o pedido; a sonda e a lista de aprovações mostram o estado novo.
+async function reviewHarness(hid) {
+  try {
+    await api('harness.firstRun.reset', { id: hid });
+    approvalNote = t('console.harness.firstRun.reviewed');
+    probes[hid] = await api('harness.probe', { id: hid });
+  } catch (e) { approvalNote = e.message; }
+  renderHarnessPill();
+  if (!$('hPop').hidden) renderHarnessList();
+  await refreshApprovals();
 }
 // Lista ancorada no botão (no celular, folha embaixo); um clique fora, Esc ou a escolha fecham.
 function hPop(open) {

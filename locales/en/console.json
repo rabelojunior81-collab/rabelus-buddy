@@ -39,6 +39,7 @@
       "empty": "Write a task or open a run.",
       "you": "You",
       "buddy": "Buddy",
+      "harnessSays": "{{name}}",
       "tool": "Tool",
       "result": "Result",
       "session": "Session {{session}}",
@@ -164,6 +165,10 @@
       "listTitle": "Harness · who runs it",
       "foot": "Found on this computer · icons from the official ACP registry",
       "buddyDesc": "Rabelus Buddy's own agent, with your providers",
+      "firstRun": {
+        "review": "Review decision",
+        "reviewed": "Approval requested again: approve or deny on the card."
+      },
       "placeholder": "Write to {{name}}…",
       "state": {
         "checking": "checking…",
@@ -184,6 +189,8 @@
       },
       "tool": "{{title}} · {{status}}",
       "permission": "Permission {{decision}}: {{tool}} {{target}}",
+      "deniedByPolicy": "Denied by policy ({{reason}}): {{tool}} {{target}}",
+      "deniedByYou": "Denied by you: {{tool}} {{target}}",
       "decision": {
         "allow": "granted by policy",
         "approve": "approved by you",

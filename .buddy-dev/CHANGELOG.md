@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0033 · 2026-10-15T171930-0300 · claude-code-vs-code-7ebb05 · decisao
-
-SPEC 0001 aprovada pelo Pai (rev. 3, decisão 8 = A) e mergeada; ADR 0015: ordem de provedores OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga); typescript e @types/node aprovados no registro. Regra: aprovado é mergeado na hora. Ficha pi-agent para a pergunta de forkar o Pi.
-
 ### #0034 · 2026-10-15T172109-0300 · claude-code-vs-code-7ebb05 · processo
 
 Sessão claude-code-vs-code-7ebb05: SPEC 0001 aprovada e mergeada (PR #17), branches locais mergeadas removidas, ADR 0015, ficha do Pi com recomendação de compor no M1 (não forkar). Post: Forkar Não É Economizar.
@@ -207,3 +203,7 @@ M1.4: ferramenta delegate do Buddy (critério 8): turno de harness compartilhado
 ### #0082 · 2026-10-20T024916-0300 · claude-code-desktop-d0610a · processo
 
 Sessão claude-code-desktop-d0610a: posse no Claude Code Desktop (#74), console sem token na URL (M1.5e, #75), delegação do Buddy (M1.4, #76) com checagem real no navegador in-app; núcleo do Pai na M1.4. Post: Duas Vozes na Mesma Conversa.
+
+### #0083 · 2026-10-20T102255-0300 · claude-code-desktop-6e2164 · feat
+
+Piloto de paralelismo, ondas 1 e 2: 4 pesquisas (3 fichas) e 4 correções do uso real do Pai por subagentes Haiku em worktrees, integradas e ensaiadas no navegador in-app (rever negação, fora da pasta pergunta, quem negou, quem fala, regra explicativa no bd); token da console trocado; decisões do Pai na MEMORY e no AGENTS; bd surfaces ignora os worktrees.

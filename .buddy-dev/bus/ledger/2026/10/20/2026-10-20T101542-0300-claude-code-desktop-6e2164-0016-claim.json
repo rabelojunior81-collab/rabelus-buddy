@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T101542-0300-claude-code-desktop-6e2164-0016",
+  "ts": "2026-10-20T10:15:42-03:00",
+  "utc": "2026-10-20T13:15:42.524Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 16,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "claim",
+  "summary": ".gitignore",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-20T13:45:42.524Z",
+    "tookOverFrom": null
+  }
+}

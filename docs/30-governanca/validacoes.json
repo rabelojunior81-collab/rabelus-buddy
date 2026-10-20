@@ -368,7 +368,8 @@
       "mecanismo": {},
       "estado": "recorrente",
       "origem": "METODO §2",
-      "tipo": "decisao"
+      "tipo": "decisao",
+      "explicacao": "Antes de começar cada etapa grande do produto, eu levo ao Pai, explicado aqui na conversa, o que ela vai entregar, como vamos saber que deu certo e as escolhas que dependem dele. Ele aprova, ajusta ou recusa; só depois disso eu escrevo código."
     },
     {
       "id": "escolha-da-tui",
@@ -380,7 +381,8 @@
       "mecanismo": {},
       "estado": "pendente",
       "origem": "ADR 0016",
-      "tipo": "decisao"
+      "tipo": "decisao",
+      "explicacao": "O Rabelus Buddy também vai ter uma versão para o terminal, em modo texto. Há duas bibliotecas candidatas para desenhar essa tela. Eu preparo as mesmas telas nas duas, o Pai vê lado a lado numa sessão comigo e escolhe a que prefere. Acontece depois que a console estiver validada."
     },
     {
       "id": "login-chatgpt-real",
@@ -667,11 +669,13 @@
       "mecanismo": {
         "teste": "packages/core/test/console-modelo.test.ts"
       },
-      "estado": "pendente",
+      "estado": "bloqueada",
       "origem": "SPEC 0002, critério 11; pedido do Pai em 2026-10-19 (ver, testar e validar no layout novo)",
       "tipo": "acao",
       "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); em Ajustes, conferir a pasta de trabalho; na pílula do modelo (ou Ctrl+K), aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar \"Responda em texto, sem usar ferramentas: diga olá em uma frase.\"; Nova conversa, na pílula Buddy escolher OpenCode e esperar \"pronto\", enviar \"Crie o arquivo teste-do-pai.txt com a palavra ok e diga se conseguiu.\" e clicar em Aprovar no cartão",
-      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md"
+      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md",
+      "motivo": "Em 20/10 o Pai usou a console e achou problemas que impedem uma validação justa: a negação de um agente não tinha volta, com um agente escolhido não dava para escolher modelo nem modo, um pedido fora da pasta foi negado em silêncio e o agente parou, e a fala do agente aparecia como do Buddy. A validação volta depois dessas correções e da escolha de opções por agente.",
+      "explicacao": "O Pai usa a console nova como no dia a dia e diz se ela está boa: o visual na prática, escolher um modelo do ChatGPT com esforço alto, e pedir a um agente instalado (o OpenCode) que crie um arquivo, aprovando pelo cartão. Hoje está parada até as correções que ele mesmo encontrou."
     },
     {
       "id": "anexos-e-imagem",
@@ -717,6 +721,66 @@
       },
       "origem": "SPEC 0002, critério 8",
       "evidencia": "docs/registros/2026-10-20T023359-0300-checagem-real-da-delegacao-do-buddy-m1-4/README.md"
+    },
+    {
+      "id": "rever-negacao-da-primeira-execucao",
+      "descricao": "A negação da primeira execução de um harness pode ser revista: harness.firstRun.reset registra o reset e pede aprovação nova; a negação antiga continua no log; só vale para o que está negado",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/rever-negacao.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "quem-fala-na-conversa",
+      "descricao": "O balão da conversa mostra quem falou: o Buddy na execução dele, o harness (nome e ícone) na execução do harness, ao vivo e na resposta final",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-quem-fala.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "fora-da-pasta-pergunta",
+      "descricao": "Pedido de harness fora da pasta de trabalho vira aprovação com o caminho completo quando o Pai está na conversa; sem o Pai, é negado; caminho protegido segue negado; a tela diz se quem negou foi a política ou o Pai",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/permissao-fora-da-pasta.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "explicacao-do-pai",
+      "descricao": "Pendência do Pai não concluída exige explicação em linguagem comum (120 caracteres ou mais, sem código interno nem caminho de arquivo); a lista do que aguarda o Pai mostra a explicação",
+      "quem": "maquina",
+      "onde": [
+        "correções do uso real (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "scripts/test/validacoes.test.mjs"
+      },
+      "origem": "uso real do Pai, 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
     }
   ]
 }

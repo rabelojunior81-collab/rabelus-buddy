@@ -39,6 +39,7 @@
       "empty": "Escreva uma tarefa ou abra uma execução.",
       "you": "Você",
       "buddy": "Buddy",
+      "harnessSays": "{{name}}",
       "tool": "Ferramenta",
       "result": "Resultado",
       "session": "Sessão {{session}}",
@@ -164,6 +165,10 @@
       "listTitle": "Harness · quem executa",
       "foot": "Encontrados neste computador · ícones do registro oficial do ACP",
       "buddyDesc": "o agente do Rabelus Buddy, com os seus provedores",
+      "firstRun": {
+        "review": "Rever decisão",
+        "reviewed": "Pedido de aprovação refeito: aprove ou negue no cartão."
+      },
       "placeholder": "Escreva para o {{name}}…",
       "state": {
         "checking": "conferindo…",
@@ -184,6 +189,8 @@
       },
       "tool": "{{title}} · {{status}}",
       "permission": "Permissão {{decision}}: {{tool}} {{target}}",
+      "deniedByPolicy": "Negada pela política ({{reason}}): {{tool}} {{target}}",
+      "deniedByYou": "Negada por você: {{tool}} {{target}}",
       "decision": {
         "allow": "liberada pela política",
         "approve": "aprovada por você",

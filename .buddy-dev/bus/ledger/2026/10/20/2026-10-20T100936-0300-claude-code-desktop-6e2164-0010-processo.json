@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T100936-0300-claude-code-desktop-6e2164-0010",
+  "ts": "2026-10-20T10:09:36-03:00",
+  "utc": "2026-10-20T13:09:36.238Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 10,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "processo",
+  "summary": "Token da console do Pai trocado (decisão 1): núcleo ocioso parado, token novo gravado no estado sem impressão, núcleo de volta (pid 18528, main 812afaa); cookie antigo recebe 401; aba do Pai no navegador in-app reaberta por bilhete. A aba do Chrome do Pai precisa do atalho uma vez.",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T101342-0300-claude-code-desktop-6e2164-0012",
+  "ts": "2026-10-20T10:13:42-03:00",
+  "utc": "2026-10-20T13:13:42.515Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 12,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-20T13:43:42.515Z",
+    "tookOverFrom": null
+  }
+}

@@ -70,6 +70,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Varredura de órfãos e quebrados é rotina, sempre: ligações, lógicas e arquivos (Pai, 2026-10-18) | `bd orfaos` (`scripts/lib/orfaos.mjs`, testado): links relativos quebrados, documentação sem referência, exportação sem uso; no `bd post` e na CI |
 | Compactação de contexto não quebra o mecanismo: a retomada traz o contexto essencial de governança (sessão, escopo, git, claims, servidores, o que aguarda o Pai, próximo passo, últimos registros, o que fazer e o que não fazer) (Pai, 2026-10-18) | `bd contexto` (`scripts/lib/contexto.mjs`, testado); gancho `SessionStart` (startup, resume, clear, compact) e `PostCompact` do Claude Code em `.claude/settings.json`; a compactação fica no ledger, e o resumo, fora do repositório |
 | Servidor de conferência tem dono e fim: registrado, reaproveitado (nunca outro numa porta nova), encerrado com a árvore de processos; nunca esquecido (Pai, 2026-10-18) | `bd serve` (`scripts/lib/servers.mjs`, testado); `bd pre` e `bd post` mostram os vivos; `session end` recusa com servidor da sessão rodando |
+| Tudo o que precisa do Pai (decidir, testar, aprovar) vem explicado no texto da sessão: o que é, por que importa, opções com recomendação e consequências; código interno nunca aparece sozinho (Pai, 2026-10-20) | conduta (§5.11); `bd validacoes` reprova pendência do Pai sem explicação em linguagem comum |
 | Segredo nunca entra no repositório | `.gitignore`; gitleaks em todo o histórico na CI (`.github/workflows/ci.yml`); falso positivo só por impressão digital exata no `.gitleaksignore`, com justificativa (nunca por regra ou arquivo); canário de teste gerado na hora |
 
 ## 4. Trabalho em paralelo
@@ -94,6 +95,7 @@ Sessões e claims ficam no diretório comum do git e são vistos por todos os wo
 8. **Só parar quando o Pai precisar fazer ou decidir algo** (Pai, 2026-10-16). Plano aprovado se executa sub-fase após sub-fase, com o rito completo em cada uma; a parada vem com o que ele precisa fazer ou decidir, e as validações dele ficam em `validacoes.json` (aparecem em todo `bd pre`).
 9. **Teste com servidor falso prova o contrato que eu imaginei, não o mundo** (2026-10-17). Integração com serviço externo só se declara pronta depois de uma checagem contra o serviço real, até onde dá sem a conta do Pai, registrada em `docs/registros/`.
 10. **Autoverificação, autoaprendizado e autoevolução** (Pai, 2026-10-18). Antes, durante e depois de cada passo, eu me confiro sozinho (`bd verifica`); registro o fato na hora; quando falho, a lição vai para a LEARNING-CURVE, a regra para a MEMORY, o mecanismo para o `bd` com teste, e audito o histórico atrás do mesmo tipo de falha. Falha banal de governança é inaceitável.
+11. **Explicar em texto, na sessão** (Pai, 2026-10-20). O que precisa do Pai chega explicado na própria conversa, não só em relatórios, documentos ou posts que eu cito: o que é, por que importa, as opções com a minha recomendação e o que acontece em cada uma. Nome interno ("M1.6", critério, ADR) e caminho de arquivo só aparecem traduzidos ao lado. O Pai não deve precisar caçar arquivos para decidir.
 
 ## 6. Mapa
 

@@ -8,6 +8,27 @@ import { join } from 'node:path';
 export const VALIDACOES = 'docs/30-governanca/validacoes.json';
 const QUEM = ['maquina', 'buddy', 'pai'];
 const CAMPOS = ['id', 'descricao', 'quem', 'onde', 'origem'];
+// Regra do Pai (2026-10-20): o que precisa dele vem explicado em linguagem comum, sem código interno.
+const EXPLICACAO_MIN = 120;
+const CODIGO_INTERNO = [
+  /\bM\d+(\.\d+)?[a-z]?\b/,
+  /\bcrit[ée]rio\s+\d+/i,
+  /\bADR\s*\d{3,4}\b/,
+  /\bSPEC\s*\d{3,4}\b/,
+  /[\w.-]+\/[\w./-]+\.(md|json|ts|mjs|html)\b/,
+];
+
+function explicacaoProblems(who, v) {
+  const ex = typeof v.explicacao === 'string' ? v.explicacao.trim() : '';
+  if (!ex) return [`${who}: entrada do Pai sem a explicação em linguagem comum (campo explicacao)`];
+  const out = [];
+  if (ex.length < EXPLICACAO_MIN) out.push(`${who}: a explicação tem ${ex.length} caracteres (mínimo ${EXPLICACAO_MIN}); explique em linguagem comum o que o Pai precisa fazer ou decidir`);
+  for (const re of CODIGO_INTERNO) {
+    const m = ex.match(re);
+    if (m) out.push(`${who}: a explicação cita código interno ("${m[0]}"); escreva em linguagem comum`);
+  }
+  return out;
+}
 
 function workflows(root) {
   const dir = join(root, '.github/workflows');
@@ -47,16 +68,23 @@ export function checkValidations(root) {
   const prontaParaOPai = new Set();
   for (const v of list.filter((x) => x.quem === 'pai')) {
     const who = v.id ?? '(sem id)';
+    // Toda entrada do Pai que não está concluída precisa de explicação em linguagem comum.
+    const porExplicacao = v.estado !== 'feito' ? explicacaoProblems(who, v) : [];
+    problems.push(...porExplicacao);
+    const comExplicacao = porExplicacao.length === 0;
     if (!['decisao', 'acao'].includes(v.tipo)) { problems.push(`${who}: validação do Pai sem tipo (decisao ou acao)`); continue; }
     if (v.estado === 'bloqueada') { if (!v.motivo) problems.push(`${who}: bloqueada sem motivo`); continue; }
-    if (v.tipo === 'decisao') { prontaParaOPai.add(v.id); continue; }
+    if (v.tipo === 'decisao') { if (comExplicacao) prontaParaOPai.add(v.id); continue; }
     const before = problems.length;
     if (!v.como) problems.push(`${who}: ação do Pai sem "como"`);
     else if (/\b(terminal|cli|powershell|prompt de comando)\b|\brbuddy\s/i.test(`${v.como} ${v.descricao}`)) problems.push(`${who}: ação do Pai por terminal ou CLI (o Pai usa UX/UI)`);
     if (!v.ensaio) problems.push(`${who}: ação do Pai sem ensaio registrado (docs/registros/…)`);
     else if (!existsSync(join(root, v.ensaio))) problems.push(`${who}: o ensaio ${v.ensaio} não existe`);
-    if (problems.length === before) prontaParaOPai.add(v.id);
+    if (comExplicacao && problems.length === before) prontaParaOPai.add(v.id);
   }
-  const aguardaPai = list.filter((v) => v.quem === 'pai' && v.estado === 'pendente' && prontaParaOPai.has(v.id));
+  // "aguarda o Pai" mostra a explicação no lugar da descrição, quando existe.
+  const aguardaPai = list
+    .filter((v) => v.quem === 'pai' && v.estado === 'pendente' && prontaParaOPai.has(v.id))
+    .map((v) => ({ ...v, descricao: v.explicacao ?? v.descricao }));
   return { problems, aguardaPai, total: list.length };
 }

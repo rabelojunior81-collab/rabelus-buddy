@@ -8,6 +8,8 @@
 // Conversa (session/prompt), na forma do SDK 1.9.0: raciocínio (agent_thought_chunk), texto em pedaços
 // (agent_message_chunk) e uma ferramenta (tool_call e tool_call_update). FAKE_ACP_GAP: ms entre atualizações.
 // FAKE_ACP_PROMPT=permission: pede permissão (session/request_permission) e conta a resposta no texto.
+//   FAKE_ACP_PERM_PATH: caminho absoluto do arquivo do pedido de permissão (no lugar do README.md da pasta de trabalho),
+//                       para testar arquivo fora da pasta (A3). Sem a variável, o comportamento é o mesmo.
 // FAKE_ACP_PREAMBLE: texto antes da ferramenta (o OpenCode real anuncia o que vai fazer, 2026-10-18).
 // M1.2d, na forma medida em 2026-10-18 no Codex e no OpenCode reais:
 //   FAKE_ACP_MODES=1: session/new declara a opção "mode" (read-only, agent) e aceita session/set_config_option;
@@ -87,7 +89,7 @@ else {
           sessionId,
           toolCall: kind === 'execute'
             ? { toolCallId: 't2', title: generic ? 'Run command' : 'npm install', kind, status: 'pending' }
-            : { toolCallId: 't2', title: 'Editar README.md', kind, status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'README.md') }] },
+            : { toolCallId: 't2', title: 'Editar README.md', kind, status: 'pending', locations: [{ path: process.env.FAKE_ACP_PERM_PATH || join(cwds.get(sessionId) ?? '.', 'README.md') }] },
           options: [{ optionId: 'ok', name: 'Permitir', kind: 'allow_once' }, { optionId: 'always', name: 'Sempre', kind: 'allow_always' }, { optionId: 'no', name: 'Negar', kind: 'reject_once' }],
         });
         extra = ` Permissão: ${r.outcome.outcome === 'selected' ? r.outcome.optionId : r.outcome.outcome}.`;

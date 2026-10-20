@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T101517-0300-claude-code-desktop-6e2164-0014",
+  "ts": "2026-10-20T10:15:17-03:00",
+  "utc": "2026-10-20T13:15:17.489Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 14,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "teste",
+  "summary": "Teste vermelho em scripts/test/surfaces.test.mjs: cópias em .claude/worktrees (worktrees dos subagentes) contavam como documento vivo e reprovavam o bd surfaces (8 passam, 1 falha). O teste e a correção vão no mesmo commit porque o gancho de commit roda o próprio surfaces e barraria o commit só do teste.",
+  "refs": [],
+  "data": {}
+}

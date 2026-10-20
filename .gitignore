@@ -22,3 +22,6 @@ workspace/
 
 # Artefatos do Playwright MCP (gravados na raiz do diretório de trabalho)
 .playwright-mcp/
+
+# Worktrees dos subagentes do piloto de paralelismo (fora do git; integração pelo buddy-dev)
+.claude/worktrees/

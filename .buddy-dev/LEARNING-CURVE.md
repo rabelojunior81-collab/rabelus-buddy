@@ -216,3 +216,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0032-#0032
 
 1. **Em 2026-10-15, uma sessão fechou com a explicação acompanhada da prova executada, e não da descrição dela.** Em 2026-10-20, abri o PR #76 sem ler a saída do `bd post`, que reprovava: um commit de código tinha saído sem registro. O mecanismo pegou, e a CI também. → Rodar a checagem não é o mesmo que ler o resultado dela. O passo seguinte (PR, merge) só começa depois de conferir na saída que a checagem passou, nunca porque ela "costuma passar".
+
+## lote #0033-#0033
+
+1. **Em 2026-10-15, o Pai aprovou a primeira especificação, com a regra "aprovado é mergeado na hora".** Em 2026-10-20, o Pai usou a console por conta própria e quebrou o produto nos dois lugares que tocou: negou um agente e não havia volta; aprovou comandos, e uma leitura que ele nunca viu foi negada. Meus ensaios só cobriam o caminho em que tudo é aprovado. → Ensaio que só aprova prova metade do produto. Todo ensaio passa a incluir negar, rever, sair da pasta e parar, nos agentes que existem, antes de pedir qualquer validação ao Pai; e uma etapa só se declara feita com tudo o que a especificação dela promete, ou com a lacuna escrita em todas as superfícies.

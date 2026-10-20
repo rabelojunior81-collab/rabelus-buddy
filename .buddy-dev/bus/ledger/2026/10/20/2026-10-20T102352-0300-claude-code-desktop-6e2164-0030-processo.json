@@ -1,0 +1,20 @@
+{
+  "v": 1,
+  "id": "2026-10-20T102352-0300-claude-code-desktop-6e2164-0030",
+  "ts": "2026-10-20T10:23:52-03:00",
+  "utc": "2026-10-20T13:23:52.907Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 30,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "processo",
+  "summary": "Registros atrasados dos três commits de código: a integração das missões foi registrada sem citar os hashes; o bd post pegou.",
+  "refs": [
+    "c11c495",
+    "ec59032",
+    "af1a194"
+  ],
+  "data": {}
+}
