@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T005032-0300-claude-code-vs-code-d51ce9-0012",
+  "ts": "2026-10-20T00:50:32-03:00",
+  "utc": "2026-10-20T03:50:32.241Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 12,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-3-multimodal",
+  "type": "pesquisa",
+  "summary": "Checagem real por ACP da M1.3a (mesmo PNG vermelho 16x16, RGB 220,20,20, como bloco image): OpenCode (agora 2.0.32, atualizado desde 2.0.31) respondeu 'Vermelho.' em 8,9 s; Codex (codex-acp 2.2.2) recebeu a imagem e respondeu 'Laranja' em 16,8 s, leitura imprecisa da cor, sem negar a imagem. Os dois declaram promptCapabilities.image.",
+  "refs": [],
+  "data": {}
+}
