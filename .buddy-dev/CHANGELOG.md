@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0029 · 2026-10-15T043545-0300 · claude-code-vs-code-5cfc7b · aprendizado
-
-Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela. AGENTS §5.4/§5.7, checklist do PR, linha Seguindo em paralelo no STATUS; LEARNING-CURVE #6.
-
 ### #0030 · 2026-10-15T044039-0300 · claude-code-vs-code-5cfc7b · doc
 
 M0 seguiu sem esperar as respostas do Pai: usage da Responses API verificado (store:false vira requisito), decisão 8 (TypeScript sem build), plano de fase M0 (8 sub-fases), desenho dos 21 testes, spike de banco e IPC aprovado em 3 SOs × Node 24/26 no CI.
@@ -207,3 +203,7 @@ M1.5c: seletor de modelo do catálogo real e os oito níveis de esforço no núc
 ### #0076 · 2026-10-19T121221-0300 · claude-code-vs-code-51d166 · ensaio
 
 M1.5d: ensaio da console nova no ambiente do Pai (ChatGPT em Muito alto, OpenCode com escrita aprovada), roteiro da validação registrado (validar-console-nova-m1-5, aguarda o Pai); token da console apareceu na saída da ferramenta de navegador, decisão de troca com o Pai
+
+### #0077 · 2026-10-20T010007-0300 · claude-code-vs-code-d51ce9 · feat
+
+M1.3: anexos no núcleo (hash na pasta de trabalho, referência no log, formato de cada rota, visão por rota, bloco image por ACP) e na console (anexar, arrastar, colar, recusa sem visão); checagem real com ChatGPT, Nemotron VL, OpenCode e Codex; resposta cortada pelo limite conta como vazia; plano com a M1.2 concluída

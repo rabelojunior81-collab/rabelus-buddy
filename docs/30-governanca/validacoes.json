@@ -672,6 +672,21 @@
       "tipo": "acao",
       "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); em Ajustes, conferir a pasta de trabalho; na pílula do modelo (ou Ctrl+K), aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar \"Responda em texto, sem usar ferramentas: diga olá em uma frase.\"; Nova conversa, na pílula Buddy escolher OpenCode e esperar \"pronto\", enviar \"Crie o arquivo teste-do-pai.txt com a palavra ok e diga se conseguiu.\" e clicar em Aprovar no cartão",
       "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md"
+    },
+    {
+      "id": "anexos-e-imagem",
+      "descricao": "Anexos: guardados na pasta de trabalho com hash, só a referência no log, conteúdo lido com o hash conferido, imagem no formato de cada rota, rota sem visão pulada com motivo, bloco image só para o harness que declara, resposta cortada pelo limite sem texto conta como vazia; na console, anexar, arrastar e colar, recusa de imagem sem visão, anexos na conversa",
+      "quem": "maquina",
+      "onde": [
+        "M1.3",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/anexos-console.test.ts"
+      },
+      "origem": "SPEC 0002, critério 9",
+      "evidencia": "docs/registros/2026-10-20T005032-0300-checagem-real-dos-anexos-e-da-imagem/README.md e docs/registros/2026-10-20T005856-0300-ensaio-dos-anexos-na-console-m1-3b/README.md"
     }
   ]
 }

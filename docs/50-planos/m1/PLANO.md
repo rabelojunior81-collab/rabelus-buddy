@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-20T00:51:00-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-20T00:59:25-03:00
 
 ## Objetivo
 
@@ -25,7 +25,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
   - [x] **M1.2e Login do harness** (critério 7), **só no núcleo** (**feita em 2026-10-19**): com `auth_required`, a conversa para por `needsLogin` com os métodos que o harness declara (sem os de terminal); `harness.login` chama `authenticate`, e o harness abre o navegador e guarda a própria credencial; método de terminal é recusado antes do `authenticate`. Teste com o harness falso; checagem real sem efeito para o Pai ([registro](../../registros/2026-10-19T103147-0300-checagem-real-do-login-do-harness-sem-efeito/README.md)). Por decisão do Pai em 2026-10-19, a participação dele foi transportada: o "Entrar" na tela é da M1.5, e o login dele num harness real é do ensaio da M1.6. O layout antigo impede ver, testar e validar.
 
 **Ordem a partir de 2026-10-19** (pedido do Pai): M1.2e (núcleo) → **M1.5** → M1.3 → M1.4 → M1.6 → M1.7. A M1.5 já podia correr em paralelo desde a M1.0, e os anexos da M1.3 vivem na caixa de mensagem nova.
-- [ ] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada
+- [x] **M1.3 Multimodal de entrada:** anexos na caixa de mensagem, tabela de visão medida, rotas sem visão puladas, imagem por ACP (critério 9); checagem real com ChatGPT e Nemotron registrada (**feita em 2026-10-20**; a imagem anexada pelo Pai é parte do ensaio real da M1.6)
   - [x] **M1.3a No núcleo** (**feita em 2026-10-20**):
     - anexo guardado na pasta de trabalho com o hash no nome, e só a referência no log;
     - imagem e texto no formato de cada rota;
@@ -33,7 +33,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
     - bloco `image` só para o harness que declara suporte.
 
     Checagem real: o ChatGPT, o Nemotron VL e o OpenCode entenderam a imagem, e o Codex a recebeu ([registro](../../registros/2026-10-20T005032-0300-checagem-real-dos-anexos-e-da-imagem/README.md)).
-  - [ ] **M1.3b Na console:** anexar, arrastar e colar na caixa de mensagem, com chips e remover; botão de imagem ativo só com visão; motivos à vista; ensaio no navegador real.
+  - [x] **M1.3b Na console** (**feita em 2026-10-20**): anexar, arrastar e colar na caixa de mensagem, com chips e remover; imagem recusada antes de subir quando quem executa não enxerga; anexos na conversa; motivos à vista. Ensaio no navegador real: o Nemotron VL respondeu a cor da imagem anexada pela console ([registro](../../registros/2026-10-20T005856-0300-ensaio-dos-anexos-na-console-m1-3b/README.md)).
 - [ ] **M1.4 Delegação:** ferramenta `delegar` do Buddy (critério 8)
 - [ ] **M1.5 Console nova** (inclui os níveis de esforço além de baixo, médio e alto que o ChatGPT declara: `xhigh`, `max`, `ultra`, executados no núcleo com teste antes de a console oferecê-los) (protótipo v4 **aprovado** pelo Pai em 2026-10-18, com a logomarca do Rabelus Lab ao lado do nome; ajustes visuais do Pai de 2026-10-18: cantos quadrados, liquid glass, compacto, transições, degradê, tipografia do rabelus.com; referências do Kanban e dos Bots do Hermes): o protótipo aprovado vira a console, com tudo do M0 rearranjado e o contraste AA medido (critério 11); ensaio no navegador real
   - [x] **M1.5a Casca nova com tudo do M0** (**feita em 2026-10-19**, ensaiada no navegador real: [registro](../../registros/2026-10-19T105620-0300-ensaio-da-console-nova-m1-5a/README.md)):

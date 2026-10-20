@@ -45,6 +45,9 @@ test('página: anexar, arrastar e colar; sobe na hora; chips; a tarefa leva os h
   assert.match(PAGE, /params\.attachments = pending/, 'a tarefa leva os anexos');
   assert.match(PAGE, /m\.attachments/, 'a mensagem mostra os anexos');
   assert.match(PAGE, /noVisionRoute: 'console\.reason\.noVisionRoute'/);
+  // Ensaio a 375 px (2026-10-20): o 📎 herdava o "dividir o espaço" das pílulas e espremia o modelo; ele tem só o tamanho dele.
+  const mobile = PAGE.slice(PAGE.indexOf('@media (max-width: 720px)'));
+  assert.match(mobile, /#aBtn \{ flex: none;/, 'no celular, o botão de anexar não divide o espaço');
   assert.match(PAGE, /attachmentMissing: 'console\.reason\.attachmentMissing'/);
   for (const lang of ['pt-BR', 'en']) {
     const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as { console: { reason: Record<string, unknown> } };
