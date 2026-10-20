@@ -48,13 +48,14 @@ test('console: só 127.0.0.1, com token e Host exato; sem token 401, Host estran
   const { port, token } = consoleOf(home);
   if (process.platform !== 'win32') assert.equal(statSync(consolePath(home)).mode & 0o777, 0o600);
   const st = (await call(endpointFor(home), 'daemon.status', {})) as { console?: { url: string } };
-  assert.equal(st.console?.url, `http://127.0.0.1:${port}/?t=${token}`);
+  assert.equal(st.console?.url, `http://127.0.0.1:${port}/`, 'endereço limpo, sem token (critério 16)');
 
   assert.equal((await request(port, 'GET', '/')).status, 401);
   assert.equal((await request(port, 'GET', `/?t=errado`)).status, 401);
-  assert.equal((await request(port, 'GET', `/?t=${token}`, { host: `evil.example:${port}` })).status, 403);
-  assert.equal((await request(port, 'GET', `/?t=${token}`, { host: `localhost:${port}` })).status, 403, 'só o Host exato');
-  const page = await request(port, 'GET', `/?t=${token}`);
+  assert.equal((await request(port, 'GET', '/', { token, host: `evil.example:${port}` })).status, 403);
+  assert.equal((await request(port, 'GET', '/', { token, host: `localhost:${port}` })).status, 403, 'só o Host exato');
+  assert.equal((await request(port, 'GET', `/?t=${token}`)).status, 303, 'o ?t= vira cookie e volta à URL limpa (critério 16)');
+  const page = await request(port, 'GET', '/', { token });
   assert.equal(page.status, 200);
   assert.match(page.type, /text\/html/);
 
@@ -74,7 +75,7 @@ test('console: toda chave de catálogo usada pela página existe em pt-BR e en (
   const home = tempHome();
   owners.push(await spawnOwner(home, { RBUDDY_CONSOLE_PORT: '0' }));
   const { port, token } = consoleOf(home);
-  const page = (await request(port, 'GET', `/?t=${token}`)).body;
+  const page = (await request(port, 'GET', '/', { token })).body;
   const used = new Set<string>([...page.matchAll(/data-i18n(?:-[a-z]+)?="([a-zA-Z0-9_.]+)"/g), ...page.matchAll(/\bt\('([a-zA-Z0-9_.]+)'/g)].map((m) => m[1]!));
   assert.ok(used.size > 30, `a página usa ${used.size} chaves`);
   for (const lang of ['pt-BR', 'en']) {
