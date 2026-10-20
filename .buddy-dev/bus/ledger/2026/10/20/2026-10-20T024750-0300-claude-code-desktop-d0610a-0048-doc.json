@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024750-0300-claude-code-desktop-d0610a-0048",
+  "ts": "2026-10-20T02:47:50-03:00",
+  "utc": "2026-10-20T05:47:50.185Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 48,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d0610a",
+  "type": "doc",
+  "summary": "Diário de 2026-10-20, seção da sessão d0610a (posse no Desktop, M1.5e, M1.4 com checagem real, erro do PR antes do bd post, lições, o que aguarda o Pai).",
+  "refs": [],
+  "data": {}
+}

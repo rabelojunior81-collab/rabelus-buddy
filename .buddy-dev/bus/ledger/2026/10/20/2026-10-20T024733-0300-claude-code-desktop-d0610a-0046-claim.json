@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024733-0300-claude-code-desktop-d0610a-0046",
+  "ts": "2026-10-20T02:47:33-03:00",
+  "utc": "2026-10-20T05:47:33.138Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 46,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d0610a",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-20T06:17:33.138Z",
+    "tookOverFrom": null
+  }
+}
