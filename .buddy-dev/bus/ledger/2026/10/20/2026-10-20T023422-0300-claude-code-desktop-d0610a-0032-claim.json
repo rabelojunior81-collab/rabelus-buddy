@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T023422-0300-claude-code-desktop-d0610a-0032",
+  "ts": "2026-10-20T02:34:22-03:00",
+  "utc": "2026-10-20T05:34:22.076Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 32,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "claim",
+  "summary": "CHANGELOG.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-20T06:04:22.076Z",
+    "tookOverFrom": null
+  }
+}

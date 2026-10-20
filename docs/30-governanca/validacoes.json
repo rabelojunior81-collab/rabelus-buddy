@@ -702,6 +702,21 @@
       },
       "origem": "SPEC 0002, critério 16",
       "evidencia": "docs/registros/2026-10-20T020509-0300-ensaio-da-console-sem-token-na-url-m1-5e/README.md"
+    },
+    {
+      "id": "delegacao-do-buddy",
+      "descricao": "Delegação: a ferramenta delegate oferece os harnesses prontos, abre o turno no harness e traz a resposta; efeito harness.delegate com recibo; permissão do harness como aprovação com o nome de quem pede; recusa vira permissionDenied; parar o Buddy cancela o harness; harness desconhecido vira harnessUnavailable; a conversa mostra a quem delegou; o texto do harness não aparece ao vivo como fala do Buddy",
+      "quem": "maquina",
+      "onde": [
+        "M1.4",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/delegacao.test.ts"
+      },
+      "origem": "SPEC 0002, critério 8",
+      "evidencia": "docs/registros/2026-10-20T023359-0300-checagem-real-da-delegacao-do-buddy-m1-4/README.md"
     }
   ]
 }

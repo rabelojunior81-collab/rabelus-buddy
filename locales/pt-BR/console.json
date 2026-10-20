@@ -189,6 +189,10 @@
         "approve": "aprovada por você",
         "deny": "negada"
       },
+      "delegatedStart": "O Buddy delegou a {{name}}: {{task}}",
+      "delegatedDone": "{{name}} terminou a parte delegada",
+      "delegatedEnd": "{{name}} parou a parte delegada ({{stop}})",
+      "reasoning": "Raciocínio de {{name}}",
       "postureAsk": "{{name}} pede permissão antes de editar ou executar",
       "postureReadOnly": "{{name}} trabalha em modo somente leitura e pede permissão para editar",
       "postureMode": "{{name}} trabalha no modo {{mode}}",

@@ -14,17 +14,17 @@ import { Policy, type Scope, type Tool } from './policy.ts';
 import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
-import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
+import { Agent, type AgentProgress, type AgentResult, type Delegate } from './agent.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
 import { buildModelCatalog, CATALOG_VERSION, measuredVision, type ModelCatalog } from './models/catalog.ts';
-import { AttachmentError, loadAttachment, storeAttachment, type Attachment } from './attachments.ts';
+import { AttachmentError, loadAttachment, storeAttachment, type Attachment, type AttachmentFile } from './attachments.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
 import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec } from './harness/client.ts';
-import { NeedsLogin, NoImageSupport, promptTurn } from './harness/session.ts';
+import { NeedsLogin, NoImageSupport, promptTurn, type TurnResult } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 import { EFFORTS, type Effort } from './providers/types.ts';
 
@@ -167,6 +167,7 @@ export async function startOwner(home: string): Promise<Owner> {
       onProgress,
       inbox: (run: string) => inboxes.get(run)?.splice(0) ?? [],
       vision: visionOf(),
+      delegate: delegateFor(workspace, p.interactive === true, signal),
     });
   };
   // Visão por rota (M1.3, critério 9): o catálogo medido diz por modelo; sem ele, a tabela medida da SPEC.
@@ -242,11 +243,72 @@ export async function startOwner(home: string): Promise<Owner> {
   // são escrita; execução e o que não se conhece pedem aprovação de uma vez, como comando.
   const WRITES = ['edit', 'delete', 'move'];
   const toolOfKind = (kind?: string): Tool => (kind === 'read' || kind === 'search' ? 'read_file' : WRITES.includes(kind ?? '') ? 'write_file' : 'run_command');
-  const startHarnessRun = (session: string, task: string, p: Record<string, unknown>, h: { id: string; name: string; spec: LaunchSpec }): string => {
+  type HarnessRef = { id: string; name: string; spec: LaunchSpec };
+  // Um turno com o harness, com a postura, as permissões pelo núcleo e o andamento no log da execução. Serve à
+  // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
+  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+    const policy = new Policy(log, { workspace: o.workspace });
+    let reasoning = '';
+    const titles = new Map<string, string>();
+    const kinds = new Map<string, string>();
+    const asked = new Set<string>();
+    const warned = new Set<string>();
+    let denied = false;
+    const r = await promptTurn(postureOf(h), {
+      cwd: o.workspace, task: o.task, signal: o.signal, preferMode: 'read-only',
+      // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
+      files: o.files ?? [],
+      onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
+      onUpdate: (u) => {
+        if (u.kind === 'tool') {
+          const title = u.title || titles.get(u.id) || u.id;
+          titles.set(u.id, title);
+          if (u.toolKind) kinds.set(u.id, u.toolKind);
+          log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
+          onProgress(run, { kind: 'tool', name: title });
+          // Escrita ou execução concluída sem pedido de permissão: a postura não valeu (configuração gerenciada,
+          // harness sem modo). Fica registrado como aviso.
+          const kind = kinds.get(u.id) ?? 'other';
+          if (u.status === 'completed' && (WRITES.includes(kind) || kind === 'execute') && !asked.has(u.id) && !warned.has(u.id)) {
+            warned.add(u.id);
+            log.append(session, 'harness.unasked', { run, id: h.id, title, kind });
+          }
+        } else {
+          if (u.kind === 'reasoning') reasoning += u.delta;
+          // Na delegação, o texto do harness não vai ao vivo: ali ele apareceria como fala do Buddy (ensaio real, M1.4).
+          // Ele volta ao Buddy como resultado da ferramenta, e o Buddy responde.
+          if (u.kind === 'reasoning' || o.liveText !== false) onProgress(run, u);
+        }
+      },
+      onPermission: async (ask) => {
+        asked.add(ask.toolCallId);
+        const tool = toolOfKind(ask.kind);
+        // O Codex pede com o título genérico "Run command"; o comando veio antes no tool_call de mesmo id (2026-10-19).
+        const raw = tool === 'run_command' ? titles.get(ask.toolCallId) || ask.title : ask.paths[0] ?? ask.title;
+        const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
+        const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
+        const d = policy.decide({ session, tool, target: raw }, { interactive: o.interactive });
+        let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' ? 'allow' : 'deny';
+        if (d.effect === 'ask') {
+          const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${target}`);
+          decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
+        }
+        const pick = decision === 'deny'
+          ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
+          : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
+        if (decision === 'deny') denied = true;
+        const outcome = pick?.optionId ?? 'cancelled';
+        log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome });
+        domain.completeEffect(eff, { decision, outcome });
+        return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
+      },
+    });
+    return { r, denied, reasoning };
+  };
+  const startHarnessRun = (session: string, task: string, p: Record<string, unknown>, h: HarnessRef): string => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
     const interactive = p.interactive === true;
-    const policy = new Policy(log, { workspace });
     const ac = new AbortController();
     const attachments = attachmentsOf(session, p.attachments);
     const run = domain.startRun(session, task).id;
@@ -258,61 +320,9 @@ export async function startOwner(home: string): Promise<Owner> {
     log.append(session, 'run.options', { run, effort: null, route: null, harness: h.id });
     const done = (async (): Promise<AgentResult> => {
       const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
-      let reasoning = '';
-      const titles = new Map<string, string>();
-      const kinds = new Map<string, string>();
-      const asked = new Set<string>();
-      const warned = new Set<string>();
-      let denied = false;
       const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
       try {
-        const r = await promptTurn(postureOf(h), {
-          cwd: workspace, task, signal: ac.signal, preferMode: 'read-only',
-          // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
-          files: attachments.map((a) => loadAttachment(workspace, a)),
-          onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
-          onUpdate: (u) => {
-            if (u.kind === 'tool') {
-              const title = u.title || titles.get(u.id) || u.id;
-              titles.set(u.id, title);
-              if (u.toolKind) kinds.set(u.id, u.toolKind);
-              log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
-              onProgress(run, { kind: 'tool', name: title });
-              // Escrita ou execução concluída sem pedido de permissão: a postura não valeu (configuração gerenciada,
-              // harness sem modo). Fica registrado como aviso.
-              const kind = kinds.get(u.id) ?? 'other';
-              if (u.status === 'completed' && (WRITES.includes(kind) || kind === 'execute') && !asked.has(u.id) && !warned.has(u.id)) {
-                warned.add(u.id);
-                log.append(session, 'harness.unasked', { run, id: h.id, title, kind });
-              }
-            } else {
-              if (u.kind === 'reasoning') reasoning += u.delta;
-              onProgress(run, u);
-            }
-          },
-          onPermission: async (ask) => {
-            asked.add(ask.toolCallId);
-            const tool = toolOfKind(ask.kind);
-            // O Codex pede com o título genérico "Run command"; o comando veio antes no tool_call de mesmo id (2026-10-19).
-            const raw = tool === 'run_command' ? titles.get(ask.toolCallId) || ask.title : ask.paths[0] ?? ask.title;
-            const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
-            const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
-            const d = policy.decide({ session, tool, target: raw }, { interactive });
-            let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' ? 'allow' : 'deny';
-            if (d.effect === 'ask') {
-              const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${target}`);
-              decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
-            }
-            const pick = decision === 'deny'
-              ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
-              : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
-            if (decision === 'deny') denied = true;
-            const outcome = pick?.optionId ?? 'cancelled';
-            log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome });
-            domain.completeEffect(eff, { decision, outcome });
-            return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
-          },
-        });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)) });
         domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
         if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
         if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
@@ -341,6 +351,42 @@ export async function startOwner(home: string): Promise<Owner> {
     watch(session, run, done);
     return run;
   };
+  // Delegação do Buddy (SPEC 0002, critério 8): a ferramenta `delegate` abre um turno no harness dentro da execução
+  // do Buddy. As permissões passam pelo núcleo como na conversa; parar o Buddy cancela o harness (session/cancel).
+  // O resultado volta ao modelo; o efeito com identidade fica com o Agent.
+  const delegateFor = (workspace: string, interactive: boolean, signal?: AbortSignal): Delegate => ({
+    // Cópia local do registro, sem rede: a lista entra em toda execução do Buddy e não pode atrasá-la (o teste
+    // de direcionar pegou o atraso). A delegação em si atualiza o registro pelo harnessFor.
+    list: async () => {
+      return detectHarnesses(home, process.env).flatMap((v) => {
+        const spec = launchFor(v);
+        return spec && (!spec.needsApproval || firstRun(v, spec) === 'approved') ? [v.id] : [];
+      });
+    },
+    run: async (session, run, a) => {
+      let h: HarnessRef;
+      try { h = await harnessFor(a.harness); } catch (e) { return { ok: false, reason: 'harnessUnavailable', message: scrub((e as Error).message).slice(0, 300) }; }
+      log.append(session, 'harness.delegated', { run, id: h.id, phase: 'start', task: a.task.slice(0, 2000) });
+      const end = (stopReason: string) => log.append(session, 'harness.delegated', { run, id: h.id, phase: 'end', stopReason });
+      try {
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task: a.task, workspace, interactive, signal: signal ?? new AbortController().signal, liveText: false });
+        if (reasoning) log.append(session, 'harness.reasoning', { run, id: h.id, text: reasoning.slice(0, 20_000) });
+        end(r.stopReason);
+        const text = r.text.slice(0, 20_000);
+        if (r.stopReason === 'cancelled') return { ok: false, harness: h.id, reason: signal?.aborted ? 'userStopped' : denied ? 'permissionDenied' : 'harnessCancelled', stopReason: r.stopReason, text };
+        return { ok: true, harness: h.id, stopReason: r.stopReason, text };
+      } catch (e) {
+        const reason = scrub((e as Error).message).slice(0, 300);
+        end('error');
+        if (e instanceof NeedsLogin) {
+          log.append(session, 'harness.login.required', { run, id: h.id, methods: e.methods });
+          return { ok: false, harness: h.id, reason: 'needsLogin' };
+        }
+        log.append(session, 'harness.error', { run, id: h.id, reason });
+        return { ok: false, harness: h.id, reason: signal?.aborted ? 'userStopped' : 'harnessFailed', message: reason };
+      }
+    },
+  });
   const drain = (session: string, prev: string): void => {
     if (runningIn(session)) return;
     const next = queueOf(session)[0];

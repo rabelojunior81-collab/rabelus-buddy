@@ -56,6 +56,13 @@ export interface AgentOptions {
   inbox?: (run: string) => string[];
   // Visão por rota (M1.3, critério 9): mensagem com imagem pula a rota que não enxerga. Ausente: todas enxergam.
   vision?: (provider: string, model: string) => boolean;
+  // Delegação (M1.4, critério 8): o núcleo diz quais harnesses estão prontos e roda o turno delegado.
+  delegate?: Delegate;
+}
+
+export interface Delegate {
+  list: () => Promise<string[]>;
+  run: (session: string, run: string, a: { harness: string; task: string }) => Promise<Record<string, unknown> & { ok: boolean }>;
 }
 
 export type AgentProgress = Progress | { kind: 'call'; route: string; step: number } | { kind: 'exec'; name: string; step: number };
@@ -68,6 +75,13 @@ export const AGENT_TOOLS: ToolSpec[] = [
   { name: 'write_file', description: 'Escreve um arquivo no workspace (leia antes, se ele já existir).', parameters: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
   { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana a cada vez.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
 ];
+
+// A ferramenta de delegação só aparece com harness pronto; o enum diz ao modelo quais existem.
+export const delegateTool = (harnesses: string[]): ToolSpec => ({
+  name: 'delegate',
+  description: 'Delega uma subtarefa a outro agente de código instalado (harness, por ACP) e devolve a resposta dele. As permissões que ele pedir passam pelo Pai.',
+  parameters: { type: 'object', properties: { harness: { type: 'string', enum: harnesses, description: 'id do harness' }, task: { type: 'string', description: 'a subtarefa, completa e autossuficiente' } }, required: ['harness', 'task'] },
+});
 
 // ---------- Contexto ----------
 
@@ -164,9 +178,9 @@ export class Agent {
         domain.reconcileEffect(e.id, same ? 'done' : 'not-done');
         continue;
       }
-      // Comando: só o humano sabe se rodou. Aprovar = rodar de novo; negar = considerar feito.
+      // Comando ou delegação: só o humano sabe se rodou. Aprovar = rodar de novo; negar = considerar feito.
       if (!this.o.interactive || !this.o.awaitApproval) return this.stop(run, 'needsReconciliation', 0);
-      const d = await this.approve(session, `reconcile run_command ${e.target}`);
+      const d = await this.approve(session, e.kind === 'harness.delegate' ? `reconcile delegate ${e.target}` : `reconcile run_command ${e.target}`);
       domain.reconcileEffect(e.id, d === 'approve' ? 'not-done' : 'done');
     }
     const last = messages.at(-1);
@@ -188,6 +202,8 @@ export class Agent {
     const noEffort = new Set<string>(); // rotas que recusaram o esforço nesta execução
     const limit = this.o.contextLimit ?? CONTEXT_LIMIT;
     const max = first - 1 + (this.o.maxSteps ?? DEFAULT_MAX_STEPS);
+    const harnesses = this.o.delegate ? await this.o.delegate.list().catch(() => []) : [];
+    const tools = harnesses.length ? [...AGENT_TOOLS, delegateTool(harnesses)] : AGENT_TOOLS;
     for (let step = first; step <= max; step++) {
       if (this.o.signal?.aborted) return this.stop(run, 'userStopped', step - 1);
       if (policy.isPaused(session)) return this.stop(run, 'sessionPaused', step - 1);
@@ -200,7 +216,7 @@ export class Agent {
         sent = c.messages;
         log.append(session, 'context.compacted', { run, step, before, after: estimateTokens(sent), dropped: c.dropped });
       }
-      const call = await this.callModel(session, run, step, sent, rejected, noEffort);
+      const call = await this.callModel(session, run, step, sent, rejected, noEffort, tools);
       if ('stop' in call) return this.stop(run, call.stop, step - 1);
       const res = call.response;
       log.append(session, 'agent.step', { run, step, route: call.route, effort: call.effort ?? null, finish: res.finish, toolCalls: res.toolCalls.length, usage: res.usage });
@@ -232,7 +248,7 @@ export class Agent {
   }
 
   // Percorre a ordem de provedores; cada tentativa é um efeito com identidade e uma reserva.
-  private async callModel(session: string, run: string, step: number, messages: ChatMessage[], rejected: Set<string>, noEffort: Set<string>): Promise<{ response: ModelResponse; route: string; effort?: Effort } | { stop: string }> {
+  private async callModel(session: string, run: string, step: number, messages: ChatMessage[], rejected: Set<string>, noEffort: Set<string>, tools: ToolSpec[] = AGENT_TOOLS): Promise<{ response: ModelResponse; route: string; effort?: Effort } | { stop: string }> {
     const { domain, budget, policy, log, routes } = this.o;
     const maxOut = this.o.maxOutputTokens ?? DEFAULT_MAX_OUTPUT;
     let budgetBlocked = false;
@@ -272,7 +288,7 @@ export class Agent {
 
       const effect = domain.beginEffect(session, run, 'model.call', `${run}:step${step}:${name}`, name).id;
       const effort = this.o.effort && !noEffort.has(name) ? this.o.effort : undefined;
-      const req: ModelRequest = { model: r.model, messages: sent, tools: AGENT_TOOLS, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
+      const req: ModelRequest = { model: r.model, messages: sent, tools, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
       try {
         this.o.onProgress?.(run, { kind: 'call', route: name, step });
         const response = await r.provider.call(req, { session, ...(this.o.signal ? { signal: this.o.signal } : {}), ...(this.o.onProgress ? { onProgress: (p: Progress) => this.o.onProgress!(run, p) } : {}) });
@@ -368,6 +384,10 @@ export class Agent {
             return r.ok ? { ok: true, ...r.result } : { ok: false, reason: r.reason };
           }));
         }
+        case 'delegate': {
+          if (!this.o.delegate) return out({ ok: false, reason: 'unknownTool', tool: tc.name });
+          return out(await this.delegated(session, run, tc, str(a.harness), str(a.task)));
+        }
         default:
           return out({ ok: false, reason: 'unknownTool', tool: tc.name });
       }
@@ -399,6 +419,25 @@ export class Agent {
         r = exec(false);
       } else r = { ok: false, reason: 'deniedByHuman' };
     }
+    if (r.ok) domain.completeEffect(effect, r);
+    else domain.failEffect(effect, String(r.reason));
+    return r;
+  }
+
+  // Delegação com identidade (run + id da chamada): feita uma vez, repete o recibo; desconhecida exige reconciliação.
+  private async delegated(session: string, run: string, tc: ToolCall, harness: string, task: string): Promise<ToolOut> {
+    const { domain } = this.o;
+    const key = `${run}:${tc.id}`;
+    const prev = domain.effectByKey(key);
+    if (prev?.state === 'done') return { ok: true, ...(domain.receiptOf(prev.id) as ToolOut | undefined), replayed: true };
+    let effect: string;
+    try {
+      effect = domain.beginEffect(session, run, 'harness.delegate', key, harness).id;
+    } catch (e) {
+      if (e instanceof DomainError && e.code === ERR.needsReconciliation) return { ok: false, reason: 'needsReconciliation', effect: e.data.effect };
+      throw e;
+    }
+    const r = await this.o.delegate!.run(session, run, { harness, task });
     if (r.ok) domain.completeEffect(effect, r);
     else domain.failEffect(effect, String(r.reason));
     return r;

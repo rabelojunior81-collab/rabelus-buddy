@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T021634-0300-claude-code-desktop-d0610a-0025",
+  "ts": "2026-10-20T02:16:34-03:00",
+  "utc": "2026-10-20T05:16:34.866Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 25,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "processo",
+  "summary": "Núcleo do Pai tinha se desligado por ociosidade (15 min, por desenho; pid 37536). Subido com a main 285512a (M1.5e): pid 11620, oculto, porta 47321. Buddy do Pai aberto no navegador in-app por bilhete de uso único: endereço limpo, conexão ativa, cookie invisível ao JavaScript.",
+  "refs": [],
+  "data": {}
+}
