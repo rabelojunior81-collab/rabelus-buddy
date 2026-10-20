@@ -184,6 +184,8 @@
       },
       "tool": "{{title}} · {{status}}",
       "permission": "Permissão {{decision}}: {{tool}} {{target}}",
+      "deniedByPolicy": "Negada pela política ({{reason}}): {{tool}} {{target}}",
+      "deniedByYou": "Negada por você: {{tool}} {{target}}",
       "decision": {
         "allow": "liberada pela política",
         "approve": "aprovada por você",

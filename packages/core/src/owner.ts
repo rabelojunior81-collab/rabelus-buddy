@@ -288,9 +288,14 @@ export async function startOwner(home: string): Promise<Owner> {
         const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
         const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
         const d = policy.decide({ session, tool, target: raw }, { interactive: o.interactive });
+        // Fora da pasta de trabalho, com o Pai na conversa, a política pergunta em vez de negar sozinha (A3).
+        // Sem o Pai, continua negando. O caminho protegido continua negado sem perguntar.
+        const outside = d.effect === 'deny' && d.reason === 'fora do workspace';
+        const askIt = d.effect === 'ask' || (outside && o.interactive);
         let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' ? 'allow' : 'deny';
-        if (d.effect === 'ask') {
-          const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${target}`);
+        if (askIt) {
+          const where = outside ? ` (fora da pasta de trabalho)` : '';
+          const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${outside ? raw : target}${where}`);
           decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
         }
         const pick = decision === 'deny'
@@ -298,7 +303,7 @@ export async function startOwner(home: string): Promise<Owner> {
           : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
         if (decision === 'deny') denied = true;
         const outcome = pick?.optionId ?? 'cancelled';
-        log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome });
+        log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome, outside });
         domain.completeEffect(eff, { decision, outcome });
         return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
       },
