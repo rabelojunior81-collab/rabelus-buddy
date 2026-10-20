@@ -136,19 +136,20 @@ test('harness.list pelo núcleo e pela console; ícone servido como imagem isola
   assert.ok((CONSOLE_METHODS as readonly string[]).includes('harness.list'), 'liberado na console');
 
   const { port, token } = JSON.parse(readFileSync(consolePath(home), 'utf8')) as { port: number; token: string };
-  const get = (path: string) => new Promise<{ status: number; type: string; csp: string; body: string }>((resolve, reject) => {
-    http.get({ host: '127.0.0.1', port, path, headers: { host: `127.0.0.1:${port}` } }, (res) => {
+  const get = (path: string, auth = true) => new Promise<{ status: number; type: string; csp: string; body: string }>((resolve, reject) => {
+    http.get({ host: '127.0.0.1', port, path, headers: { host: `127.0.0.1:${port}`, ...(auth ? { 'x-rbuddy-token': token } : {}) } }, (res) => {
       let b = ''; res.setEncoding('utf8'); res.on('data', (c: string) => { b += c; });
       res.on('end', () => resolve({ status: res.statusCode ?? 0, type: String(res.headers['content-type'] ?? ''), csp: String(res.headers['content-security-policy'] ?? ''), body: b }));
     }).on('error', reject);
   });
-  const icon = await get(`/icons/harness/opencode.svg?t=${token}`);
+  const icon = await get('/icons/harness/opencode.svg');
   assert.equal(icon.status, 200);
   assert.match(icon.type, /image\/svg\+xml/);
   assert.match(icon.csp, /sandbox/);
   assert.match(icon.body, /^<svg/);
-  assert.equal((await get('/icons/harness/opencode.svg')).status, 401, 'sem token');
-  assert.equal((await get(`/icons/harness/nao-existe.svg?t=${token}`)).status, 404);
-  assert.equal((await get(`/icons/harness/..%2Fconsole.svg?t=${token}`)).status, 404, 'sem atravessar pastas');
+  assert.equal((await get('/icons/harness/opencode.svg', false)).status, 401, 'sem token');
+  assert.equal((await get(`/icons/harness/opencode.svg?t=${token}`, false)).status, 401, 'o ?t= não autoriza recurso (critério 16)');
+  assert.equal((await get('/icons/harness/nao-existe.svg')).status, 404);
+  assert.equal((await get('/icons/harness/..%2Fconsole.svg')).status, 404, 'sem atravessar pastas');
   await fake.close();
 });
