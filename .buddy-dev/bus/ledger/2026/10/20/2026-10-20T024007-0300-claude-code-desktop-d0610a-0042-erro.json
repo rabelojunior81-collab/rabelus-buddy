@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024007-0300-claude-code-desktop-d0610a-0042",
+  "ts": "2026-10-20T02:40:07-03:00",
+  "utc": "2026-10-20T05:40:07.495Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 42,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "erro",
+  "summary": "Abri o PR #76 com o bd post reprovando (commit de código sem registro). Correção: registro atrasado com o hash; daqui em diante, o PR só depois do bd post limpo, conferido na saída, não suposto.",
+  "refs": [],
+  "data": {}
+}

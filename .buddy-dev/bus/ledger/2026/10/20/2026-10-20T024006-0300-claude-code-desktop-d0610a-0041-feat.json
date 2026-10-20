@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024006-0300-claude-code-desktop-d0610a-0041",
+  "ts": "2026-10-20T02:40:06-03:00",
+  "utc": "2026-10-20T05:40:06.229Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 41,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "feat",
+  "summary": "Registro atrasado de 160d3c9: a conversa da console mostra a delegação (O Buddy delegou a X: tarefa; X terminou a parte delegada) e o raciocínio do harness delegado, recolhível; i18n pt-BR e en. Falha: o commit saiu sem registro e o PR #76 foi aberto sem olhar o bd post; o verifica pegou.",
+  "refs": [
+    "160d3c9"
+  ],
+  "data": {}
+}
