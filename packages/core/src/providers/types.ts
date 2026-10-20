@@ -8,6 +8,9 @@ export interface ChatMessage {
   content: string;
   toolCalls?: ToolCall[];
   toolCallId?: string;
+  // Anexos (M1.3): no log, só a referência; no pedido, o conteúdo lido do arquivo, em `files` (nunca registrado).
+  attachments?: { hash: string; name: string; mime: string; kind: 'image' | 'text'; size: number }[];
+  files?: { kind: 'image' | 'text'; name: string; mime: string; data?: string; text?: string }[];
 }
 // Esforço de raciocínio por execução (SPEC 0001 rev. 5, critério 29); ausente = padrão do provedor.
 // Os oito níveis que os provedores declaram no catálogo real (M1.5c, medido em 2026-10-19), conforme o modelo.
