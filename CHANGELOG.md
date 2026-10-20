@@ -10,6 +10,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **M1.2 concluída: o Buddy conversa com os agentes pelo ACP** (2026-10-19). Ele confere se cada agente está pronto, pede a aprovação do Pai antes de baixar código, conversa com o andamento ao vivo, decide as permissões pela própria política e faz o login do agente sem ver a credencial. O primeiro login do Pai num agente real fica para o ensaio da M1.6, por decisão dele.
 - **Escolher o modelo na caixa de mensagem** (M1.5c, critérios 11 e 13). Uma pílula (ou Ctrl+K) abre o catálogo real de modelos:
   - uma aba por provedor, com busca e filtros por capacidade (visão, raciocínio, ferramentas, grátis, contexto grande);
   - os modelos agrupados por lab, com as capacidades em ícones e o tamanho do contexto;

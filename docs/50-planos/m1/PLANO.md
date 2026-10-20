@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-19T12:12:30-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-20T00:35:21-03:00
 
 ## Objetivo
 
@@ -17,7 +17,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
 
 - [x] **M1.0 Fundação:** dependências aprovadas instaladas (`@agentclientprotocol/sdk`, `zod`) com ficha e registro; contrato tipado dos métodos da console (critério 10), com teste antes e ensaio no navegador ([registro](../../registros/2026-10-18T123449-0300-ensaio-do-m1-0-contrato-tipado/README.md)). **Feito em 2026-10-18.**
 - [x] **M1.1 Catálogo e detecção** (**feita em 2026-10-18** na parte do núcleo; o seletor de modelo e a lista de harnesses na tela são da M1.5): registro oficial com cópia local e ícones servidos pela console; sinais de instalação; tabela de fora do registro (critérios 1 e 2) (**feito em 2026-10-18**, com checagem real: os 6 harnesses do Pai achados sozinhos); **catálogo de modelos provedor → lab → modelo com capacidades e fonte, em seletor separado do de harness** (critério 13; **núcleo feito em 2026-10-18**, com checagem real: 538 modelos em 4 provedores; o seletor é da M1.5); **resposta vazia do provedor (0 tokens, nenhum pedaço) vira aviso visível, não "concluída" muda** (achado no ensaio do M1.0), com teste antes (**feito em 2026-10-18**: troca de provedor ou parada com motivo legível)
-- [ ] **M1.2 Cliente ACP:** sonda, primeira execução aprovada, conversa com andamento ao vivo, permissões pelo núcleo, autenticação do agente (critérios 3–7); checagem contra um harness real do Pai (OpenCode ou Codex) registrada
+- [x] **M1.2 Cliente ACP:** sonda, primeira execução aprovada, conversa com andamento ao vivo, permissões pelo núcleo, autenticação do agente (critérios 3–7); checagem contra um harness real do Pai (OpenCode ou Codex) registrada (**feita em 2026-10-19**, as cinco sub-fases abaixo; o login do Pai num harness real fica para o ensaio da M1.6, por decisão dele)
   - [x] **M1.2a Sonda** (critério 3): pronto, precisa de login ou falhou; executável local preferido. Checagem real em 2026-10-18: OpenCode, Copilot e Hermes **prontos**
   - [x] **M1.2b Primeira execução aprovada** (critério 4), **começando pelo Codex** (**feita em 2026-10-18**: o Pai aprovou na console e o Codex ficou pronto; aprovar agora roda a sonda e mostra o resultado): o `codex` instalado (0.163.0) não fala ACP direto (sem subcomando `acp`; só `app-server` e `exec`), então o caminho é o adaptador `npx @agentclientprotocol/codex-acp@2.2.2`, que usa o login do ChatGPT do Pai. A aprovação aparece na console com pacote e versão; aprovada, vale para essa versão. Depois, Claude (`claude-agent-acp`) e pi (`pi-acp`)
   - [x] **M1.2c Conversa por ACP** (critério 5): `session/prompt` com andamento ao vivo no `run.live`; checagem real com o OpenCode e com o Codex (**feita em 2026-10-18**: os dois responderam e usaram ferramentas; [registro](../../registros/2026-10-18T220140-0300-checagem-real-da-conversa-por-acp/README.md))
