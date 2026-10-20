@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0028 · 2026-10-15T043158-0300 · claude-code-vs-code-438d04 · doc
-
-SPEC 0001 (M0 — Núcleo governado) em rascunho: 20 critérios de aceite, decisões técnicas com fonte (node:sqlite + adaptador, JSON-RPC sobre node:net, GPT-6 Luna via openai, parseArgs/readline, i18next), 4 dúvidas bloqueantes ao Pai. Spike de banco e IPC registrado; fichas banco-e-ipc e bibliotecas-do-nucleo.
-
 ### #0029 · 2026-10-15T043545-0300 · claude-code-vs-code-5cfc7b · aprendizado
 
 Regra do Pai: pedido novo se absorve em paralelo e a tarefa em curso continua; dúvida bloqueante para só o que depende dela. AGENTS §5.4/§5.7, checklist do PR, linha Seguindo em paralelo no STATUS; LEARNING-CURVE #6.
@@ -207,3 +203,7 @@ M1.5b: harness na caixa da console nova (pílula com sonda, conversa com harness
 ### #0075 · 2026-10-19T115322-0300 · claude-code-vs-code-51d166 · feat
 
 M1.5c: seletor de modelo do catálogo real e os oito níveis de esforço no núcleo; ChatGPT medido ao vivo (até max; ultra recusado); recusa invalid_value/unsupported_value; catálogo versionado; limite do OpenRouter por modelo; 4 correções do ensaio com teste antes
+
+### #0076 · 2026-10-19T121221-0300 · claude-code-vs-code-51d166 · ensaio
+
+M1.5d: ensaio da console nova no ambiente do Pai (ChatGPT em Muito alto, OpenCode com escrita aprovada), roteiro da validação registrado (validar-console-nova-m1-5, aguarda o Pai); token da console apareceu na saída da ferramenta de navegador, decisão de troca com o Pai

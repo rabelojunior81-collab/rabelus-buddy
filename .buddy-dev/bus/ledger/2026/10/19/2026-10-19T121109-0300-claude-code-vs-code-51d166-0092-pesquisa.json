@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T121109-0300-claude-code-vs-code-51d166-0092",
+  "ts": "2026-10-19T12:11:09-03:00",
+  "utc": "2026-10-19T15:11:09.220Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 92,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5d-ensaio-e-validacao",
+  "type": "pesquisa",
+  "summary": "Ensaio da M1.5d no ambiente do Pai (console real dele, porta 47321, credenciais dele): (1) seletor com as 4 abas (ChatGPT 8, Go 37, Ollama 23, OpenRouter 469), nada fora da lista; GPT-6.1 Sol com Padrão..Máximo; 'Muito alto' aceito pelo ChatGPT (passo registrado com o nível); o modelo decidiu dizer olá rodando printf, pediu aprovação; negado, respondeu 'Olá, Pai!' em 5 s; (2) OpenCode: conferindo → pronto em 7,9 s; cartão 'Harness OpenCode: write_file ensaio-buddy-dev.txt' com ícone; aprovado, escreveu e respondeu em 5 s. O arquivo foi para a pasta lembrada pelo navegador de ensaio (Temp\\rb-ensaio-…\\area-de-trabalho, de um ensaio antigo no mesmo endereço), não a padrão: o Buddy seguiu a pasta configurada; o navegador do Pai tem a dele. Roteiro do Pai: pedir resposta em texto, sem ferramentas, no passo do ChatGPT; conferir a pasta em Ajustes. Barra lateral com o histórico real do Pai por dia.",
+  "refs": [],
+  "data": {}
+}

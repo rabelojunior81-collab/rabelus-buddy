@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T121500-0300-claude-code-vs-code-51d166-0101",
+  "ts": "2026-10-19T12:15:00-03:00",
+  "utc": "2026-10-19T15:15:00.404Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 101,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5d-ensaio-e-validacao",
+  "type": "session-end",
+  "summary": "Pedido do Pai: núcleo dele reiniciado com o código novo (e de novo a cada merge) e login do Pai transportado para depois da M1.5. Entregues: M1.2e no núcleo (#67); M1.5a casca nova (#68); M1.5b harness na caixa (#69); M1.5c seletor de modelo e os oito níveis de esforço, com o ChatGPT medido ao vivo (#70); M1.5d ensaiada no ambiente do Pai, com roteiro de validação aguardando o Pai. Falha declarada: token da console do Pai na saída da ferramenta de navegador; decisão de troca com ele. Post e daily publicados.",
+  "refs": [],
+  "data": {}
+}

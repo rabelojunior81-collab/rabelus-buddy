@@ -188,3 +188,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0027-#0027
 
 1. **Em 2026-10-15, nasceu o `bd surfaces`, que confere se cada superfície afirma o estado verdadeiro.** Em 2026-10-19, o próprio ChatGPT declarou no `/models` um nível de esforço (`ultra`) que a API de respostas dele recusa. → Declaração de um sistema de fora é uma superfície que pode estar errada, como as nossas. O que o produto oferece ao Pai vem do que foi medido funcionando, com a data da medida, e o recuo cobre o que mudar depois.
+
+## lote #0028-#0028
+
+1. **Em 2026-10-15, a SPEC do M0 nasceu com as dúvidas bloqueantes levadas ao Pai, e o resto andou em paralelo.** Em 2026-10-19, para ensaiar no ambiente dele, abri a console real pelo navegador de ensaio. Montei uma ponte para o token não aparecer no comando, e a própria ferramenta o mostrou ao chegar. → Segredo que viaja na URL aparece em qualquer lugar que mostre a URL: ferramenta, histórico, captura. Esconder o comando não basta. A correção certa é de desenho: o token entra uma vez e não fica no endereço. Enquanto isso não existe, a falha se declara e a decisão de trocar o segredo é de quem o usa.

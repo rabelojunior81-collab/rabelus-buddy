@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T121455-0300-claude-code-vs-code-51d166-0100",
+  "ts": "2026-10-19T12:14:55-03:00",
+  "utc": "2026-10-19T15:14:55.134Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 100,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5d-ensaio-e-validacao",
+  "type": "doc",
+  "summary": "Post 'A Console que o Pai Vai Ver' e daily de 19/10 publicados no Blog (e8e8d39; gate VERDE; QA 375 e 1440 sem transbordo, 8 links internos ok, índice com o post no topo; manifesto de 327 preservado, agora 328; servidor srv-c9ccfd encerrado; navegador fechado).",
+  "refs": [],
+  "data": {}
+}

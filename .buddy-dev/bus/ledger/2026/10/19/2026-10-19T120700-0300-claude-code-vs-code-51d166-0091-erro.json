@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-19T120700-0300-claude-code-vs-code-51d166-0091",
+  "ts": "2026-10-19T12:07:00-03:00",
+  "utc": "2026-10-19T15:07:00.710Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 91,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-5d-ensaio-e-validacao",
+  "type": "erro",
+  "summary": "Segredo local impresso: para ensaiar no ambiente do Pai, abri a console dele pelo Playwright por uma ponte (bd serve de uma página que só redireciona, para o token não aparecer no comando), mas a ferramenta mostrou na saída a URL final com o token da console do Pai. Antes, na M1.5a, o comando de início mostrou o token da console temporária. Alcance: só esta conversa e os arquivos locais do Playwright (.playwright-mcp, fora do git); a console aceita só 127.0.0.1 com Host exato. Ações: ponte encerrada e esvaziada; não troco o token sem o Pai (derrubaria a aba dele aberta), a decisão vai para ele. Classe a resolver no produto: token na URL aparece em ferramentas e no histórico do navegador; evolução proposta: o token entra uma vez e vira cookie da sessão (HttpOnly, SameSite=Strict), e a URL fica limpa.",
+  "refs": [],
+  "data": {}
+}

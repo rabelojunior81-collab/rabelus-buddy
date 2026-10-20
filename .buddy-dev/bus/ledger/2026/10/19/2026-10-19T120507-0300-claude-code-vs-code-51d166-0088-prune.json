@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "id": "2026-10-19T120507-0300-claude-code-vs-code-51d166-0088",
+  "ts": "2026-10-19T12:05:07-03:00",
+  "utc": "2026-10-19T15:05:07.233Z",
+  "session": "claude-code-vs-code-51d166",
+  "seq": 88,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "feat/m1-5c-seletor-de-modelo"
+    ],
+    "archived": [],
+    "kept": []
+  }
+}
