@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T005219-0300-claude-code-vs-code-d51ce9-0019",
+  "ts": "2026-10-20T00:52:19-03:00",
+  "utc": "2026-10-20T03:52:19.380Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 19,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-3-multimodal",
+  "type": "feat",
+  "summary": "Testes da M1.3b antes do código (console-anexos.test.ts): attachMime (tipo do navegador corrigido pela extensão; .ts como texto), canAttachImage (Automático sim, modelo sem visão não, harness pela sonda), estrutura (anexar, arrastar, colar, attachment.put, chips, hashes na tarefa, anexos na conversa, motivos em frase nos dois idiomas). 3 vermelhos.",
+  "refs": [],
+  "data": {}
+}

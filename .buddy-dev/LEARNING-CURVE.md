@@ -192,3 +192,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0028-#0028
 
 1. **Em 2026-10-15, a SPEC do M0 nasceu com as dúvidas bloqueantes levadas ao Pai, e o resto andou em paralelo.** Em 2026-10-19, para ensaiar no ambiente dele, abri a console real pelo navegador de ensaio. Montei uma ponte para o token não aparecer no comando, e a própria ferramenta o mostrou ao chegar. → Segredo que viaja na URL aparece em qualquer lugar que mostre a URL: ferramenta, histórico, captura. Esconder o comando não basta. A correção certa é de desenho: o token entra uma vez e não fica no endereço. Enquanto isso não existe, a falha se declara e a decisão de trocar o segredo é de quem o usa.
+
+## lote #0029-#0029
+
+1. **Em 2026-10-15, o Pai ensinou que pedido novo se absorve em paralelo e que a dúvida bloqueante para só o que depende dela.** Em 2026-10-20, a validação da console e a troca do token aguardavam o Pai, e a M1.3 andou inteira em paralelo, do núcleo ao ensaio. → Esperar o Pai não é parar: o que depende dele fica marcado no STATUS, e o resto segue com o rito completo. A retomada começa por conferir o estado real (o Pai já usou? a CI terminou?) antes de supor.

@@ -18,12 +18,13 @@ import { Agent, type AgentProgress, type AgentResult } from './agent.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
-import { buildModelCatalog, CATALOG_VERSION, type ModelCatalog } from './models/catalog.ts';
+import { buildModelCatalog, CATALOG_VERSION, measuredVision, type ModelCatalog } from './models/catalog.ts';
+import { AttachmentError, loadAttachment, storeAttachment, type Attachment } from './attachments.ts';
 import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
 import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec } from './harness/client.ts';
-import { NeedsLogin, promptTurn } from './harness/session.ts';
+import { NeedsLogin, NoImageSupport, promptTurn } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 import { EFFORTS, type Effort } from './providers/types.ts';
 
@@ -165,6 +166,27 @@ export async function startOwner(home: string): Promise<Owner> {
       ...(signal ? { signal } : {}),
       onProgress,
       inbox: (run: string) => inboxes.get(run)?.splice(0) ?? [],
+      vision: visionOf(),
+    });
+  };
+  // Visão por rota (M1.3, critério 9): o catálogo medido diz por modelo; sem ele, a tabela medida da SPEC.
+  const visionOf = (): ((provider: string, model: string) => boolean) => {
+    let cat: ModelCatalog | null = null;
+    try { cat = JSON.parse(readFileSync(join(home, 'models', 'catalog.json'), 'utf8')) as ModelCatalog; } catch { /* sem catálogo: a tabela */ }
+    return (provider, model) => {
+      const m = cat?.providers.find((x) => x.id === provider)?.models.find((x) => x.id === model);
+      return m ? m.vision : measuredVision(provider, model);
+    };
+  };
+  // Anexos (M1.3): o agent.run traz os hashes; a referência vem do registro attachment.stored da conversa.
+  const attachmentsOf = (session: string, v: unknown): Attachment[] => {
+    const hashes = Array.isArray(v) ? v.map(String) : [];
+    if (!hashes.length) return [];
+    const stored = new Map(log.events(session).filter((e) => e.kind === 'attachment.stored').map((e) => [(e.payload as Attachment).hash, e.payload as Attachment]));
+    return hashes.map((h) => {
+      const a = stored.get(h);
+      if (!a) throw new DomainError(-32602, `anexo desconhecido nesta conversa: ${h.slice(0, 12)}…`);
+      return { hash: a.hash, name: a.name, mime: a.mime, kind: a.kind, size: a.size };
     });
   };
   // Fim da execução: limpa o andamento e, concluída ou parada, a primeira da fila começa continuando a conversa.
@@ -184,7 +206,8 @@ export async function startOwner(home: string): Promise<Owner> {
     const ac = new AbortController();
     const agent = agentFor(p, ac.signal);
     const prior = continueFrom ? agent.transcript(session, continueFrom) : undefined;
-    const { run, done } = agent.begin(session, task, prior?.length ? { prior } : {});
+    const attachments = attachmentsOf(session, p.attachments);
+    const { run, done } = agent.begin(session, task, { ...(prior?.length ? { prior } : {}), ...(attachments.length ? { attachments } : {}) });
     controllers.set(run, ac);
     inboxes.set(run, inboxes.get(run) ?? []);
     liveOf(run);
@@ -225,8 +248,9 @@ export async function startOwner(home: string): Promise<Owner> {
     const interactive = p.interactive === true;
     const policy = new Policy(log, { workspace });
     const ac = new AbortController();
+    const attachments = attachmentsOf(session, p.attachments);
     const run = domain.startRun(session, task).id;
-    log.append(session, 'agent.message', { run, message: { role: 'user', content: task } });
+    log.append(session, 'agent.message', { run, message: { role: 'user', content: task, ...(attachments.length ? { attachments } : {}) } });
     controllers.set(run, ac);
     inboxes.set(run, []);
     const routeName = `acp:${h.id}`;
@@ -244,6 +268,8 @@ export async function startOwner(home: string): Promise<Owner> {
       try {
         const r = await promptTurn(postureOf(h), {
           cwd: workspace, task, signal: ac.signal, preferMode: 'read-only',
+          // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
+          files: attachments.map((a) => loadAttachment(workspace, a)),
           onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
           onUpdate: (u) => {
             if (u.kind === 'tool') {
@@ -302,6 +328,11 @@ export async function startOwner(home: string): Promise<Owner> {
         if (e instanceof NeedsLogin) {
           log.append(session, 'harness.login.required', { run, id: h.id, methods: e.methods });
           return stopped('needsLogin');
+        }
+        // Imagem para um harness que não declara suporte (M1.3, critério 9): para com o motivo, sem mandar.
+        if (e instanceof NoImageSupport) {
+          log.append(session, 'harness.error', { run, id: h.id, reason });
+          return stopped('noVisionRoute');
         }
         log.append(session, 'harness.error', { run, id: h.id, reason });
         return stopped(ac.signal.aborted ? 'userStopped' : 'harnessFailed');
@@ -382,12 +413,13 @@ export async function startOwner(home: string): Promise<Owner> {
       const session = String(p.session);
       // Com harness, a conversa vai ao harness por ACP (critério 5); a recusa (aprovação, indisponível) vem antes de tudo.
       const h = p.harness ? await harnessFor(String(p.harness)) : null;
+      const atts = attachmentsOf(session, p.attachments); // anexo desconhecido é recusado antes de tudo (M1.3)
       // Uma execução por conversa (critério 33): com outra rodando, a mensagem entra na fila (decisão do Pai).
       if (runningIn(session)) {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash) });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
@@ -468,6 +500,17 @@ export async function startOwner(home: string): Promise<Owner> {
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
     // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
     'harness.probe': (p) => probeById(String(p.id)),
+    // Anexo (SPEC 0002, critério 9): guardado na pasta de trabalho com o hash no nome; o log fica só com a referência.
+    'attachment.put': (p) => {
+      const session = String(p.session);
+      const workspace = String(p.workspace ?? '');
+      if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
+      let a: Attachment;
+      try { a = storeAttachment(workspace, { name: String(p.name), mime: String(p.mime), data: String(p.data) }); }
+      catch (e) { if (e instanceof AttachmentError) throw new DomainError(-32602, e.message); throw e; }
+      log.append(session, 'attachment.stored', { hash: a.hash, name: a.name, mime: a.mime, kind: a.kind, size: a.size });
+      return a;
+    },
     // Login do harness (SPEC 0002, critério 7): authenticate com o método escolhido; o harness abre o navegador e guarda a
     // própria credencial. Lançamento que baixa código continua exigindo a primeira execução aprovada (critério 4).
     'harness.login': async (p) => {

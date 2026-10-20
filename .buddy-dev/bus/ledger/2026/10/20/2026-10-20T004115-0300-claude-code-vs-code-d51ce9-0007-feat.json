@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T004115-0300-claude-code-vs-code-d51ce9-0007",
+  "ts": "2026-10-20T00:41:15-03:00",
+  "utc": "2026-10-20T03:41:15.201Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 7,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-3-multimodal",
+  "type": "feat",
+  "summary": "M1.3a código (parte 1): attachments.ts (storeAttachment com hash no nome, tipos e tetos da SPEC, nome sem caminho, texto só UTF-8; loadAttachment confere o hash); ChatMessage com attachments (referência, vai ao log) e files (conteúdo, só no pedido); agente monta o conteúdo por chamada, pula rota sem visão (noVision) e para com noVisionRoute; anexo sumido para com attachmentMissing; adaptadores mandam imagem e texto no formato de cada API (input_image, image_url, image base64, inlineData). anexos.test 5/5.",
+  "refs": [],
+  "data": {}
+}

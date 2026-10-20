@@ -278,6 +278,15 @@
   .cap.free { color: var(--c-open); font-size: 10px; font-weight: 800; }
   .mrow.act { background: var(--hover); }
   .empty { padding: 18px 12px; text-align: center; color: var(--muted); font-size: 12.5px; }
+  /* anexos (M1.3b): chips sobre o campo, e na mensagem da conversa */
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
+  .chips:empty { display: none; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 4px 3px 7px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .04); font-size: 11.5px; }
+  .chip .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chipx { border: 0; background: none; color: var(--muted); padding: 0 3px; }
+  .chipx:hover { color: var(--text); }
+  .atts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .composer.drop { outline: 1.5px dashed var(--olive-400); outline-offset: 3px; }
   .loginbox { display: flex; flex-direction: column; gap: 6px; padding: 9px 11px; border: 1px solid color-mix(in oklch, var(--warn) 45%, transparent); background: var(--glass-solid); font-size: 13px; }
   .send { width: 30px; height: 30px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
     box-shadow: inset 0 1px 0 oklch(100% 0 0 / .22), 0 6px 18px -8px oklch(55% .12 120 / .8); transition: filter .2s var(--ease), transform .15s var(--ease); }
@@ -332,6 +341,7 @@
     .dock { padding: 0 6px 6px; }
     .pill select { width: 100%; max-width: none; }
     #hBtn { flex: 0 1 auto; max-width: 46%; }
+    #aBtn { flex: none; padding: 0 9px; }
     #hBtn .chev, #hBtn .state { display: none; }
     .pop { left: 0 !important; right: 0; bottom: 0 !important; width: 100vw; max-width: 100vw; max-height: 60vh; }
     .hint span:first-child { display: none; }
@@ -374,6 +384,7 @@
       <div id="approvals" aria-live="polite"></div>
       <div class="composer glass">
         <label for="task" data-i18n="console.task.title" style="position:absolute;left:-9999px">Mensagem</label>
+        <div id="chips" class="chips" aria-live="polite"></div>
         <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
         <div class="bar">
           <button id="hBtn" class="pill" aria-haspopup="listbox" aria-expanded="false" aria-controls="hPop" data-i18n-title="console.harness.pick"></button>
@@ -385,6 +396,8 @@
               <option value="high" data-i18n="console.effort.high"></option>
             </select></label>
           <button id="mBtn" class="pill" aria-haspopup="dialog" aria-expanded="false" aria-controls="mPop" data-i18n-title="console.model.pick"></button>
+          <button id="aBtn" class="pill" data-i18n-aria="console.attach.add" data-i18n-title="console.attach.add">📎</button>
+          <input id="aFile" type="file" multiple hidden accept="image/png,image/jpeg,image/webp,image/gif,text/*,.md,.ts,.tsx,.js,.mjs,.json,.py,.go,.rs,.java,.c,.cpp,.cs,.css,.html,.xml,.yaml,.yml,.toml,.sh,.sql,.csv">
           <span class="spacer"></span>
           <button id="stop" class="stop" hidden data-i18n="console.task.stop">Parar</button>
           <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
@@ -556,6 +569,8 @@ const REASONS = {
   'effect.unknown': 'console.reason.effectUnknown', needsReconciliation: 'console.reason.needsReconciliation', internalError: 'console.reason.internalError',
   // Conversa com harness (M1.2c–e).
   permissionDenied: 'console.reason.permissionDenied', harnessCancelled: 'console.reason.harnessCancelled', harnessFailed: 'console.reason.harnessFailed', needsLogin: 'console.reason.needsLogin',
+  // Anexos (M1.3).
+  noVisionRoute: 'console.reason.noVisionRoute', attachmentMissing: 'console.reason.attachmentMissing',
 };
 // Conversas da barra lateral (M1.5a): uma por sessão, com o título da primeira tarefa e o estado da última, agrupadas
 // pelo dia em que a conversa começou no relógio de quem olha (offsetMin: minutos a somar ao UTC), mais recente primeiro.
@@ -628,6 +643,27 @@ function effortsFor(m) {
   return ['default', ...EFFORT_ORDER.filter((e) => declared.has(e))];
 }
 function ctxText(n) { return !n ? '' : n >= 1e6 ? Math.round(n / 1e6 * 10) / 10 + 'M' : Math.round(n / 1000) + 'k'; }
+// Anexos (M1.3b): o tipo que o núcleo aceita, a partir do nome e do tipo informado pelo navegador; o navegador manda
+// .ts como "video/mp2t" (MPEG-TS) e às vezes nenhum tipo, então a extensão decide. null: não aceito.
+const IMAGE_MIMES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const IMAGE_EXT = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
+const TEXT_APP_MIMES = ['application/json', 'application/javascript', 'application/typescript', 'application/x-typescript', 'application/xml', 'application/x-yaml', 'application/yaml', 'application/x-sh', 'application/toml'];
+const TEXT_EXT = ['txt', 'md', 'markdown', 'ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'json', 'py', 'rb', 'go', 'rs', 'java', 'kt', 'c', 'h', 'cpp', 'hpp', 'cs', 'css', 'scss', 'html', 'xml', 'yaml', 'yml', 'toml', 'sh', 'ps1', 'sql', 'csv', 'log', 'ini'];
+function attachMime(name, type) {
+  const ext = ((/\.([a-z0-9]+)$/i.exec(String(name)) || [])[1] || '').toLowerCase();
+  const t = String(type || '').toLowerCase();
+  if (IMAGE_MIMES.includes(t)) return t;
+  if (IMAGE_EXT[ext]) return IMAGE_EXT[ext];
+  if (t.startsWith('text/') || TEXT_APP_MIMES.includes(t)) return t;
+  if (TEXT_EXT.includes(ext)) return ext === 'md' || ext === 'markdown' ? 'text/markdown' : 'text/plain';
+  return null;
+}
+// Imagem só quando quem executa enxerga: no Automático o núcleo pula as rotas sem visão; um modelo escolhido sem visão
+// não recebe; o harness, pelo que a sonda disse (sem sonda ainda, espera).
+function canAttachImage(o) {
+  if (o.harness === 'buddy') return !o.model || o.model.vision !== false;
+  return Boolean(o.probe && o.probe.image);
+}
 // Provedores que ficaram fora do catálogo, com o motivo (achado do ensaio: o OpenCode Go sumia sem explicação).
 function catalogLeftOut(errors, names) { return Object.entries(errors || {}).map(([id, why]) => (names[id] || id) + ': ' + why); }
 // </puras>
@@ -704,7 +740,9 @@ function feedItems(evs) {
       case 'agent.message': {
         if (p.prior) break; // histórico copiado da execução anterior (já está na tela)
         const m = p.message || {};
-        if (m.role === 'user') speak(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you'), p.steer ? el('span', { class: 'tag' }, t('console.feed.steered')) : null), m.content));
+        // Os anexos da mensagem aparecem sob ela (M1.3b), pelo nome; o conteúdo nunca vem do log.
+        if (m.role === 'user') speak(el('div', { class: 'bubble you' }, el('span', { class: 'who' }, t('console.feed.you'), p.steer ? el('span', { class: 'tag' }, t('console.feed.steered')) : null), m.content,
+          (m.attachments || []).length ? el('div', { class: 'atts' }, ...m.attachments.map((a) => el('span', { class: 'chip' }, a.kind === 'image' ? '🖼' : '📄', el('span', { class: 'nm' }, a.name)))) : null));
         else if (m.role === 'assistant') {
           if (m.content && !(m.toolCalls || []).length) speak(el('div', { class: 'bubble buddy' }, el('span', { class: 'who' }, t('console.feed.buddy')), rich(m.content)));
           else if (m.content) detail(el('div', { class: 'ev' }, rich(m.content)));
@@ -1123,8 +1161,46 @@ async function loginHarness(id, method) {
 $('hBtn').addEventListener('click', () => hPop($('hPop').hidden));
 document.addEventListener('mousedown', (ev) => { if (!$('hPop').hidden && !$('hPop').contains(ev.target) && !$('hBtn').contains(ev.target)) hPop(false); });
 document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('hPop').hidden) { ev.stopPropagation(); hPop(false); $('hBtn').focus(); } }, true);
-function openSession(s) { session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); void refreshApprovals(); }
-$('newChat').addEventListener('click', () => { session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); drawer(false); $('task').focus(); });
+// ---------- Anexos na caixa (M1.3b) ----------
+// Cada anexo sobe na hora pelo núcleo (attachment.put) e fica como chip; a conversa nova ganha uma sessão de rascunho
+// no primeiro anexo, para os anexos e a tarefa irem para a mesma conversa. Trocar de conversa limpa os anexos.
+let pending = [];
+let draft = null;
+const newSessionId = () => 'ses-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('');
+function sendSession() { if (session && lastRun) return session; draft = draft || newSessionId(); return draft; }
+function clearAttachments() { pending = []; draft = null; renderChips(); }
+function renderChips() {
+  $('chips').replaceChildren(...pending.map((a, i) => el('span', { class: 'chip', title: a.mime + ' · ' + Math.ceil(a.size / 1024) + ' KB' }, a.kind === 'image' ? '🖼' : '📄', el('span', { class: 'nm' }, a.name),
+    el('button', { class: 'chipx', 'aria-label': t('console.attach.remove', { name: a.name }), onclick: () => { pending.splice(i, 1); renderChips(); } }, '✕'))));
+}
+const attachNote = (text) => { $('runMsg').className = 'msg bad'; $('runMsg').textContent = text; };
+const toBase64 = (file) => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => no(r.error); r.readAsDataURL(file); });
+async function addFiles(files) {
+  for (const f of files) {
+    const mime = attachMime(f.name, f.type);
+    if (!mime) { attachNote(t('console.attach.badType', { name: f.name })); continue; }
+    const image = mime.startsWith('image/');
+    if (image && !canAttachImage({ harness: chosen, model: pickedModel(), probe: probes[chosen] || null })) { attachNote(t('console.attach.noVision', { name: f.name })); continue; }
+    const max = image ? 5 : 1;
+    if (f.size > max * 1024 * 1024) { attachNote(t('console.attach.tooBig', { name: f.name, max })); continue; }
+    try {
+      const a = await api('attachment.put', { session: sendSession(), workspace: $('workspace').value, name: f.name, mime, data: await toBase64(f) });
+      pending.push(a);
+      renderChips();
+      $('runMsg').textContent = '';
+    } catch (e) { attachNote(t('console.error', { message: e.message })); }
+  }
+}
+$('aBtn').addEventListener('click', () => $('aFile').click());
+$('aFile').addEventListener('change', () => { void addFiles([...$('aFile').files]); $('aFile').value = ''; });
+const composer = document.querySelector('.composer');
+composer.addEventListener('dragover', (ev) => { if (ev.dataTransfer && [...ev.dataTransfer.types].includes('Files')) { ev.preventDefault(); composer.classList.add('drop'); } });
+composer.addEventListener('dragleave', () => composer.classList.remove('drop'));
+composer.addEventListener('drop', (ev) => { composer.classList.remove('drop'); if (!ev.dataTransfer || !ev.dataTransfer.files.length) return; ev.preventDefault(); void addFiles([...ev.dataTransfer.files]); });
+$('task').addEventListener('paste', (ev) => { const fs = ev.clipboardData ? [...ev.clipboardData.files] : []; if (!fs.length) return; ev.preventDefault(); void addFiles(fs); });
+
+function openSession(s) { if (s !== session) clearAttachments(); session = s; store.set('rb.session', s); lastFeedKey = ''; liveState = null; liveEl.replaceChildren(); void refreshFeed(); void refreshLive(); void refreshRuns(); void refreshApprovals(); }
+$('newChat').addEventListener('click', () => { clearAttachments(); session = null; store.set('rb.session', ''); liveState = null; liveEl.replaceChildren(); $('stop').hidden = true; lastRun = null; lastFeedKey = ''; $('runMsg').textContent = ''; void refreshFeed(); void refreshRuns(); drawer(false); $('task').focus(); });
 $('task').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) { ev.preventDefault(); $('run').click(); } });
 for (const b of document.querySelectorAll('.sugg')) b.addEventListener('click', () => { $('task').value = b.textContent; $('task').focus(); });
 async function resume(r) {
@@ -1138,8 +1214,10 @@ $('run').addEventListener('click', async () => {
   msg.className = 'msg';
   if (!task) { msg.className = 'msg bad'; msg.textContent = t('console.task.empty'); return; }
   const cont = Boolean(session && lastRun);
-  const s = cont ? session : 'ses-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const s = sendSession();
   const params = { session: s, task, workspace: $('workspace').value, interactive: true };
+  // Anexos já guardados na conversa (M1.3b): vão pelos hashes.
+  if (pending.length) params.attachments = pending.map((a) => a.hash);
   // Harness escolhido (M1.5b): a tarefa vai a ele, com os modelos e o esforço dele; senão, o Buddy com os provedores.
   if (chosen !== 'buddy') params.harness = chosen;
   else {
@@ -1153,6 +1231,7 @@ $('run').addEventListener('click', async () => {
     store.set('rb.workspace', $('workspace').value);
     store.set('rb.effort', $('effort').value);
     $('task').value = '';
+    clearAttachments();
     // Conversa ocupada: a mensagem entrou na fila (Direcionar agora ou Cancelar, logo abaixo da conversa).
     msg.textContent = r.queued ? t('console.queue.queued') : '';
     $('task').focus();

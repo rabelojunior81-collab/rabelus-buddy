@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T005215-0300-claude-code-vs-code-d51ce9-0018",
+  "ts": "2026-10-20T00:52:15-03:00",
+  "utc": "2026-10-20T03:52:15.330Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 18,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-3-multimodal",
+  "type": "decisao",
+  "summary": "Desenho da M1.3b (console): botão de anexar (#aBtn) com seletor de arquivos (#aFile, vários), arrastar para a caixa e colar imagem; cada anexo sobe na hora por attachment.put na conversa (sessão de rascunho criada no primeiro anexo de uma conversa nova) e vira chip removível (#chips); imagem recusada antes de subir quando o modelo escolhido ou o harness não enxerga (canAttachImage, pura), com motivo; tipo pelo navegador corrigido pela extensão (attachMime, pura: .ts chega como video/mp2t); tetos de 5 MB e 1 MB conferidos antes; a tarefa leva os hashes; a mensagem na conversa mostra os anexos; motivos noVisionRoute e attachmentMissing em frase.",
+  "refs": [],
+  "data": {}
+}

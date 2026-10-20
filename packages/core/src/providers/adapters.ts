@@ -45,6 +45,11 @@ export const systemOf = (msgs: ChatMessage[]): string => msgs.filter((m) => m.ro
 const parseArgs = (a: string): Record<string, unknown> => { try { return JSON.parse(a || '{}') as Record<string, unknown>; } catch { return {}; } };
 
 // ---------- OpenAI Chat Completions (Go chat, Ollama Cloud, OpenRouter) ----------
+// Anexos (M1.3, critério 9): o texto anexado vai como parte de texto com o nome; a imagem, no formato de cada API.
+type File = NonNullable<ChatMessage['files']>[number];
+const fileText = (f: File) => `Anexo ${f.name} (${f.mime}):\n${f.text ?? ''}`;
+const dataUrl = (f: File) => `data:${f.mime};base64,${f.data ?? ''}`;
+
 export function openaiChatAdapter(o: AdapterOptions): Provider {
   const client = new OpenAI({ apiKey: o.apiKey, baseURL: o.baseURL, maxRetries: 0 });
   return {
@@ -54,6 +59,9 @@ export function openaiChatAdapter(o: AdapterOptions): Provider {
         if (m.role === 'tool') return { role: 'tool' as const, tool_call_id: m.toolCallId ?? '', content: m.content };
         if (m.role === 'assistant' && m.toolCalls?.length) {
           return { role: 'assistant' as const, content: m.content || null, tool_calls: m.toolCalls.map((t) => ({ id: t.id, type: 'function' as const, function: { name: t.name, arguments: t.arguments } })) };
+        }
+        if (m.role === 'user' && m.files?.length) {
+          return { role: 'user' as const, content: [{ type: 'text' as const, text: m.content }, ...m.files.map((f) => (f.kind === 'image' ? { type: 'image_url' as const, image_url: { url: dataUrl(f) } } : { type: 'text' as const, text: fileText(f) }))] };
         }
         return { role: m.role, content: m.content } as { role: 'system' | 'user' | 'assistant'; content: string };
       });
@@ -113,6 +121,10 @@ export function responsesInput(msgs: ChatMessage[]): unknown[] {
       for (const t of m.toolCalls) items.push({ type: 'function_call', call_id: t.id, name: t.name, arguments: t.arguments });
       continue;
     }
+    if (m.role === 'user' && m.files?.length) {
+      items.push({ role: 'user', content: [{ type: 'input_text', text: m.content }, ...m.files.map((f) => (f.kind === 'image' ? { type: 'input_image', image_url: dataUrl(f) } : { type: 'input_text', text: fileText(f) }))] });
+      continue;
+    }
     items.push({ role: m.role, content: m.content });
   }
   return items;
@@ -168,6 +180,11 @@ export function anthropicAdapter(o: AdapterOptions & { maxTokens?: number }): Pr
         if (m.role === 'assistant' && m.toolCalls?.length) {
           return { role: 'assistant' as const, content: [...(m.content ? [{ type: 'text' as const, text: m.content }] : []), ...m.toolCalls.map((t) => ({ type: 'tool_use' as const, id: t.id, name: t.name, input: parseArgs(t.arguments) }))] };
         }
+        if (m.role === 'user' && m.files?.length) {
+          return { role: 'user' as const, content: [{ type: 'text' as const, text: m.content }, ...m.files.map((f) => (f.kind === 'image'
+            ? { type: 'image' as const, source: { type: 'base64' as const, media_type: f.mime as 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp', data: f.data ?? '' } }
+            : { type: 'text' as const, text: fileText(f) }))] };
+        }
         return { role: m.role as 'user' | 'assistant', content: m.content };
       });
       try {
@@ -211,7 +228,7 @@ export function googleAdapter(o: AdapterOptions & { apiVersion?: string }): Prov
       const contents = req.messages.filter((m) => m.role !== 'system').map((m) => {
         if (m.role === 'tool') return { role: 'user', parts: [{ functionResponse: { name: names.get(m.toolCallId ?? '') ?? 'tool', response: { output: m.content } } }] };
         if (m.role === 'assistant') return { role: 'model', parts: [...(m.content ? [{ text: m.content }] : []), ...(m.toolCalls ?? []).map((t) => ({ functionCall: { name: t.name, args: parseArgs(t.arguments) } }))] };
-        return { role: 'user', parts: [{ text: m.content }] };
+        return { role: 'user', parts: [{ text: m.content }, ...(m.files ?? []).map((f) => (f.kind === 'image' ? { inlineData: { mimeType: f.mime, data: f.data ?? '' } } : { text: fileText(f) }))] };
       });
       try {
         const r = await ai.models.generateContent({

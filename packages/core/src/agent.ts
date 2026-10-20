@@ -13,6 +13,7 @@ import { PRICES, type Price } from './prices.ts';
 import type { FsTools } from './tools/fs.ts';
 import type { CommandTool } from './tools/command.ts';
 import { scrub } from './providers/adapters.ts';
+import { AttachmentError, loadAttachment, type Attachment } from './attachments.ts';
 import { ProviderLimitError, ProviderRejectedError, ProviderUnknownError, type ChatMessage, type Effort, type ModelRequest, type ModelResponse, type Progress, type Provider, type ToolCall, type ToolSpec } from './providers/types.ts';
 
 export const CONTEXT_LIMIT = 100_000;
@@ -53,6 +54,8 @@ export interface AgentOptions {
   signal?: AbortSignal;
   onProgress?: (run: string, p: AgentProgress) => void;
   inbox?: (run: string) => string[];
+  // Visão por rota (M1.3, critério 9): mensagem com imagem pula a rota que não enxerga. Ausente: todas enxergam.
+  vision?: (provider: string, model: string) => boolean;
 }
 
 export type AgentProgress = Progress | { kind: 'call'; route: string; step: number } | { kind: 'exec'; name: string; step: number };
@@ -135,12 +138,13 @@ export class Agent {
 
   // Cria a execução já (o id volta na hora para quem chamou) e segue o laço em segundo plano.
   // `prior`: conversa contínua — o histórico de uma execução anterior da sessão vem antes da nova mensagem.
-  begin(session: string, task: string, { system = SYSTEM_PROMPT, prior }: { system?: string; prior?: ChatMessage[] } = {}): { run: string; done: Promise<AgentResult> } {
+  // `attachments`: anexos já guardados na pasta de trabalho (M1.3); a mensagem do log leva só a referência.
+  begin(session: string, task: string, { system = SYSTEM_PROMPT, prior, attachments }: { system?: string; prior?: ChatMessage[]; attachments?: Attachment[] } = {}): { run: string; done: Promise<AgentResult> } {
     const run = this.o.domain.startRun(session, task).id;
     const messages: ChatMessage[] = [];
     if (prior?.length) for (const m of prior) this.push(session, run, messages, m, true);
     else this.push(session, run, messages, { role: 'system', content: system });
-    this.push(session, run, messages, { role: 'user', content: task });
+    this.push(session, run, messages, { role: 'user', content: task, ...(attachments?.length ? { attachments } : {}) });
     return { run, done: this.loop(session, run, messages, 1) };
   }
 
@@ -233,6 +237,17 @@ export class Agent {
     const maxOut = this.o.maxOutputTokens ?? DEFAULT_MAX_OUTPUT;
     let budgetBlocked = false;
     let emptyResponse = false;
+    let visionSkipped = false;
+    // Anexos (M1.3): o conteúdo é lido do arquivo, com o hash conferido, só para este pedido; o log fica com a referência.
+    let sent: ChatMessage[];
+    try {
+      sent = messages.map((m) => (m.attachments?.length ? { ...m, files: m.attachments.map((a) => loadAttachment(policy.workspace, a)) } : m));
+    } catch (e) {
+      if (!(e instanceof AttachmentError)) throw e;
+      log.append(session, 'attachment.missing', { run, reason: e.message });
+      return { stop: 'attachmentMissing' };
+    }
+    const needsVision = messages.some((m) => m.attachments?.some((a) => a.kind === 'image'));
     for (let i = 0; i < routes.length; i++) {
       const r = routes[i]!;
       const name = `${r.provider.id}/${r.model}`;
@@ -240,6 +255,8 @@ export class Agent {
       const skip = (reason: string) => { if (next) log.append(session, 'provider.switched', { from: name, to: `${next.provider.id}/${next.model}`, reason }); };
       if (rejected.has(r.provider.id)) continue; // a recusa e a troca já estão no log desta execução
       if (policy.decide({ session, tool: 'model.use', target: r.model }, { interactive: false }).effect !== 'allow') { skip('policy'); continue; }
+      // Mensagem com imagem: a rota sem visão é pulada com o motivo, sem chamada (critério 9).
+      if (needsVision && this.o.vision && !this.o.vision(r.provider.id, r.model)) { visionSkipped = true; skip('noVision'); continue; }
 
       const price = this.priceFor(r);
       const estimate = price ? costOf({ input_tokens: estimateTokens(messages), cached_tokens: 0, cache_write_tokens: 0, output_tokens: maxOut }, price) : 0;
@@ -255,16 +272,18 @@ export class Agent {
 
       const effect = domain.beginEffect(session, run, 'model.call', `${run}:step${step}:${name}`, name).id;
       const effort = this.o.effort && !noEffort.has(name) ? this.o.effort : undefined;
-      const req: ModelRequest = { model: r.model, messages, tools: AGENT_TOOLS, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
+      const req: ModelRequest = { model: r.model, messages: sent, tools: AGENT_TOOLS, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
       try {
         this.o.onProgress?.(run, { kind: 'call', route: name, step });
         const response = await r.provider.call(req, { session, ...(this.o.signal ? { signal: this.o.signal } : {}), ...(this.o.onProgress ? { onProgress: (p: Progress) => this.o.onProgress!(run, p) } : {}) });
         domain.completeEffect(effect, { finish: response.finish, usage: response.usage });
         budget.settle(reservation, response.usage, price ? costOf(response.usage as Usage, price) : 0);
         // Resposta vazia (nenhum texto, nenhuma ferramenta, 0 tokens de saída): falha da rota, não "concluída"
-        // muda (achado no ensaio do M1.0). Fica no log, e a ordem segue para o próximo provedor.
-        if (!response.text.trim() && !response.toolCalls.length && !(response.usage?.output_tokens ?? 0)) {
-          log.append(session, 'provider.error', { route: name, code: 'emptyResponse', message: 'resposta vazia: nenhum texto, nenhuma ferramenta, 0 tokens de saída' });
+        // muda (achado no ensaio do M1.0). Fica no log, e a ordem segue para o próximo provedor. Também vazia: sem
+        // texto e sem ferramenta, cortada pelo limite depois de gastá-lo em raciocínio (Nemotron VL real, M1.3).
+        const cutOff = response.finish === 'length';
+        if (!response.text.trim() && !response.toolCalls.length && (!(response.usage?.output_tokens ?? 0) || cutOff)) {
+          log.append(session, 'provider.error', { route: name, code: 'emptyResponse', message: cutOff ? 'resposta vazia: o limite de saída acabou antes do texto (gasto em raciocínio)' : 'resposta vazia: nenhum texto, nenhuma ferramenta, 0 tokens de saída' });
           rejected.add(r.provider.id);
           emptyResponse = true;
           skip('emptyResponse');
@@ -315,7 +334,7 @@ export class Agent {
         return { stop: 'effect.unknown' };
       }
     }
-    return { stop: budgetBlocked ? 'budget.windowExhausted' : emptyResponse ? 'provider.emptyResponse' : 'provider.unavailable' };
+    return { stop: budgetBlocked ? 'budget.windowExhausted' : emptyResponse ? 'provider.emptyResponse' : visionSkipped ? 'noVisionRoute' : 'provider.unavailable' };
   }
 
   // Executa uma chamada de ferramenta e devolve o resultado (JSON) para o modelo.

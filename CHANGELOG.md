@@ -10,6 +10,9 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Anexar pela console** (M1.3b; com ela, a M1.3 está concluída). Na caixa de mensagem, o Pai anexa uma imagem ou um arquivo pelo 📎, arrastando ou colando. Cada anexo vira uma etiqueta que dá para tirar antes de enviar, e a mensagem enviada mostra o que foi junto. Se quem vai executar não enxerga imagem, a console avisa antes de subir. No ensaio, o Nemotron VL respondeu a cor da imagem anexada pela console.
+- **Imagens e arquivos na conversa, no núcleo** (M1.3a, critério 9). O núcleo aceita imagens (PNG, JPEG, WebP, GIF) e arquivos de texto ou código anexados à mensagem. Eles ficam guardados na pasta de trabalho; o histórico da conversa guarda só a referência, nunca o conteúdo. Cada provedor recebe a imagem no formato dele. Um modelo que não enxerga é pulado, com o motivo, e um agente só recebe a imagem se disser que a aceita. No computador do Pai, o ChatGPT, o Nemotron VL e o OpenCode responderam a cor certa de uma imagem de teste. Anexar pela console chega na próxima parte (M1.3b).
+- **M1.2 concluída: o Buddy conversa com os agentes pelo ACP** (2026-10-19). Ele confere se cada agente está pronto, pede a aprovação do Pai antes de baixar código, conversa com o andamento ao vivo, decide as permissões pela própria política e faz o login do agente sem ver a credencial. O primeiro login do Pai num agente real fica para o ensaio da M1.6, por decisão dele.
 - **Escolher o modelo na caixa de mensagem** (M1.5c, critérios 11 e 13). Uma pílula (ou Ctrl+K) abre o catálogo real de modelos:
   - uma aba por provedor, com busca e filtros por capacidade (visão, raciocínio, ferramentas, grátis, contexto grande);
   - os modelos agrupados por lab, com as capacidades em ícones e o tamanho do contexto;

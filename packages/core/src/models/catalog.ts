@@ -16,6 +16,14 @@ export interface ModelEntry {
   sources: { caps: CapSource; lab: LabSource };
 }
 export type ProviderKey = 'chatgpt' | 'opencode-go' | 'ollama-cloud' | 'openrouter';
+// Visão medida (SPEC 0002, escopo 7): o piso quando o catálogo não tem o modelo. ChatGPT e os modelos "-vl" (Nemotron VL)
+// enxergam; gpt-oss não; o resto, sem medida, não recebe imagem (a rota é pulada com o motivo).
+export function measuredVision(provider: string, model: string): boolean {
+  if (/gpt-oss/i.test(model)) return false;
+  if (/(^|[-_/:.])vl([-_/:.]|$)/i.test(model)) return true;
+  return provider === 'chatgpt';
+}
+
 // Versão do formato e das regras do catálogo: cópia guardada de outra versão é montada de novo (M1.5c). Sobe a cada
 // correção que muda o que o catálogo diz. 2: níveis de esforço do ChatGPT pela API de respostas (2026-10-19).
 export const CATALOG_VERSION = 2;
