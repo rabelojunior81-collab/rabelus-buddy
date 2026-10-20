@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T021533-0300-claude-code-desktop-d0610a-0023",
+  "ts": "2026-10-20T02:15:33-03:00",
+  "utc": "2026-10-20T05:15:33.226Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 23,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #75: feat: console sem token na URL (M1.5e)",
+  "refs": [
+    "#75"
+  ],
+  "data": {}
+}
