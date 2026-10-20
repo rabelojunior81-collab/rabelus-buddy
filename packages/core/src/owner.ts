@@ -353,8 +353,9 @@ export async function startOwner(home: string): Promise<Owner> {
   // do Buddy. As permissões passam pelo núcleo como na conversa; parar o Buddy cancela o harness (session/cancel).
   // O resultado volta ao modelo; o efeito com identidade fica com o Agent.
   const delegateFor = (workspace: string, interactive: boolean, signal?: AbortSignal): Delegate => ({
+    // Cópia local do registro, sem rede: a lista entra em toda execução do Buddy e não pode atrasá-la (o teste
+    // de direcionar pegou o atraso). A delegação em si atualiza o registro pelo harnessFor.
     list: async () => {
-      await registryNow();
       return detectHarnesses(home, process.env).flatMap((v) => {
         const spec = launchFor(v);
         return spec && (!spec.needsApproval || firstRun(v, spec) === 'approved') ? [v.id] : [];

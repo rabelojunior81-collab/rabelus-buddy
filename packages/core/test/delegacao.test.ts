@@ -46,6 +46,8 @@ async function buddy(env: NodeJS.ProcessEnv, args: Record<string, unknown> = { h
   writeFileSync(join(home, 'config.json'), JSON.stringify({ routes: [{ provider: 'opencode-go', model: 'kimi-k3', baseURL: `${llm.url}/v1` }] }));
   owners.push(await spawnOwner(home, { PATH: fakeOpencode(), RBUDDY_ACP_REGISTRY: `${reg.url}/registry.json`, OPENCODE_GO_API_KEY: 'chave-falsa', OLLAMA_CLOUD_API_KEY: '', OPENROUTER_API_KEY: '', ...env }));
   const ipc = (m: string, p: Record<string, unknown> = {}) => call(endpointFor(home), m, p) as Promise<any>;
+  // Como a console ao abrir: harness.list traz o registro; a lista da delegação usa a cópia local, sem rede.
+  assert.ok(((await ipc('harness.list')).harnesses as any[]).some((h) => h.id === 'opencode' && h.found));
   return { ipc, bodies };
 }
 async function until<T>(f: () => Promise<T | undefined>, ms = 20_000): Promise<T> {
