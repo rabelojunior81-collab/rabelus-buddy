@@ -46,7 +46,7 @@ O conteúdo é um só (`AGENTS.md`); muda só o arquivo que cada fabricante lê.
 
 | Harness | Arquivo de entrada | Fonte da informação | Testado aqui |
 |---|---|---|---|
-| Claude Code (terminal e extensão do VS Code) | `CLAUDE.md` (importa `@AGENTS.md`) | code.claude.com/docs/en/memory, 2026-10-14 | sim (terminal em 2026-10-14; VS Code em 2026-10-15) |
+| Claude Code (terminal, extensão do VS Code e app Desktop) | `CLAUDE.md` (importa `@AGENTS.md`) | code.claude.com/docs/en/memory, 2026-10-14 | sim (terminal em 2026-10-14; VS Code em 2026-10-15; Desktop em 2026-10-20) |
 | Codex, OpenCode, Cursor, Zed, Warp, Aider, Kilo Code, Copilot coding agent… | `AGENTS.md` nativo | agents.md, 2026-10-14 | não |
 | Gemini CLI | `.gemini/settings.json` → `context.fileName: AGENTS.md` | agents.md, 2026-10-14 | não |
 | GitHub Copilot (VS Code / chat) | `.github/copilot-instructions.md` | convenção do GitHub; a verificar | não |

@@ -2,7 +2,7 @@
 
 **Classe:** ESTADO · única morada de versões, hosts, canais e pendências. Documento normativo não repete estes valores: aponta para cá.
 
-**Atualizado em:** 2026-10-20T01:10:19-03:00 (`bd now --verify`) · **Por:** claude-code-vs-code-d51ce9
+**Atualizado em:** 2026-10-20T01:47:33-03:00 (`bd now --verify`) · **Por:** claude-code-desktop-d0610a
 
 > Correção (2026-10-15, sessão `claude-code-vs-code-14f5bb`): a versão anterior trazia o carimbo `03:05:00`, escrito à mão e no futuro em relação ao merge que a publicou (`d92e297`, 02:59:52), e a `main` como `397ea0d`. Daqui em diante, o carimbo deste arquivo vem de `bd now --verify`.
 
@@ -16,8 +16,8 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 
 | Item | Valor |
 |---|---|
-| `main` | `25e6c0c` (Merge #72: feat: anexos e imagem no núcleo e na console), CI verde |
-| PRs mergeados | #1–#72, por merge commit, pelo buddy-dev (ADR 0003) |
+| `main` | `4b822b2` (Merge #73: docs: fechamento da sessão d51ce9), CI verde |
+| PRs mergeados | #1–#73, por merge commit, pelo buddy-dev (ADR 0003) |
 | Conta GitHub | **Free** (medido em 2026-10-15: rulesets e proteção de branch em repositório privado respondem "Upgrade to GitHub Pro"); desde 2026-10-16: "Automatically delete head branches" ligado e só merge commit permitido (squash e rebase desligados) |
 | Blog | `rabelus-lab-blog` em `b88cfcd`; clone de trabalho em `workspace/blog` (exigido pelo gate do `bd`) |
 
@@ -38,6 +38,7 @@ Histórico da fase até o M0 (missões de 2026-10-15 ao M0.9): no arquivo morto,
 |---|---|---|
 | Claude Code (terminal) | `CLAUDE.md` → `@AGENTS.md` | sim (sessão de nascimento, 2026-10-14) |
 | Claude Code (extensão do VS Code) | `CLAUDE.md` → `@AGENTS.md` | sim (sessões de 2026-10-15) |
+| Claude Code (Desktop, aba Code) | `CLAUDE.md` → `@AGENTS.md`; ganchos de `.claude/settings.json` | sim (2026-10-20, sessão `claude-code-desktop-d0610a`: o `bd contexto` rodou sozinho no início); Blog e console do Buddy no navegador in-app (regra do Pai) |
 | Codex · OpenCode · Cursor · Copilot (coding agent) · outros da lista agents.md | `AGENTS.md` nativo | não testado |
 | Gemini CLI | `.gemini/settings.json` → `AGENTS.md` | não testado |
 | GitHub Copilot (VS Code) | `.github/copilot-instructions.md` | não testado |
