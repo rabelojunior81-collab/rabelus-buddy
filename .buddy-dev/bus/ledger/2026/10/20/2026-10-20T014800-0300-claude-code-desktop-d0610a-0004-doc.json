@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014800-0300-claude-code-desktop-d0610a-0004",
+  "ts": "2026-10-20T01:48:00-03:00",
+  "utc": "2026-10-20T04:48:00.511Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 4,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/posse-claude-code-desktop",
+  "type": "doc",
+  "summary": "Harness Claude Code (Desktop) registrado no STATUS (Harnesses) e no BOOTSTRAP §3; main do STATUS em dia por bd status-main (4b822b2, #1–#73). Achado: bd status-main atualiza o carimbo do STATUS mas mantém o 'Por' da sessão anterior; corrigido à mão nesta sessão.",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T014721-0300-claude-code-desktop-d0610a-0001",
+  "ts": "2026-10-20T01:47:21-03:00",
+  "utc": "2026-10-20T04:47:21.802Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 1,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "Posse no Claude Code Desktop depois da quebra da d51ce9 (2026-10-20): registrar o harness Desktop nas superfícies (STATUS, BOOTSTRAP), main do STATUS em dia; regra do Pai: Blog e Buddy no navegador in-app; depois, M1.4 (delegação), com a validação da console e o token aguardando o Pai",
+  "refs": [],
+  "data": {}
+}
