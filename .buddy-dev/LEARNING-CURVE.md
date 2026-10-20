@@ -204,3 +204,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0031-#0031
 
 1. **Em 2026-10-15, as respostas do Pai à SPEC 0001 foram aplicadas com a explicação de build e testes acompanhada da prova executada.** Em 2026-10-20, o `bd status-main` reescreveu a `main` e o carimbo do STATUS, mas deixou o "Por" com a sessão anterior: a linha passou a afirmar que outra sessão escreveu um estado que ela nunca viu. → A ferramenta que reescreve uma superfície responde por todos os campos daquela linha, não só pelo que motivou a chamada. Achado pede teste no `bd` antes da correção.
+
+## lote #0028-#0028
+
+1. **Em 2026-10-15, nasceu o `bd test-guard`: a suíte não perde testes nem asserções.** Em 2026-10-20, a decisão do Pai mudou o contrato da console (o `?t=` deixou de autorizar recurso), e cinco testes antigos afirmavam o contrato velho. Eles foram trocados pelo novo com mais asserções, nunca menos: cada um ganhou a prova de que o `?t=` agora é recusado. Mas eu procurei os testes afetados só nos arquivos da console, e o dos ícones de harness ficou de fora até a suíte completa reprovar. → Mudança de contrato pede a busca pelo contrato em toda a suíte (o `?t=` em todo teste), não pelos arquivos que eu acho que tocam nele. E a suíte completa antes do commit de código é a rede que pega o que a busca deixou passar.

@@ -107,6 +107,7 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Alterado
 
+- **A console não leva mais o token no endereço** (M1.5e, critério 16; decisão do Pai em 2026-10-20). O atalho abre a console por um bilhete de uso único, que vira um cookie protegido, e o endereço fica limpo: `http://127.0.0.1:47321/`. O token não aparece mais na barra do navegador, no histórico, em capturas nem na mensagem do `rbuddy ui`. Um endereço antigo com `?t=` ainda funciona uma vez e volta para o limpo. Fechar o navegador apaga o cookie; para voltar, use o atalho.
 - **Cor do produto e do Buddy Fenix: verde-oliva** (opção B do Pai). A console trocou o verde-água pelo oliva, e o tema claro ganhou contraste: 6,17:1 contra 4,21:1.
 
 - **Ordem dos marcos depois do M0** ([ADR 0018](./docs/60-decisoes/0018-ordem-c-depois-do-m0.md), decisão do Pai): M1 orquestrador e multimodal; M2 isolamento; M3 interface de produto; M4 memória; M5 canais. SPEC 0002 do M1 em rascunho, com protótipo visual em verde-oliva e vidro.

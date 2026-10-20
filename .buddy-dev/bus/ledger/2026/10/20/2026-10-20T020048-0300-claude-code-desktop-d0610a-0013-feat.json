@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T020048-0300-claude-code-desktop-d0610a-0013",
+  "ts": "2026-10-20T02:00:48-03:00",
+  "utc": "2026-10-20T05:00:48.366Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 13,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-console-sem-token-na-url",
+  "type": "feat",
+  "summary": "M1.5e no código: cookie rbuddy_console_<porta> HttpOnly/SameSite=Strict derivado do token (HMAC); ?t= em GET / vira 303 com cookie; /entrar?c= bilhete de uso único e 60 s pelo IPC console.ticket; POST pelo cookie exige Origin exato e JSON; daemon.status e o rbuddy ui com a URL limpa; a página sem token. 46 testes da console verdes. Aprendizado: substituição com heredoc Python estragou um regex (\\b virou backspace); em código com escape, script em arquivo ou Edit.",
+  "refs": [
+    "c24c2ee"
+  ],
+  "data": {}
+}
