@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T100804-0300-claude-code-desktop-6e2164-0007",
+  "ts": "2026-10-20T10:08:04-03:00",
+  "utc": "2026-10-20T13:08:04.123Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 7,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/decisoes-e-paralelismo",
+  "type": "decisao",
+  "summary": "Onda 1 do piloto disparada: 4 subagentes Haiku em paralelo, só leitura e pesquisa, saída fora do repositório: W1 varredura para o público, W2 modos de permissão (Claude Code, Codex, OpenCode), W3 opções dos harnesses no ACP, W4 GitHub público e Pages.",
+  "refs": [],
+  "data": {}
+}
