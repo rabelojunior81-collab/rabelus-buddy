@@ -368,7 +368,8 @@
       "mecanismo": {},
       "estado": "recorrente",
       "origem": "METODO §2",
-      "tipo": "decisao"
+      "tipo": "decisao",
+      "explicacao": "Antes de começar cada etapa grande do produto, eu levo ao Pai, explicado aqui na conversa, o que ela vai entregar, como vamos saber que deu certo e as escolhas que dependem dele. Ele aprova, ajusta ou recusa; só depois disso eu escrevo código."
     },
     {
       "id": "escolha-da-tui",
@@ -380,7 +381,8 @@
       "mecanismo": {},
       "estado": "pendente",
       "origem": "ADR 0016",
-      "tipo": "decisao"
+      "tipo": "decisao",
+      "explicacao": "O Rabelus Buddy também vai ter uma versão para o terminal, em modo texto. Há duas bibliotecas candidatas para desenhar essa tela. Eu preparo as mesmas telas nas duas, o Pai vê lado a lado numa sessão comigo e escolhe a que prefere. Acontece depois que a console estiver validada."
     },
     {
       "id": "login-chatgpt-real",
@@ -667,11 +669,13 @@
       "mecanismo": {
         "teste": "packages/core/test/console-modelo.test.ts"
       },
-      "estado": "pendente",
+      "estado": "bloqueada",
       "origem": "SPEC 0002, critério 11; pedido do Pai em 2026-10-19 (ver, testar e validar no layout novo)",
       "tipo": "acao",
       "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); em Ajustes, conferir a pasta de trabalho; na pílula do modelo (ou Ctrl+K), aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar \"Responda em texto, sem usar ferramentas: diga olá em uma frase.\"; Nova conversa, na pílula Buddy escolher OpenCode e esperar \"pronto\", enviar \"Crie o arquivo teste-do-pai.txt com a palavra ok e diga se conseguiu.\" e clicar em Aprovar no cartão",
-      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md"
+      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md",
+      "motivo": "Em 20/10 o Pai usou a console e achou problemas que impedem uma validação justa: a negação de um agente não tinha volta, com um agente escolhido não dava para escolher modelo nem modo, um pedido fora da pasta foi negado em silêncio e o agente parou, e a fala do agente aparecia como do Buddy. A validação volta depois dessas correções e da escolha de opções por agente.",
+      "explicacao": "O Pai usa a console nova como no dia a dia e diz se ela está boa: o visual na prática, escolher um modelo do ChatGPT com esforço alto, e pedir a um agente instalado (o OpenCode) que crie um arquivo, aprovando pelo cartão. Hoje está parada até as correções que ele mesmo encontrou."
     },
     {
       "id": "anexos-e-imagem",
