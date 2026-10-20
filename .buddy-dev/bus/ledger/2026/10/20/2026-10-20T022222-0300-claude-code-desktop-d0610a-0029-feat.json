@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T022222-0300-claude-code-desktop-d0610a-0029",
+  "ts": "2026-10-20T02:22:22-03:00",
+  "utc": "2026-10-20T05:22:22.315Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 29,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "feat",
+  "summary": "M1.4 no código: harnessTurn extraído do startHarnessRun (postura, permissões pelo núcleo, andamento); Delegate injetado pelo núcleo no Agent (lista os harnesses prontos, com primeira execução aprovada; roda o turno com o sinal do Buddy); ferramenta delegate com enum; efeito harness.delegate com recibo; retomada pede reconciliação como comando. 5 testes verdes.",
+  "refs": [
+    "c662aa8"
+  ],
+  "data": {}
+}

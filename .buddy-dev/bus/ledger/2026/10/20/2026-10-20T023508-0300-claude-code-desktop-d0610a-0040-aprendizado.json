@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T023508-0300-claude-code-desktop-d0610a-0040",
+  "ts": "2026-10-20T02:35:08-03:00",
+  "utc": "2026-10-20T05:35:08.169Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 40,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "aprendizado",
+  "summary": "Lote #0029: na delegação há duas vozes; a superfície precisa dizer de quem é cada fala, e só o ensaio real com o agente de verdade mostrou a fala do OpenCode no balão do Buddy.",
+  "refs": [],
+  "data": {}
+}

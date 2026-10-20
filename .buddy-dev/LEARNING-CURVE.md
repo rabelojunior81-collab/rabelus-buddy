@@ -208,3 +208,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0028-#0028
 
 1. **Em 2026-10-15, nasceu o `bd test-guard`: a suíte não perde testes nem asserções.** Em 2026-10-20, a decisão do Pai mudou o contrato da console (o `?t=` deixou de autorizar recurso), e cinco testes antigos afirmavam o contrato velho. Eles foram trocados pelo novo com mais asserções, nunca menos: cada um ganhou a prova de que o `?t=` agora é recusado. Mas eu procurei os testes afetados só nos arquivos da console, e o dos ícones de harness ficou de fora até a suíte completa reprovar. → Mudança de contrato pede a busca pelo contrato em toda a suíte (o `?t=` em todo teste), não pelos arquivos que eu acho que tocam nele. E a suíte completa antes do commit de código é a rede que pega o que a busca deixou passar.
+
+## lote #0029-#0029
+
+1. **Em 2026-10-15, uma opção documentada na ajuda do `bd` não era aceita pelo parser, e nasceu o teste que exige que toda opção da ajuda funcione.** Em 2026-10-20, os testes da delegação passavam com o harness falso, e o ensaio real mostrou o texto do OpenCode ao vivo no balão do Buddy: a fala de um atribuída a outro. → O que a tela afirma inclui quem está falando. Na delegação há duas vozes, e o contrato de cada superfície precisa dizer de quem é cada fala; o harness falso não fala por si, então o ensaio com o agente de verdade é onde a autoria aparece.

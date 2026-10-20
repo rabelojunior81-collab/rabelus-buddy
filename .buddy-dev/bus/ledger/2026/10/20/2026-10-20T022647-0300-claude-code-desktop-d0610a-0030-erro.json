@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T022647-0300-claude-code-desktop-d0610a-0030",
+  "ts": "2026-10-20T02:26:47-03:00",
+  "utc": "2026-10-20T05:26:47.062Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 30,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-4-delegacao",
+  "type": "erro",
+  "summary": "M1.4: a primeira versão buscava o registro do ACP (rede) no início de toda execução do Buddy; o teste antigo de direcionar (critério 33) reprovou pelo atraso. Corrigido no código (cópia local, sem rede), sem tocar no teste antigo; 378 testes verdes.",
+  "refs": [
+    "6a74202"
+  ],
+  "data": {}
+}

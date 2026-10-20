@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0029 · 2026-10-15T050153-0300 · claude-code-vs-code-3a6e29 · correcao
-
-bd deps --latest não era aceito pelo parser (opção documentada, não declarada; já na main pelo PR #18). Corrigido, com teste que exige que toda opção da ajuda seja aceita (LEARNING-CURVE #7).
-
 ### #0032 · 2026-10-15T050534-0300 · claude-code-vs-code-3a6e29 · processo
 
 Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR 0014), bd deps e bd test-guard (PR #18), --latest corrigido (PR #19), registro de dependências preenchido, explicação de build e testes com prova. Post: A Pista Estava Quase Certa.
@@ -207,3 +203,7 @@ Posse no Claude Code Desktop (sessão claude-code-desktop-d0610a): harness regis
 ### #0080 · 2026-10-20T020619-0300 · claude-code-desktop-d0610a · feat
 
 M1.5e: console sem token na URL (critério 16, decisão do Pai): cookie HttpOnly/SameSite=Strict derivado do token, bilhete de uso único no rbuddy ui, POST pelo cookie só da própria origem, URL e saída limpas; ensaio no navegador in-app; SPEC 0002 rev. 2.
+
+### #0081 · 2026-10-20T023505-0300 · claude-code-desktop-d0610a · feat
+
+M1.4: ferramenta delegate do Buddy (critério 8): turno de harness compartilhado no núcleo, efeito harness.delegate, permissões com o ícone de quem pede, parada repassada ao harness, conversa mostra a quem delegou; checagem real com o OpenCode do Pai no navegador in-app (leitura e escrita com duas aprovações); achados corrigidos com teste antes.
