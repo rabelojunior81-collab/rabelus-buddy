@@ -767,6 +767,9 @@ function feedItems(evs) {
       case 'effect.reconciled': detail(el('div', { class: 'ev' }, t('log.reconciled', { effect: p.effect, outcome: p.outcome }))); break;
       case 'context.compacted': detail(el('div', { class: 'ev' }, t('log.compacted', { before: p.before, after: p.after }))); break;
       // Conversa com harness (M1.2c–e): o que ele faz fica nos detalhes; o que pede a atenção do Pai fica à vista.
+      // Delegação do Buddy (M1.4, critério 8): a quem, a tarefa e como terminou; o raciocínio do harness, recolhível.
+      case 'harness.delegated': speak(el('div', { class: 'ev' }, p.phase === 'start' ? t('console.harness.delegatedStart', { name: harnessName(p.id), task: String(p.task || '') }) : p.stopReason === 'end_turn' ? t('console.harness.delegatedDone', { name: harnessName(p.id) }) : t('console.harness.delegatedEnd', { name: harnessName(p.id), stop: String(p.stopReason || '') }))); break;
+      case 'harness.reasoning': detail(el('details', { class: 'res reason' }, el('summary', {}, t('console.harness.reasoning', { name: harnessName(p.id) })), el('pre', {}, String(p.text || '')))); break;
       case 'harness.tool': detail(el('div', { class: 'ev tool' }, t('console.harness.tool', { title: p.title, status: toolStatusKey(p.status) ? t(toolStatusKey(p.status)) : p.status }))); break;
       case 'harness.permission': detail(el('div', { class: 'ev' }, t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target }))); break;
       case 'harness.posture': if (postureKey(p)) detail(el('div', { class: 'ev' }, t(postureKey(p), { name: harnessName(p.id), mode: p.mode }))); break;

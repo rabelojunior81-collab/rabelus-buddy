@@ -189,6 +189,10 @@
         "approve": "approved by you",
         "deny": "denied"
       },
+      "delegatedStart": "Buddy delegated to {{name}}: {{task}}",
+      "delegatedDone": "{{name}} finished the delegated part",
+      "delegatedEnd": "{{name}} stopped the delegated part ({{stop}})",
+      "reasoning": "{{name}}'s reasoning",
       "postureAsk": "{{name}} asks for permission before editing or running anything",
       "postureReadOnly": "{{name}} works in read-only mode and asks for permission to edit",
       "postureMode": "{{name}} works in {{mode}} mode",

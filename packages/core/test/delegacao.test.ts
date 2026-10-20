@@ -134,5 +134,5 @@ test('delegate: harness desconhecido volta ao modelo como recusa legível, sem a
 test('página: a conversa mostra a delegação (a quem, a tarefa, como terminou) e o raciocínio do harness delegado (critério 8)', () => {
   const PAGE = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
   for (const k of ['harness.delegated', 'harness.reasoning']) assert.ok(PAGE.includes(`case '${k}':`), `a conversa mostra ${k}`);
-  for (const k of ['console.harness.delegatedStart', 'console.harness.delegatedEnd', 'console.harness.reasoning']) assert.ok(PAGE.includes(`t('${k}'`), `a página usa ${k} (a varredura do critério 28 confere o catálogo)`);
+  for (const k of ['console.harness.delegatedStart', 'console.harness.delegatedDone', 'console.harness.delegatedEnd', 'console.harness.reasoning']) assert.ok(PAGE.includes(`t('${k}'`), `a página usa ${k} (a varredura do critério 28 confere o catálogo)`);
 });
