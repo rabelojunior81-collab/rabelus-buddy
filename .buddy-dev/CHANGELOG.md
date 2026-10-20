@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0032 · 2026-10-15T050534-0300 · claude-code-vs-code-3a6e29 · processo
-
-Sessão claude-code-vs-code-3a6e29: respostas do Pai aplicadas (SPEC rev. 2, ADR 0014), bd deps e bd test-guard (PR #18), --latest corrigido (PR #19), registro de dependências preenchido, explicação de build e testes com prova. Post: A Pista Estava Quase Certa.
-
 ### #0033 · 2026-10-15T171930-0300 · claude-code-vs-code-7ebb05 · decisao
 
 SPEC 0001 aprovada pelo Pai (rev. 3, decisão 8 = A) e mergeada; ADR 0015: ordem de provedores OpenCode Go → Ollama Cloud → ChatGPT → OpenRouter (API paga); typescript e @types/node aprovados no registro. Regra: aprovado é mergeado na hora. Ficha pi-agent para a pergunta de forkar o Pi.
@@ -207,3 +203,7 @@ M1.5e: console sem token na URL (critério 16, decisão do Pai): cookie HttpOnly
 ### #0081 · 2026-10-20T023505-0300 · claude-code-desktop-d0610a · feat
 
 M1.4: ferramenta delegate do Buddy (critério 8): turno de harness compartilhado no núcleo, efeito harness.delegate, permissões com o ícone de quem pede, parada repassada ao harness, conversa mostra a quem delegou; checagem real com o OpenCode do Pai no navegador in-app (leitura e escrita com duas aprovações); achados corrigidos com teste antes.
+
+### #0082 · 2026-10-20T024916-0300 · claude-code-desktop-d0610a · processo
+
+Sessão claude-code-desktop-d0610a: posse no Claude Code Desktop (#74), console sem token na URL (M1.5e, #75), delegação do Buddy (M1.4, #76) com checagem real no navegador in-app; núcleo do Pai na M1.4. Post: Duas Vozes na Mesma Conversa.

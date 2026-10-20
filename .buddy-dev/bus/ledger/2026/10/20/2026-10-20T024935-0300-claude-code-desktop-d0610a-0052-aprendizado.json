@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024935-0300-claude-code-desktop-d0610a-0052",
+  "ts": "2026-10-20T02:49:35-03:00",
+  "utc": "2026-10-20T05:49:35.018Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 52,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d0610a",
+  "type": "aprendizado",
+  "summary": "Lote #0032: rodar a checagem não é ler o resultado; o PR só depois de conferir a saída do bd post.",
+  "refs": [],
+  "data": {}
+}
