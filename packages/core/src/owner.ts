@@ -411,8 +411,18 @@ export async function startOwner(home: string): Promise<Owner> {
   let catalogBuild: Promise<ModelCatalog> | null = null;
   // Primeira execução por pacote@versão (critério 4): 'approved', 'denied', ou o id da aprovação pendente
   // (criada aqui quando `ask`, uma só por pacote). O vínculo pacote → aprovação fica no log.
+  // Rever a negação (A1): `harness.approval.reset` posterior ao último pedido do pacote faz de conta que não há pedido,
+  // e o próximo `ask` cria um pedido novo. Nada é apagado: a negação antiga continua no log.
   const firstRun = ({ id, name }: { id: string; name: string }, spec: { package?: string; source: string }, ask = false): string => {
-    const req = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { package?: string }).package === spec.package).at(-1);
+    const evs = log.events('harness');
+    const ofPackage = (e: { payload: unknown }) => (e.payload as { package?: string }).package === spec.package;
+    let reqAt = -1;
+    let resetAt = -1;
+    evs.forEach((e, i) => {
+      if (e.kind === 'harness.approval.requested' && ofPackage(e)) reqAt = i;
+      if (e.kind === 'harness.approval.reset' && ofPackage(e)) resetAt = i;
+    });
+    const req = reqAt >= 0 && reqAt > resetAt ? evs[reqAt] : undefined;
     if (req) {
       const ap = domain.getApproval(String((req.payload as { approval: string }).approval));
       if (ap.state !== 'pending') return ap.state;
@@ -546,6 +556,19 @@ export async function startOwner(home: string): Promise<Owner> {
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
     // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
     'harness.probe': (p) => probeById(String(p.id)),
+    // Rever a negação da primeira execução (A1): só quando está negada; pede aprovação nova, sem apagar a antiga.
+    'harness.firstRun.reset': async (p) => {
+      const id = String(p.id);
+      await registryNow();
+      const v = detectHarnesses(home, process.env).find((h) => h.id === id);
+      if (!v) throw new DomainError(-32602, `harness desconhecido: ${id}`);
+      const spec = launchFor(v);
+      if (!spec || !spec.needsApproval) throw new DomainError(-32602, `${v.name} não precisa de aprovação da primeira execução`);
+      if (firstRun(v, spec) !== 'denied') throw new DomainError(-32602, `a primeira execução de ${v.name} não está negada; nada a rever`);
+      const previous = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { package?: string }).package === spec.package).at(-1);
+      log.append('harness', 'harness.approval.reset', { package: spec.package, id, previous: String((previous?.payload as { approval?: string } | undefined)?.approval ?? '') });
+      return { approval: firstRun(v, spec, true) };
+    },
     // Anexo (SPEC 0002, critério 9): guardado na pasta de trabalho com o hash no nome; o log fica só com a referência.
     'attachment.put': (p) => {
       const session = String(p.session);

@@ -164,6 +164,10 @@
       "listTitle": "Harness · who runs it",
       "foot": "Found on this computer · icons from the official ACP registry",
       "buddyDesc": "Rabelus Buddy's own agent, with your providers",
+      "firstRun": {
+        "review": "Review decision",
+        "reviewed": "Approval requested again: approve or deny on the card."
+      },
       "placeholder": "Write to {{name}}…",
       "state": {
         "checking": "checking…",

@@ -1115,8 +1115,22 @@ function renderHarnessList() {
     return el('button', { class: 'mrow', role: 'option', 'aria-selected': String(chosen === id), onclick: () => { chooseHarness(id); hPop(false); } },
       icon, el('span', { class: 'tx' }, el('b', {}, name), el('small', {}, desc)), v ? el('span', { class: 'state ' + v.tone }, t(v.key)) : null);
   };
+  // Negada a primeira execução, o Pai pode rever a decisão (A1): pede um pedido de aprovação novo.
+  const review = (id) => el('button', { class: 'mrow', onclick: () => { hPop(false); reviewHarness(id); } }, el('span', { class: 'tx' }, el('b', {}, t('console.harness.firstRun.review'))));
   $('hList').replaceChildren(row('buddy', buddyMark(), 'Buddy', t('console.harness.buddyDesc'), null),
-    ...harnesses.map((h) => row(h.id, harnessIcon(h), h.name, (probes[h.id] && probes[h.id].reason) || h.description || '', probes[h.id])));
+    ...harnesses.flatMap((h) => [row(h.id, harnessIcon(h), h.name, (probes[h.id] && probes[h.id].reason) || h.description || '', probes[h.id]),
+      ...(probes[h.id] && probes[h.id].state === 'negado' ? [review(h.id)] : [])]));
+}
+// Rever a negação da primeira execução (A1): o núcleo refaz o pedido; a sonda e a lista de aprovações mostram o estado novo.
+async function reviewHarness(hid) {
+  try {
+    await api('harness.firstRun.reset', { id: hid });
+    approvalNote = t('console.harness.firstRun.reviewed');
+    probes[hid] = await api('harness.probe', { id: hid });
+  } catch (e) { approvalNote = e.message; }
+  renderHarnessPill();
+  if (!$('hPop').hidden) renderHarnessList();
+  await refreshApprovals();
 }
 // Lista ancorada no botão (no celular, folha embaixo); um clique fora, Esc ou a escolha fecham.
 function hPop(open) {

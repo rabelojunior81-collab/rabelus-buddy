@@ -164,6 +164,10 @@
       "listTitle": "Harness · quem executa",
       "foot": "Encontrados neste computador · ícones do registro oficial do ACP",
       "buddyDesc": "o agente do Rabelus Buddy, com os seus provedores",
+      "firstRun": {
+        "review": "Rever decisão",
+        "reviewed": "Pedido de aprovação refeito: aprove ou negue no cartão."
+      },
       "placeholder": "Escreva para o {{name}}…",
       "state": {
         "checking": "conferindo…",
