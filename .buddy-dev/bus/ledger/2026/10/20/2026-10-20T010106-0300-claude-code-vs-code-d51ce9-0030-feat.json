@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T010106-0300-claude-code-vs-code-d51ce9-0030",
+  "ts": "2026-10-20T01:01:06-03:00",
+  "utc": "2026-10-20T04:01:06.009Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 30,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m1-3-multimodal",
+  "type": "feat",
+  "summary": "PR #72 aberto (M1.3). Depois do merge: reiniciar o núcleo do Pai com a main e fechar a sessão (diário, post, daily) num PR só de documentação.",
+  "refs": [],
+  "data": {}
+}
