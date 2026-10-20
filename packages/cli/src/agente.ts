@@ -233,7 +233,9 @@ export async function uiCmd(env: NodeJS.ProcessEnv, io: Io, i18n: I18n, open: (u
   if (!endpoint) return 1;
   const st = (await call(endpoint, 'daemon.status', {})) as { console?: { url: string } };
   if (!st.console) { io.err(t('ui.noConsole')); return 1; }
-  open(st.console.url);
-  io.out(t('ui.opened', { url: st.console.url }));
+  // O navegador abre por um bilhete de uso único; a saída mostra só o endereço limpo (critério 16).
+  const tk = (await call(endpoint, 'console.ticket', {})) as { url: string; clean: string };
+  open(tk.url);
+  io.out(t('ui.opened', { url: tk.clean }));
   return 0;
 }

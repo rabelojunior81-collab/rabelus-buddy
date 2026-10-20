@@ -580,6 +580,8 @@ export async function startOwner(home: string): Promise<Owner> {
       mkdirSync(workspace, { recursive: true });
       return { workspace, routes: loadConfig(home).routes.map((r) => ({ provider: r.provider, model: r.model })) };
     },
+    // Bilhete de uso único para abrir a console (critério 16): só pelo IPC do dono, nunca pela página.
+    'console.ticket': () => { if (!consoleSrv) throw new Error('console desligada'); return { url: consoleSrv.ticket(), clean: consoleSrv.url }; },
     'daemon.stop': () => { setImmediate(() => { void close(); }); return { stopping: true }; },
     'event.append': (p) => log.append(String(p.session), String(p.kind), p.payload),
     'session.events': (p) => log.events(String(p.session)),
