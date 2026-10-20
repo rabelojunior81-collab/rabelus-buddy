@@ -212,3 +212,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0029-#0029
 
 1. **Em 2026-10-15, uma opção documentada na ajuda do `bd` não era aceita pelo parser, e nasceu o teste que exige que toda opção da ajuda funcione.** Em 2026-10-20, os testes da delegação passavam com o harness falso, e o ensaio real mostrou o texto do OpenCode ao vivo no balão do Buddy: a fala de um atribuída a outro. → O que a tela afirma inclui quem está falando. Na delegação há duas vozes, e o contrato de cada superfície precisa dizer de quem é cada fala; o harness falso não fala por si, então o ensaio com o agente de verdade é onde a autoria aparece.
+
+## lote #0032-#0032
+
+1. **Em 2026-10-15, uma sessão fechou com a explicação acompanhada da prova executada, e não da descrição dela.** Em 2026-10-20, abri o PR #76 sem ler a saída do `bd post`, que reprovava: um commit de código tinha saído sem registro. O mecanismo pegou, e a CI também. → Rodar a checagem não é o mesmo que ler o resultado dela. O passo seguinte (PR, merge) só começa depois de conferir na saída que a checagem passou, nunca porque ela "costuma passar".

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T024942-0300-claude-code-desktop-d0610a-0053",
+  "ts": "2026-10-20T02:49:42-03:00",
+  "utc": "2026-10-20T05:49:42.800Z",
+  "session": "claude-code-desktop-d0610a",
+  "seq": 53,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d0610a",
+  "type": "session-end",
+  "summary": "Sessão claude-code-desktop-d0610a: fechamento da d51ce9 pelo rito (#73), posse no Claude Code Desktop (#74), console sem token na URL (M1.5e, #75), delegação do Buddy (M1.4, #76) com checagem real no navegador in-app; núcleo do Pai na M1.4 (812afaa). Post: Duas Vozes na Mesma Conversa. Aguardam o Pai: validar a console, decidir a troca do token vazado em 19/10, a M1.6.",
+  "refs": [],
+  "data": {}
+}
