@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T011050-0300-claude-code-vs-code-d51ce9-0036",
+  "ts": "2026-10-20T01:10:50-03:00",
+  "utc": "2026-10-20T04:10:50.621Z",
+  "session": "claude-code-vs-code-d51ce9",
+  "seq": 36,
+  "harness": "Claude Code (VS Code)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-d51ce9",
+  "type": "doc",
+  "summary": "Diário de 2026-10-20, sessão d51ce9 (retomada conferida, plano corrigido, M1.3 com os achados reais, núcleo do Pai reiniciado, o que aguarda o Pai, lição).",
+  "refs": [],
+  "data": {}
+}
