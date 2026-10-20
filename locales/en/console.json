@@ -127,7 +127,16 @@
       "permissionDenied": "permission denied: the agent stopped the task",
       "harnessCancelled": "the agent ended the task",
       "harnessFailed": "the agent failed; see the reason in the details",
-      "needsLogin": "the agent asks you to sign in before going on"
+      "needsLogin": "the agent asks you to sign in before going on",
+      "noVisionRoute": "the message has an image, and no available model or agent can see images",
+      "attachmentMissing": "an attachment is no longer in the workspace, or it was changed"
+    },
+    "attach": {
+      "add": "Attach an image or file (you can also drag or paste)",
+      "remove": "Remove attachment {{name}}",
+      "badType": "{{name}}: type not accepted (PNG, JPEG, WebP or GIF image; text or code)",
+      "noVision": "{{name}}: whoever runs this cannot see images; pick a model with vision",
+      "tooBig": "{{name}}: larger than {{max}} MB"
     },
     "model": {
       "pick": "Model: which brain (Ctrl+K)",

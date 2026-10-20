@@ -127,7 +127,16 @@
       "permissionDenied": "permissão negada: o agente parou a tarefa",
       "harnessCancelled": "o agente encerrou a tarefa",
       "harnessFailed": "o agente falhou; veja o motivo nos detalhes",
-      "needsLogin": "o agente pede login antes de continuar"
+      "needsLogin": "o agente pede login antes de continuar",
+      "noVisionRoute": "a mensagem tem imagem, e nenhum modelo ou agente disponível enxerga imagem",
+      "attachmentMissing": "um anexo não está mais na pasta de trabalho, ou foi alterado"
+    },
+    "attach": {
+      "add": "Anexar imagem ou arquivo (também dá para arrastar ou colar)",
+      "remove": "Tirar o anexo {{name}}",
+      "badType": "{{name}}: tipo não aceito (imagem PNG, JPEG, WebP ou GIF; texto ou código)",
+      "noVision": "{{name}}: quem vai executar não enxerga imagem; escolha um modelo com visão",
+      "tooBig": "{{name}}: maior que {{max}} MB"
     },
     "model": {
       "pick": "Modelo: com que cérebro (Ctrl+K)",
