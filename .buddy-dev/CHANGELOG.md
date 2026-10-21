@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0037 · 2026-10-16T003647-0300 · claude-code-vs-code-6265a4 · ferramenta
-
-M0.1 fundação: packages/client (i18n) e packages/cli (rabelus-buddy/rbuddy com --help, --version, --lang pelo catálogo), TypeScript executado pelo Node, tsc --noEmit e matriz 3 SOs × Node 24/26 na CI, dependências i18next/typescript/@types/node instaladas pelo protocolo. O portão de tipos pegou 2 erros reais que os testes não pegavam.
-
 ### #0038 · 2026-10-16T004022-0300 · claude-code-vs-code-6265a4 · processo
 
 Sessão claude-code-vs-code-6265a4: ADR 0016 (PR #21); bd merge, bd prune, bd validacoes e GitHub com auto-delete e só merge commit (PR #22, 21 branches podadas, spike arquivado em tag); M0.1 fundação do código (PR #23, matriz 3 SOs × Node 24/26 verde). Post: Nenhuma Branch Sobrevive ao Merge.
@@ -207,3 +203,7 @@ Sessão claude-code-desktop-6e2164: decisões do Pai (explicar em texto, permiss
 ### #0086 · 2026-10-20T222205-0300 · claude-code-desktop-e8da5a · feat
 
 Cobrança do Pai (20/10, 22h): causa da trava do OpenCode (modelo gratuito) achada e resolvida pelos seletores do agente; opções do agente na caixa; permissões com cinco modos e quatro escopos; main protegida no GitHub; prune com worktrees, negrito com código e o Por do STATUS (missões C1–C3); validação da console desbloqueada.
+
+### #0087 · 2026-10-20T223001-0300 · claude-code-desktop-e8da5a · processo
+
+Sessão claude-code-desktop-e8da5a: cobrança do Pai atendida (causa da trava do OpenCode, opções do agente, permissões com modos e escopos, main protegida, missões C1–C3); PR #81. Post: O Sintoma e a Causa.
