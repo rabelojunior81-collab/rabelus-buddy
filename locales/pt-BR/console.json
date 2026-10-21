@@ -62,6 +62,21 @@
         "falhou": "{{name}}: não respondeu ({{reason}}).",
         "negado": "{{name}}: negado; nada foi executado."
       },
+      "text": {
+        "firstRun": "Primeira execução de {{name}}: baixar e executar {{pkg}} ({{src}}). Aprovar vale só para esta versão.",
+        "harness": "{{name}} quer {{action}}: {{target}}",
+        "harnessOutside": "{{name}} quer {{action}} fora da pasta de trabalho: {{target}}",
+        "plain": "O Buddy quer {{action}}: {{target}}",
+        "reconcile": "Confirmar de novo uma ação que ficou incerta ({{action}}): {{target}}"
+      },
+      "tool": {
+        "write_file": "escrever",
+        "archive": "arquivar",
+        "run_command": "rodar o comando",
+        "read_file": "ler",
+        "list_dir": "listar a pasta",
+        "delegate": "delegar ao agente"
+      },
       "scope": {
         "once": "Uma vez",
         "session": "Nesta conversa",
@@ -144,7 +159,13 @@
       "nonInteractive": "ninguém para aprovar nesta execução",
       "grant": "uma concessão anterior não cobre esta ação",
       "noVisionRoute": "a mensagem tem imagem, e nenhum modelo ou agente disponível enxerga imagem",
-      "attachmentMissing": "um anexo não está mais na pasta de trabalho, ou foi alterado"
+      "attachmentMissing": "um anexo não está mais na pasta de trabalho, ou foi alterado",
+      "planMode": "o modo Plano só lê",
+      "yoloMode": "modo Sem perguntas",
+      "acceptEditsMode": "modo Aceitar edições",
+      "autoWrite": "Automático: escrita dentro da pasta",
+      "autoCommand": "Automático: comando só de leitura",
+      "trainingModel": "este modelo treina com os dados: só com permissão do projeto"
     },
     "attach": {
       "add": "Anexar imagem ou arquivo (também dá para arrastar ou colar)",

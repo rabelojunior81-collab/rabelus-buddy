@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T132406-0300-claude-code-desktop-2ea315-0010",
+  "ts": "2026-10-21T13:24:06-03:00",
+  "utc": "2026-10-21T16:24:06.540Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 10,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "correcao",
+  "summary": "o registro 0009 citou o hash anterior: o commit do modelo gratuito foi barrado pelo STATUS atrasado (bd status-main) e entrou como 0433d0e",
+  "refs": [],
+  "data": {}
+}

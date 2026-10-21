@@ -683,6 +683,20 @@ function approvalHarness(action, hs) {
   const h = hs.find((x) => x.name === m[1]);
   return h ? h.id : null;
 }
+// Texto do cartão pelo catálogo (camada de inglês, 2026-10-21): o núcleo escreve a ação em português; aqui ela vira
+// chave e variáveis. O que não se reconhece volta null e aparece cru.
+function approvalParts(action) {
+  const s = String(action);
+  let m = /^Primeira execução de (.+?): baixar e executar (\S+) \((.+)\)\. Aprovar vale só para esta versão\.$/.exec(s);
+  if (m) return { key: 'console.approvals.text.firstRun', vars: { name: m[1], pkg: m[2], src: m[3] } };
+  m = /^Harness (.+?): (\w+) (.+?)( \(fora da pasta de trabalho\))?$/.exec(s);
+  if (m) return { key: m[4] ? 'console.approvals.text.harnessOutside' : 'console.approvals.text.harness', vars: { name: m[1], target: m[3] }, tool: m[2] };
+  m = /^reconcile (\w+) (.+)$/.exec(s);
+  if (m) return { key: 'console.approvals.text.reconcile', vars: { target: m[2] }, tool: m[1] };
+  m = /^(write_file|archive|run_command|read_file|list_dir|delegate) (.+)$/.exec(s);
+  if (m) return { key: 'console.approvals.text.plain', vars: { target: m[2] }, tool: m[1] };
+  return null;
+}
 // Primeira execução de um harness (SPEC 0002, critério 4): a ação começa por "Primeira execução de <nome>: ". Devolve o id.
 function firstRunHarnessOf(action, hs) {
   const m = /^Primeira execução de (.+?): /.exec(String(action));
@@ -760,7 +774,10 @@ function catalogLeftOut(errors, names) { return Object.entries(errors || {}).map
 // Motivo da política em frase (B2): o núcleo manda texto curto em português; o que a tela não conhece segue cru.
 const POLICY_REASONS = new Map([['fora do workspace', 'console.reason.outsideWorkspace'], ['caminho protegido', 'console.reason.protectedPath'],
   ['aprovação humana', 'console.reason.human'], ['regra', 'console.reason.rule'], ['padrão', 'console.reason.default'],
-  ['nonInteractive', 'console.reason.nonInteractive'], ['sessionPaused', 'console.reason.sessionPaused']]);
+  ['nonInteractive', 'console.reason.nonInteractive'], ['sessionPaused', 'console.reason.sessionPaused'],
+  ['modo plano', 'console.reason.planMode'], ['modo sem perguntas', 'console.reason.yoloMode'], ['modo aceitar edições', 'console.reason.acceptEditsMode'],
+  ['automático: escrita dentro da pasta', 'console.reason.autoWrite'], ['automático: comando só de leitura', 'console.reason.autoCommand'],
+  ['modelo treina com os dados: exige concessão de projeto', 'console.reason.trainingModel']]);
 function reasonKey(reason) {
   if (typeof reason !== 'string') return null;
   if (POLICY_REASONS.has(reason)) return POLICY_REASONS.get(reason);
@@ -1034,13 +1051,14 @@ async function refreshApprovals() {
   const who = (a) => { const hid = approvalHarness(a.action, harnesses); const h = hid && harnesses.find((x) => x.id === hid); return h ? harnessIcon(h) : el('img', { class: 'mark', alt: '', src: asset('/brand/emblema-64.png') }); };
   box.replaceChildren(...note, ...list.map((a) => el('div', { class: 'perm' },
     who(a),
-    el('span', { class: 'a' }, a.action),
+    el('span', { class: 'a', title: a.action }, approvalText(a.action)),
     el('span', { class: 's' }, a.session === session ? '' : a.session),
     el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny', a.action) }, t('console.approvals.deny')),
     ...scopesFor(a.action).map((sc) => el('button', { class: 'btn' + (sc === 'once' ? ' pri' : ''), onclick: () => resolve(a.id, 'approve', a.action, sc) }, SCOPE_LABEL[sc]())))));
 }
 // Escopos do cartão (critério 17): uma vez, nesta conversa, neste projeto (a pasta), sempre, também para comando (só o
 // comando exatamente igual; decisão do Pai em 2026-10-21). Primeira execução de agente: só uma vez.
+const approvalText = (action) => { const p = approvalParts(action); if (!p) return action; const tool = p.tool ? t('console.approvals.tool.' + p.tool) : ''; return t(p.key, { ...p.vars, action: tool.startsWith('console.') ? p.tool : tool }); };
 const SCOPE_LABEL = { once: () => t('console.approvals.scope.once'), session: () => t('console.approvals.scope.session'), project: () => t('console.approvals.scope.project'), always: () => t('console.approvals.scope.always') };
 async function resolve(id, decision, action = '', scope = 'once') {
   const firstRunHid = firstRunHarnessOf(action, harnesses);

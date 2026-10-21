@@ -62,6 +62,21 @@
         "falhou": "{{name}}: did not respond ({{reason}}).",
         "negado": "{{name}}: denied; nothing was run."
       },
+      "text": {
+        "firstRun": "First run of {{name}}: download and run {{pkg}} ({{src}}). Approving covers this version only.",
+        "harness": "{{name}} wants to {{action}}: {{target}}",
+        "harnessOutside": "{{name}} wants to {{action}} outside the workspace: {{target}}",
+        "plain": "Buddy wants to {{action}}: {{target}}",
+        "reconcile": "Confirm again an action that ended uncertain ({{action}}): {{target}}"
+      },
+      "tool": {
+        "write_file": "write",
+        "archive": "archive",
+        "run_command": "run the command",
+        "read_file": "read",
+        "list_dir": "list the folder",
+        "delegate": "delegate to the agent"
+      },
       "scope": {
         "once": "Once",
         "session": "This conversation",
@@ -144,7 +159,13 @@
       "nonInteractive": "no one to approve it in this run",
       "grant": "an earlier grant does not cover this action",
       "noVisionRoute": "the message has an image, and no available model or agent can see images",
-      "attachmentMissing": "an attachment is no longer in the workspace, or it was changed"
+      "attachmentMissing": "an attachment is no longer in the workspace, or it was changed",
+      "planMode": "Plan mode only reads",
+      "yoloMode": "No-questions mode",
+      "acceptEditsMode": "Accept-edits mode",
+      "autoWrite": "Auto: writing inside the folder",
+      "autoCommand": "Auto: read-only command",
+      "trainingModel": "this model trains on your data: only with a project permission"
     },
     "attach": {
       "add": "Attach an image or file (you can also drag or paste)",
