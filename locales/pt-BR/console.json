@@ -164,6 +164,8 @@
       "pick": "Harness: quem executa",
       "listTitle": "Harness · quem executa",
       "foot": "Encontrados neste computador · ícones do registro oficial do ACP",
+      "silent": "{{name}} está em silêncio há {{seconds}} s. Pode ser o modelo dele demorando; você pode esperar ou parar.",
+      "silentStop": "Parar",
       "buddyDesc": "o agente do Rabelus Buddy, com os seus provedores",
       "firstRun": {
         "review": "Rever decisão",

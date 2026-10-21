@@ -164,6 +164,8 @@
       "pick": "Harness: who runs it",
       "listTitle": "Harness · who runs it",
       "foot": "Found on this computer · icons from the official ACP registry",
+      "silent": "{{name}} has been silent for {{seconds}} s. Its model may be slow; you can wait or stop.",
+      "silentStop": "Stop",
       "buddyDesc": "Rabelus Buddy's own agent, with your providers",
       "firstRun": {
         "review": "Review decision",

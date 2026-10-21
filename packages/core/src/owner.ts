@@ -120,7 +120,8 @@ export async function startOwner(home: string): Promise<Owner> {
 
   // ---------- Andamento ao vivo, fila, direcionamento e parada (SPEC 0001 rev. 6, critérios 31 e 33) ----------
   // O andamento fica em memória (fragmentos não vão para o log); a fila fica no log (sobrevive à queda).
-  interface LiveRun { run: string; phase: 'thinking' | 'writing' | 'tool' | 'approval'; route: string; step: number; startedAt: string; callStartedAt: string; reasoning: string; text: string; tool: string | null }
+  // lastEventAt: quando o andamento ganhou o último sinal (ms, Date.now()); a console mede o silêncio de um harness por ele.
+  interface LiveRun { run: string; phase: 'thinking' | 'writing' | 'tool' | 'approval'; route: string; step: number; startedAt: string; callStartedAt: string; reasoning: string; text: string; tool: string | null; lastEventAt: number }
   const LIVE_MAX = 200_000;
   const live = new Map<string, LiveRun>();
   const controllers = new Map<string, AbortController>();
@@ -128,11 +129,12 @@ export async function startOwner(home: string): Promise<Owner> {
   const nowIso = () => new Date().toISOString();
   const liveOf = (run: string): LiveRun => {
     let l = live.get(run);
-    if (!l) { l = { run, phase: 'thinking', route: '', step: 0, startedAt: nowIso(), callStartedAt: nowIso(), reasoning: '', text: '', tool: null }; live.set(run, l); }
+    if (!l) { l = { run, phase: 'thinking', route: '', step: 0, startedAt: nowIso(), callStartedAt: nowIso(), reasoning: '', text: '', tool: null, lastEventAt: Date.now() }; live.set(run, l); }
     return l;
   };
   const onProgress = (run: string, x: AgentProgress): void => {
     const l = liveOf(run);
+    l.lastEventAt = Date.now();
     if (x.kind === 'call') Object.assign(l, { phase: 'thinking', route: x.route, step: x.step, callStartedAt: nowIso(), reasoning: '', text: '', tool: null });
     else if (x.kind === 'reasoning') l.reasoning = (l.reasoning + x.delta).slice(-LIVE_MAX);
     else if (x.kind === 'text') { l.text = (l.text + x.delta).slice(-LIVE_MAX); l.phase = 'writing'; }
