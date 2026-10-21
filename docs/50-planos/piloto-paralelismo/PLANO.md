@@ -33,6 +33,7 @@ Uma missão boa cabe numa frase de objetivo e tem:
   5. abro o PR e faço o merge pelo rito.
 
   Missão ruim se descarta inteira: o worktree some, e nada entrou no repositório.
+- **Registro de integração gerado do git** (depois de errar duas vezes): para cada missão integrada, um registro com todos os commits dela, tirados de `git log --format=%h <base>..<branch da missão>`, e nunca de memória.
 - **Barramento:** os subagentes trabalham dentro da minha sessão. A decisão, o disparo, o resultado e a conferência de cada missão entram no ledger por mim, no momento do fato.
 
 ## Ondas
