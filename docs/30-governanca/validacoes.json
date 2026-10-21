@@ -669,13 +669,12 @@
       "mecanismo": {
         "teste": "packages/core/test/console-modelo.test.ts"
       },
-      "estado": "bloqueada",
+      "estado": "pendente",
       "origem": "SPEC 0002, critério 11; pedido do Pai em 2026-10-19 (ver, testar e validar no layout novo)",
       "tipo": "acao",
-      "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); em Ajustes, conferir a pasta de trabalho; na pílula do modelo (ou Ctrl+K), aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar \"Responda em texto, sem usar ferramentas: diga olá em uma frase.\"; Nova conversa, na pílula Buddy escolher OpenCode e esperar \"pronto\", enviar \"Crie o arquivo teste-do-pai.txt com a palavra ok e diga se conseguiu.\" e clicar em Aprovar no cartão",
-      "ensaio": "docs/registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md",
-      "motivo": "Em 20/10 o Pai usou a console e achou problemas que impedem uma validação justa: a negação de um agente não tinha volta, com um agente escolhido não dava para escolher modelo nem modo, um pedido fora da pasta foi negado em silêncio e o agente parou, e a fala do agente aparecia como do Buddy. A validação volta depois dessas correções e da escolha de opções por agente.",
-      "explicacao": "O Pai usa a console nova como no dia a dia e diz se ela está boa: o visual na prática, escolher um modelo do ChatGPT com esforço alto, e pedir a um agente instalado (o OpenCode) que crie um arquivo, aprovando pelo cartão. Hoje está parada até as correções que ele mesmo encontrou."
+      "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); na pílula do modelo, aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar uma pergunta; Nova conversa, escolher OpenCode, esperar os seletores, escolher no Modelo um modelo pago do OpenCode Go, enviar \"Olá\" e depois \"quem é você?\"; enviar \"Crie o arquivo teste-do-pai.txt com a palavra um\", clicar em Nesta conversa no cartão, e depois \"Sobrescreva teste-do-pai.txt com a palavra dois\" (não deve aparecer cartão)",
+      "ensaio": "docs/registros/2026-10-20T222040-0300-ensaio-das-opcoes-do-agente-e-das-permissoes-com-o-opencode-real/README.md",
+      "explicacao": "O Pai usa a console como no dia a dia e diz se ela está boa. Três testes: escolher um modelo do ChatGPT com esforço alto e mandar uma pergunta; escolher o OpenCode, escolher o modelo dele no seletor novo e mandar duas mensagens seguidas; pedir ao OpenCode que crie um arquivo e aprovar pelo cartão, usando \"Nesta conversa\" e vendo que o pedido seguinte igual não pergunta de novo."
     },
     {
       "id": "anexos-e-imagem",
@@ -871,6 +870,49 @@
       },
       "origem": "uso real do Pai, 2026-10-20 à noite",
       "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "opcoes-do-agente",
+      "descricao": "harness.options lê as opções declaradas em session/new (agrupadas abertas) sem a de postura; agent.run aplica harnessOptions por set_config_option antes da tarefa e registra; a postura vence mesmo agrupada; a caixa mostra e envia a escolha",
+      "quem": "maquina",
+      "onde": [
+        "opções e permissões (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/opcoes-do-agente.test.ts"
+      },
+      "origem": "SPEC 0002, critérios 17 e 18; cobrança do Pai em 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T222040-0300-ensaio-das-opcoes-do-agente-e-das-permissoes-com-o-opencode-real/README.md"
+    },
+    {
+      "id": "permissoes-modos-e-escopos",
+      "descricao": "Modos Manual, Aceitar edições, Plano, Automático (classificador por regra) e Sem perguntas; escopos uma vez, conversa, projeto (preso à pasta) e sempre; negação vence; protegido bloqueia; comando só uma vez até o sandbox; o cartão e a pílula de modo na console",
+      "quem": "maquina",
+      "onde": [
+        "opções e permissões (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/permissoes-modos.test.ts"
+      },
+      "origem": "SPEC 0002, critérios 17 e 18; cobrança do Pai em 2026-10-20",
+      "evidencia": "docs/registros/2026-10-20T222040-0300-ensaio-das-opcoes-do-agente-e-das-permissoes-com-o-opencode-real/README.md"
+    },
+    {
+      "id": "escopo-de-comando",
+      "descricao": "Decidir se comando também ganha os escopos nesta conversa, neste projeto e sempre (hoje, só uma vez até o sandbox)",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "próxima conversa com o Pai"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "conflito entre o pedido do Pai de 2026-10-20 e o teste de segurança do marco anterior",
+      "explicacao": "Hoje, quando um agente quer rodar um comando, o cartão só oferece \"uma vez\": cada comando pede aprovação de novo. Isso é uma trava de segurança antiga, que vale até existir um ambiente isolado para os comandos. O Pai decide se mantém, ou se libera \"nesta conversa\", \"neste projeto\" e \"sempre\" também para comando, valendo só para o comando exatamente igual."
     }
   ]
 }

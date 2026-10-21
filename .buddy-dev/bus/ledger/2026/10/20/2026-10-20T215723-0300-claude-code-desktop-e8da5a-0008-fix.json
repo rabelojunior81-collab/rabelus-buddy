@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T215723-0300-claude-code-desktop-e8da5a-0008",
+  "ts": "2026-10-20T21:57:23-03:00",
+  "utc": "2026-10-21T00:57:23.522Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 8,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "fix",
+  "summary": "Integração da missão C2 (Haiku): teste 006436c e código 4eb9e82, commitado pelo buddy-dev (o worktree estava barrado pelo STATUS atrasado, não pela mudança).",
+  "refs": [
+    "006436c",
+    "4eb9e82"
+  ],
+  "data": {}
+}

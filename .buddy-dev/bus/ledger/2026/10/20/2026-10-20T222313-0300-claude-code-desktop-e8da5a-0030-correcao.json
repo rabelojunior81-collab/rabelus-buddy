@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222313-0300-claude-code-desktop-e8da5a-0030",
+  "ts": "2026-10-20T22:23:13-03:00",
+  "utc": "2026-10-21T01:23:13.686Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 30,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "correcao",
+  "summary": "Registro atrasado de 8e232dc e 1f19d63 (C3): status-main grava no Por a sessão aberta, com teste antes.",
+  "refs": [
+    "8e232dc",
+    "1f19d63"
+  ],
+  "data": {}
+}

@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T215627-0300-claude-code-desktop-e8da5a-0005",
+  "ts": "2026-10-20T21:56:27-03:00",
+  "utc": "2026-10-21T00:56:27.781Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 5,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "feat",
+  "summary": "Opções do agente no núcleo (cf55012): describeSession, flatOptions e normalizeOptions em session.ts (agrupadas abertas); harness.options com cache de 10 min, sem a opção de postura; agent.run com harnessOptions aplicadas por set_config_option e registradas (harness.options.applied); postura com opção agrupada corrigida. 24 testes verdes; falta a tela.",
+  "refs": [
+    "cf55012"
+  ],
+  "data": {}
+}

@@ -11,7 +11,24 @@ import type { EventLog } from './log.ts';
 
 export type Tool = 'read_file' | 'list_dir' | 'write_file' | 'archive' | 'run_command' | 'model.use';
 export type Effect = 'allow' | 'ask' | 'deny';
-export type Scope = 'once' | 'session' | 'project';
+export type Scope = 'once' | 'session' | 'project' | 'always';
+// Modos de permissão (SPEC 0002, critério 17; Pai, 2026-10-20). Manual é o padrão de sempre.
+export type PermMode = 'manual' | 'acceptEdits' | 'plan' | 'auto' | 'yolo';
+export const PERM_MODES: PermMode[] = ['manual', 'acceptEdits', 'plan', 'auto', 'yolo'];
+
+// Classificador do Automático (v1, por regra, registrado em cada decisão): comando só de leitura, sem encadear,
+// redirecionar ou substituir. Na dúvida, não é seguro: pergunta.
+const SAFE_COMMANDS: RegExp[] = [
+  /^(ls|dir|pwd|tree)(\s|$)/, /^(cat|type|head|tail|wc|more)\s/, /^(echo)\s/, /^(grep|rg|findstr)\s/,
+  /^git (status|diff|log|show|branch|rev-parse|ls-files|blame)(\s|$)/,
+  /^npm (test|run test|ls)(\s|$)/, /^node (--test|--version|-v)(\s|$)/, /^(python|py) --version$/,
+];
+export function safeCommand(command: string): boolean {
+  const c = command.trim();
+  if (!c || /[;&|><`]|\$\(|\r|\n/.test(c)) return false;
+  if (/\s-(delete|exec)\b/.test(c)) return false;
+  return SAFE_COMMANDS.some((re) => re.test(c));
+}
 
 export interface Action { session: string; tool: Tool; target: string }
 export interface Decision { effect: Effect; reason: string }
@@ -96,6 +113,8 @@ export function globToRegExp(pattern: string): RegExp {
   return new RegExp(`^${re}$`);
 }
 const matches = (pattern: string, target: string): boolean => globToRegExp(pattern).test(target);
+// Separador entre a pasta e o padrão numa concessão de projeto (não aparece em caminho nem em glob).
+const PROJECT_SEP = '::';
 
 export function isProtected(rel: string): boolean {
   const segs = rel.split('/');
@@ -106,10 +125,12 @@ export function isProtected(rel: string): boolean {
 export class Policy {
   readonly log: EventLog;
   readonly workspace: string;
+  readonly mode: PermMode;
 
-  constructor(log: EventLog, { workspace }: { workspace: string }) {
+  constructor(log: EventLog, { workspace, mode = 'manual' }: { workspace: string; mode?: PermMode }) {
     this.log = log;
     this.workspace = resolve(workspace);
+    this.mode = PERM_MODES.includes(mode) ? mode : 'manual';
   }
 
   private get db(): Database { return this.log.db; }
@@ -125,10 +146,35 @@ export class Policy {
     this.log.append(RULES_SESSION, 'policy.rule.added', { rule: `rule-${randomUUID().slice(0, 8)}`, ...rule });
   }
 
-  grant(scope: Scope, { tool, pattern }: { tool: Tool; pattern: string }, { session }: { session: string }): string {
+  // "Projeto" vale só na pasta em que foi dado (o padrão leva a pasta na frente); "sempre" vale em qualquer pasta.
+  // Sem pasta (concessão dada pelo cliente local sem dizer a pasta, contrato do M0), "projeto" continua valendo como antes.
+  grant(scope: Scope, { tool, pattern }: { tool: Tool; pattern: string }, { session, bindWorkspace = true }: { session: string; bindWorkspace?: boolean }): string {
     const grant = `gr-${randomUUID().slice(0, 8)}`;
-    this.log.append(session, 'policy.grant.created', { grant, scope, tool, pattern });
+    this.log.append(session, 'policy.grant.created', { grant, scope, tool, pattern: scope === 'project' && bindWorkspace ? `${this.workspace}${PROJECT_SEP}${pattern}` : pattern });
     return grant;
+  }
+
+  // Concessão ativa para um alvo, no escopo que vale aqui (fora da pasta, o alvo é o caminho completo).
+  private grantFor(tool: string, session: string, target: string, scopes: Scope[]): { id: string; scope: Scope } | undefined {
+    const rows = (this.db.prepare("SELECT id, scope, session, pattern FROM proj_grants WHERE tool = ? AND state = 'active' ORDER BY rowid").all(tool) as unknown as { id: string; scope: Scope; session: string; pattern: string }[])
+      .filter((g) => scopes.includes(g.scope));
+    const fits = (g: { scope: Scope; session: string; pattern: string }): boolean => {
+      if (g.scope === 'project') {
+        const i = g.pattern.indexOf(PROJECT_SEP);
+        // Concessão de projeto antiga, sem pasta: vale como antes (em qualquer pasta).
+        if (i < 0) return matches(g.pattern, target);
+        return g.pattern.slice(0, i) === this.workspace && matches(g.pattern.slice(i + PROJECT_SEP.length), target);
+      }
+      if (g.scope === 'always') return matches(g.pattern, target);
+      return g.session === session && matches(g.pattern, target);
+    };
+    const ok = rows.filter(fits);
+    return ok.find((x) => x.scope === 'always') ?? ok.find((x) => x.scope === 'project') ?? ok.find((x) => x.scope === 'session') ?? ok.find((x) => x.scope === 'once');
+  }
+
+  // Fora da pasta (harness pedindo caminho de fora): concessão exata pelo caminho completo, dada no cartão.
+  grantedOutside(session: string, tool: Tool, absolutePath: string): boolean {
+    return Boolean(this.grantFor(tool, session, absolutePath, ['session', 'project', 'always']));
   }
 
   observeCall(session: string, call: { tool: string; target: string }): { paused: boolean } {
@@ -155,9 +201,10 @@ export class Policy {
         return { effect: 'allow', scopes: [], rulesApply: true };
       case 'write_file':
       case 'archive':
-        return { effect: 'ask', scopes: ['once', 'session', 'project'], rulesApply: true };
+        return { effect: 'ask', scopes: ['once', 'session', 'project', 'always'], rulesApply: true };
       case 'run_command':
-        // Até o M2 (sandbox), comando só com aprovação explícita de uma vez (ADR 0009).
+        // Até o M2 (sandbox), comando só com aprovação explícita de uma vez (ADR 0009; critério 13 do M0, com teste).
+        // Os modos Automático (só leitura) e Sem perguntas são a exceção decidida pelo Pai em 2026-10-20.
         return { effect: 'ask', scopes: ['once'], rulesApply: false };
       case 'model.use':
         return TRAINING_MODELS.includes(target)
@@ -191,11 +238,16 @@ export class Policy {
       : [];
     if (rules.some((r) => r.effect === 'deny') || base.effect === 'deny') return { effect: 'deny', reason: 'regra' };
     if (base.effect === 'allow') return { effect: 'allow', reason: 'padrão' };
+    // Modos (critério 17): depois da negação (que vence) e só dentro da pasta e fora do protegido (já conferidos).
+    const changes = a.tool === 'write_file' || a.tool === 'archive' || a.tool === 'run_command';
+    if (changes && this.mode === 'plan') return { effect: 'deny', reason: 'modo plano' };
+    if (a.tool !== 'model.use' && this.mode === 'yolo') return { effect: 'allow', reason: 'modo sem perguntas' };
+    if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'acceptEdits') return { effect: 'allow', reason: 'modo aceitar edições' };
+    if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'auto') return { effect: 'allow', reason: 'automático: escrita dentro da pasta' };
+    if (a.tool === 'run_command' && this.mode === 'auto' && safeCommand(a.target)) return { effect: 'allow', reason: 'automático: comando só de leitura' };
     if (rules.some((r) => r.effect === 'allow')) return { effect: 'allow', reason: 'regra' };
 
-    const grants = (this.db.prepare("SELECT id, scope, session, pattern FROM proj_grants WHERE tool = ? AND state = 'active' ORDER BY rowid").all(a.tool) as unknown as { id: string; scope: Scope; session: string; pattern: string }[])
-      .filter((g) => base.scopes.includes(g.scope) && matches(g.pattern, target) && (g.scope === 'project' || g.session === a.session));
-    const g = grants.find((x) => x.scope === 'project') ?? grants.find((x) => x.scope === 'session') ?? grants.find((x) => x.scope === 'once');
+    const g = this.grantFor(a.tool, a.session, target, base.scopes);
     if (g) {
       if (g.scope === 'once') this.log.appendInTx(a.session, 'policy.grant.consumed', { grant: g.id });
       return { effect: 'allow', reason: `concessão ${g.scope}` };

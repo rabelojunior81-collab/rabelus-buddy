@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222137-0300-claude-code-desktop-e8da5a-0024",
+  "ts": "2026-10-20T22:21:37-03:00",
+  "utc": "2026-10-21T01:21:37.844Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 24,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "claim",
+  "summary": "AGENTS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-21T01:51:37.844Z",
+    "tookOverFrom": null
+  }
+}

@@ -228,3 +228,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0035-#0035
 
 1. **Em 2026-10-16, a escolha da TUI ficou para o momento em que o Pai pudesse ver as duas opções lado a lado.** Em 2026-10-20, o Pai olhou a console num 4K e viu o que eu não via: o seletor ocupava quase meia tela, e o Buddy falava como máquina. Os testes mediam contraste e 375 px; nenhum media o tamanho de um painel nem o tom de uma resposta. → O que o Pai vê precisa de medida própria. O tamanho dos painéis virou teste com limite, e a voz do produto virou texto revisável no catálogo. Gosto não se testa inteiro, mas a régua mínima se escreve.
+
+## lote #0036-#0036
+
+1. **Em 2026-10-16, nasceu o `bd merge`: o aprovado entra na hora, com CI verde.** Em 2026-10-20, o Pai mandou "resolva de uma vez", e eu entreguei as opções do agente e as permissões só no papel, com propostas de "sessão nova" em cartões que ele nem via. O OpenCode continuava travando, e eu tinha tratado o sintoma (um aviso de silêncio) sem procurar a causa (o modelo gratuito que ele usava sozinho). → Quando o Pai manda resolver, resolver é implementar e ensaiar com o produto real, não especificar e propor. Sintoma tratado não é falha resolvida: a pergunta é sempre "por que ele trava?", até a causa aparecer no que o próprio agente declara.

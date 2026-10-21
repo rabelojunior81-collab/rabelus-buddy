@@ -1,0 +1,20 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222320-0300-claude-code-desktop-e8da5a-0035",
+  "ts": "2026-10-20T22:23:20-03:00",
+  "utc": "2026-10-21T01:23:20.178Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 35,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "erro",
+  "summary": "Registrei passos com os tipos teste, ensaio e fix, que o bd verifica não conta como substantivos (a lista é decisao, pesquisa, erro, aprendizado, correcao, feat, ferramenta, processo, doc). Registros atrasados com os tipos certos, citando cada hash.",
+  "refs": [
+    "4eb9e82",
+    "247356a",
+    "4a5c854"
+  ],
+  "data": {}
+}

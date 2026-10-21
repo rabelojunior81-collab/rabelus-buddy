@@ -210,8 +210,10 @@ const commands = {
 
   // STATUS na main atual pelo git (evolução de 2026-10-18). Exige claim do STATUS antes, como toda edição.
   'status-main'() {
-    const changed = syncStatusMain(root(), { base: o.base ?? 'origin/main' });
+    const warnings = [];
+    const changed = syncStatusMain(root(), { base: o.base ?? 'origin/main', warnings });
     console.log(changed ? 'STATUS atualizado com a main e a contagem de PRs do git' : 'STATUS já em dia com a main');
+    warnings.forEach((w) => warn(w));
   },
 
   // Varredura de órfãos e quebrados (regra do Pai, 2026-10-18).
@@ -319,6 +321,7 @@ const commands = {
     const prefix = o['dry-run'] ? '(simulação) ' : '';
     for (const n of report.removed) console.log(`  ${prefix}removida: ${n}`);
     for (const a of report.archived) console.log(`  ${prefix}arquivada: ${a.name} → tag ${a.tag} (${a.sha.slice(0, 7)})`);
+    for (const s of report.skipped) console.log(`  ${prefix}pulada: ${s.name} (${s.reason})`);
     for (const b of list.filter((x) => x.action === 'manter')) console.log(`  mantida: ${b.name} (${b.reason})`);
     if (!o['dry-run'] && (report.removed.length || report.archived.length) && currentSession(r)) {
       logEvent(r, { type: 'prune', summary: `${report.removed.length} removida(s), ${report.archived.length} arquivada(s)`, data: report });

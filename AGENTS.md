@@ -53,7 +53,7 @@ Regra sem mecanismo é desejo. Cada regra aqui aponta o que a confere.
 | Nada se apaga; o que sai de uso é arquivado com lápide | `bd archive`; `bd guard` e a CI reprovam exclusões ([ADR 0004](./docs/60-decisoes/0004-nada-se-apaga.md)) |
 | Hora de Curitiba com offset, verificada | `bd now --verify`; `bd pre`/`post` |
 | Registros com nome semântico e carimbo | `bd name`; `bd names-check` e a CI |
-| Uma branch por unidade; commit e push a cada passo; merge commit pelo buddy-dev só com CI verde e `bd post` limpo | template de PR; CI; `bd post` reprova commit sem push ([ADR 0003](./docs/60-decisoes/0003-fluxo-git-granular.md)) |
+| Uma branch por unidade; commit e push a cada passo; merge commit pelo buddy-dev só com CI verde e `bd post` limpo | template de PR; CI; `bd post` reprova commit sem push ([ADR 0003](./docs/60-decisoes/0003-fluxo-git-granular.md)); ruleset "main protegida" no GitHub desde 2026-10-20 (só por PR, com os checks) |
 | Documento → SPEC → teste → código | template de PR; SPEC em `docs/40-specs/` antes do plano |
 | Conhecimento externo verificado ao vivo, com fonte e data | ficha em `docs/20-conhecimento/`; checklist do PR |
 | Paralelismo: uma sessão por worktree; claim antes de editar documento vivo | `bd session`, `bd claim` ([ADR 0005](./docs/60-decisoes/0005-barramento-ledger-por-arquivo.md)); `bd claims` no `bd post` e na CI reprova documento vivo alterado na branch sem claim no ledger e declara o claim atrasado (desde 2026-10-17) |

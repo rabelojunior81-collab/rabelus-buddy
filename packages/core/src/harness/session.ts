@@ -32,7 +32,36 @@ export interface TurnOptions {
   // Sem nenhuma mensagem do harness por este tempo, o turno falha (o harness pode pensar por minutos: o relógio
   // reinicia a cada atualização).
   idleMs?: number;
+  // Opções escolhidas pelo Pai (critério 18): aplicadas por session/set_config_option antes da tarefa. A opção de modo
+  // que serve de postura (contém preferMode) não é trocada por aqui: a postura vence.
+  configValues?: Record<string, string>;
+  onApplied?: (values: Record<string, string>) => void;
 }
+
+// Opções de sessão (ACP): lista plana ou agrupada ({ group, name, options }); agrupadas viram planas, com o nome do grupo.
+export interface OptionValue { value: string; name: string; group?: string }
+export interface HarnessOption { id: string; name: string; category?: string; currentValue: string | null; options: OptionValue[] }
+export function flatOptions(o: { options?: unknown[] } | undefined): OptionValue[] {
+  return (o?.options ?? []).flatMap((x): OptionValue[] => {
+    if (!x || typeof x !== 'object') return [];
+    const r = x as { value?: unknown; name?: unknown; group?: unknown; options?: unknown[] };
+    if (Array.isArray(r.options)) {
+      const g = String(r.name ?? r.group ?? '');
+      return flatOptions({ options: r.options }).map((y) => ({ ...y, ...(g ? { group: g } : {}) }));
+    }
+    return 'value' in r ? [{ value: String(r.value), name: String(r.name ?? r.value) }] : [];
+  });
+}
+export function normalizeOptions(list: unknown[] | undefined): HarnessOption[] {
+  return (list ?? []).flatMap((x): HarnessOption[] => {
+    const o = x as { id?: unknown; name?: unknown; category?: unknown; currentValue?: unknown; options?: unknown[] };
+    if (!o || typeof o.id !== 'string') return [];
+    return [{ id: o.id, name: String(o.name ?? o.id), ...(typeof o.category === 'string' ? { category: o.category } : {}), currentValue: o.currentValue == null ? null : String(o.currentValue), options: flatOptions(o) }];
+  });
+}
+// A opção de modo que serve de postura: categoria ou id "mode" e um valor igual ao modo preferido (o Codex declara read-only).
+export const postureOption = (opts: HarnessOption[], preferMode?: string): HarnessOption | undefined =>
+  preferMode ? opts.find((o) => (o.id === 'mode' || o.category === 'mode') && o.options.some((v) => v.value === preferMode)) : undefined;
 
 export interface TurnResult { stopReason: string; text: string; agent?: { name: string; version?: string } }
 
@@ -45,6 +74,32 @@ export class NoImageSupport extends TurnError {
 export class NeedsLogin extends TurnError {
   readonly methods: { id: string; name: string }[];
   constructor(methods: { id: string; name: string }[]) { super('o harness pede login (auth_required)'); this.methods = methods; }
+}
+
+// Só as opções que o agente declara ao abrir a sessão, sem mandar tarefa (critério 18): abre, lê, fecha.
+export async function describeSession(spec: LaunchSpec, cwd: string, timeoutMs = 30_000): Promise<HarnessOption[]> {
+  let child: ChildProcess;
+  try { child = spawnHarness(spec, cwd); } catch (e) { throw new TurnError(`não foi possível iniciar: ${(e as Error).message}`); }
+  const conn = client({ name: 'rabelus-buddy' }).connect(ndJsonStream(Writable.toWeb(child.stdin!) as WritableStream<Uint8Array>, Readable.toWeb(child.stdout!) as ReadableStream<Uint8Array>));
+  conn.closed.catch(() => { /* fim da conexão */ });
+  let timer: NodeJS.Timeout | undefined;
+  const limit = new Promise<never>((_, no) => { timer = setTimeout(() => no(new TurnError(`${timeoutMs / 1000} s sem resposta do harness`)), timeoutMs); });
+  limit.catch(() => { /* tratado na corrida */ });
+  try {
+    const init = await Promise.race([conn.agent.request('initialize', { protocolVersion: PROTOCOL_VERSION, clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false } }), limit]);
+    let created;
+    try { created = await Promise.race([conn.agent.request('session/new', { cwd, mcpServers: [] }), limit]); }
+    catch (e) { if ((e as { code?: number }).code === -32000) throw new NeedsLogin(loginMethods(init)); throw e; }
+    if (init.agentCapabilities?.sessionCapabilities?.close) await Promise.race([conn.agent.request('session/close', { sessionId: created.sessionId }), limit]).catch(() => {});
+    return normalizeOptions(created.configOptions as unknown[] | undefined);
+  } catch (e) {
+    if (e instanceof TurnError) throw e;
+    throw new TurnError(scrub((e as Error).message));
+  } finally {
+    clearTimeout(timer);
+    try { conn.close(); } catch { /* já fechada */ }
+    killTree(child);
+  }
 }
 
 export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<TurnResult> {
@@ -110,15 +165,28 @@ export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<Turn
     catch (e) { if ((e as { code?: number }).code === -32000) throw new NeedsLogin(loginMethods(init)); throw e; }
     sessionId = created.sessionId;
     // Opção de modo declarada (id "mode" ou categoria "mode"); as config options substituem a API antiga de modos.
-    const modeOpt = (created.configOptions ?? []).find((c) => c.id === 'mode' || c.category === 'mode') as { id: string; currentValue?: unknown; options?: unknown[] } | undefined;
-    const values = (modeOpt?.options ?? []).flatMap((x) => (typeof x === 'object' && x && 'value' in x ? [String((x as { value: unknown }).value)] : []));
-    let mode: string | null = modeOpt ? String(modeOpt.currentValue ?? '') || null : null;
-    if (modeOpt && o.preferMode && values.includes(o.preferMode) && mode !== o.preferMode) {
+    // Agrupadas também contam (antes, a lista agrupada virava vazia e a postura era ignorada em silêncio).
+    const declared = normalizeOptions(created.configOptions as unknown[] | undefined);
+    const modeOpt = declared.find((c) => c.id === 'mode' || c.category === 'mode');
+    const posture = postureOption(declared, o.preferMode);
+    let mode: string | null = modeOpt ? modeOpt.currentValue || null : null;
+    if (posture && o.preferMode && mode !== o.preferMode) {
       touch();
-      await race(conn.agent.request('session/set_config_option', { sessionId, configId: modeOpt.id, value: o.preferMode }));
+      await race(conn.agent.request('session/set_config_option', { sessionId, configId: posture.id, value: o.preferMode }));
       mode = o.preferMode;
     }
     o.onPosture?.({ mode });
+    // Escolhas do Pai (critério 18): só opções declaradas, com valor declarado; a de postura não se troca daqui.
+    const applied: Record<string, string> = {};
+    for (const [id, value] of Object.entries(o.configValues ?? {})) {
+      const opt = declared.find((c) => c.id === id);
+      if (!opt || opt === posture || !opt.options.some((v) => v.value === value) || opt.currentValue === value) continue;
+      touch();
+      await race(conn.agent.request('session/set_config_option', { sessionId, configId: id, value }));
+      applied[id] = value;
+      if (opt === modeOpt) mode = value;
+    }
+    if (Object.keys(o.configValues ?? {}).length) o.onApplied?.(applied);
     if (o.signal?.aborted) return { stopReason: 'cancelled', text, ...(agent ? { agent } : {}) };
     o.signal?.addEventListener('abort', cancel, { once: true });
     touch();

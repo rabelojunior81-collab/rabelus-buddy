@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T215118-0300-claude-code-desktop-e8da5a-0001",
+  "ts": "2026-10-20T21:51:18-03:00",
+  "utc": "2026-10-21T00:51:18.710Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 1,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "Cobrança do Pai (2026-10-20, noite): o OpenCode ainda trava no núcleo dele (segunda mensagem muda por 75 s); implementar AGORA as opções do agente na caixa (modelo, modo, esforço) e as permissões com escopos e modos (incluindo Automático e sem perguntas); proteger a main sem quebrar o fluxo; corrigir prune com worktrees, código em negrito e o Por do STATUS; tudo o que for para o Pai decidir, explicado no texto da sessão, nunca em cartão",
+  "refs": [],
+  "data": {}
+}

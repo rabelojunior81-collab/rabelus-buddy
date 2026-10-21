@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T221244-0300-claude-code-desktop-e8da5a-0014",
+  "ts": "2026-10-20T22:12:44-03:00",
+  "utc": "2026-10-21T01:12:44.893Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 14,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "feat",
+  "summary": "Tela das permissões (24f75c1): cartão com os quatro escopos e negar (comando e primeira execução: só uma vez); pílula Permissões com Manual, Aceitar edições, Plano, Automático e Sem perguntas (guardado no navegador, enviado com a tarefa); aviso fixo no modo sem perguntas; textos pt e en. 48 testes verdes.",
+  "refs": [
+    "24f75c1"
+  ],
+  "data": {}
+}

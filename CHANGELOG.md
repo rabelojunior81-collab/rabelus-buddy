@@ -10,6 +10,9 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Escolher o modelo, o esforço e o modo do agente** (2026-10-20). Com um agente escolhido (OpenCode, Codex…), a caixa mostra os seletores que ele declara, com busca no modelo, e a escolha fica guardada por agente. Isso resolveu a trava do OpenCode, que usava sozinho um modelo gratuito.
+- **Permissões com modos e escopos.** O cartão aprova uma vez, nesta conversa, neste projeto ou sempre. A pílula Permissões escolhe entre Manual, Aceitar edições, Plano, Automático (libera escrita na pasta e comando só de leitura) e Sem perguntas (com aviso fixo). Em qualquer modo, a negação vence, as áreas protegidas ficam bloqueadas e fora da pasta pergunta.
+
 - **A voz do Buddy** (2026-10-20). O Buddy se apresenta como Buddy, fala de forma direta e calorosa, responde curto por padrão, diz o modelo que está usando de verdade e segue o idioma escolhido na console (português ou inglês).
 - **Tabelas, citações e links na conversa**: uma tabela em markdown aparece como tabela, e só links http e https viram link.
 - **Aviso de silêncio**: quando um agente passa de 30 segundos sem mandar nada, a tela diz isso e oferece Parar.
