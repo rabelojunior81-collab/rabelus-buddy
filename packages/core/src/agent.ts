@@ -288,7 +288,9 @@ export class Agent {
 
       const effect = domain.beginEffect(session, run, 'model.call', `${run}:step${step}:${name}`, name).id;
       const effort = this.o.effort && !noEffort.has(name) ? this.o.effort : undefined;
-      const req: ModelRequest = { model: r.model, messages: sent, tools, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
+      // O modelo em uso entra na instrução de sistema a cada tentativa: a resposta "qual modelo é você" sai verdadeira.
+      const named = sent.map((m) => (m.role === 'system' && m.content.includes('{{route}}') ? { ...m, content: m.content.replaceAll('{{route}}', name) } : m));
+      const req: ModelRequest = { model: r.model, messages: named, tools, maxOutputTokens: maxOut, ...(effort ? { effort } : {}) };
       try {
         this.o.onProgress?.(run, { kind: 'call', route: name, step });
         const response = await r.provider.call(req, { session, ...(this.o.signal ? { signal: this.o.signal } : {}), ...(this.o.onProgress ? { onProgress: (p: Progress) => this.o.onProgress!(run, p) } : {}) });

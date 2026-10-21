@@ -1265,6 +1265,8 @@ $('run').addEventListener('click', async () => {
     if (picked) params.route = picked;
   }
   if (cont) params.continueFrom = lastRun;
+  // Idioma da console (Pai, 2026-10-20: camada de inglês sob o app inteiro): o Buddy fala nele.
+  params.lang = lang;
   $('run').disabled = true;
   try {
     const r = await api('agent.run', params);

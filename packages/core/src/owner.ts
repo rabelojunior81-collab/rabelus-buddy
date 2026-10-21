@@ -15,6 +15,7 @@ import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
 import { Agent, type AgentProgress, type AgentResult, type Delegate } from './agent.ts';
+import { buddySystem, type AgentLang } from './persona.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
@@ -208,7 +209,9 @@ export async function startOwner(home: string): Promise<Owner> {
     const agent = agentFor(p, ac.signal);
     const prior = continueFrom ? agent.transcript(session, continueFrom) : undefined;
     const attachments = attachmentsOf(session, p.attachments);
-    const { run, done } = agent.begin(session, task, { ...(prior?.length ? { prior } : {}), ...(attachments.length ? { attachments } : {}) });
+    // Voz do Buddy no idioma da console (pt-BR por padrão), com a pasta de trabalho; o modelo entra a cada chamada.
+    const system = buddySystem((p.lang === 'en' ? 'en' : 'pt-BR') as AgentLang, String(p.workspace ?? ''));
+    const { run, done } = agent.begin(session, task, { system, ...(prior?.length ? { prior } : {}), ...(attachments.length ? { attachments } : {}) });
     controllers.set(run, ac);
     inboxes.set(run, inboxes.get(run) ?? []);
     liveOf(run);
@@ -480,7 +483,7 @@ export async function startOwner(home: string): Promise<Owner> {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash) });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR' });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
