@@ -718,6 +718,16 @@ function canAttachImage(o) {
 }
 // Provedores que ficaram fora do catálogo, com o motivo (achado do ensaio: o OpenCode Go sumia sem explicação).
 function catalogLeftOut(errors, names) { return Object.entries(errors || {}).map(([id, why]) => (names[id] || id) + ': ' + why); }
+// Motivo da política em frase (B2): o núcleo manda texto curto em português; o que a tela não conhece segue cru.
+const POLICY_REASONS = new Map([['fora do workspace', 'console.reason.outsideWorkspace'], ['caminho protegido', 'console.reason.protectedPath'],
+  ['aprovação humana', 'console.reason.human'], ['regra', 'console.reason.rule'], ['padrão', 'console.reason.default'],
+  ['nonInteractive', 'console.reason.nonInteractive'], ['sessionPaused', 'console.reason.sessionPaused']]);
+function reasonKey(reason) {
+  if (typeof reason !== 'string') return null;
+  if (POLICY_REASONS.has(reason)) return POLICY_REASONS.get(reason);
+  if (reason.startsWith('concessão ')) return 'console.reason.grant';
+  return null;
+}
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
@@ -821,7 +831,7 @@ function feedItems(evs) {
       }
       case 'run.options': if (p.harness) runHarness[p.run] = p.harness; break;
       case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
-      case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
+      case 'run.stopped': speak(el('div', { class: 'ev err', title: p.run }, t('console.runStopped', { reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
       case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
       case 'run.resumed': detail(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
       case 'agent.step': detail(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
@@ -846,7 +856,7 @@ function feedItems(evs) {
         // Quem negou e por quê (A3): a política (com o motivo) ou o próprio Pai.
         const denied = p.decision === 'deny';
         const byPolicy = denied && p.reason && p.reason !== 'aprovação humana';
-        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: p.reason, tool: p.tool, target: p.target })
+        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: reasonKey(p.reason) ? t(reasonKey(p.reason)) : p.reason, tool: p.tool, target: p.target })
           : denied ? t('console.harness.deniedByYou', { tool: p.tool, target: p.target })
           : t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target });
         detail(el('div', { class: 'ev' }, text)); break;
