@@ -27,6 +27,9 @@
 //   FAKE_ACP_NO_IMAGE=1: não declara promptCapabilities.image.
 //   FAKE_ACP_ECHO_BLOCKS=1: o texto final conta os blocos recebidos no prompt ("Blocos: text,image:image/png:<tamanho>.").
 //   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
+// B3 (harness mudo):
+//   FAKE_ACP_PROMPT=silent: session/prompt não manda nenhuma atualização; espera o session/cancel (laço de 50 ms)
+//                           e só então responde "cancelled".
 import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Readable, Writable } from 'node:stream';
@@ -73,6 +76,7 @@ else {
       const task = params.prompt.map((b) => (b.type === 'text' ? b.text : '')).join(' ');
       const send = async (update) => { await client.notify('session/update', { sessionId, update }); if (gap) await sleep(gap); };
       const stop = () => cancelled.has(sessionId);
+      if (process.env.FAKE_ACP_PROMPT === 'silent') { while (!stop()) await sleep(50); return { stopReason: 'cancelled' }; }
       await send({ sessionUpdate: 'agent_thought_chunk', content: { type: 'text', text: `Pensando na tarefa: ${task}` } });
       if (stop()) return { stopReason: 'cancelled' };
       if (process.env.FAKE_ACP_PREAMBLE) await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: process.env.FAKE_ACP_PREAMBLE } });
