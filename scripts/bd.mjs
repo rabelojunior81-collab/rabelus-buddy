@@ -210,8 +210,10 @@ const commands = {
 
   // STATUS na main atual pelo git (evolução de 2026-10-18). Exige claim do STATUS antes, como toda edição.
   'status-main'() {
-    const changed = syncStatusMain(root(), { base: o.base ?? 'origin/main' });
+    const warnings = [];
+    const changed = syncStatusMain(root(), { base: o.base ?? 'origin/main', warnings });
     console.log(changed ? 'STATUS atualizado com a main e a contagem de PRs do git' : 'STATUS já em dia com a main');
+    warnings.forEach((w) => warn(w));
   },
 
   // Varredura de órfãos e quebrados (regra do Pai, 2026-10-18).

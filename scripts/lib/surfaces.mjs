@@ -9,6 +9,9 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { formats } from './time.mjs';
 import { join } from 'node:path';
 import { tryGit } from './git.mjs';
+import { currentSession } from './bus.mjs';
+
+const POR = /(\*\*Atualizado em:\*\* [^ ]+ \(`bd now --verify`\) · \*\*Por:\*\* )[^\s|]+/;
 
 const read = (root, p) => readFileSync(join(root, p), 'utf8');
 const ls = (root, dir) => (existsSync(join(root, dir)) ? readdirSync(join(root, dir), { withFileTypes: true }) : []);
@@ -118,7 +121,9 @@ export function stampProblems(root, { now = new Date() } = {}) {
 
 // 4a. Reescreve a linha da `main` e a contagem de PRs do STATUS pelo próprio git (evolução de 2026-10-18: depois de
 //     cada merge a linha ficava atrasada e o gancho pre-commit barrava o commit). Devolve true se mudou algo.
-export function syncStatusMain(root, { base = 'origin/main' } = {}) {
+// O **Por:** do carimbo vira o id da sessão aberta deste worktree (`session`, ou a sessão do barramento). Sem sessão,
+// mantém o valor antigo e empurra um aviso em `warnings` (lacuna de 2026-10-20: o Por dizia que outra sessão tinha escrito).
+export function syncStatusMain(root, { base = 'origin/main', session, warnings = [] } = {}) {
   const p = join(root, '.buddy-dev/STATUS.md');
   if (!existsSync(p)) return false;
   const hash = tryGit(root, 'rev-parse', '--short=7', base);
@@ -130,8 +135,12 @@ export function syncStatusMain(root, { base = 'origin/main' } = {}) {
   const out = s
     .replace(/^\| `main` \| `[0-9a-f]{7,40}` \([^\n]*\), CI verde \|$/m, `| \`main\` | \`${hash}\` (${short}), CI verde |`)
     .replace(/^\| PRs mergeados \| #1–#\d+,/m, `| PRs mergeados | #1–#${pr},`);
+  const sid = session ?? currentSession(root)?.id ?? null;
+  if (!sid && POR.test(out)) warnings.push('sem sessão aberta: o Por não foi trocado');
   if (out === s) return false;
-  const stamped = out.replace(/\*\*Atualizado em:\*\* [^ ]+ \(`bd now --verify`\)/, `**Atualizado em:** ${formats().iso} (\`bd now --verify\`)`);
+  const stamped = out
+    .replace(/\*\*Atualizado em:\*\* [^ ]+ \(`bd now --verify`\)/, `**Atualizado em:** ${formats().iso} (\`bd now --verify\`)`)
+    .replace(POR, (_, pre) => (sid ? `${pre}${sid}` : _));
   writeFileSync(p, stamped);
   return true;
 }
