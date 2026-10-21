@@ -310,6 +310,7 @@ export async function startOwner(home: string): Promise<Owner> {
           const where = outside ? ` (fora da pasta de trabalho)` : '';
           const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${outside ? raw : target}${where}`);
           decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
+          liveOf(run).lastEventAt = Date.now(); // a espera foi do Pai: o relógio do silêncio recomeça
           // Escopo do cartão (critério 17): além de uma vez, vira concessão; comando e caminho de fora, só o exato.
           const sc = approvalScope.get(ap.id);
           if (decision === 'approve' && sc && sc !== 'once') policy.grant(sc, { tool, pattern: outside ? raw : target }, { session });
@@ -687,7 +688,7 @@ export async function startOwner(home: string): Promise<Owner> {
       return { loggedIn: Boolean(c?.refreshToken), planEnabled: c?.planEnabled ?? null, email: c?.email ?? null, pending: login !== null, error: loginError };
     },
     'auth.chatgpt.logout': async () => { login?.cancel(); login = null; return logout(home); },
-    'policy.grant': (p) => ({ grant: new Policy(log, { workspace: home }).grant(String(p.scope) as Scope, { tool: String(p.tool) as Tool, pattern: String(p.pattern) }, { session: String(p.session) }) }),
+    'policy.grant': (p) => ({ grant: new Policy(log, { workspace: p.workspace ? String(p.workspace) : home }).grant(String(p.scope) as Scope, { tool: String(p.tool) as Tool, pattern: String(p.pattern) }, { session: String(p.session), bindWorkspace: Boolean(p.workspace) }) }),
     'daemon.status': () => ({ pid: process.pid, endpoint, startedAt, sessions: log.sessions().length, events: log.totalEvents(), recovered, ...(consoleSrv ? { console: { url: consoleSrv.url } } : {}) }),
     // Padrões da console: pasta de trabalho própria (nunca o repositório por acaso) e as rotas configuradas.
     'console.defaults': () => {

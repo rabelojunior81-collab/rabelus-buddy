@@ -241,6 +241,9 @@
   .hopts { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; min-width: 0; }
   .hopts[hidden] { display: none; }
   .pill .plab { color: var(--faint); font-weight: 500; }
+  /* Barra compacta (ensaio de 2026-10-20: o enviar caía de linha): rótulo das opções do agente e das permissões vira título. */
+  .hopts .pill > .plab, #permPill > .plab { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hopts .pill .nm { max-width: 140px; }
   .pill.warnpill { border-color: color-mix(in oklch, var(--warn) 60%, transparent); color: var(--warn); }
   .yolo { margin-top: 5px; padding: 4px 8px; border: 1px solid color-mix(in oklch, var(--warn) 50%, transparent); color: var(--warn); font-size: 11.5px; }
   .yolo[hidden] { display: none; }
@@ -406,7 +409,7 @@
         <div class="bar">
           <button id="hBtn" class="pill" aria-haspopup="listbox" aria-expanded="false" aria-controls="hPop" data-i18n-title="console.harness.pick"></button>
           <span id="hOpts" class="hopts" hidden></span>
-          <label class="pill" id="permPill" for="permMode"><span class="plab" data-i18n="console.perm.label">Permissões</span>
+          <label class="pill" id="permPill" for="permMode" data-i18n-title="console.perm.label"><span class="plab" data-i18n="console.perm.label">Permissões</span>
             <select id="permMode">
               <option value="manual" data-i18n="console.perm.manual"></option>
               <option value="acceptEdits" data-i18n="console.perm.acceptEdits"></option>
@@ -628,6 +631,8 @@ function liveLine(l, ms, t) {
 // Silêncio de um harness (B3): segundos desde o último sinal do andamento; 0 se não é harness ou se faz menos de 30 s.
 function silentFor(live, now) {
   if (!live || !String(live.route || '').startsWith('acp:') || typeof live.lastEventAt !== 'number') return 0;
+  // Esperando a aprovação do Pai, o silêncio é dele, não do agente.
+  if (live.phase === 'approval') return 0;
   const ms = now - live.lastEventAt;
   return ms > 30000 ? Math.floor(ms / 1000) : 0;
 }
@@ -1365,7 +1370,7 @@ function renderHarnessOptions() {
     }
     const sel = el('select', { onchange: (ev) => { setHchoice(h.id, o.id, ev.target.value); renderHarnessOptions(); } },
       ...o.options.map((v) => el('option', { value: v.value, ...(v.value === cur ? { selected: '' } : {}) }, v.name)));
-    return el('label', { class: 'pill' }, el('span', { class: 'plab' }, hoptLabel(o)), sel);
+    return el('label', { class: 'pill', title: hoptLabel(o) }, el('span', { class: 'plab' }, hoptLabel(o)), sel);
   }));
 }
 // Lista com busca para opção longa (o modelo do OpenCode tem centenas): agrupada pelo provedor que o agente declara.

@@ -147,9 +147,10 @@ export class Policy {
   }
 
   // "Projeto" vale só na pasta em que foi dado (o padrão leva a pasta na frente); "sempre" vale em qualquer pasta.
-  grant(scope: Scope, { tool, pattern }: { tool: Tool; pattern: string }, { session }: { session: string }): string {
+  // Sem pasta (concessão dada pelo cliente local sem dizer a pasta, contrato do M0), "projeto" continua valendo como antes.
+  grant(scope: Scope, { tool, pattern }: { tool: Tool; pattern: string }, { session, bindWorkspace = true }: { session: string; bindWorkspace?: boolean }): string {
     const grant = `gr-${randomUUID().slice(0, 8)}`;
-    this.log.append(session, 'policy.grant.created', { grant, scope, tool, pattern: scope === 'project' ? `${this.workspace}${PROJECT_SEP}${pattern}` : pattern });
+    this.log.append(session, 'policy.grant.created', { grant, scope, tool, pattern: scope === 'project' && bindWorkspace ? `${this.workspace}${PROJECT_SEP}${pattern}` : pattern });
     return grant;
   }
 
