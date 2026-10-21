@@ -25,7 +25,7 @@ import { dbPathFor, endpointFor } from './paths.ts';
 import { startConsole, type ConsoleServer } from './console.ts';
 import { detectHarnesses, readRegistry, refreshRegistry, type RegistryState } from './harness/catalog.ts';
 import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec } from './harness/client.ts';
-import { NeedsLogin, NoImageSupport, promptTurn, type TurnResult } from './harness/session.ts';
+import { describeSession, NeedsLogin, NoImageSupport, postureOption, promptTurn, type HarnessOption, type TurnResult } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 import { EFFORTS, type Effort } from './providers/types.ts';
 
@@ -251,7 +251,7 @@ export async function startOwner(home: string): Promise<Owner> {
   type HarnessRef = { id: string; name: string; spec: LaunchSpec };
   // Um turno com o harness, com a postura, as permissões pelo núcleo e o andamento no log da execução. Serve à
   // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
-  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string> }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
     const policy = new Policy(log, { workspace: o.workspace });
     let reasoning = '';
     const titles = new Map<string, string>();
@@ -261,6 +261,8 @@ export async function startOwner(home: string): Promise<Owner> {
     let denied = false;
     const r = await promptTurn(postureOf(h), {
       cwd: o.workspace, task: o.task, signal: o.signal, preferMode: 'read-only',
+      // Opções escolhidas pelo Pai (critério 18): modelo, esforço e modo do agente, aplicados antes da tarefa.
+      ...(o.configValues && Object.keys(o.configValues).length ? { configValues: o.configValues, onApplied: (values: Record<string, string>) => log.append(session, 'harness.options.applied', { run, id: h.id, values }) } : {}),
       // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
       files: o.files ?? [],
       onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
@@ -315,6 +317,12 @@ export async function startOwner(home: string): Promise<Owner> {
     });
     return { r, denied, reasoning };
   };
+  // Opções do agente (critério 18): só pares texto → texto, curtos; o agente ainda confere se o valor é declarado.
+  const optionsCache = new Map<string, { at: number; options: HarnessOption[] }>();
+  const harnessOptionsOf = (v: unknown): Record<string, string> => {
+    if (!v || typeof v !== 'object') return {};
+    return Object.fromEntries(Object.entries(v as Record<string, unknown>).filter(([k, x]) => typeof x === 'string' && k.length <= 64 && x.length <= 200)) as Record<string, string>;
+  };
   const startHarnessRun = (session: string, task: string, p: Record<string, unknown>, h: HarnessRef): string => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
@@ -332,7 +340,7 @@ export async function startOwner(home: string): Promise<Owner> {
       const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
       const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
       try {
-        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)) });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)), configValues: harnessOptionsOf(p.harnessOptions) });
         domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
         if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
         if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
@@ -485,7 +493,7 @@ export async function startOwner(home: string): Promise<Owner> {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR' });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR', ...(p.harnessOptions ? { harnessOptions: harnessOptionsOf(p.harnessOptions) } : {}) });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
@@ -566,6 +574,25 @@ export async function startOwner(home: string): Promise<Owner> {
     // Sonda de disponibilidade (SPEC 0002, critério 3): pronto, precisa de login ou falhou, com o motivo.
     // Lançamento que baixa código (npx, uvx) não roda aqui: espera a aprovação da primeira execução (critério 4).
     'harness.probe': (p) => probeById(String(p.id)),
+    // Opções que o agente declara ao abrir a sessão (critério 18): abre, lê e fecha, sem tarefa; guardadas 10 min por
+    // agente. A opção de modo que serve de postura (read-only do Codex) não é oferecida: a postura vence.
+    'harness.options': async (p) => {
+      const h = await harnessFor(String(p.id));
+      const hit = optionsCache.get(h.id);
+      if (hit && Date.now() - hit.at < 10 * 60_000) return { options: hit.options };
+      const cwd = join(home, 'area-de-trabalho');
+      mkdirSync(cwd, { recursive: true });
+      try {
+        const all = await describeSession(postureOf(h), cwd);
+        const posture = postureOption(all, 'read-only');
+        const options = all.filter((o) => o !== posture && o.options.length > 0);
+        optionsCache.set(h.id, { at: Date.now(), options });
+        return { options };
+      } catch (e) {
+        if (e instanceof NeedsLogin) throw new DomainError(-32004, `${h.name} pede login antes de mostrar as opções`, { id: h.id, methods: e.methods });
+        throw new DomainError(-32004, `não foi possível ler as opções de ${h.name}: ${scrub((e as Error).message).slice(0, 200)}`, { id: h.id });
+      }
+    },
     // Rever a negação da primeira execução (A1): só quando está negada; pede aprovação nova, sem apagar a antiga.
     'harness.firstRun.reset': async (p) => {
       const id = String(p.id);

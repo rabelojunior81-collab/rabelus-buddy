@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T215214-0300-claude-code-desktop-e8da5a-0003",
+  "ts": "2026-10-20T21:52:14-03:00",
+  "utc": "2026-10-21T00:52:14.245Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 3,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "pesquisa",
+  "summary": "Causa da trava do OpenCode CONFIRMADA: o modelo padrão do OpenCode do Pai é opencode-go/minimax-m3.1-flash-free (gratuito, com fila e limite): primeira resposta em 20 s, segunda muda por 80 s. Em session/new o OpenCode 2.0.32 declara model (496 opções, lista plana), effort (thought_level: low..max, default) e mode (build/plan). A solução é a mesma da cobrança: as opções do agente na caixa (critério 18), com o modelo escolhido aplicado por session/set_config_option.",
+  "refs": [],
+  "data": {}
+}
