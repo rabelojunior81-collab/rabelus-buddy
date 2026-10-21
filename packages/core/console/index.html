@@ -186,6 +186,14 @@
   .bubble.buddy { max-width: 100%; background: color-mix(in oklch, var(--accent) 7%, transparent); border-color: color-mix(in oklch, var(--accent) 28%, transparent); }
   .bubble p { margin: 0 0 8px; } .bubble p.h { margin-top: 10px; font-size: 1.04em; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
   .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
+  /* Tabela, citação e linha horizontal da resposta (missão B1): tabela com rolagem, bordas finas, cabeçalho discreto. */
+  .tbl { overflow-x: auto; margin: 6px 0; }
+  .tbl table { border-collapse: collapse; font-size: 12.5px; }
+  .tbl th, .tbl td { border: 1px solid var(--hair); padding: 4px 8px; text-align: left; vertical-align: top; }
+  .tbl th { color: var(--muted); font-weight: 600; }
+  .bubble blockquote { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--olive-400); color: var(--muted); }
+  .bubble hr { border: 0; border-top: 1px solid var(--hair); margin: 8px 0; }
+  .bubble .tbl:last-child, .bubble blockquote:last-child { margin-bottom: 0; }
   /* Código: tom oliva translúcido, leve nos dois temas (no claro, o cinza escuro pesava; achado do ensaio). */
   .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: oklch(50% .03 118 / .12); border: 1px solid var(--hair); overflow: auto; white-space: pre; }
   .bubble pre.code code { padding: 0; background: none; }
@@ -511,6 +519,45 @@ function mdBlocks(text) {
       out.push({ type: 'h', text: head[1] });
       continue;
     }
+    // Linha horizontal: três ou mais -, * ou _ (sozinhos na linha, com espaços entre eles).
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(lines[i])) {
+      flush();
+      for (const b of out) delete b.open;
+      out.push({ type: 'hr' });
+      continue;
+    }
+    // Tabela (missão B1): linha com barras, seguida da linha separadora (- e : opcionais) com o mesmo número de colunas.
+    const cells = (line) => {
+      let s = line.trim();
+      if (s.startsWith('|')) s = s.slice(1);
+      if (s.endsWith('|') && !s.endsWith('\\|')) s = s.slice(0, -1);
+      return s.split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, '|'));
+    };
+    if (lines[i].includes('|') && i + 1 < lines.length && lines[i + 1].includes('|')) {
+      const head = cells(lines[i]);
+      const delim = cells(lines[i + 1]);
+      if (delim.length === head.length && delim.every((c) => /^:?-+:?$/.test(c))) {
+        flush();
+        for (const b of out) delete b.open;
+        const fit = (r) => head.map((_, k) => (k < r.length ? r[k] : ''));
+        const align = delim.map((c) => (c.startsWith(':') && c.endsWith(':') ? 'center' : c.endsWith(':') ? 'right' : c.startsWith(':') ? 'left' : null));
+        const rows = [];
+        let k = i + 2;
+        for (; k < lines.length && lines[k].trim() !== '' && lines[k].includes('|'); k++) rows.push(fit(cells(lines[k])));
+        out.push({ type: 'table', head, align, rows });
+        i = k - 1;
+        continue;
+      }
+    }
+    // Citação (missão B1): linhas que começam com "> ", juntas no mesmo bloco enquanto forem contínuas.
+    const quote = /^\s*>\s?(.*)$/.exec(lines[i]);
+    if (quote) {
+      flush();
+      const last = out[out.length - 1];
+      if (last && last.type === 'quote' && last.open) last.text += '\n' + quote[1];
+      else { for (const b of out) delete b.open; out.push({ type: 'quote', text: quote[1], open: true }); }
+      continue;
+    }
     const item = /^\s*(?:([-*])|(\d+)[.)])\s+(.*)$/.exec(lines[i]);
     if (item) {
       flush();
@@ -677,9 +724,16 @@ function inline(text) {
   const f = document.createDocumentFragment();
   // O LaTeX sai do texto corrido, nunca de dentro do código.
   const plain = String(text).split(/(`[^`\n]+`)/).map((x) => (/^`[^`]+`$/.test(x) ? x : delatex(x))).join('');
-  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
+  // Link (missão B1): só http(s) vira âncora; qualquer outro esquema (javascript:, data:) fica como o texto digitado.
+  const SAFE_URL = /^https?:\/\/\S+$/i;
+  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/)) {
     if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
     else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
+    else if (/^\[[^\]\n]+\]\([^)\s]+\)$/.test(part)) {
+      const m = /^\[([^\]\n]+)\]\(([^)\s]+)\)$/.exec(part);
+      if (SAFE_URL.test(m[2])) f.append(el('a', { href: m[2], target: '_blank', rel: 'noopener noreferrer' }, m[1]));
+      else f.append(document.createTextNode(part));
+    }
     else if (part) f.append(document.createTextNode(part));
   }
   return f;
@@ -690,6 +744,15 @@ function rich(text) {
     if (b.type === 'code') f.append(el('pre', { class: 'code' }, el('code', {}, b.text)));
     else if (b.type === 'list') f.append(el(b.ordered ? 'ol' : 'ul', {}, ...b.items.map((i) => el('li', {}, inline(i)))));
     else if (b.type === 'h') f.append(el('p', { class: 'h' }, el('strong', {}, inline(b.text))));
+    else if (b.type === 'table') {
+      // Células pelo inline(); o alinhamento vai em style, nunca em HTML do texto.
+      const cell = (tag, text, a) => el(tag, a ? { style: 'text-align:' + a } : {}, inline(text));
+      f.append(el('div', { class: 'tbl' }, el('table', {},
+        el('thead', {}, el('tr', {}, ...b.head.map((c, k) => cell('th', c, b.align[k])))),
+        el('tbody', {}, ...b.rows.map((r) => el('tr', {}, ...r.map((c, k) => cell('td', c, b.align[k]))))))));
+    }
+    else if (b.type === 'quote') f.append(el('blockquote', {}, inline(b.text)));
+    else if (b.type === 'hr') f.append(el('hr', {}));
     else f.append(el('p', {}, inline(b.text)));
   }
   return f;
