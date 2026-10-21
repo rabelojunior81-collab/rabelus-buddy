@@ -85,7 +85,9 @@ test('console: toda chave de catálogo usada pela página existe em pt-BR e en (
     const has = (k: string) => k.split('.').reduce<unknown>((o, p) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[p] : undefined), cat) !== undefined;
     // Chave montada (termina em "."): todos os valores possíveis precisam existir; outra montagem reprova.
     // Esforço: os oito níveis que os provedores declaram (M1.5c) e o padrão.
-    const DYN: Record<string, string[]> = { 'console.effort.': ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'], 'status.state.': ['running', 'done', 'interrupted', 'stopped'] };
+    const DYN: Record<string, string[]> = { 'console.effort.': ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max', 'ultra'], 'status.state.': ['running', 'done', 'interrupted', 'stopped'],
+      // Ferramenta no texto do cartão de aprovação (camada de inglês, 2026-10-21): as que approvalParts reconhece.
+      'console.approvals.tool.': ['write_file', 'archive', 'run_command', 'read_file', 'list_dir', 'delegate'] };
     const expanded = [...used].flatMap((k) => (k.endsWith('.') ? (DYN[k] ?? [`${k}<montagem desconhecida>`]).map((v) => k + v) : [k]));
     assert.deepEqual(expanded.filter((k) => !has(k)).sort(), [], `${lang}: chaves ausentes`);
   }
