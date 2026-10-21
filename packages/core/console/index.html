@@ -605,6 +605,12 @@ function liveLine(l, ms, t) {
   const phase = l.phase === 'tool' ? t('console.live.tool', { tool: l.tool || '?' }) : l.phase === 'writing' ? t('console.live.writing') : l.phase === 'approval' ? t('console.live.approval') : t('console.live.thinking');
   return [phase, elapsedText(ms), l.route].filter(Boolean).join(' · ');
 }
+// Silêncio de um harness (B3): segundos desde o último sinal do andamento; 0 se não é harness ou se faz menos de 30 s.
+function silentFor(live, now) {
+  if (!live || !String(live.route || '').startsWith('acp:') || typeof live.lastEventAt !== 'number') return 0;
+  const ms = now - live.lastEventAt;
+  return ms > 30000 ? Math.floor(ms / 1000) : 0;
+}
 // Matemática em LaTeX (o ChatGPT escreve \(30 \times 1\)) vira texto legível, sem biblioteca (ensaio da M0.8d).
 const TEX = { times: '×', div: '÷', cdot: '·', approx: '≈', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', to: '→', rightarrow: '→', pm: '±', infty: '∞' };
 function delatex(s) {
@@ -906,6 +912,10 @@ function renderLive() {
   if (l && l.running) {
     const r = l.running;
     kids.push(el('div', { class: 'line', role: 'status' }, el('span', { class: 'spin', 'aria-hidden': 'true' }), el('span', { id: 'liveLine' }, liveLine(r, Date.now() - Date.parse(r.callStartedAt), t))));
+    const quiet = silentFor(r, Date.now());
+    if (quiet) kids.push(el('div', { class: 'line silent', id: 'silentLine', role: 'status' },
+      el('span', {}, t('console.harness.silent', { name: harnessName(String(r.route).slice(4)), seconds: quiet })),
+      el('button', { class: 'btn', onclick: () => $('stop').click() }, t('console.harness.silentStop'))));
     if (r.reasoning) {
       const d = el('details', { class: 'grp reason' }, el('summary', {}, t('console.feed.reasoning')), el('pre', { id: 'liveReason' }, r.reasoning));
       d.open = reasonOpen === null ? prefs.details : reasonOpen;
