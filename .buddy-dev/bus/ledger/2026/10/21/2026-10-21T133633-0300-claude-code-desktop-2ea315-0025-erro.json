@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133633-0300-claude-code-desktop-2ea315-0025",
+  "ts": "2026-10-21T13:36:33-03:00",
+  "utc": "2026-10-21T16:36:33.851Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 25,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "erro",
+  "summary": "a suíte inteira (457) pegou uma falha minha: a camada de inglês montou a chave console.approvals.tool.<ferramenta>, e o teste do critério 28 exige que toda montagem declare os valores; declarei os seis no teste (mais cobertura, nada afrouxado); eu tinha rodado só os testes da console; 2cf2075",
+  "refs": [],
+  "data": {}
+}

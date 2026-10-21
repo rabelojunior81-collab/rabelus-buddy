@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T132657-0300-claude-code-desktop-2ea315-0011",
+  "ts": "2026-10-21T13:26:57-03:00",
+  "utc": "2026-10-21T16:26:57.819Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 11,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "aprendizado",
+  "summary": "ensaio no navegador in-app (núcleo de ensaio da branch, OpenCode real): busca 'free' no seletor Modelo mostra a marca 'gratuito' em 6+ modelos; escolher o MiniMax M3.1 Flash Free mostra o aviso na caixa; voltar ao Kimi K3 some o aviso. Aprendizado: bd serve --cmd no Windows exige caminhos Windows (cygpath -w), senão o núcleo morre calado",
+  "refs": [],
+  "data": {}
+}

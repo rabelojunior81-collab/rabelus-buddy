@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-17T20:28:11-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-21T13:30:31-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -33,15 +33,16 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 
 ## M1 — Orquestrador e multimodal (ADR 0018)
 
-- [ ] Catálogo de harnesses pelo registro oficial do ACP (ícone, nome, licença, como iniciar), com cópia local verificada; detecção pelo PATH e sonda de disponibilidade, sem configuração [ADR 0018]
-- [ ] Cliente ACP (`@agentclientprotocol/sdk`) com `session/request_permission` ligado ao motor de política [ADR 0009; ADR 0018]
-- [ ] Harnesses do Pai como agentes plugáveis: OpenCode, Codex, Claude Code, Copilot, Pi (ADR 0016); autenticação do próprio agente (Agent Auth) disparada pela console [ADR 0018]
-- [ ] Multimodal de entrada: imagem e arquivo anexados na conversa, enviados a provedores com visão [ADR 0018]
-- [ ] Console redesenhada: ergonomia do t3.chat, verde-oliva, vidro, claro e escuro [ADR 0018]
-- [ ] Contrato tipado console ↔ núcleo (axiomas T3) [ADR 0018]
-- [ ] Política de privacidade de modelos (desligar os que treinam com os dados) [ADR 0008]
-- [ ] Medição de janelas de assinatura por tarefa [R1]
-- [ ] Sessão de TUI com o Pai: `ink` × `pi-tui`, diferenças visuais, decisão [ADR 0016; ADR 0018]
+- [x] Catálogo de harnesses pelo registro oficial do ACP (ícone, nome, licença, como iniciar), com cópia local verificada; detecção pelo PATH e sonda de disponibilidade, sem configuração [ADR 0018] — M1.1 e M1.2a
+- [x] Cliente ACP (`@agentclientprotocol/sdk`) com `session/request_permission` ligado ao motor de política [ADR 0009; ADR 0018] — M1.2c e M1.2d; modos e escopos de permissão (critério 17) e opções do agente (critério 18) em 2026-10-20
+- [x] Harnesses do Pai como agentes plugáveis: OpenCode, Codex, Claude Code, Copilot, Pi (ADR 0016); autenticação do próprio agente (Agent Auth) disparada pela console [ADR 0018] — M1.2b, M1.2e e M1.4 (delegação)
+- [x] Multimodal de entrada: imagem e arquivo anexados na conversa, enviados a provedores com visão [ADR 0018] — M1.3
+- [x] Console redesenhada: ergonomia do t3.chat, verde-oliva, vidro, claro e escuro [ADR 0018] — M1.5, validada pelo Pai em 2026-10-21
+- [x] Contrato tipado console ↔ núcleo (axiomas T3) [ADR 0018] — M1.0
+- [x] Política de privacidade de modelos (desligar os que treinam com os dados) [ADR 0008] — critério 20 do M0, com teste: negados por padrão, só concessão de projeto libera
+- [~] Medição de janelas de assinatura por tarefa [R1] — telemetria do limite do OpenCode Go e do OpenRouter na console (M1.5c); por tarefa, com os harnesses, entra no ensaio do M1.6
+- [?] Sessão de TUI com o Pai: `ink` × `pi-tui`, diferenças visuais, decisão [ADR 0016; ADR 0018] — depende da sessão com o Pai e da aprovação das duas bibliotecas como dependência
+- [>] Ensaio real e demonstração do M1 com o Pai (M1.6): adiado pelo Pai em 2026-10-21, até haver mais implementado
 - [>] DeepSeek Harness e goose como agentes plugáveis (avaliar estabilidade) [R4]
 
 ## M2 — Execução isolada

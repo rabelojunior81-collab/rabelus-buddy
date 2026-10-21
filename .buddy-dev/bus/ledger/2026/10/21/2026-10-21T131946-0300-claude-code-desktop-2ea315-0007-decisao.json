@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T131946-0300-claude-code-desktop-2ea315-0007",
+  "ts": "2026-10-21T13:19:46-03:00",
+  "utc": "2026-10-21T16:19:46.194Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 7,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "decisao",
+  "summary": "Pai (2026-10-21): console nova validada nos três casos (validar-console-nova-m1-5 feito); comando ganha os escopos nesta conversa/neste projeto/sempre, só para o comando idêntico (escopo-de-comando feito); ensaio de ponta a ponta (M1.6) adiado até haver mais implementado; seguir sem a presença do Pai no que está definido",
+  "refs": [],
+  "data": {}
+}

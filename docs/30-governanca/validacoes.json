@@ -669,12 +669,13 @@
       "mecanismo": {
         "teste": "packages/core/test/console-modelo.test.ts"
       },
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "SPEC 0002, critério 11; pedido do Pai em 2026-10-19 (ver, testar e validar no layout novo)",
       "tipo": "acao",
       "como": "recarregar a aba da console (ou dois cliques no atalho abrir-rabelus-buddy); na pílula do modelo, aba ChatGPT, GPT-6.1 Sol, esforço Muito alto, enviar uma pergunta; Nova conversa, escolher OpenCode, esperar os seletores, escolher no Modelo um modelo pago do OpenCode Go, enviar \"Olá\" e depois \"quem é você?\"; enviar \"Crie o arquivo teste-do-pai.txt com a palavra um\", clicar em Nesta conversa no cartão, e depois \"Sobrescreva teste-do-pai.txt com a palavra dois\" (não deve aparecer cartão)",
       "ensaio": "docs/registros/2026-10-20T222040-0300-ensaio-das-opcoes-do-agente-e-das-permissoes-com-o-opencode-real/README.md",
-      "explicacao": "O Pai usa a console como no dia a dia e diz se ela está boa. Três testes: escolher um modelo do ChatGPT com esforço alto e mandar uma pergunta; escolher o OpenCode, escolher o modelo dele no seletor novo e mandar duas mensagens seguidas; pedir ao OpenCode que crie um arquivo e aprovar pelo cartão, usando \"Nesta conversa\" e vendo que o pedido seguinte igual não pergunta de novo."
+      "explicacao": "O Pai usa a console como no dia a dia e diz se ela está boa. Três testes: escolher um modelo do ChatGPT com esforço alto e mandar uma pergunta; escolher o OpenCode, escolher o modelo dele no seletor novo e mandar duas mensagens seguidas; pedir ao OpenCode que crie um arquivo e aprovar pelo cartão, usando \"Nesta conversa\" e vendo que o pedido seguinte igual não pergunta de novo.",
+      "evidencia": "Pai, 2026-10-21: \"Os 3 casos, foram validados. Inclusive, consegui desenvolver bem, com o buddy/openai/astra\" (ChatGPT com esforço alto; OpenCode com o modelo escolhido e duas mensagens; escrita aprovada \"Nesta conversa\" sem cartão no pedido seguinte). Achado do Pai: experiência ruim com as entregas do minimax-m3.1-flash no OpenCode Go."
     },
     {
       "id": "anexos-e-imagem",
@@ -910,9 +911,23 @@
         "próxima conversa com o Pai"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "conflito entre o pedido do Pai de 2026-10-20 e o teste de segurança do marco anterior",
-      "explicacao": "Hoje, quando um agente quer rodar um comando, o cartão só oferece \"uma vez\": cada comando pede aprovação de novo. Isso é uma trava de segurança antiga, que vale até existir um ambiente isolado para os comandos. O Pai decide se mantém, ou se libera \"nesta conversa\", \"neste projeto\" e \"sempre\" também para comando, valendo só para o comando exatamente igual."
+      "explicacao": "Hoje, quando um agente quer rodar um comando, o cartão só oferece \"uma vez\": cada comando pede aprovação de novo. Isso é uma trava de segurança antiga, que vale até existir um ambiente isolado para os comandos. O Pai decide se mantém, ou se libera \"nesta conversa\", \"neste projeto\" e \"sempre\" também para comando, valendo só para o comando exatamente igual.",
+      "evidencia": "Pai, 2026-10-21: \"concordo, com as liberações 'nesta conversa', etc.\" — comando ganha os escopos nesta conversa, neste projeto e sempre, valendo só para o comando exatamente igual"
+    },
+    {
+      "id": "spec-0003-e-dependencias-do-spike",
+      "descricao": "Aprovar a SPEC 0003 (M2, execução isolada), as dependências do spike (@anthropic-ai/sandbox-runtime 0.0.81 e @microsoft/mxc-sdk 1.0.1) e o preparo de administrador no computador do Pai durante o spike",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "início do M2"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "ROADMAP (M2); SPEC 0003 rev. 1; METODO §2",
+      "explicacao": "Hoje, um comando aprovado roda com os direitos do Pai: lê o disco inteiro, escreve fora da pasta e acessa qualquer endereço. A próxima etapa grande faz o próprio Windows conter cada comando (e o agente de fora inteiro) dentro da pasta de trabalho, com a internet só por um intermediário do Buddy, que pergunta antes de liberar um endereço novo. Há duas bibliotecas candidatas, uma da Anthropic e uma da Microsoft; eu as comparo no computador do Pai e escolho pela medição. O Pai aprova (ou ajusta) o que essa etapa entrega, a entrada das duas bibliotecas só para a comparação, e o pedido de administrador do Windows que a preparação pode abrir, com desfazer."
     }
   ]
 }

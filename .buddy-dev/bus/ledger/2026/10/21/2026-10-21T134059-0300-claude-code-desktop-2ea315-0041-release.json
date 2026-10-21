@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T134059-0300-claude-code-desktop-2ea315-0041",
+  "ts": "2026-10-21T13:40:59-03:00",
+  "utc": "2026-10-21T16:40:59.396Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 41,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "release",
+  "summary": "docs/50-planos/m1/PLANO.md",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T132937-0300-claude-code-desktop-2ea315-0012",
+  "ts": "2026-10-21T13:29:37-03:00",
+  "utc": "2026-10-21T16:29:37.535Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 12,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "feat",
+  "summary": "camada de inglês: os motivos dos modos (Plano, Sem perguntas, Aceitar edições, Automático, modelo que treina) e o texto dos cartões de aprovação (primeira execução, pedido do harness, dentro e fora da pasta, reconciliação) agora saem pelo catálogo; o texto cru fica no título e continua sendo a chave dos escopos; teste console-ingles antes; 2cc4ea6",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T131903-0300-claude-code-desktop-2ea315-0001",
+  "ts": "2026-10-21T13:19:03-03:00",
+  "utc": "2026-10-21T16:19:03.522Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 1,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "registrar a validação e as decisões do Pai (console aprovada, ensaio de ponta a ponta adiado, comando com escopos); implementar o que está definido no M1",
+  "refs": [],
+  "data": {}
+}

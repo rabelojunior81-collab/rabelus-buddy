@@ -75,7 +75,7 @@ export const AGENT_TOOLS: ToolSpec[] = [
   { name: 'read_file', description: 'Lê um arquivo de texto do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'list_dir', description: 'Lista as entradas de um diretório do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'write_file', description: 'Escreve um arquivo no workspace (leia antes, se ele já existir).', parameters: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
-  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana a cada vez.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
+  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana (uma vez, ou para o mesmo comando na conversa, no projeto ou sempre).', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
 ];
 
 // A ferramenta de delegação só aparece com harness pronto; o enum diz ao modelo quais existem.

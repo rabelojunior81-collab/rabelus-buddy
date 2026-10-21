@@ -89,7 +89,7 @@ test('escopos: conversa vale só na conversa; projeto só na pasta em que foi da
   p1.grant('always', { tool: 'write_file', pattern: 'notas/**' }, { session: 's1' });
   assert.equal(p2.decide(w('notas/a.md', 's7'), tty).effect, 'allow', 'sempre: qualquer pasta');
   p1.grant('session', { tool: 'run_command', pattern: 'npm test' }, { session: 's1' });
-  assert.equal(p1.decide(cmd('npm test', 's1'), tty).effect, 'ask', 'comando: só uma vez, até o sandbox (critério 13 do M0)');
+  assert.equal(p1.decide(cmd('npm test', 's1'), tty).effect, 'allow', 'comando: o mesmo comando nesta conversa (decisão do Pai em 2026-10-21)');
 });
 
 test('contrato: agent.run aceita o modo; approval.resolve aceita o escopo', () => {

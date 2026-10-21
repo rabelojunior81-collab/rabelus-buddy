@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T132216-0300-claude-code-desktop-2ea315-0008",
+  "ts": "2026-10-21T13:22:16-03:00",
+  "utc": "2026-10-21T16:22:16.391Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 8,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "feat",
+  "summary": "comando ganha os quatro escopos (só o texto exato; curinga não vale; regra não libera); SPEC 0002 rev. 4; teste comando-com-escopos antes do código; debe388",
+  "refs": [],
+  "data": {}
+}

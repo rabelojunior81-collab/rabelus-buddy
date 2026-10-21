@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-21T131944-0300-claude-code-desktop-2ea315-0006",
+  "ts": "2026-10-21T13:19:44-03:00",
+  "utc": "2026-10-21T16:19:44.475Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 6,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "claim",
+  "summary": "CHANGELOG.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-21T16:49:44.475Z",
+    "tookOverFrom": null
+  }
+}

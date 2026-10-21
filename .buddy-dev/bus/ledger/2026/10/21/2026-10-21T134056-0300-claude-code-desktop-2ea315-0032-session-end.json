@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T134056-0300-claude-code-desktop-2ea315-0032",
+  "ts": "2026-10-21T13:40:56-03:00",
+  "utc": "2026-10-21T16:40:56.114Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 32,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "session-end",
+  "summary": "Pai validou a console (M1.5) e decidiu: comando com escopos (feito, só para o comando idêntico), M1.6 adiado, seguir sozinho. Feito: modelo gratuito sinalizado, camada de inglês nos motivos e cartões, superfícies sincronizadas, rascunho da SPEC 0003 (M2) com pesquisa ao vivo. Aguarda o Pai: SPEC 0003 e bibliotecas do spike; TUI.",
+  "refs": [],
+  "data": {}
+}

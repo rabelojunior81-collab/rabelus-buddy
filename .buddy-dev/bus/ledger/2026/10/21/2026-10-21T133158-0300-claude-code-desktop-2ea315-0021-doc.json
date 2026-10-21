@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133158-0300-claude-code-desktop-2ea315-0021",
+  "ts": "2026-10-21T13:31:58-03:00",
+  "utc": "2026-10-21T16:31:58.858Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 21,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "doc",
+  "summary": "superfícies sincronizadas (STATUS, plano do M1, plano macro, CHANGELOG, READMEs pt e en) com a validação da console e as decisões do Pai; o registro 0018 saiu antes do commit, barrado pelo changelog sem a M1.5d e pelos claims dos READMEs; entrou como 736fc4d",
+  "refs": [],
+  "data": {}
+}

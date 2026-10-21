@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133832-0300-claude-code-desktop-2ea315-0030",
+  "ts": "2026-10-21T13:38:32-03:00",
+  "utc": "2026-10-21T16:38:32.365Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 30,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "doc",
+  "summary": "diário de 2026-10-21; lição do lote #0038-#0039 (registro e commit são uma transação; passou é da suíte inteira) e prune do changelog; STATUS com a SPEC 0003, a suíte medida (105 s, 457 testes) e a pendência do Pai; 8502a84",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T134053-0300-claude-code-desktop-2ea315-0031",
+  "ts": "2026-10-21T13:40:53-03:00",
+  "utc": "2026-10-21T16:40:53.602Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 31,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "processo",
+  "summary": "post 'O Comando Exato' e daily de 2026-10-21 publicados no Blog (rabelus-lab-blog f76039d), com QA no navegador in-app a 375 e 1440 px e check-surfaces sem erros; suíte inteira 457/457 verde; servidor do Blog encerrado",
+  "refs": [],
+  "data": {}
+}
