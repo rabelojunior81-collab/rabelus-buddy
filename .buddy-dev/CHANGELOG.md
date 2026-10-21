@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0035 · 2026-10-16T002021-0300 · claude-code-vs-code-6265a4 · decisao
-
-ADR 0016: Pi por composição (agente plugável no M1, com extensão de governança), sem fork; TUI em avaliação (ink × pi-tui, com referências visuais ao Pai no momento pertinente); M0 sem TUI. SPEC 0001 rev. 4; pi-tui e ink no registro como proposta.
-
 ### #0036 · 2026-10-16T002655-0300 · claude-code-vs-code-6265a4 · ferramenta
 
 bd merge (CI verde e bd post limpo → merge commit → prune), bd prune (mergeadas removidas, abandonadas arquivadas em tag anotada), bd validacoes (registro de 23 validações com dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão). GitHub: auto-delete de branches e só merge commit. 88 testes.
@@ -207,3 +203,7 @@ Piloto de paralelismo, ondas 1 e 2: 4 pesquisas (3 fichas) e 4 correções do us
 ### #0084 · 2026-10-20T213024-0300 · claude-code-desktop-6e2164 · feat
 
 Noite de 2026-10-20: repositório público com a segurança ligada; voz do Buddy em pt e en; tabelas; console compacta com trava; aviso de silêncio; motivos legíveis; pílula atualizada; página pública e workflow do Pages; SPEC 0002 rev. 3 (permissões com Automático, opções dos agentes); diagnóstico do OpenCode. Onda 3 do piloto (5 missões Haiku).
+
+### #0085 · 2026-10-20T213809-0300 · claude-code-desktop-6e2164 · processo
+
+Sessão claude-code-desktop-6e2164: decisões do Pai (explicar em texto, permissões com modos e escopos, paralelismo, repositório público, token trocado); piloto em três ondas (13 missões Haiku); PRs #78 e #79; repositório público com a segurança ligada; página pública no Pages; voz do Buddy; SPEC 0002 rev. 3. Post: O Que o Ensaio Não Negava.
