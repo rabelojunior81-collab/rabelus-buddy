@@ -158,15 +158,17 @@ export class Policy {
   private grantFor(tool: string, session: string, target: string, scopes: Scope[]): { id: string; scope: Scope } | undefined {
     const rows = (this.db.prepare("SELECT id, scope, session, pattern FROM proj_grants WHERE tool = ? AND state = 'active' ORDER BY rowid").all(tool) as unknown as { id: string; scope: Scope; session: string; pattern: string }[])
       .filter((g) => scopes.includes(g.scope));
+    // Comando: só o texto exatamente igual (decisão do Pai em 2026-10-21); curinga nunca vira padrão de comando.
+    const hit = (pattern: string): boolean => (tool === 'run_command' ? pattern === target : matches(pattern, target));
     const fits = (g: { scope: Scope; session: string; pattern: string }): boolean => {
       if (g.scope === 'project') {
         const i = g.pattern.indexOf(PROJECT_SEP);
         // Concessão de projeto antiga, sem pasta: vale como antes (em qualquer pasta).
-        if (i < 0) return matches(g.pattern, target);
-        return g.pattern.slice(0, i) === this.workspace && matches(g.pattern.slice(i + PROJECT_SEP.length), target);
+        if (i < 0) return hit(g.pattern);
+        return g.pattern.slice(0, i) === this.workspace && hit(g.pattern.slice(i + PROJECT_SEP.length));
       }
-      if (g.scope === 'always') return matches(g.pattern, target);
-      return g.session === session && matches(g.pattern, target);
+      if (g.scope === 'always') return hit(g.pattern);
+      return g.session === session && hit(g.pattern);
     };
     const ok = rows.filter(fits);
     return ok.find((x) => x.scope === 'always') ?? ok.find((x) => x.scope === 'project') ?? ok.find((x) => x.scope === 'session') ?? ok.find((x) => x.scope === 'once');
@@ -203,9 +205,9 @@ export class Policy {
       case 'archive':
         return { effect: 'ask', scopes: ['once', 'session', 'project', 'always'], rulesApply: true };
       case 'run_command':
-        // Até o M2 (sandbox), comando só com aprovação explícita de uma vez (ADR 0009; critério 13 do M0, com teste).
-        // Os modos Automático (só leitura) e Sem perguntas são a exceção decidida pelo Pai em 2026-10-20.
-        return { effect: 'ask', scopes: ['once'], rulesApply: false };
+        // Comando nunca passa por regra (critério 13 do M0); passa por aprovação explícita, que desde 2026-10-21 (decisão
+        // do Pai) pode valer nesta conversa, neste projeto ou sempre, só para o comando exatamente igual.
+        return { effect: 'ask', scopes: ['once', 'session', 'project', 'always'], rulesApply: false };
       case 'model.use':
         return TRAINING_MODELS.includes(target)
           ? { effect: 'ask', scopes: ['project'], rulesApply: false }

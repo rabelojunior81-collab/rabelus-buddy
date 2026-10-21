@@ -514,7 +514,7 @@ function el(tag, attrs, ...kids) {
 const asset = (path) => path;
 // <puras> (sem DOM; o teste avalia este trecho)
 // Quem fala num balão (A2): o Buddy, na execução dele, ou o harness que respondeu (id e nome da lista; sem nome, o id).
-const scopesFor = (action) => (/^Primeira execução de /.test(String(action || '')) || /\brun_command\b/.test(String(action || '')) ? ['once'] : ['once', 'session', 'project', 'always']);
+const scopesFor = (action) => (/^Primeira execução de /.test(String(action || '')) ? ['once'] : ['once', 'session', 'project', 'always']);
 const speakerOf = (runHarness, list) => {
   if (!runHarness) return { kind: 'buddy' };
   const h = (list || []).find((x) => x.id === runHarness);
@@ -1038,8 +1038,8 @@ async function refreshApprovals() {
     el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny', a.action) }, t('console.approvals.deny')),
     ...scopesFor(a.action).map((sc) => el('button', { class: 'btn' + (sc === 'once' ? ' pri' : ''), onclick: () => resolve(a.id, 'approve', a.action, sc) }, SCOPE_LABEL[sc]())))));
 }
-// Escopos do cartão (critério 17): uma vez, nesta conversa, neste projeto (a pasta), sempre. Comando e primeira execução
-// de agente: só uma vez (até o sandbox, critério 13 do M0).
+// Escopos do cartão (critério 17): uma vez, nesta conversa, neste projeto (a pasta), sempre, também para comando (só o
+// comando exatamente igual; decisão do Pai em 2026-10-21). Primeira execução de agente: só uma vez.
 const SCOPE_LABEL = { once: () => t('console.approvals.scope.once'), session: () => t('console.approvals.scope.session'), project: () => t('console.approvals.scope.project'), always: () => t('console.approvals.scope.always') };
 async function resolve(id, decision, action = '', scope = 'once') {
   const firstRunHid = firstRunHarnessOf(action, harnesses);

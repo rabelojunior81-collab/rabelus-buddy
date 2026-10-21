@@ -1,6 +1,6 @@
 # SPEC — M1: Orquestrador e multimodal
 
-**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 3 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste; revisão 2 (critério 16, console sem token na URL) e revisão 3 (critérios 17 e 18, permissões com modos e escopos, e opções dos agentes) decididas pelo Pai em 2026-10-20
+**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 4 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste; revisão 2 (critério 16, console sem token na URL) e revisão 3 (critérios 17 e 18, permissões com modos e escopos, e opções dos agentes) decididas pelo Pai em 2026-10-20; revisão 4 (comando com escopos, no critério 17) decidida pelo Pai em 2026-10-21
 **Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-vs-code-569aca` · **Criada em:** 2026-10-17 · **Decisão de origem:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C, aprovada pelo Pai)
 
 ## Problema e resultado
@@ -139,6 +139,7 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - o `daemon.status` e a mensagem do `rbuddy ui` mostram só o endereço limpo; a página não guarda nem envia o token.
 17. **Permissões com modos e escopos** (decisão do Pai, 2026-10-20; pesquisa ao vivo na ficha de modos de permissão dos agentes):
     - o cartão oferece **Permitir uma vez**, **nesta conversa**, **neste projeto (a pasta de trabalho)**, **sempre** e **Negar**; a escolha vira concessão no escopo certo, e o pedido igual seguinte não pergunta de novo dentro dele;
+    - **comando** também recebe os quatro escopos (revisão 4, decisão do Pai em 2026-10-21), valendo só para o texto exatamente igual do comando: curinga nunca vira padrão, comando parecido ou encadeado pergunta de novo, e regra de permissão continua sem liberar comando (critério 13 do M0);
     - **modos**, escolhidos na caixa de mensagem: **Manual** (padrão: lê dentro da pasta, pergunta para escrever, rodar comando e tudo fora da pasta), **Aceitar edições** (escreve dentro da pasta sem perguntar), **Plano** (só lê e propõe), **Automático** (um classificador decide o que é seguro e pergunta o resto; toda decisão dele fica registrada com o motivo) e **Sem perguntas** (libera tudo naquela conversa, com aviso permanente na tela);
     - em qualquer modo: negação vence permissão; caminhos protegidos (segredos, o git, o histórico do projeto) continuam bloqueados; fora da pasta sempre pergunta, salvo concessão de escopo maior;
     - o modo do Buddy vale para os agentes que ele chama, pela postura de cada um (opção de modo declarada ou configuração de permissão do processo filho).
