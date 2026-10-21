@@ -274,7 +274,9 @@
       "failed": "opções indisponíveis",
       "search": "Buscar…",
       "none": "Nada encontrado",
-      "default": "padrão do agente"
+      "default": "padrão do agente",
+      "free": "gratuito",
+      "freeWarn": "{{name}} é um modelo gratuito: tem fila e limite, pode demorar, ficar mudo ou entregar menos. Para trabalho de verdade, escolha outro no seletor Modelo."
     },
     "perm": {
       "label": "Permissões",

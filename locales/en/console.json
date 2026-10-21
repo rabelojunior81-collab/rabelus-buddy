@@ -274,7 +274,9 @@
       "failed": "options unavailable",
       "search": "Search…",
       "none": "Nothing found",
-      "default": "agent default"
+      "default": "agent default",
+      "free": "free",
+      "freeWarn": "{{name}} is a free model: it has a queue and limits, and may be slow, go silent or deliver less. For real work, pick another one in the Model selector."
     },
     "perm": {
       "label": "Permissions",

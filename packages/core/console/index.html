@@ -432,6 +432,7 @@
           <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
         </div>
         <div id="yoloWarn" class="yolo" hidden></div>
+        <div id="freeWarn" class="yolo" hidden></div>
         <div class="hint"><span data-i18n="console.task.hint"></span><span id="runMsg" class="msg"></span></div>
       </div>
     </div>
@@ -1346,6 +1347,8 @@ const hoptLabel = (o) => {
 };
 // Valor em uso: a escolha guardada, se ainda existir entre as declaradas; senão, o atual do agente.
 const hoptValue = (hid, o) => { const c = hchoiceOf(hid)[o.id]; return c && o.options.some((v) => v.value === c) ? c : o.currentValue; };
+// Modelo gratuito ("free" como palavra no valor ou no nome): fila e limite; o Pai viu travar e entregar mal (2026-10-20/21).
+const isFreeModel = (v) => /(^|[^a-z0-9])free([^a-z0-9]|$)/i.test(v.value + ' ' + v.name);
 async function loadHarnessOptions(hid) {
   hopts[hid] = { state: 'loading' };
   renderHarnessOptions();
@@ -1358,6 +1361,10 @@ function renderHarnessOptions() {
   const h = harnesses.find((x) => x.id === chosen);
   const st = h && hopts[h.id];
   box.hidden = !st;
+  const mo = st && st.state === 'ok' ? st.options.find((o) => o.category === 'model' || o.id === 'model') : null;
+  const mv = mo && mo.options.find((v) => v.value === hoptValue(h.id, mo));
+  $('freeWarn').hidden = !(mv && isFreeModel(mv));
+  $('freeWarn').textContent = $('freeWarn').hidden ? '' : t('console.hopts.freeWarn', { name: mv.name });
   if (!st) return box.replaceChildren();
   if (st.state === 'loading') return box.replaceChildren(el('span', { class: 'pill dim' }, t('console.hopts.loading')));
   if (st.state === 'failed') return box.replaceChildren(el('span', { class: 'pill dim', title: st.reason }, t('console.hopts.failed')));
@@ -1388,7 +1395,7 @@ function openHoptPop(hid, o, anchor) {
     for (const v of hits) {
       if (v.group && v.group !== g) { g = v.group; rows.push(el('div', { class: 'gh' }, g)); }
       rows.push(el('button', { class: 'mrow', role: 'option', 'aria-selected': String(v.value === cur), onclick: () => { setHchoice(hid, o.id, v.value); pop.hidden = true; renderHarnessOptions(); } },
-        el('span', { class: 'tx' }, el('b', {}, v.name), v.name !== v.value ? el('small', {}, v.value) : null)));
+        el('span', { class: 'tx' }, el('b', {}, v.name, isFreeModel(v) ? el('span', { class: 'tag' }, t('console.hopts.free')) : null), v.name !== v.value ? el('small', {}, v.value) : null)));
     }
     list.replaceChildren(...(rows.length ? rows : [el('div', { class: 'empty' }, t('console.hopts.none'))]));
   };
