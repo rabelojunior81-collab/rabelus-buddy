@@ -781,6 +781,96 @@
       },
       "origem": "uso real do Pai, 2026-10-20",
       "evidencia": "docs/registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md"
+    },
+    {
+      "id": "voz-do-buddy",
+      "descricao": "Instrução do Buddy no catálogo pt-BR e en, com a pasta de trabalho e o modelo em uso preenchido a cada chamada; agent.run aceita o idioma; a console manda o idioma",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/voz-do-buddy.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "markdown-na-conversa",
+      "descricao": "Tabela (com e sem barras nas pontas, alinhamentos), citação, linha e link só http/https na conversa; dentro de bloco de código nada é interpretado",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-markdown.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "motivos-legiveis",
+      "descricao": "Motivos da política e das paradas em linguagem comum nos dois idiomas; a linha de parada não mostra o id da execução",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-motivos.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "silencio-do-harness",
+      "descricao": "O andamento guarda o último sinal do agente; com mais de 30 s de silêncio, a tela avisa e oferece Parar",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/silencio-do-harness.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "pilula-depois-da-decisao",
+      "descricao": "Responder o cartão da primeira execução refaz a sonda e atualiza a pílula do agente",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-pilula.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
+    },
+    {
+      "id": "densidade-da-console",
+      "descricao": "Painéis flutuantes até min(360 px, 52% da janela) e 340 px de largura; texto base 13 px; linhas e pílulas compactas",
+      "quem": "maquina",
+      "onde": [
+        "correções da noite (2026-10-20)",
+        "npm test",
+        "CI"
+      ],
+      "mecanismo": {
+        "teste": "packages/core/test/console-densidade.test.ts"
+      },
+      "origem": "uso real do Pai, 2026-10-20 à noite",
+      "evidencia": "docs/registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md"
     }
   ]
 }

@@ -1,6 +1,6 @@
 # SPEC — M1: Orquestrador e multimodal
 
-**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 2 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste; revisão 2 (critério 16, console sem token na URL) decidida pelo Pai em 2026-10-20
+**ID:** 0002-orquestrador-e-multimodal · **Tamanho:** fase · **Revisão:** 3 · **Estado:** aprovada pelo Pai em 2026-10-18 ("1. Aprovo"), com o visual em ajuste; revisão 2 (critério 16, console sem token na URL) e revisão 3 (critérios 17 e 18, permissões com modos e escopos, e opções dos agentes) decididas pelo Pai em 2026-10-20
 **Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-vs-code-569aca` · **Criada em:** 2026-10-17 · **Decisão de origem:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C, aprovada pelo Pai)
 
 ## Problema e resultado
@@ -137,6 +137,12 @@ O M0 entregou um núcleo governado com uma console, mas o agente só conversa co
     - `POST /api/*` pelo cookie só com `Origin` exato da console e corpo JSON; de outra porta do 127.0.0.1, 403 e nada acontece; o cabeçalho `x-rbuddy-token` continua valendo para o cliente local;
     - `rbuddy ui` abre um bilhete de uso único e 60 s (`/entrar?c=`), que vira o mesmo cookie; reusado ou vencido, 401;
     - o `daemon.status` e a mensagem do `rbuddy ui` mostram só o endereço limpo; a página não guarda nem envia o token.
+17. **Permissões com modos e escopos** (decisão do Pai, 2026-10-20; pesquisa ao vivo na ficha de modos de permissão dos agentes):
+    - o cartão oferece **Permitir uma vez**, **nesta conversa**, **neste projeto (a pasta de trabalho)**, **sempre** e **Negar**; a escolha vira concessão no escopo certo, e o pedido igual seguinte não pergunta de novo dentro dele;
+    - **modos**, escolhidos na caixa de mensagem: **Manual** (padrão: lê dentro da pasta, pergunta para escrever, rodar comando e tudo fora da pasta), **Aceitar edições** (escreve dentro da pasta sem perguntar), **Plano** (só lê e propõe), **Automático** (um classificador decide o que é seguro e pergunta o resto; toda decisão dele fica registrada com o motivo) e **Sem perguntas** (libera tudo naquela conversa, com aviso permanente na tela);
+    - em qualquer modo: negação vence permissão; caminhos protegidos (segredos, o git, o histórico do projeto) continuam bloqueados; fora da pasta sempre pergunta, salvo concessão de escopo maior;
+    - o modo do Buddy vale para os agentes que ele chama, pela postura de cada um (opção de modo declarada ou configuração de permissão do processo filho).
+18. **Opções dos agentes** (pesquisa ao vivo na ficha de opções de sessão do ACP): com um agente escolhido, a caixa mostra os seletores que ele declara ao abrir a conversa (modelo, modo, esforço), lidos das opções de sessão do protocolo, inclusive as agrupadas; trocar um seletor usa a troca de opção do protocolo e a tela acompanha os avisos de mudança do agente; o que cada um dos seis agentes declara é medido ao vivo antes de prometer.
 14. **Sessão de TUI:** os protótipos `ink` e `pi-tui` das mesmas telas rodam lado a lado num terminal do Pai, preparados e ensaiados pelo buddy-dev, e a decisão dele fica registrada. Esta é a única exceção ao "nada por terminal", porque a TUI é exatamente o que se avalia.
 
 ## Métricas (registradas)
@@ -179,6 +185,8 @@ Percentual de permissões resolvidas por política e por humano; tempo até o pr
 8. **Visual v4 aprovado** (2026-10-18), com a ressalva aplicada: a **logomarca do Rabelus Lab** (emblema da fênix) ao lado do nome, no lugar do quadrado.
 
 9. **Console sem token na URL** (2026-10-20): "Faça primeiro a console sem token na URL (o token entra uma vez e vira cookie), com teste antes; depois abra o Buddy no navegador in-app e siga para a M1.4." Vira o critério 16. Origem: o token apareceu na saída da ferramenta de navegador no ensaio de 19/10.
+
+10. **Permissões e opções dos agentes** (2026-10-20, à noite): "Perguntar, toda vez, mas conforme a padronização, quero opções… Permitir para a Sessão; Permitir para o Projeto/Pasta e/ou Permitir Sempre"; modos como os do Claude, com um modo YOLO para casos específicos; e o Automático "já vai". Viram os critérios 17 e 18.
 
 ## Dúvidas para o Pai (não bloqueiam a pesquisa nem os testes)
 

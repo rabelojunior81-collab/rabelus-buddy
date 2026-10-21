@@ -10,6 +10,11 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **A voz do Buddy** (2026-10-20). O Buddy se apresenta como Buddy, fala de forma direta e calorosa, responde curto por padrão, diz o modelo que está usando de verdade e segue o idioma escolhido na console (português ou inglês).
+- **Tabelas, citações e links na conversa**: uma tabela em markdown aparece como tabela, e só links http e https viram link.
+- **Aviso de silêncio**: quando um agente passa de 30 segundos sem mandar nada, a tela diz isso e oferece Parar.
+- **Página pública "diário de bordo"**, em português e em inglês, publicada pelo GitHub Pages.
+
 - **O Buddy delega a outro agente** (M1.4, critério 8). Numa tarefa, o Buddy pode passar uma parte a um agente instalado (OpenCode, Codex e os outros que a console encontra) e trazer a resposta. A conversa mostra a quem ele delegou, o que pediu e como terminou. Cada permissão que o agente pedir chega ao Pai com o ícone dele, e Parar encerra também o agente.
 - **Anexar pela console** (M1.3b; com ela, a M1.3 está concluída). Na caixa de mensagem, o Pai anexa uma imagem ou um arquivo pelo 📎, arrastando ou colando. Cada anexo vira uma etiqueta que dá para tirar antes de enviar, e a mensagem enviada mostra o que foi junto. Se quem vai executar não enxerga imagem, a console avisa antes de subir. No ensaio, o Nemotron VL respondeu a cor da imagem anexada pela console.
 - **Imagens e arquivos na conversa, no núcleo** (M1.3a, critério 9). O núcleo aceita imagens (PNG, JPEG, WebP, GIF) e arquivos de texto ou código anexados à mensagem. Eles ficam guardados na pasta de trabalho; o histórico da conversa guarda só a referência, nunca o conteúdo. Cada provedor recebe a imagem no formato dele. Um modelo que não enxerga é pulado, com o motivo, e um agente só recebe a imagem se disser que a aceita. No computador do Pai, o ChatGPT, o Nemotron VL e o OpenCode responderam a cor certa de uma imagem de teste. Anexar pela console chega na próxima parte (M1.3b).
@@ -107,6 +112,10 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 - Superfície open source: licença Apache-2.0, README e guia de contribuição em pt-BR e en, Código de Conduta, política de segurança.
 
 ### Alterado
+
+- **Console mais compacta** (2026-10-20): o seletor de modelo cabe em até 360 px de altura (antes ocupava quase meia tela), com linhas, pílulas e títulos menores.
+- **Motivos em linguagem comum**: a tela diz "Execução parada: você parou", sem o número interno da execução, e os motivos da política aparecem traduzidos.
+- **A pílula do agente se atualiza** logo depois que você responde o cartão da primeira execução.
 
 - **A console não leva mais o token no endereço** (M1.5e, critério 16; decisão do Pai em 2026-10-20). O atalho abre a console por um bilhete de uso único, que vira um cookie protegido, e o endereço fica limpo: `http://127.0.0.1:47321/`. O token não aparece mais na barra do navegador, no histórico, em capturas nem na mensagem do `rbuddy ui`. Um endereço antigo com `?t=` ainda funciona uma vez e volta para o limpo. Fechar o navegador apaga o cookie; para voltar, use o atalho.
 - **Cor do produto e do Buddy Fenix: verde-oliva** (opção B do Pai). A console trocou o verde-água pelo oliva, e o tema claro ganhou contraste: 6,17:1 contra 4,21:1.

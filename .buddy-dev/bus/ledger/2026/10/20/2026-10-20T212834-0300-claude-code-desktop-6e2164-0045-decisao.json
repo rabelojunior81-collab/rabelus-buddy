@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T212834-0300-claude-code-desktop-6e2164-0045",
+  "ts": "2026-10-20T21:28:34-03:00",
+  "utc": "2026-10-21T00:28:34.255Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 45,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "decisao",
+  "summary": "SPEC 0002 revisão 3: critério 17 (permissões: cartão com uma vez, conversa, projeto, sempre e negar; modos Manual, Aceitar edições, Plano, Automático com classificador registrado, Sem perguntas; negação vence; caminhos protegidos; fora da pasta pergunta; o modo vale para os agentes chamados) e critério 18 (opções dos agentes pelas opções de sessão do ACP, inclusive agrupadas, medidas ao vivo antes de prometer). Decisão do Pai de 2026-10-20 à noite.",
+  "refs": [],
+  "data": {}
+}

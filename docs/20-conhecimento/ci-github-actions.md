@@ -11,6 +11,7 @@ A CI roda em todo PR e em push na `main`: testes, lint de nomes, guarda contra e
 | Fato | Fonte | Verificado em |
 |---|---|---|
 | `actions/checkout` mais recente: **v7.0.1** (2026-07-20), commit `3d3c42e5aac5ba805825da76410c181273ba90b1` | API do GitHub, releases e `git/ref/tags` (tier 1) | 2026-10-14 |
+| GitHub Pages (2026-10-20): `actions/configure-pages` **v6.0.0** `45bfe0192ca1faeb007ade9deae92b16b8254a0d`; `actions/upload-pages-artifact` **v5.0.0** `fc324d3547104276b827a68afc52ff2a11cc49c9`; `actions/deploy-pages` **v5.0.1** `368f82528645a54fb793d4d04e342629a3f51346`; usadas em `.github/workflows/pages.yml` | API do GitHub, releases e `git/ref/tags` (tier 1) | 2026-10-20 |
 | `actions/setup-node` mais recente: **v7.1.0** (2026-10-08), commit `949feb2413d6458794dcd2491c4babbbce0c15c1` | idem (tier 1) | 2026-10-14 |
 | `gitleaks` mais recente: **v8.30.1** (2026-03-21), licença **MIT**; asset `gitleaks_8.30.1_linux_x64.tar.gz`, sha256 `551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb` | `gitleaks/gitleaks` releases e checksums (tier 1) | 2026-10-14 |
 | Conta pessoal GitHub Free: **2.000 minutos por mês** para repositórios privados, zerados no início do mês; runners padrão **grátis em repositório público**. Preço por minuto além da cota: Linux 2 núcleos US$ 0,006, Windows US$ 0,010, macOS US$ 0,062 (cerca de 10× o Linux). Sem forma de pagamento válida, a cota esgotada **bloqueia** os jobs | docs.github.com, "GitHub Actions billing" (tier 1) | 2026-10-18 |

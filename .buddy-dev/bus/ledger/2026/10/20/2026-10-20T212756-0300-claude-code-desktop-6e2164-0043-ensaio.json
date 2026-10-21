@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T212756-0300-claude-code-desktop-6e2164-0043",
+  "ts": "2026-10-20T21:27:56-03:00",
+  "utc": "2026-10-21T00:27:56.734Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 43,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "ensaio",
+  "summary": "Ensaio da onda 3 no navegador in-app (núcleo de ensaio 47399, Go real): o Buddy se apresentou como Buddy, disse o modelo real em uso (opencode-go/kimi-k3) e respondeu com tabela desenhada como tabela; seletor de modelo medido em 335x355 px (39% de uma janela de 900 px; antes 420x460). Página pública: sem rolagem horizontal a 375 px nos dois idiomas, links e imagens 200. Achado: código dentro de negrito mostra as crases.",
+  "refs": [],
+  "data": {}
+}

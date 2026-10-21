@@ -64,6 +64,18 @@ Integração: as quatro branches entraram sem conflito; 396 testes verdes; [ensa
 - **Worktrees dentro do repositório.** O `git add -A` os pegou como repositórios embutidos, e o `bd surfaces` lia as cópias. O gancho barrou o commit; a pasta saiu do git e da varredura, com teste.
 - **Missão que para diante de uma decisão é missão bem cortada.** A A4 parou em vez de afrouxar teste.
 
+### Onda 3 (2026-10-20, à noite, concluída): 5 missões em paralelo
+
+| Missão | O que resolve | Conferência |
+|---|---|---|
+| B1 | Tabelas, citação, linha e link seguro na conversa | **refeita**: o primeiro briefing mandava criar uma função que já existia; a missão parou antes de commitar, e o worktree dela foi removido pelo sistema; a segunda rodou com o briefing corrigido |
+| B2 | Motivos em linguagem comum, sem o id da execução | reaproveitou o mapa de motivos que já existia |
+| B3 | Aviso de silêncio do agente, com Parar | um desvio declarado: rodou `git push --dry-run` (sem envio), contra o briefing |
+| B4 | Pílula atualiza depois da decisão no cartão | só por teste de texto; o comportamento entra no próximo ensaio com primeira execução |
+| B5 | Página pública diário de bordo, pt e en | descartou uma captura com o caminho pessoal; QA a 375 px pelo buddy-dev |
+
+Integração sem conflito; 419 testes verdes; [ensaio](../../registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md). **Lição:** o briefing confere o código existente antes de mandar criar; e missão que para sem alterar perde o worktree (relançar, não retomar).
+
 ### Próximas (depois da decisão do Pai sobre a especificação)
 
 - Sistema de permissões com modos e escopos (uma vez, sessão, projeto, sempre; modo sem perguntas).
