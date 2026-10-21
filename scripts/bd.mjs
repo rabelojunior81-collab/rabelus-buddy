@@ -321,6 +321,7 @@ const commands = {
     const prefix = o['dry-run'] ? '(simulação) ' : '';
     for (const n of report.removed) console.log(`  ${prefix}removida: ${n}`);
     for (const a of report.archived) console.log(`  ${prefix}arquivada: ${a.name} → tag ${a.tag} (${a.sha.slice(0, 7)})`);
+    for (const s of report.skipped) console.log(`  ${prefix}pulada: ${s.name} (${s.reason})`);
     for (const b of list.filter((x) => x.action === 'manter')) console.log(`  mantida: ${b.name} (${b.reason})`);
     if (!o['dry-run'] && (report.removed.length || report.archived.length) && currentSession(r)) {
       logEvent(r, { type: 'prune', summary: `${report.removed.length} removida(s), ${report.archived.length} arquivada(s)`, data: report });
