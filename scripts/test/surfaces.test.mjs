@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { indexGaps, staleProposals, stampProblems, statusMainLag, milestoneGaps, syncStatusMain } from '../lib/surfaces.mjs';
+import { startSession, currentSession } from '../lib/bus.mjs';
 
 function repo(files) {
   const r = mkdtempSync(join(tmpdir(), 'buddy-surf-'));
@@ -161,4 +162,40 @@ test('cópias de worktrees de subagentes (.claude/worktrees) não são documento
   const g = staleProposals(r);
   assert.equal(g.length, 1, g.join('\n'));
   assert.match(g[0], /^docs\/50-planos\/ROADMAP\.md/);
+});
+
+// Lacuna de 2026-10-20: o status-main trocava a linha da main e o carimbo, mas deixava o **Por:** com a sessão
+// anterior, como se outra sessão tivesse escrito o estado. O Por passa a ser o id da sessão aberta deste worktree.
+test('status-main: com sessão aberta, o **Por:** do carimbo vira o id da sessão', () => {
+  const git = (r, ...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: r, encoding: 'utf8' }).trim();
+  const r = repo({ '.buddy-dev/STATUS.md': '# STATUS\n\n**Atualizado em:** 2026-10-15T01:00:00-03:00 (`bd now --verify`) · **Por:** sessao-velha\n\n| Item | Estado |\n|---|---|\n| `main` | `aaaaaaa` (Merge #1: velho), CI verde |\n| PRs mergeados | #1–#1, por merge commit |\n' });
+  commit(r, '2026-10-15T01:00:00-03:00');
+  git(r, 'checkout', '-q', '-b', 'feat/x');
+  commit(r, '2026-10-15T02:00:00-03:00', 'trabalho');
+  git(r, 'checkout', '-q', 'main');
+  git(r, 'merge', '-q', '--no-ff', '-m', 'Merge #62: docs: teste do Por (CI verde)', 'feat/x');
+  startSession(r, { harness: 'sessao-nova', model: 'modelo-teste', scope: 'teste do Por' });
+  const id = currentSession(r).id;
+  const warnings = [];
+  assert.equal(syncStatusMain(r, { base: 'HEAD', warnings }), true);
+  const s = readFileSync(join(r, '.buddy-dev/STATUS.md'), 'utf8');
+  assert.match(s, new RegExp(`\\*\\*Por:\\*\\* ${id}\\n`));
+  assert.doesNotMatch(s, /sessao-velha/);
+  assert.deepEqual(warnings, [], 'com sessão aberta não há aviso');
+});
+
+test('status-main: sem sessão aberta, o **Por:** antigo fica e o comando avisa que não foi trocado', () => {
+  const git = (r, ...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: r, encoding: 'utf8' }).trim();
+  const r = repo({ '.buddy-dev/STATUS.md': '# STATUS\n\n**Atualizado em:** 2026-10-15T01:00:00-03:00 (`bd now --verify`) · **Por:** sessao-velha\n\n| Item | Estado |\n|---|---|\n| `main` | `aaaaaaa` (Merge #1: velho), CI verde |\n| PRs mergeados | #1–#1, por merge commit |\n' });
+  commit(r, '2026-10-15T01:00:00-03:00');
+  git(r, 'checkout', '-q', '-b', 'feat/x');
+  commit(r, '2026-10-15T02:00:00-03:00', 'trabalho');
+  git(r, 'checkout', '-q', 'main');
+  git(r, 'merge', '-q', '--no-ff', '-m', 'Merge #63: docs: teste sem sessão (CI verde)', 'feat/x');
+  assert.equal(currentSession(r), null);
+  const warnings = [];
+  assert.equal(syncStatusMain(r, { base: 'HEAD', warnings }), true, 'a linha da main e a contagem mudam mesmo sem sessão');
+  const s = readFileSync(join(r, '.buddy-dev/STATUS.md'), 'utf8');
+  assert.match(s, /\*\*Por:\*\* sessao-velha\n/, 'o Por antigo permanece');
+  assert.deepEqual(warnings, ['sem sessão aberta: o Por não foi trocado']);
 });
