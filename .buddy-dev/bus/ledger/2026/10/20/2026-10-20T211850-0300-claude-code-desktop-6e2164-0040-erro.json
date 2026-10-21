@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T211850-0300-claude-code-desktop-6e2164-0040",
+  "ts": "2026-10-20T21:18:50-03:00",
+  "utc": "2026-10-21T00:18:50.574Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 40,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "erro",
+  "summary": "Briefing da B1 errado: pedi para criar mdBlocks, que já existe com contrato fixado em teste; a missão parou antes de commitar e ofereceu opções. Escolhi manter o contrato e só acrescentar tabela, citação e linha. Lição para o piloto: o briefing confere o código existente antes de mandar criar.",
+  "refs": [],
+  "data": {}
+}
