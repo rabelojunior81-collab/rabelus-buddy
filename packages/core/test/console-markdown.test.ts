@@ -106,9 +106,9 @@ test('código dentro do negrito vira elemento code, não crase crua (missão C2)
   const { inline } = loaded();
   const ns = inline('**`x`**').nodes;
   assert.equal(ns.length, 1);
-  assert.equal(ns[0].tag, 'strong');
-  assert.equal(ns[0].kids!.length, 1);
-  const c = ns[0].kids![0] as Node;
+  assert.equal(ns[0]!.tag, 'strong');
+  assert.equal(ns[0]!.kids!.length, 1);
+  const c = ns[0]!.kids![0] as Node;
   assert.equal(c.tag, 'code');
   assert.deepEqual(c.kids, ['x']);
 });
@@ -117,8 +117,8 @@ test('link dentro do negrito vira âncora dentro do strong (missão C2)', () => 
   const { inline } = loaded();
   const ns = inline('**negrito com [link](https://a.b)**').nodes;
   assert.equal(ns.length, 1);
-  assert.equal(ns[0].tag, 'strong');
-  const a = (ns[0].kids as Node[]).find((k) => k.tag === 'a');
+  assert.equal(ns[0]!.tag, 'strong');
+  const a = (ns[0]!.kids as Node[]).find((k) => k.tag === 'a');
   assert.ok(a, 'há uma âncora dentro do negrito');
   assert.equal(a.attrs!.href, 'https://a.b');
   assert.deepEqual(a.kids, ['link']);
@@ -128,7 +128,7 @@ test('negrito simples continua como strong com o mesmo texto (missão C2)', () =
   const { inline } = loaded();
   const ns = inline('**simples**').nodes;
   assert.equal(ns.length, 1);
-  assert.equal(ns[0].tag, 'strong');
-  const kids = ns[0].kids as unknown[];
+  assert.equal(ns[0]!.tag, 'strong');
+  const kids = ns[0]!.kids as unknown[];
   assert.equal(kids.map((k) => (typeof k === 'string' ? k : (k as Node).text)).join(''), 'simples');
 });

@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { EventLog } from './log.ts';
 import { DomainError, ERR, type Approval, type Domain } from './domain.ts';
-import type { Policy, Tool } from './policy.ts';
+import type { Policy, Scope, Tool } from './policy.ts';
 import { BudgetError, costOf, type Budget, type Usage } from './budget.ts';
 import { PRICES, type Price } from './prices.ts';
 import type { FsTools } from './tools/fs.ts';
@@ -56,6 +56,8 @@ export interface AgentOptions {
   inbox?: (run: string) => string[];
   // Visão por rota (M1.3, critério 9): mensagem com imagem pula a rota que não enxerga. Ausente: todas enxergam.
   vision?: (provider: string, model: string) => boolean;
+  // Escopo escolhido no cartão (critério 17): uma vez, nesta conversa, neste projeto ou sempre.
+  scopeOf?: (approval: string) => Scope;
   // Delegação (M1.4, critério 8): o núcleo diz quais harnesses estão prontos e roda o turno delegado.
   delegate?: Delegate;
 }
@@ -417,7 +419,7 @@ export class Agent {
     if (!r.ok && r.reason === 'needsApproval') {
       const decision = await this.approve(session, `${tool} ${target}`);
       if (decision === 'approve') {
-        policy.grant('once', { tool, pattern: target }, { session });
+        policy.grant((this.lastApproval && this.o.scopeOf?.(this.lastApproval)) || 'once', { tool, pattern: target }, { session });
         r = exec(false);
       } else r = { ok: false, reason: 'deniedByHuman' };
     }
@@ -445,10 +447,12 @@ export class Agent {
     return r;
   }
 
+  private lastApproval: string | undefined;
   private async approve(session: string, action: string): Promise<'approve' | 'deny'> {
     const { domain } = this.o;
     // Pendente da mesma sessão e ação (sobreviveu a uma queda): é a mesma pergunta, não se repete.
     const ap = domain.pendingApprovals().find((x) => x.session === session && x.action === action) ?? domain.requestApproval(session, action);
+    this.lastApproval = ap.id;
     if (!this.o.awaitApproval) return 'deny';
     const decision = await this.o.awaitApproval(ap);
     if (domain.getApproval(ap.id).state === 'pending') domain.resolveApproval(ap.id, decision);

@@ -86,9 +86,10 @@ test('escopos: conversa vale só na conversa; projeto só na pasta em que foi da
   mkdirSync(other, { recursive: true });
   const p2 = new Policy(log, { workspace: other });
   assert.equal(p2.decide(w('docs/x.md', 's9'), tty).effect, 'ask', 'projeto não vaza para outra pasta');
-  p1.grant('always', { tool: 'run_command', pattern: 'npm test' }, { session: 's1' });
-  assert.equal(p2.decide(cmd('npm test', 's7'), tty).effect, 'allow', 'sempre: qualquer pasta, comando exato');
-  assert.equal(p2.decide(cmd('npm test -- --watch', 's7'), tty).effect, 'ask', 'comando: só o exato');
+  p1.grant('always', { tool: 'write_file', pattern: 'notas/**' }, { session: 's1' });
+  assert.equal(p2.decide(w('notas/a.md', 's7'), tty).effect, 'allow', 'sempre: qualquer pasta');
+  p1.grant('session', { tool: 'run_command', pattern: 'npm test' }, { session: 's1' });
+  assert.equal(p1.decide(cmd('npm test', 's1'), tty).effect, 'ask', 'comando: só uma vez, até o sandbox (critério 13 do M0)');
 });
 
 test('contrato: agent.run aceita o modo; approval.resolve aceita o escopo', () => {

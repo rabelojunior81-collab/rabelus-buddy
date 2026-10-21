@@ -10,7 +10,7 @@ import { openDatabase } from './db.ts';
 import { EventLog } from './log.ts';
 import { Domain, DomainError } from './domain.ts';
 import { Budget, defaultWindows, type WindowDef } from './budget.ts';
-import { Policy, type Scope, type Tool } from './policy.ts';
+import { Policy, PERM_MODES, type PermMode, type Scope, type Tool } from './policy.ts';
 import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
@@ -89,6 +89,9 @@ export async function startOwner(home: string): Promise<Owner> {
   });
 
   // Aprovação pelo IPC: o agente espera até alguém (CLI, outro terminal) resolver.
+  // Escopo escolhido no cartão (critério 17), guardado por aprovação; quem pediu o transforma em concessão.
+  const approvalScope = new Map<string, Scope>();
+  const permModeOf = (v: unknown): PermMode => (PERM_MODES.includes(v as PermMode) ? (v as PermMode) : 'manual');
   const awaitApproval = async (a: { id: string }): Promise<'approve' | 'deny'> => {
     for (;;) {
       const st = domain.getApproval(a.id).state;
@@ -157,7 +160,7 @@ export async function startOwner(home: string): Promise<Owner> {
   const agentFor = (p: Record<string, unknown>, signal?: AbortSignal): Agent => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
-    const policy = new Policy(log, { workspace });
+    const policy = new Policy(log, { workspace, mode: permModeOf(p.permMode) });
     return new Agent({
       log, domain, policy, budget,
       fs: new FsTools(policy, { workspace }),
@@ -170,7 +173,8 @@ export async function startOwner(home: string): Promise<Owner> {
       onProgress,
       inbox: (run: string) => inboxes.get(run)?.splice(0) ?? [],
       vision: visionOf(),
-      delegate: delegateFor(workspace, p.interactive === true, signal),
+      delegate: delegateFor(workspace, p.interactive === true, signal, permModeOf(p.permMode)),
+      scopeOf: (id: string) => approvalScope.get(id) ?? 'once',
     });
   };
   // Visão por rota (M1.3, critério 9): o catálogo medido diz por modelo; sem ele, a tabela medida da SPEC.
@@ -251,8 +255,8 @@ export async function startOwner(home: string): Promise<Owner> {
   type HarnessRef = { id: string; name: string; spec: LaunchSpec };
   // Um turno com o harness, com a postura, as permissões pelo núcleo e o andamento no log da execução. Serve à
   // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
-  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string> }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
-    const policy = new Policy(log, { workspace: o.workspace });
+  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string>; permMode?: PermMode }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+    const policy = new Policy(log, { workspace: o.workspace, mode: o.permMode ?? 'manual' });
     let reasoning = '';
     const titles = new Map<string, string>();
     const kinds = new Map<string, string>();
@@ -298,12 +302,17 @@ export async function startOwner(home: string): Promise<Owner> {
         // Fora da pasta de trabalho, com o Pai na conversa, a política pergunta em vez de negar sozinha (A3).
         // Sem o Pai, continua negando. O caminho protegido continua negado sem perguntar.
         const outside = d.effect === 'deny' && d.reason === 'fora do workspace';
-        const askIt = d.effect === 'ask' || (outside && o.interactive);
-        let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' ? 'allow' : 'deny';
+        // Fora da pasta, uma concessão exata dada antes no cartão (conversa, projeto ou sempre) libera sem perguntar.
+        const outsideGranted = outside && policy.grantedOutside(session, tool, raw);
+        const askIt = !outsideGranted && (d.effect === 'ask' || (outside && o.interactive));
+        let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' || outsideGranted ? 'allow' : 'deny';
         if (askIt) {
           const where = outside ? ` (fora da pasta de trabalho)` : '';
           const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${outside ? raw : target}${where}`);
           decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
+          // Escopo do cartão (critério 17): além de uma vez, vira concessão; comando e caminho de fora, só o exato.
+          const sc = approvalScope.get(ap.id);
+          if (decision === 'approve' && sc && sc !== 'once') policy.grant(sc, { tool, pattern: outside ? raw : target }, { session });
         }
         const pick = decision === 'deny'
           ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
@@ -340,7 +349,7 @@ export async function startOwner(home: string): Promise<Owner> {
       const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
       const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
       try {
-        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)), configValues: harnessOptionsOf(p.harnessOptions) });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)), configValues: harnessOptionsOf(p.harnessOptions), permMode: permModeOf(p.permMode) });
         domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
         if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
         if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
@@ -372,7 +381,7 @@ export async function startOwner(home: string): Promise<Owner> {
   // Delegação do Buddy (SPEC 0002, critério 8): a ferramenta `delegate` abre um turno no harness dentro da execução
   // do Buddy. As permissões passam pelo núcleo como na conversa; parar o Buddy cancela o harness (session/cancel).
   // O resultado volta ao modelo; o efeito com identidade fica com o Agent.
-  const delegateFor = (workspace: string, interactive: boolean, signal?: AbortSignal): Delegate => ({
+  const delegateFor = (workspace: string, interactive: boolean, signal?: AbortSignal, permMode: PermMode = 'manual'): Delegate => ({
     // Cópia local do registro, sem rede: a lista entra em toda execução do Buddy e não pode atrasá-la (o teste
     // de direcionar pegou o atraso). A delegação em si atualiza o registro pelo harnessFor.
     list: async () => {
@@ -387,7 +396,7 @@ export async function startOwner(home: string): Promise<Owner> {
       log.append(session, 'harness.delegated', { run, id: h.id, phase: 'start', task: a.task.slice(0, 2000) });
       const end = (stopReason: string) => log.append(session, 'harness.delegated', { run, id: h.id, phase: 'end', stopReason });
       try {
-        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task: a.task, workspace, interactive, signal: signal ?? new AbortController().signal, liveText: false });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task: a.task, workspace, interactive, signal: signal ?? new AbortController().signal, liveText: false, permMode });
         if (reasoning) log.append(session, 'harness.reasoning', { run, id: h.id, text: reasoning.slice(0, 20_000) });
         end(r.stopReason);
         const text = r.text.slice(0, 20_000);
@@ -493,7 +502,7 @@ export async function startOwner(home: string): Promise<Owner> {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR', ...(p.harnessOptions ? { harnessOptions: harnessOptionsOf(p.harnessOptions) } : {}) });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR', permMode: permModeOf(p.permMode), ...(p.harnessOptions ? { harnessOptions: harnessOptionsOf(p.harnessOptions) } : {}) });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
@@ -703,6 +712,7 @@ export async function startOwner(home: string): Promise<Owner> {
     // Aprovação de primeira execução de harness: roda a sonda na hora e devolve o resultado, para o Pai ver o efeito
     // do clique (achado do Pai em 2026-10-18: "não houve nenhuma entrega ou mudança").
     'approval.resolve': async (p) => {
+      if (p.decision === 'approve' && typeof p.scope === 'string') approvalScope.set(String(p.id), p.scope as Scope);
       const a = domain.resolveApproval(String(p.id), p.decision === 'approve' ? 'approve' : 'deny');
       const req = log.events('harness').filter((e) => e.kind === 'harness.approval.requested' && (e.payload as { approval?: string }).approval === a.id).at(-1);
       const hid = (req?.payload as { id?: string } | undefined)?.id;
