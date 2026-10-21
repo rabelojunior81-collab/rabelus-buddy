@@ -10,6 +10,11 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Console nova validada pelo Pai** (M1.5 e M1.5d, 2026-10-21): o ChatGPT com esforço alto, o OpenCode com o modelo escolhido e duas mensagens seguidas, e a escrita aprovada "Nesta conversa" sem novo cartão.
+- **Comando também com "nesta conversa", "neste projeto" e "sempre"** (2026-10-21, decisão do Pai). A aprovação vale só para o comando exatamente igual: um comando parecido ou encadeado pergunta de novo, e nenhuma regra libera comando.
+- **Modelo gratuito sinalizado.** No seletor de Modelo de um agente, os modelos gratuitos levam a marca "gratuito"; com um deles escolhido, a caixa avisa que ele tem fila e limite e pode demorar, ficar mudo ou entregar menos.
+- **Inglês nos cartões e nos motivos.** O texto dos cartões de aprovação e os motivos dos modos de permissão seguem o idioma escolhido na console.
+
 - **Escolher o modelo, o esforço e o modo do agente** (2026-10-20). Com um agente escolhido (OpenCode, Codex…), a caixa mostra os seletores que ele declara, com busca no modelo, e a escolha fica guardada por agente. Isso resolveu a trava do OpenCode, que usava sozinho um modelo gratuito.
 - **Permissões com modos e escopos.** O cartão aprova uma vez, nesta conversa, neste projeto ou sempre. A pílula Permissões escolhe entre Manual, Aceitar edições, Plano, Automático (libera escrita na pasta e comando só de leitura) e Sem perguntas (com aviso fixo). Em qualquer modo, a negação vence, as áreas protegidas ficam bloqueadas e fora da pasta pergunta.
 

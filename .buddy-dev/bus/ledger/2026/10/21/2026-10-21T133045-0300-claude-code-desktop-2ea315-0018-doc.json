@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133045-0300-claude-code-desktop-2ea315-0018",
+  "ts": "2026-10-21T13:30:45-03:00",
+  "utc": "2026-10-21T16:30:45.885Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 18,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "doc",
+  "summary": "plano do M1 (M1.5 e M1.5d validadas pelo Pai; decisões de 2026-10-21; M1.6 adiado pelo Pai) e plano macro (M1 marcado como entregue item a item, medição por tarefa em andamento, TUI dependendo do Pai) sincronizados; 2cc4ea6",
+  "refs": [],
+  "data": {}
+}
