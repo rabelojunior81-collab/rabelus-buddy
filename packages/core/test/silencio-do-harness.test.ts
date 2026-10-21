@@ -76,3 +76,9 @@ test('chaves do aviso de silêncio existem nos dois catálogos (B3)', () => {
     assert.equal(typeof cat.console.harness.silentStop, 'string', `${lang}: silentStop`);
   }
 });
+
+test('página: esperando a aprovação do Pai, o silêncio é dele, não do agente: sem aviso (ensaio de 2026-10-20)', () => {
+  const { silentFor } = pure<{ silentFor: (l: unknown, now: number) => number }>(['silentFor']);
+  assert.equal(silentFor({ route: 'acp:opencode', lastEventAt: 0, phase: 'approval' }, 45000), 0);
+  assert.equal(silentFor({ route: 'acp:opencode', lastEventAt: 0, phase: 'thinking' }, 45000), 45);
+});
