@@ -604,6 +604,13 @@ function approvalHarness(action, hs) {
   const h = hs.find((x) => x.name === m[1]);
   return h ? h.id : null;
 }
+// Primeira execução de um harness (SPEC 0002, critério 4): a ação começa por "Primeira execução de <nome>: ". Devolve o id.
+function firstRunHarnessOf(action, hs) {
+  const m = /^Primeira execução de (.+?): /.exec(String(action));
+  if (!m) return null;
+  const h = hs.find((x) => x.name === m[1]);
+  return h ? h.id : null;
+}
 // Resultado da sonda (M1.2a/b) na pílula: a palavra do catálogo e o tom.
 const PROBE = { pronto: 'ok', login: 'warn', aprovacao: 'warn', checking: '', negado: 'bad', falhou: 'bad', indisponivel: 'bad' };
 function probeView(r) {
@@ -913,10 +920,11 @@ async function refreshApprovals() {
     who(a),
     el('span', { class: 'a' }, a.action),
     el('span', { class: 's' }, a.session === session ? '' : a.session),
-    el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny')),
-    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')))));
+    el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny', a.action) }, t('console.approvals.deny')),
+    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve', a.action) }, t('console.approvals.approve')))));
 }
-async function resolve(id, decision) {
+async function resolve(id, decision, action = '') {
+  const firstRunHid = firstRunHarnessOf(action, harnesses);
   if (decision === 'approve') { approvalNote = t('console.approvals.harness.running'); await refreshApprovals(); }
   try {
     const r = await api('approval.resolve', { id, decision });
@@ -924,6 +932,13 @@ async function resolve(id, decision) {
     const HARNESS_NOTE = { pronto: 'console.approvals.harness.pronto', login: 'console.approvals.harness.login', negado: 'console.approvals.harness.negado', falhou: 'console.approvals.harness.falhou' };
     approvalNote = h ? t(HARNESS_NOTE[h.state] || HARNESS_NOTE.falhou, { name: h.name || h.id, version: (h.agent && h.agent.version) || '', reason: h.reason || '' }) : '';
   } catch (e) { approvalNote = ''; /* já resolvida */ }
+  // Respondida a primeira execução de um harness, a pílula não pode seguir em "AGUARDA APROVAÇÃO" (B4): refaz a sonda dele.
+  if (firstRunHid) {
+    try { probes[firstRunHid] = await api('harness.probe', { id: firstRunHid }); }
+    catch (e) { probes[firstRunHid] = { state: 'falhou', reason: e.message }; }
+    renderHarnessPill();
+    if (!$('hPop').hidden) renderHarnessList();
+  }
   await refreshApprovals();
 }
 
@@ -1172,6 +1187,8 @@ function hPop(open) {
 async function chooseHarness(id) {
   chosen = harnesses.some((h) => h.id === id) ? id : 'buddy';
   store.set('rb.harness', chosen);
+  // Escolher outro harness encerra o aviso de "pedido refeito" (B4).
+  if (approvalNote === t('console.harness.firstRun.reviewed')) approvalNote = '';
   renderHarnessPill();
   renderHome();
   if (chosen === 'buddy') return;
