@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T213117-0300-claude-code-desktop-6e2164-0061",
+  "ts": "2026-10-20T21:31:17-03:00",
+  "utc": "2026-10-21T00:31:17.800Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 61,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "feat",
+  "summary": "Registro de integração da missão B4 (Haiku, onda 3), com todos os commits gerados pelo git (8891bcb,1c9271d); conferida pelo buddy-dev: diff lido, testes da missão e suíte inteira verdes (419).",
+  "refs": [
+    "8891bcb",
+    "1c9271d"
+  ],
+  "data": {}
+}

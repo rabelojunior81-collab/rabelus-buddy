@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T213120-0300-claude-code-desktop-6e2164-0063",
+  "ts": "2026-10-20T21:31:20-03:00",
+  "utc": "2026-10-21T00:31:20.540Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 63,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "erro",
+  "summary": "Falha repetida (onda 2 e onda 3): registro de integração sem os hashes das missões; o bd post pegou as duas vezes. Mecanismo: o registro de integração passa a ser gerado do git (git log base..branch) por missão, e o plano do piloto descreve o comando.",
+  "refs": [],
+  "data": {}
+}
