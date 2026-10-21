@@ -27,6 +27,10 @@
 //   FAKE_ACP_NO_IMAGE=1: não declara promptCapabilities.image.
 //   FAKE_ACP_ECHO_BLOCKS=1: o texto final conta os blocos recebidos no prompt ("Blocos: text,image:image/png:<tamanho>.").
 //   FAKE_ACP_DENY_ENDS=1: a recusa encerra o turno com stopReason "cancelled", como nos harnesses reais.
+// Opções do agente (critério 18):
+//   FAKE_ACP_OPTIONS=1: session/new declara model (agrupado: OpenCode Go e Ollama), effort (thought_level) e mode (build/plan);
+//                       set_config_option troca o valor, e o texto final conta " Opções: model=…, effort=…, mode=…."
+//   FAKE_ACP_GROUPED_MODE=1: a opção mode vem AGRUPADA e contém read-only (postura do Codex com grupos).
 // B3 (harness mudo):
 //   FAKE_ACP_PROMPT=silent: session/prompt não manda nenhuma atualização; espera o session/cancel (laço de 50 ms)
 //                           e só então responde "cancelled".
@@ -40,6 +44,16 @@ const gap = Number(process.env.FAKE_ACP_GAP ?? 0);
 const cancelled = new Set();
 const cwds = new Map();
 let currentMode = 'agent';
+const opts = { model: 'go/free', effort: 'default', mode: 'build' };
+const optionList = () => [
+  { id: 'model', name: 'Model', category: 'model', type: 'select', currentValue: opts.model, options: [
+    { group: 'go', name: 'OpenCode Go', options: [{ value: 'go/free', name: 'Free' }, { value: 'go/pro', name: 'Pro' }] },
+    { group: 'ollama', name: 'Ollama', options: [{ value: 'ol/kimi', name: 'Kimi' }] },
+  ] },
+  { id: 'effort', name: 'Effort', category: 'thought_level', type: 'select', currentValue: opts.effort, options: [{ value: 'low', name: 'Low' }, { value: 'high', name: 'High' }, { value: 'default', name: 'Default' }] },
+  { id: 'mode', name: 'Mode', category: 'mode', type: 'select', currentValue: opts.mode, options: [{ value: 'build', name: 'Build' }, { value: 'plan', name: 'Plan' }] },
+];
+const groupedModeOption = () => ({ id: 'mode', name: 'Mode', category: 'mode', type: 'select', currentValue: currentMode, options: [{ group: 'safe', name: 'Safe', options: [{ value: 'read-only', name: 'Read-only' }] }, { group: 'auto', name: 'Auto', options: [{ value: 'agent', name: 'Auto review' }] }] });
 const modeOption = () => ({ id: 'mode', name: 'Mode', category: 'mode', type: 'select', currentValue: currentMode, options: [{ value: 'read-only', name: 'Read-only' }, { value: 'agent', name: 'Auto review' }] });
 const sleep = (ms) => new Promise((ok) => setTimeout(ok, ms));
 
@@ -63,11 +77,13 @@ else {
       if (mode === 'auth' && !(process.env.FAKE_ACP_AUTH_FILE && existsSync(process.env.FAKE_ACP_AUTH_FILE))) throw RequestError.authRequired();
       const sessionId = `fake-${process.pid}`;
       cwds.set(sessionId, params.cwd);
-      return { sessionId, ...(process.env.FAKE_ACP_MODES ? { configOptions: [modeOption()] } : {}) };
+      const configOptions = process.env.FAKE_ACP_OPTIONS ? optionList() : process.env.FAKE_ACP_GROUPED_MODE ? [groupedModeOption()] : process.env.FAKE_ACP_MODES ? [modeOption()] : null;
+      return { sessionId, ...(configOptions ? { configOptions } : {}) };
     })
     .onRequest('session/set_config_option', ({ params }) => {
+      if (process.env.FAKE_ACP_OPTIONS) { opts[params.configId] = String(params.value); return { configOptions: optionList() }; }
       if (params.configId === 'mode') currentMode = String(params.value);
-      return { configOptions: [modeOption()] };
+      return { configOptions: [process.env.FAKE_ACP_GROUPED_MODE ? groupedModeOption() : modeOption()] };
     })
     .onRequest('session/close', () => ({}))
     .onNotification('session/cancel', ({ params }) => { cancelled.add(params.sessionId); })
@@ -104,7 +120,8 @@ else {
         await send({ sessionUpdate: 'tool_call', toolCallId: 't3', title: 'Escrevendo saida.txt', kind: 'edit', status: 'pending', locations: [{ path: join(cwds.get(sessionId) ?? '.', 'saida.txt') }] });
         await send({ sessionUpdate: 'tool_call_update', toolCallId: 't3', status: 'completed' });
       }
-      if (process.env.FAKE_ACP_MODES) extra += ` Modo: ${currentMode}.`;
+      if (process.env.FAKE_ACP_MODES || process.env.FAKE_ACP_GROUPED_MODE) extra += ` Modo: ${currentMode}.`;
+      if (process.env.FAKE_ACP_OPTIONS) extra += ` Opções: model=${opts.model}, effort=${opts.effort}, mode=${opts.mode}.`;
       if (process.env.FAKE_ACP_ECHO_BLOCKS) extra += ` Blocos: ${params.prompt.map((b) => b.type + (b.type === 'image' ? `:${b.mimeType}:${b.data.length}` : '')).join(',')}.`;
       if (process.env.FAKE_ACP_ECHO_CONFIG) extra += ` Config: ${/"edit":"ask"/.test(process.env.OPENCODE_CONFIG_CONTENT ?? '') ? 'ask' : 'nenhuma'}.`;
       await send({ sessionUpdate: 'agent_message_chunk', content: { type: 'text', text: 'Olá, ' } });
