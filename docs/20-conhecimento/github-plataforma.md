@@ -4,7 +4,7 @@
 
 ## O que importa para o buddy
 
-**Atualização de 2026-10-20: o repositório ficou público.** Rulesets e proteção de branch passam a estar disponíveis no Free (a proposta de proteger a `main` está com o Pai). Medido ao tornar público: a varredura de segredos e o bloqueio de push com segredo vieram **desligados** (ligados pelo buddy-dev pela API), ao contrário do que uma pesquisa de subagente afirmou. Antes disso: enquanto o repositório for privado numa conta Free, a plataforma não bloqueia push direto na `main`: o fluxo branch → PR → merge é garantido por convenção, CI e pela regra de que só se mergeia com CI verde (ADR 0003). Ao tornar público, ativar rulesets e *private vulnerability reporting*.
+**Atualização de 2026-10-20: o repositório ficou público.** Rulesets e proteção de branch passam a estar disponíveis no Free (a `main` ficou protegida em 2026-10-20 por um ruleset ativo: sem apagar, sem force-push, só por PR com merge commit e os checks de testes e de segredos; aprovado pelo Pai). Medido ao tornar público: a varredura de segredos e o bloqueio de push com segredo vieram **desligados** (ligados pelo buddy-dev pela API), ao contrário do que uma pesquisa de subagente afirmou. Antes disso: enquanto o repositório for privado numa conta Free, a plataforma não bloqueia push direto na `main`: o fluxo branch → PR → merge é garantido por convenção, CI e pela regra de que só se mergeia com CI verde (ADR 0003). Ao tornar público, ativar rulesets e *private vulnerability reporting*.
 
 ## Fatos verificados
 

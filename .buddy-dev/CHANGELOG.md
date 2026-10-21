@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0036 · 2026-10-16T002655-0300 · claude-code-vs-code-6265a4 · ferramenta
-
-bd merge (CI verde e bd post limpo → merge commit → prune), bd prune (mergeadas removidas, abandonadas arquivadas em tag anotada), bd validacoes (registro de 23 validações com dono, lugar e mecanismo; o que aguarda o Pai aparece em toda sessão). GitHub: auto-delete de branches e só merge commit. 88 testes.
-
 ### #0037 · 2026-10-16T003647-0300 · claude-code-vs-code-6265a4 · ferramenta
 
 M0.1 fundação: packages/client (i18n) e packages/cli (rabelus-buddy/rbuddy com --help, --version, --lang pelo catálogo), TypeScript executado pelo Node, tsc --noEmit e matriz 3 SOs × Node 24/26 na CI, dependências i18next/typescript/@types/node instaladas pelo protocolo. O portão de tipos pegou 2 erros reais que os testes não pegavam.
@@ -207,3 +203,7 @@ Noite de 2026-10-20: repositório público com a segurança ligada; voz do Buddy
 ### #0085 · 2026-10-20T213809-0300 · claude-code-desktop-6e2164 · processo
 
 Sessão claude-code-desktop-6e2164: decisões do Pai (explicar em texto, permissões com modos e escopos, paralelismo, repositório público, token trocado); piloto em três ondas (13 missões Haiku); PRs #78 e #79; repositório público com a segurança ligada; página pública no Pages; voz do Buddy; SPEC 0002 rev. 3. Post: O Que o Ensaio Não Negava.
+
+### #0086 · 2026-10-20T222205-0300 · claude-code-desktop-e8da5a · feat
+
+Cobrança do Pai (20/10, 22h): causa da trava do OpenCode (modelo gratuito) achada e resolvida pelos seletores do agente; opções do agente na caixa; permissões com cinco modos e quatro escopos; main protegida no GitHub; prune com worktrees, negrito com código e o Por do STATUS (missões C1–C3); validação da console desbloqueada.

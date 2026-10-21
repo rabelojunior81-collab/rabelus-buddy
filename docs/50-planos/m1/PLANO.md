@@ -1,7 +1,7 @@
 # Plano — M1: Orquestrador e multimodal
 
 **SPEC:** [0002-orquestrador-e-multimodal](../../40-specs/0002-orquestrador-e-multimodal/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-18, com a SPEC) · **Decisão:** [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md)
-**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-20T21:29:53-03:00
+**Branch(es):** uma por sub-fase, `feat/m1-N-<slug>` · **Atualizado em:** 2026-10-20T22:21:42-03:00
 
 ## Objetivo
 
@@ -48,6 +48,7 @@ O marco fecha com o ensaio real com o Pai e com a sessão de decisão da TUI.
   - [ ] **M1.5d Ensaio completo** no navegador real, a 375 e a 1440 px, nos dois temas, com capturas; depois, a validação do Pai pela console. **Ensaio feito em 2026-10-19**: as larguras e os temas nos ensaios da M1.5a a M1.5c; o roteiro do Pai no ambiente dele, com o ChatGPT em "Muito alto" e o OpenCode com escrita aprovada ([registro](../../registros/2026-10-19T121109-0300-ensaio-da-console-nova-no-ambiente-do-pai-m1-5d/README.md)). **Aguarda a validação do Pai** (`validar-console-nova-m1-5`).
   - [x] **M1.5e Console sem token na URL** (critério 16; decisão do Pai em 2026-10-20, antes da M1.4; **feita em 2026-10-20**, ensaiada no navegador in-app: [registro](../../registros/2026-10-20T020509-0300-ensaio-da-console-sem-token-na-url-m1-5e/README.md)): o token entra uma vez e vira cookie `HttpOnly`/`SameSite=Strict`, derivado dele; bilhete de uso único para o `rbuddy ui`; POST pelo cookie só com `Origin` exato; `daemon.status` com o endereço limpo. Teste antes; ensaio no navegador in-app.
 - [x] **Correções do uso real do Pai** (2026-10-20, fora da ordem; [ensaio](../../registros/2026-10-20T102150-0300-ensaio-das-correcoes-do-uso-real-do-pai-onda-2/README.md)): rever a negação da primeira execução; fora da pasta, perguntar; a tela diz quem negou; o balão diz quem falou. **Reaberto:** escolher modelo, modo e esforço de um agente (a etapa do seletor de modelo entregou só a parte do Buddy) e o sistema de permissões com modos e escopos; a especificação já foi revisada (critérios 17 e 18, decisão do Pai de 2026-10-20 à noite) e a implementação é a próxima.
+  - [x] **Opções do agente e permissões** (critérios 18 e 17, 2026-10-20 às 22h; [ensaio](../../registros/2026-10-20T222040-0300-ensaio-das-opcoes-do-agente-e-das-permissoes-com-o-opencode-real/README.md)): seletores do agente na caixa, aplicados antes da tarefa; cinco modos de permissão e quatro escopos no cartão; a trava do OpenCode resolvida pela causa (modelo gratuito).
   - [x] **Correções da noite** (2026-10-20; [ensaio](../../registros/2026-10-20T212757-0300-ensaio-da-onda-3-voz-tabela-densidade-e-pagina/README.md)): voz do Buddy em pt e en, tabelas, densidade compacta, aviso de silêncio, motivos legíveis, pílula atualizada, página pública.
 - [ ] **M1.6 Ensaio real e demonstração com o Pai** (critério 12); métricas; retrospectiva
 - [ ] **M1.7 Sessão de TUI com o Pai:** `ink` × `pi-tui`, diferenças visuais, decisão registrada (critério 14; ADR 0016)

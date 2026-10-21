@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-20T215725-0300-claude-code-desktop-e8da5a-0009",
+  "ts": "2026-10-20T21:57:25-03:00",
+  "utc": "2026-10-21T00:57:25.015Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 9,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "fix",
+  "summary": "Integração da missão C3 (Haiku): teste 8e232dc e código 1f19d63, commitado pelo buddy-dev (o worktree estava barrado pelo STATUS atrasado, não pela mudança).",
+  "refs": [
+    "8e232dc",
+    "1f19d63"
+  ],
+  "data": {}
+}
