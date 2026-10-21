@@ -237,6 +237,12 @@
   .pill select { min-width: 0; max-width: 200px; height: 22px; border: 0; background: transparent; color: var(--text); font-size: 12px; font-weight: 600; outline: 0; }
   .pill select option { background: var(--bg); color: var(--text); }
   .spacer { flex: 1; }
+  /* opções do agente (critério 18): seletores que o harness declara, na mesma linha das pílulas */
+  .hopts { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; min-width: 0; }
+  .hopts[hidden] { display: none; }
+  .pill .plab { color: var(--faint); font-weight: 500; }
+  .pill.dim { color: var(--faint); font-weight: 500; padding-right: 9px; }
+  .hopts .pill .nm { max-width: 180px; }
   /* pílula de harness (M1.5b): quem executa, com ícone e o estado da sonda */
   button.pill { padding-right: 9px; color: var(--text); }
   button.pill[aria-expanded="true"] { border-color: oklch(76% .13 118 / .6); box-shadow: 0 0 0 3px oklch(70% .13 120 / .14); }
@@ -396,6 +402,7 @@
         <textarea id="task" data-i18n-placeholder="console.task.placeholder"></textarea>
         <div class="bar">
           <button id="hBtn" class="pill" aria-haspopup="listbox" aria-expanded="false" aria-controls="hPop" data-i18n-title="console.harness.pick"></button>
+          <span id="hOpts" class="hopts" hidden></span>
           <label class="pill" id="effortPill" for="effort"><span class="plab" data-i18n="console.task.effort">Esforço</span>
             <select id="effort">
               <option value="default" data-i18n="console.effort.default"></option>
@@ -1233,8 +1240,10 @@ function renderHarnessPill() {
   const v = pr ? probeView(pr) : null;
   $('hBtn').replaceChildren(...[h ? harnessIcon(h) : buddyMark(), el('span', { class: 'nm' }, h ? h.name : 'Buddy'),
     v && el('span', { class: 'state ' + v.tone }, t(v.key)), el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾')].filter(Boolean));
-  // Harness usa os próprios modelos e esforço: as pílulas de modelo e esforço são do Buddy.
+  // Harness usa os próprios modelos e esforço: as pílulas de modelo e esforço são do Buddy; as do harness vêm dele (critério 18).
   $('mBtn').hidden = Boolean(h);
+  $('effortPill').hidden = Boolean(h);
+  renderHarnessOptions();
   $('task').setAttribute('placeholder', h ? t('console.harness.placeholder', { name: h.name }) : t('console.task.placeholder'));
   renderModelPill();
 }
@@ -1290,6 +1299,77 @@ async function chooseHarness(id) {
   renderHarnessPill();
   if (!$('hPop').hidden) renderHarnessList();
   void refreshApprovals(); // primeira execução pendente aparece já como aprovação
+  if (probes[hid].state === 'pronto') void loadHarnessOptions(hid);
+}
+
+// ---------- Opções do agente (critério 18; cobrança do Pai em 2026-10-20) ----------
+// O agente declara os seletores ao abrir a sessão (modelo, esforço, modo); o núcleo os lê (harness.options) e a escolha
+// do Pai, guardada por agente, vai junto de cada tarefa (harnessOptions). Lista longa (modelo) abre com busca.
+const hopts = {}; // id → { state: 'loading'|'ok'|'failed', options, reason }
+const hchoiceOf = (hid) => { try { return JSON.parse(store.get('rb.hopts.' + hid, '{}')) || {}; } catch { return {}; } };
+const setHchoice = (hid, id, value) => { const c = hchoiceOf(hid); c[id] = value; store.set('rb.hopts.' + hid, JSON.stringify(c)); };
+const hoptLabel = (o) => {
+  const key = { model: 'console.hopts.model', thought_level: 'console.hopts.effort', mode: 'console.hopts.mode' }[o.category || ''] || ({ model: 'console.hopts.model', effort: 'console.hopts.effort', mode: 'console.hopts.mode' })[o.id];
+  return key ? t(key) : o.name;
+};
+// Valor em uso: a escolha guardada, se ainda existir entre as declaradas; senão, o atual do agente.
+const hoptValue = (hid, o) => { const c = hchoiceOf(hid)[o.id]; return c && o.options.some((v) => v.value === c) ? c : o.currentValue; };
+async function loadHarnessOptions(hid) {
+  hopts[hid] = { state: 'loading' };
+  renderHarnessOptions();
+  try { const r = await api('harness.options', { id: hid }); hopts[hid] = { state: 'ok', options: r.options || [] }; }
+  catch (e) { hopts[hid] = { state: 'failed', reason: e.message }; }
+  renderHarnessOptions();
+}
+function renderHarnessOptions() {
+  const box = $('hOpts');
+  const h = harnesses.find((x) => x.id === chosen);
+  const st = h && hopts[h.id];
+  box.hidden = !st;
+  if (!st) return box.replaceChildren();
+  if (st.state === 'loading') return box.replaceChildren(el('span', { class: 'pill dim' }, t('console.hopts.loading')));
+  if (st.state === 'failed') return box.replaceChildren(el('span', { class: 'pill dim', title: st.reason }, t('console.hopts.failed')));
+  box.replaceChildren(...st.options.map((o) => {
+    const cur = hoptValue(h.id, o);
+    const curName = (o.options.find((v) => v.value === cur) || {}).name || cur || t('console.hopts.default');
+    if (o.options.length > 12) {
+      return el('button', { class: 'pill', 'aria-haspopup': 'dialog', title: hoptLabel(o) + ': ' + curName, onclick: (ev) => openHoptPop(h.id, o, ev.currentTarget) },
+        el('span', { class: 'plab' }, hoptLabel(o)), el('span', { class: 'nm' }, curName), el('span', { class: 'chev', 'aria-hidden': 'true' }, '▾'));
+    }
+    const sel = el('select', { onchange: (ev) => { setHchoice(h.id, o.id, ev.target.value); renderHarnessOptions(); } },
+      ...o.options.map((v) => el('option', { value: v.value, ...(v.value === cur ? { selected: '' } : {}) }, v.name)));
+    return el('label', { class: 'pill' }, el('span', { class: 'plab' }, hoptLabel(o)), sel);
+  }));
+}
+// Lista com busca para opção longa (o modelo do OpenCode tem centenas): agrupada pelo provedor que o agente declara.
+function openHoptPop(hid, o, anchor) {
+  let pop = $('hoPop');
+  if (!pop) { pop = el('div', { id: 'hoPop', class: 'pop', role: 'dialog' }); document.body.append(pop); }
+  const input = el('input', { type: 'search', placeholder: t('console.hopts.search'), 'aria-label': t('console.hopts.search') });
+  const list = el('div', { class: 'plist', role: 'listbox' });
+  const cur = hoptValue(hid, o);
+  const draw = () => {
+    const q = input.value.trim().toLowerCase();
+    const hits = o.options.filter((v) => !q || (v.value + ' ' + v.name + ' ' + (v.group || '')).toLowerCase().includes(q)).slice(0, 300);
+    let g = null;
+    const rows = [];
+    for (const v of hits) {
+      if (v.group && v.group !== g) { g = v.group; rows.push(el('div', { class: 'gh' }, g)); }
+      rows.push(el('button', { class: 'mrow', role: 'option', 'aria-selected': String(v.value === cur), onclick: () => { setHchoice(hid, o.id, v.value); pop.hidden = true; renderHarnessOptions(); } },
+        el('span', { class: 'tx' }, el('b', {}, v.name), v.name !== v.value ? el('small', {}, v.value) : null)));
+    }
+    list.replaceChildren(...(rows.length ? rows : [el('div', { class: 'empty' }, t('console.hopts.none'))]));
+  };
+  input.addEventListener('input', draw);
+  input.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') pop.hidden = true; });
+  pop.replaceChildren(el('div', { class: 'ptitle' }, hoptLabel(o)), el('div', { class: 'srch' }, input), list);
+  draw();
+  pop.hidden = false;
+  const r = anchor.getBoundingClientRect();
+  pop.style.bottom = (innerHeight - r.top + 8) + 'px';
+  pop.style.left = Math.max(8, Math.min(r.left, innerWidth - pop.offsetWidth - 8)) + 'px';
+  input.focus();
+  setTimeout(() => document.addEventListener('pointerdown', function close(ev) { if (!pop.contains(ev.target)) { pop.hidden = true; document.removeEventListener('pointerdown', close); } }), 0);
 }
 // Entrar (M1.2e): o núcleo pede ao harness que faça o login; ele abre o navegador e guarda a própria credencial.
 async function loginHarness(id, method) {
@@ -1366,7 +1446,12 @@ $('run').addEventListener('click', async () => {
   // Anexos já guardados na conversa (M1.3b): vão pelos hashes.
   if (pending.length) params.attachments = pending.map((a) => a.hash);
   // Harness escolhido (M1.5b): a tarefa vai a ele, com os modelos e o esforço dele; senão, o Buddy com os provedores.
-  if (chosen !== 'buddy') params.harness = chosen;
+  if (chosen !== 'buddy') {
+    params.harness = chosen;
+    // Opções do agente escolhidas pelo Pai (critério 18): só as que ele declara, com o valor em uso.
+    const st = hopts[chosen];
+    if (st && st.state === 'ok' && st.options.length) params.harnessOptions = Object.fromEntries(st.options.map((o) => [o.id, hoptValue(chosen, o)]).filter(([, v]) => v));
+  }
   else {
     params.effort = $('effort').value;
     if (picked) params.route = picked;

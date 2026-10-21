@@ -259,6 +259,16 @@
       "monthly": "monthly",
       "ok": "{{percent}}% used",
       "blocked": "{{percent}}% · blocked until {{until}}"
+    },
+    "hopts": {
+      "model": "Model",
+      "effort": "Effort",
+      "mode": "Mode",
+      "loading": "reading options…",
+      "failed": "options unavailable",
+      "search": "Search…",
+      "none": "Nothing found",
+      "default": "agent default"
     }
   }
 }

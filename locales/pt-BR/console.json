@@ -259,6 +259,16 @@
       "monthly": "mensal",
       "ok": "{{percent}}% usado",
       "blocked": "{{percent}}% · bloqueado até {{until}}"
+    },
+    "hopts": {
+      "model": "Modelo",
+      "effort": "Esforço",
+      "mode": "Modo",
+      "loading": "lendo as opções…",
+      "failed": "opções indisponíveis",
+      "search": "Buscar…",
+      "none": "Nada encontrado",
+      "default": "padrão do agente"
     }
   }
 }
