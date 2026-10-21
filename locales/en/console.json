@@ -61,6 +61,12 @@
         "login": "{{name}}: needs a login before talking.",
         "falhou": "{{name}}: did not respond ({{reason}}).",
         "negado": "{{name}}: denied; nothing was run."
+      },
+      "scope": {
+        "once": "Once",
+        "session": "This conversation",
+        "project": "This project",
+        "always": "Always"
       }
     },
     "providers": {
@@ -269,6 +275,15 @@
       "search": "Search…",
       "none": "Nothing found",
       "default": "agent default"
+    },
+    "perm": {
+      "label": "Permissions",
+      "manual": "Manual",
+      "acceptEdits": "Accept edits",
+      "plan": "Plan",
+      "auto": "Automatic",
+      "yolo": "No questions",
+      "yoloWarn": "No-questions mode: inside the working folder, everything runs without asking. Outside the folder it still asks, and protected areas stay blocked."
     }
   }
 }

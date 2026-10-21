@@ -61,6 +61,12 @@
         "login": "{{name}}: precisa de login antes de conversar.",
         "falhou": "{{name}}: não respondeu ({{reason}}).",
         "negado": "{{name}}: negado; nada foi executado."
+      },
+      "scope": {
+        "once": "Uma vez",
+        "session": "Nesta conversa",
+        "project": "Neste projeto",
+        "always": "Sempre"
       }
     },
     "providers": {
@@ -269,6 +275,15 @@
       "search": "Buscar…",
       "none": "Nada encontrado",
       "default": "padrão do agente"
+    },
+    "perm": {
+      "label": "Permissões",
+      "manual": "Manual",
+      "acceptEdits": "Aceitar edições",
+      "plan": "Plano",
+      "auto": "Automático",
+      "yolo": "Sem perguntas",
+      "yoloWarn": "Modo sem perguntas: dentro da pasta de trabalho, tudo roda sem pedir. Fora da pasta continua perguntando, e as áreas protegidas continuam bloqueadas."
     }
   }
 }

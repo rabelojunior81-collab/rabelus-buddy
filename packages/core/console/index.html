@@ -241,6 +241,9 @@
   .hopts { display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; min-width: 0; }
   .hopts[hidden] { display: none; }
   .pill .plab { color: var(--faint); font-weight: 500; }
+  .pill.warnpill { border-color: color-mix(in oklch, var(--warn) 60%, transparent); color: var(--warn); }
+  .yolo { margin-top: 5px; padding: 4px 8px; border: 1px solid color-mix(in oklch, var(--warn) 50%, transparent); color: var(--warn); font-size: 11.5px; }
+  .yolo[hidden] { display: none; }
   .pill.dim { color: var(--faint); font-weight: 500; padding-right: 9px; }
   .hopts .pill .nm { max-width: 180px; }
   /* pílula de harness (M1.5b): quem executa, com ícone e o estado da sonda */
@@ -403,6 +406,14 @@
         <div class="bar">
           <button id="hBtn" class="pill" aria-haspopup="listbox" aria-expanded="false" aria-controls="hPop" data-i18n-title="console.harness.pick"></button>
           <span id="hOpts" class="hopts" hidden></span>
+          <label class="pill" id="permPill" for="permMode"><span class="plab" data-i18n="console.perm.label">Permissões</span>
+            <select id="permMode">
+              <option value="manual" data-i18n="console.perm.manual"></option>
+              <option value="acceptEdits" data-i18n="console.perm.acceptEdits"></option>
+              <option value="plan" data-i18n="console.perm.plan"></option>
+              <option value="auto" data-i18n="console.perm.auto"></option>
+              <option value="yolo" data-i18n="console.perm.yolo"></option>
+            </select></label>
           <label class="pill" id="effortPill" for="effort"><span class="plab" data-i18n="console.task.effort">Esforço</span>
             <select id="effort">
               <option value="default" data-i18n="console.effort.default"></option>
@@ -417,6 +428,7 @@
           <button id="stop" class="stop" hidden data-i18n="console.task.stop">Parar</button>
           <button id="run" class="send" data-i18n-aria="console.task.run">↑</button>
         </div>
+        <div id="yoloWarn" class="yolo" hidden></div>
         <div class="hint"><span data-i18n="console.task.hint"></span><span id="runMsg" class="msg"></span></div>
       </div>
     </div>
@@ -499,6 +511,7 @@ function el(tag, attrs, ...kids) {
 const asset = (path) => path;
 // <puras> (sem DOM; o teste avalia este trecho)
 // Quem fala num balão (A2): o Buddy, na execução dele, ou o harness que respondeu (id e nome da lista; sem nome, o id).
+const scopesFor = (action) => (/^Primeira execução de /.test(String(action || '')) || /\brun_command\b/.test(String(action || '')) ? ['once'] : ['once', 'session', 'project', 'always']);
 const speakerOf = (runHarness, list) => {
   if (!runHarness) return { kind: 'buddy' };
   const h = (list || []).find((x) => x.id === runHarness);
@@ -1018,13 +1031,16 @@ async function refreshApprovals() {
     el('span', { class: 'a' }, a.action),
     el('span', { class: 's' }, a.session === session ? '' : a.session),
     el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny', a.action) }, t('console.approvals.deny')),
-    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve', a.action) }, t('console.approvals.approve')))));
+    ...scopesFor(a.action).map((sc) => el('button', { class: 'btn' + (sc === 'once' ? ' pri' : ''), onclick: () => resolve(a.id, 'approve', a.action, sc) }, SCOPE_LABEL[sc]())))));
 }
-async function resolve(id, decision, action = '') {
+// Escopos do cartão (critério 17): uma vez, nesta conversa, neste projeto (a pasta), sempre. Comando e primeira execução
+// de agente: só uma vez (até o sandbox, critério 13 do M0).
+const SCOPE_LABEL = { once: () => t('console.approvals.scope.once'), session: () => t('console.approvals.scope.session'), project: () => t('console.approvals.scope.project'), always: () => t('console.approvals.scope.always') };
+async function resolve(id, decision, action = '', scope = 'once') {
   const firstRunHid = firstRunHarnessOf(action, harnesses);
   if (decision === 'approve') { approvalNote = t('console.approvals.harness.running'); await refreshApprovals(); }
   try {
-    const r = await api('approval.resolve', { id, decision });
+    const r = await api('approval.resolve', { id, decision, ...(decision === 'approve' && scope !== 'once' ? { scope } : {}) });
     const h = r && r.harness;
     const HARNESS_NOTE = { pronto: 'console.approvals.harness.pronto', login: 'console.approvals.harness.login', negado: 'console.approvals.harness.negado', falhou: 'console.approvals.harness.falhou' };
     approvalNote = h ? t(HARNESS_NOTE[h.state] || HARNESS_NOTE.falhou, { name: h.name || h.id, version: (h.agent && h.agent.version) || '', reason: h.reason || '' }) : '';
@@ -1302,6 +1318,17 @@ async function chooseHarness(id) {
   if (probes[hid].state === 'pronto') void loadHarnessOptions(hid);
 }
 
+// ---------- Modo de permissão (critério 17) ----------
+function renderPermMode() {
+  const v = $('permMode').value;
+  $('permPill').classList.toggle('warnpill', v === 'yolo');
+  $('yoloWarn').hidden = v !== 'yolo';
+  $('yoloWarn').textContent = v === 'yolo' ? t('console.perm.yoloWarn') : '';
+}
+$('permMode').value = store.get('rb.permMode', 'manual');
+$('permMode').addEventListener('change', () => { store.set('rb.permMode', $('permMode').value); renderPermMode(); });
+renderPermMode();
+
 // ---------- Opções do agente (critério 18; cobrança do Pai em 2026-10-20) ----------
 // O agente declara os seletores ao abrir a sessão (modelo, esforço, modo); o núcleo os lê (harness.options) e a escolha
 // do Pai, guardada por agente, vai junto de cada tarefa (harnessOptions). Lista longa (modelo) abre com busca.
@@ -1459,6 +1486,8 @@ $('run').addEventListener('click', async () => {
   if (cont) params.continueFrom = lastRun;
   // Idioma da console (Pai, 2026-10-20: camada de inglês sob o app inteiro): o Buddy fala nele.
   params.lang = lang;
+  // Modo de permissão (critério 17): vale para o Buddy e para o agente escolhido.
+  params.permMode = $('permMode').value;
   $('run').disabled = true;
   try {
     const r = await api('agent.run', params);
