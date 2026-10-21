@@ -747,19 +747,26 @@ function inline(text) {
   const f = document.createDocumentFragment();
   // O LaTeX sai do texto corrido, nunca de dentro do código.
   const plain = String(text).split(/(`[^`\n]+`)/).map((x) => (/^`[^`]+`$/.test(x) ? x : delatex(x))).join('');
+  for (const node of spans(plain, true)) f.append(node);
+  return f;
+}
+// Desenha um trecho já sem LaTeX: negrito, código e link. O conteúdo do negrito é sempre mais curto que o trecho
+// que o contém (sem os **), e dentro do negrito não se abre outro negrito: a recursão termina (missão C2).
+function spans(s, allowBold) {
+  const out = [];
   // Link (missão B1): só http(s) vira âncora; qualquer outro esquema (javascript:, data:) fica como o texto digitado.
   const SAFE_URL = /^https?:\/\/\S+$/i;
-  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/)) {
-    if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
-    else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
+  for (const part of s.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/)) {
+    if (allowBold && /^\*\*[^*]+\*\*$/.test(part)) out.push(el('strong', {}, ...spans(part.slice(2, -2), false)));
+    else if (/^`[^`]+`$/.test(part)) out.push(el('code', {}, part.slice(1, -1)));
     else if (/^\[[^\]\n]+\]\([^)\s]+\)$/.test(part)) {
       const m = /^\[([^\]\n]+)\]\(([^)\s]+)\)$/.exec(part);
-      if (SAFE_URL.test(m[2])) f.append(el('a', { href: m[2], target: '_blank', rel: 'noopener noreferrer' }, m[1]));
-      else f.append(document.createTextNode(part));
+      if (SAFE_URL.test(m[2])) out.push(el('a', { href: m[2], target: '_blank', rel: 'noopener noreferrer' }, m[1]));
+      else out.push(document.createTextNode(part));
     }
-    else if (part) f.append(document.createTextNode(part));
+    else if (part) out.push(document.createTextNode(part));
   }
-  return f;
+  return out;
 }
 function rich(text) {
   const f = document.createDocumentFragment();
