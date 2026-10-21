@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222317-0300-claude-code-desktop-e8da5a-0033",
+  "ts": "2026-10-20T22:23:17-03:00",
+  "utc": "2026-10-21T01:23:17.607Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 33,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/opencode-opcoes-permissoes",
+  "type": "feat",
+  "summary": "Registro atrasado de 8f6487c: testes vermelhos das permissões com modos e escopos.",
+  "refs": [
+    "8f6487c"
+  ],
+  "data": {}
+}
