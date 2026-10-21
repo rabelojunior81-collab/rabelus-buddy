@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222839-0300-claude-code-desktop-e8da5a-0039",
+  "ts": "2026-10-20T22:28:39-03:00",
+  "utc": "2026-10-21T01:28:39.842Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 39,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "processo",
+  "summary": "Núcleo do Pai reiniciado com a main 28d03f1 (opções do agente, permissões com modos e escopos). Worktrees das missões C removidos (junções primeiro) e branches arquivadas como tags archive/worktree-agent-*.",
+  "refs": [],
+  "data": {}
+}

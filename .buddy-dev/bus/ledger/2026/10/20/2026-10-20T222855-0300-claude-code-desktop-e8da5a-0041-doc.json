@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T222855-0300-claude-code-desktop-e8da5a-0041",
+  "ts": "2026-10-20T22:28:55-03:00",
+  "utc": "2026-10-21T01:28:55.845Z",
+  "session": "claude-code-desktop-e8da5a",
+  "seq": 41,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-e8da5a",
+  "type": "doc",
+  "summary": "Diário de 2026-10-20, seção da sessão e8da5a (cobrança do Pai, causa da trava do OpenCode, opções do agente, permissões, main protegida, erros e lição).",
+  "refs": [],
+  "data": {}
+}

@@ -232,3 +232,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0036-#0036
 
 1. **Em 2026-10-16, nasceu o `bd merge`: o aprovado entra na hora, com CI verde.** Em 2026-10-20, o Pai mandou "resolva de uma vez", e eu entreguei as opções do agente e as permissões só no papel, com propostas de "sessão nova" em cartões que ele nem via. O OpenCode continuava travando, e eu tinha tratado o sintoma (um aviso de silêncio) sem procurar a causa (o modelo gratuito que ele usava sozinho). → Quando o Pai manda resolver, resolver é implementar e ensaiar com o produto real, não especificar e propor. Sintoma tratado não é falha resolvida: a pergunta é sempre "por que ele trava?", até a causa aparecer no que o próprio agente declara.
+
+## lote #0037-#0037
+
+1. **Em 2026-10-16, a fundação do M0 já pedia que tudo fosse conferido em três sistemas e duas versões de Node, pela CI.** Em 2026-10-20, eu mesmo registrei passos com tipos ("teste", "ensaio", "fix") que a minha própria verificação não conta, e achei que estava registrando. → A ferramenta tem um vocabulário, e quem a usa precisa falar a língua dela. Antes de confiar que um registro valeu, a saída do `bd post` diz se valeu; e o tipo certo de um passo de código é "feat" ou "correcao", não o nome que me parece natural.
