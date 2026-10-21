@@ -236,3 +236,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0037-#0037
 
 1. **Em 2026-10-16, a fundação do M0 já pedia que tudo fosse conferido em três sistemas e duas versões de Node, pela CI.** Em 2026-10-20, eu mesmo registrei passos com tipos ("teste", "ensaio", "fix") que a minha própria verificação não conta, e achei que estava registrando. → A ferramenta tem um vocabulário, e quem a usa precisa falar a língua dela. Antes de confiar que um registro valeu, a saída do `bd post` diz se valeu; e o tipo certo de um passo de código é "feat" ou "correcao", não o nome que me parece natural.
+
+## lote #0038-#0039
+
+1. **Em 2026-10-16, o M0.2 provou com mil comandos concorrentes que o log de eventos não tem buraco nem registro órfão.** Em 2026-10-21, três registros meus no barramento citaram commits que não existiam: eu registrava antes, e o commit vinha depois e era barrado pela autoverificação. No mesmo dia, rodei só os testes da console antes de seguir, e a suíte inteira pegou a falha que eu tinha deixado (uma chave de catálogo montada sem declarar os valores). → Registro e commit são uma transação: o registro do commit vai depois do commit confirmado, encadeado, nunca antes. E "passou" é da suíte inteira, não do pedaço que eu acho que foi afetado.

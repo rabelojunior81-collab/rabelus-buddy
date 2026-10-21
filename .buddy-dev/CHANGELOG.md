@@ -8,14 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0038 · 2026-10-16T004022-0300 · claude-code-vs-code-6265a4 · processo
-
-Sessão claude-code-vs-code-6265a4: ADR 0016 (PR #21); bd merge, bd prune, bd validacoes e GitHub com auto-delete e só merge commit (PR #22, 21 branches podadas, spike arquivado em tag); M0.1 fundação do código (PR #23, matriz 3 SOs × Node 24/26 verde). Post: Nenhuma Branch Sobrevive ao Merge.
-
-### #0039 · 2026-10-16T010554-0300 · claude-code-vs-code-fe93fb · ferramenta
-
-M0.2: log de eventos em SQLite com projeções reconstruíveis, dono único com JSON-RPC por named pipe/socket Unix, cliente IPC, rbuddy daemon start|status|stop. Critérios 1–3 da SPEC 0001 com teste (2 CLIs × 1.000 comandos sem SQLITE_BUSY e sem buraco).
-
 ### #0040 · 2026-10-16T011421-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.3: execuções, efeitos com identidade e aprovações como eventos; retomada após kill -9 (critérios 4–6); rbuddy approvals/approve/deny. O teste do critério 3 achou um bug (evento de domínio malformado projetava id undefined); corrigido no código, com asserção nova.
@@ -207,3 +199,11 @@ Cobrança do Pai (20/10, 22h): causa da trava do OpenCode (modelo gratuito) acha
 ### #0087 · 2026-10-20T223001-0300 · claude-code-desktop-e8da5a · processo
 
 Sessão claude-code-desktop-e8da5a: cobrança do Pai atendida (causa da trava do OpenCode, opções do agente, permissões com modos e escopos, main protegida, missões C1–C3); PR #81. Post: O Sintoma e a Causa.
+
+### #0088 · 2026-10-21T133708-0300 · claude-code-desktop-2ea315 · feat
+
+Pai validou a console nova (M1.5) nos três casos; comando ganhou os quatro escopos, só para o comando idêntico (SPEC 0002 rev. 4); modelo gratuito marcado no seletor do agente, com aviso; camada de inglês nos motivos dos modos e nos cartões; M1.6 adiado pelo Pai; rascunho da SPEC 0003 (M2) com a pesquisa ao vivo
+
+### #0089 · 2026-10-21T133709-0300 · claude-code-desktop-2ea315 · correcao
+
+Três registros saíram antes de commits barrados pela autoverificação, citando o hash anterior; corrigidos por registros que citam o hash certo. Lição: o registro do commit vai encadeado depois do commit (&&), nunca antes

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133636-0300-claude-code-desktop-2ea315-0027",
+  "ts": "2026-10-21T13:36:36-03:00",
+  "utc": "2026-10-21T16:36:36.474Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 27,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "doc",
+  "summary": "rascunho da SPEC 0003 (M2, execução isolada): spike das duas bibliotecas no Windows do Pai e na CI, camada de execução no núcleo, agente de fora contido, rede por proxy com cartão, sem prompt dentro da pasta com contenção confirmada, preparo pela console, worktree por sessão; pendência do Pai spec-0003-e-dependencias-do-spike com explicação; 2cf2075",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-21T133742-0300-claude-code-desktop-2ea315-0029",
+  "ts": "2026-10-21T13:37:42-03:00",
+  "utc": "2026-10-21T16:37:42.039Z",
+  "session": "claude-code-desktop-2ea315",
+  "seq": 29,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/comando-com-escopos",
+  "type": "claim",
+  "summary": ".buddy-dev/diario/2026-10-21.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-21T17:07:42.039Z",
+    "tookOverFrom": null
+  }
+}
