@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T103249-0300-claude-code-desktop-6e2164-0032",
+  "ts": "2026-10-20T10:32:49-03:00",
+  "utc": "2026-10-20T13:32:49.703Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 32,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "processo",
+  "summary": "Núcleo do Pai reiniciado com a main 4a70a01 (correções do uso real): estava ocioso; novo pid conferido; o cookie da aba do Pai continua válido (o token não mudou desde a troca).",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T210915-0300-claude-code-desktop-6e2164-0037",
+  "ts": "2026-10-20T21:09:15-03:00",
+  "utc": "2026-10-21T00:09:15.283Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 37,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/onda-3-publico-voz-e-compacto",
+  "type": "processo",
+  "summary": "Repositório tornado público (decisão A do Pai). Varredura de segredos e bloqueio de push estavam desligados (a pesquisa W4 dizia que ligam sozinhos: errado); ligados, com o canal privado de vulnerabilidade e as correções do Dependabot. Commits futuros com o endereço anônimo do GitHub (config local).",
+  "refs": [],
+  "data": {}
+}

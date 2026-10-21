@@ -220,3 +220,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0033-#0033
 
 1. **Em 2026-10-15, o Pai aprovou a primeira especificação, com a regra "aprovado é mergeado na hora".** Em 2026-10-20, o Pai usou a console por conta própria e quebrou o produto nos dois lugares que tocou: negou um agente e não havia volta; aprovou comandos, e uma leitura que ele nunca viu foi negada. Meus ensaios só cobriam o caminho em que tudo é aprovado. → Ensaio que só aprova prova metade do produto. Todo ensaio passa a incluir negar, rever, sair da pasta e parar, nos agentes que existem, antes de pedir qualquer validação ao Pai; e uma etapa só se declara feita com tudo o que a especificação dela promete, ou com a lacuna escrita em todas as superfícies.
+
+## lote #0034-#0034
+
+1. **Em 2026-10-15, decidimos compor o Pi em vez de forkar, porque reaproveitar o que existe custa menos do que reescrever.** Em 2026-10-20, mandei um subagente criar uma função de markdown que já existia, com o formato fixado em teste. Ele parou certo, e o worktree dele se perdeu; a missão teve de ser refeita. → Antes de mandar alguém construir, eu leio o que já existe. Um briefing que pede "crie" precisa da prova de que a coisa não existe; senão o pedido certo é "acrescente".

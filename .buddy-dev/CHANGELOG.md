@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0034 · 2026-10-15T172109-0300 · claude-code-vs-code-7ebb05 · processo
-
-Sessão claude-code-vs-code-7ebb05: SPEC 0001 aprovada e mergeada (PR #17), branches locais mergeadas removidas, ADR 0015, ficha do Pi com recomendação de compor no M1 (não forkar). Post: Forkar Não É Economizar.
-
 ### #0035 · 2026-10-16T002021-0300 · claude-code-vs-code-6265a4 · decisao
 
 ADR 0016: Pi por composição (agente plugável no M1, com extensão de governança), sem fork; TUI em avaliação (ink × pi-tui, com referências visuais ao Pai no momento pertinente); M0 sem TUI. SPEC 0001 rev. 4; pi-tui e ink no registro como proposta.
@@ -207,3 +203,7 @@ Sessão claude-code-desktop-d0610a: posse no Claude Code Desktop (#74), console 
 ### #0083 · 2026-10-20T102255-0300 · claude-code-desktop-6e2164 · feat
 
 Piloto de paralelismo, ondas 1 e 2: 4 pesquisas (3 fichas) e 4 correções do uso real do Pai por subagentes Haiku em worktrees, integradas e ensaiadas no navegador in-app (rever negação, fora da pasta pergunta, quem negou, quem fala, regra explicativa no bd); token da console trocado; decisões do Pai na MEMORY e no AGENTS; bd surfaces ignora os worktrees.
+
+### #0084 · 2026-10-20T213024-0300 · claude-code-desktop-6e2164 · feat
+
+Noite de 2026-10-20: repositório público com a segurança ligada; voz do Buddy em pt e en; tabelas; console compacta com trava; aviso de silêncio; motivos legíveis; pílula atualizada; página pública e workflow do Pages; SPEC 0002 rev. 3 (permissões com Automático, opções dos agentes); diagnóstico do OpenCode. Onda 3 do piloto (5 missões Haiku).

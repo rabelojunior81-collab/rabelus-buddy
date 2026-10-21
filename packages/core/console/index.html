@@ -123,7 +123,7 @@
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { height: 100%; }
-  body { margin: 0; overflow: hidden; color: var(--text); font: 14px/1.55 var(--font); -webkit-font-smoothing: antialiased; background-color: var(--bg);
+  body { margin: 0; overflow: hidden; color: var(--text); font: 13px/1.5 var(--font); -webkit-font-smoothing: antialiased; background-color: var(--bg);
     background-image: radial-gradient(70rem 42rem at 8% -6%, var(--glow-a), transparent 62%), radial-gradient(52rem 34rem at 92% 4%, var(--glow-b), transparent 60%),
       radial-gradient(60rem 40rem at 70% 112%, var(--glow-c), transparent 62%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size: auto, auto, auto, 48px 48px, 48px 48px; }
@@ -136,7 +136,7 @@
     border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 oklch(100% 0 0 / .14), inset 0 -1px 0 oklch(0% 0 0 / .18), var(--shadow); }
   .glass::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--glass-spec); opacity: .55; }
   .glass > * { position: relative; }
-  .app { display: grid; grid-template-columns: 236px minmax(0, 1fr); height: 100%; height: 100dvh; }
+  .app { display: grid; grid-template-columns: 212px minmax(0, 1fr); height: 100%; height: 100dvh; }
   /* barra lateral */
   .side { display: flex; flex-direction: column; gap: 6px; padding: 12px 10px; border-right: 1px solid var(--hair); background: var(--side); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); min-height: 0; overflow-y: auto; }
   .brand { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 4px; font-size: 15px; font-weight: 700; letter-spacing: -.035em; white-space: nowrap; }
@@ -175,17 +175,25 @@
   /* início */
   #home { display: flex; flex-direction: column; }
   .eyebrow { align-self: flex-start; margin-top: 12vh; padding: 4px 9px; border: 1px solid oklch(82% .12 85 / .4); background: linear-gradient(135deg, oklch(82% .12 85 / .14), oklch(76% .13 118 / .06)); color: var(--gold); font-size: 10.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
-  h1 { font-size: 34px; line-height: 1.05; font-weight: 700; letter-spacing: -.055em; margin: 14px 0 18px; color: var(--text); }
+  h1 { font-size: 26px; line-height: 1.1; font-weight: 700; letter-spacing: -.045em; margin: 10px 0 12px; color: var(--text); }
   .starters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-  .starter { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .03); font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .starter { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .03); font-size: 12.5px; font-weight: 600; color: var(--muted); }
   .sugg { display: block; width: 100%; padding: 9px 10px; border: 0; border-top: 1px solid var(--hair); background: none; text-align: left; font-size: 13.5px; color: var(--muted); transition: color .18s var(--ease), background .18s var(--ease), padding-left .18s var(--ease); }
   .sugg:hover { color: var(--text); background: var(--hover); padding-left: 14px; }
   /* conversa */
-  .bubble { padding: 9px 12px; white-space: pre-wrap; word-break: break-word; border: 1px solid var(--hair); }
+  .bubble { padding: 7px 10px; white-space: pre-wrap; word-break: break-word; border: 1px solid var(--hair); }
   .bubble.you { align-self: flex-end; max-width: 85%; background: oklch(100% 0 0 / .045); }
   .bubble.buddy { max-width: 100%; background: color-mix(in oklch, var(--accent) 7%, transparent); border-color: color-mix(in oklch, var(--accent) 28%, transparent); }
   .bubble p { margin: 0 0 8px; } .bubble p.h { margin-top: 10px; font-size: 1.04em; } .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child { margin-bottom: 0; }
   .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 22px; white-space: normal; }
+  /* Tabela, citação e linha horizontal da resposta (missão B1): tabela com rolagem, bordas finas, cabeçalho discreto. */
+  .tbl { overflow-x: auto; margin: 6px 0; }
+  .tbl table { border-collapse: collapse; font-size: 12.5px; }
+  .tbl th, .tbl td { border: 1px solid var(--hair); padding: 4px 8px; text-align: left; vertical-align: top; }
+  .tbl th { color: var(--muted); font-weight: 600; }
+  .bubble blockquote { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--olive-400); color: var(--muted); }
+  .bubble hr { border: 0; border-top: 1px solid var(--hair); margin: 8px 0; }
+  .bubble .tbl:last-child, .bubble blockquote:last-child { margin-bottom: 0; }
   /* Código: tom oliva translúcido, leve nos dois temas (no claro, o cinza escuro pesava; achado do ensaio). */
   .bubble pre.code { margin: 0 0 8px; padding: 8px 10px; background: oklch(50% .03 118 / .12); border: 1px solid var(--hair); overflow: auto; white-space: pre; }
   .bubble pre.code code { padding: 0; background: none; }
@@ -220,13 +228,13 @@
   .perm .s { color: var(--faint); font-size: 11.5px; }
   .harness-result { padding: 7px 11px; border: 1px solid var(--hair); background: var(--glass-solid); }
   /* caixa de mensagem */
-  .composer { padding: 10px 10px 4px; }
-  .composer textarea { display: block; width: 100%; min-height: 44px; max-height: 180px; resize: none; border: 0; outline: 0; background: none; color: var(--text); font-size: 14.5px; padding: 2px 4px; }
+  .composer { padding: 8px 8px 3px; }
+  .composer textarea { display: block; width: 100%; min-height: 34px; max-height: 160px; resize: none; border: 0; outline: 0; background: none; color: var(--text); font-size: 13.5px; padding: 2px 4px; }
   .composer textarea::placeholder { color: var(--faint); }
   .bar { display: flex; align-items: center; gap: 5px; margin-top: 6px; min-width: 0; flex-wrap: wrap; }
-  .pill { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px 0 9px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .035); font-size: 12px; font-weight: 600; min-width: 0; color: var(--muted); transition: border-color .18s var(--ease), background .18s var(--ease); }
+  .pill { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 4px 0 8px; border: 1px solid var(--hair); background: oklch(100% 0 0 / .035); font-size: 12px; font-weight: 600; min-width: 0; color: var(--muted); transition: border-color .18s var(--ease), background .18s var(--ease); }
   .pill:hover, .pill:focus-within { border-color: var(--hair-strong); background: oklch(100% 0 0 / .07); }
-  .pill select { min-width: 0; max-width: 220px; height: 26px; border: 0; background: transparent; color: var(--text); font-size: 12px; font-weight: 600; outline: 0; }
+  .pill select { min-width: 0; max-width: 200px; height: 22px; border: 0; background: transparent; color: var(--text); font-size: 12px; font-weight: 600; outline: 0; }
   .pill select option { background: var(--bg); color: var(--text); }
   .spacer { flex: 1; }
   /* pílula de harness (M1.5b): quem executa, com ícone e o estado da sonda */
@@ -236,37 +244,37 @@
   .pill .chev { opacity: .5; font-size: 9px; }
   .state { flex: none; font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 0 5px; border: 1px solid var(--hair-strong); color: var(--muted); white-space: nowrap; }
   .state.ok { color: var(--ok); border-color: color-mix(in oklch, var(--ok) 45%, transparent); } .state.warn { color: var(--warn); border-color: color-mix(in oklch, var(--warn) 45%, transparent); } .state.bad { color: var(--bad); border-color: color-mix(in oklch, var(--bad) 45%, transparent); }
-  .pop { position: fixed; z-index: 30; width: 380px; max-width: calc(100vw - 16px); max-height: min(420px, 70vh); display: flex; flex-direction: column; overflow: hidden; background: var(--glass-fill), var(--glass-solid); backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  .pop { position: fixed; z-index: 30; width: 320px; max-width: calc(100vw - 16px); max-height: min(320px, 50vh); display: flex; flex-direction: column; overflow: hidden; background: var(--glass-fill), var(--glass-solid); backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8);
     border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 oklch(100% 0 0 / .16), var(--shadow); animation: popin .18s var(--ease); }
-  .ptitle { padding: 9px 12px 3px; font-size: 9.5px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .12em; }
+  .ptitle { padding: 7px 10px 2px; font-size: 9.5px; font-weight: 700; color: var(--faint); text-transform: uppercase; letter-spacing: .12em; }
   .plist { padding: 2px 4px 6px; overflow-y: auto; }
   .pfoot { padding: 5px 10px; border-top: 1px solid var(--hair); font-size: 10.5px; color: var(--faint); }
-  .mrow { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 10px; border: 0; border-left: 2px solid transparent; background: none; text-align: left; color: var(--text); transition: background .15s var(--ease); }
+  .mrow { display: flex; align-items: center; gap: 8px; width: 100%; padding: 4px 8px; border: 0; border-left: 2px solid transparent; background: none; text-align: left; color: var(--text); transition: background .15s var(--ease); }
   .mrow:hover, .mrow:focus-visible { background: var(--hover); }
   .mrow[aria-selected="true"] { border-left-color: var(--olive-400); background: oklch(70% .13 120 / .1); }
-  .mrow .ico, .mrow .mark { width: 20px; height: 20px; margin: 0; }
-  .mrow .tx { flex: 1; min-width: 0; } .mrow .tx b { display: block; font-size: 13px; font-weight: 600; } .mrow .tx small { display: block; font-size: 11px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mrow .ico, .mrow .mark { width: 16px; height: 16px; margin: 0; }
+  .mrow .tx { flex: 1; min-width: 0; } .mrow .tx b { display: block; font-size: 12.5px; font-weight: 600; } .mrow .tx small { display: block; font-size: 10.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   button.starter { cursor: pointer; transition: color .18s var(--ease), border-color .18s var(--ease); }
   button.starter:hover { color: var(--text); border-color: var(--hair-strong); }
   button.starter[aria-pressed="true"] { color: var(--primary-ink); background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); border-color: oklch(80% .12 118 / .4); }
   .perm .ico, .perm .mark { width: 18px; height: 18px; margin: 0; }
   /* seletor de modelo (M1.5c): abas por provedor, busca, filtros, lista por lab com capacidades em ícones */
-  .mpop { width: 420px; max-height: min(460px, 72vh); }
+  .mpop { width: 340px; max-height: min(360px, 52vh); }
   /* Coluna do painel: só a lista rola; abas, busca, filtros e rodapés não encolhem (achado do ensaio: as abas sumiam). */
   .pop > .tabs, .pop > .srch, .pop > .fmenu, .pop > .pfoot, .pop > .ptitle { flex: none; }
   .pop > .plist { flex: 1 1 auto; min-height: 0; }
-  .tabs { display: flex; padding: 6px 8px 0; border-bottom: 1px solid var(--hair); overflow-x: auto; scrollbar-width: none; }
-  .tabs button { position: relative; flex: 1 0 auto; display: flex; align-items: baseline; justify-content: center; gap: 5px; padding: 6px 8px 7px; border: 0; background: none; color: var(--faint); font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .tabs { display: flex; padding: 4px 6px 0; border-bottom: 1px solid var(--hair); overflow-x: auto; scrollbar-width: none; }
+  .tabs button { position: relative; flex: 1 0 auto; display: flex; align-items: baseline; justify-content: center; gap: 4px; padding: 4px 7px 5px; border: 0; background: none; color: var(--faint); font-size: 11.5px; font-weight: 600; white-space: nowrap; }
   .tabs button small { font-size: 10.5px; font-weight: 500; }
   .tabs button:hover, .tabs button[aria-selected="true"] { color: var(--text); }
   .tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 10%; right: 10%; bottom: -1px; height: 2px; background: var(--olive-400); }
   .tabs button .nocred { color: var(--warn); }
   .srch { position: relative; display: flex; align-items: center; gap: 6px; padding: 2px 6px 2px 12px; border-bottom: 1px solid var(--hair); color: var(--faint); }
-  .srch input { flex: 1; min-width: 0; height: 34px; border: 0; outline: 0; background: none; color: var(--text); font-size: 13px; }
+  .srch input { flex: 1; min-width: 0; height: 28px; border: 0; outline: 0; background: none; color: var(--text); font-size: 12.5px; }
   .srch input::placeholder { color: var(--faint); }
   .fbtn[aria-expanded="true"], .fbtn.on { color: var(--text); border-color: var(--hair-strong); background: oklch(100% 0 0 / .08); }
   .fmenu { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 10px; border-bottom: 1px solid var(--hair); }
-  .fmenu button { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 7px; border: 1px solid var(--hair); background: none; color: var(--muted); font-size: 11.5px; }
+  .fmenu button { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 6px; border: 1px solid var(--hair); background: none; color: var(--muted); font-size: 11.5px; }
   .fmenu button[aria-pressed="true"] { color: var(--text); border-color: oklch(76% .13 118 / .6); background: oklch(70% .13 120 / .12); }
   .gh { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 6px; padding: 7px 6px 3px; background: var(--glass-solid); font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
   .labfb { display: inline-grid; place-items: center; width: 14px; height: 14px; flex: none; font-size: 7.5px; font-weight: 800; border: 1.2px solid currentColor; color: var(--faint); }
@@ -288,10 +296,10 @@
   .atts { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
   .composer.drop { outline: 1.5px dashed var(--olive-400); outline-offset: 3px; }
   .loginbox { display: flex; flex-direction: column; gap: 6px; padding: 9px 11px; border: 1px solid color-mix(in oklch, var(--warn) 45%, transparent); background: var(--glass-solid); font-size: 13px; }
-  .send { width: 30px; height: 30px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
+  .send { width: 26px; height: 26px; flex: none; border: 1px solid oklch(80% .12 118 / .4); display: grid; place-items: center; background: linear-gradient(135deg, var(--primary-a), var(--primary-b)); color: var(--primary-ink); font-size: 15px;
     box-shadow: inset 0 1px 0 oklch(100% 0 0 / .22), 0 6px 18px -8px oklch(55% .12 120 / .8); transition: filter .2s var(--ease), transform .15s var(--ease); }
   .send:hover { filter: brightness(1.1); } .send:active { transform: scale(.96); }
-  .stop { height: 28px; padding: 0 10px; border: 1px solid color-mix(in oklch, var(--bad) 55%, transparent); background: transparent; color: var(--bad); font-size: 12px; font-weight: 600; }
+  .stop { height: 24px; padding: 0 9px; border: 1px solid color-mix(in oklch, var(--bad) 55%, transparent); background: transparent; color: var(--bad); font-size: 12px; font-weight: 600; }
   .hint { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--faint); padding: 6px 2px 4px; }
   .msg { min-height: 1em; }
   .msg.bad { color: var(--bad); }
@@ -336,7 +344,7 @@
     .pill { flex: 1 1 0; padding-left: 4px; }
     #sessionLabel { display: none; }
     .eyebrow { margin-top: 5vh; }
-    h1 { font-size: 27px; }
+    h1 { font-size: 22px; }
     #feed { padding: 6px 12px 12px; }
     .dock { padding: 0 6px 6px; }
     .pill select { width: 100%; max-width: none; }
@@ -511,6 +519,45 @@ function mdBlocks(text) {
       out.push({ type: 'h', text: head[1] });
       continue;
     }
+    // Linha horizontal: três ou mais -, * ou _ (sozinhos na linha, com espaços entre eles).
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(lines[i])) {
+      flush();
+      for (const b of out) delete b.open;
+      out.push({ type: 'hr' });
+      continue;
+    }
+    // Tabela (missão B1): linha com barras, seguida da linha separadora (- e : opcionais) com o mesmo número de colunas.
+    const cells = (line) => {
+      let s = line.trim();
+      if (s.startsWith('|')) s = s.slice(1);
+      if (s.endsWith('|') && !s.endsWith('\\|')) s = s.slice(0, -1);
+      return s.split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, '|'));
+    };
+    if (lines[i].includes('|') && i + 1 < lines.length && lines[i + 1].includes('|')) {
+      const head = cells(lines[i]);
+      const delim = cells(lines[i + 1]);
+      if (delim.length === head.length && delim.every((c) => /^:?-+:?$/.test(c))) {
+        flush();
+        for (const b of out) delete b.open;
+        const fit = (r) => head.map((_, k) => (k < r.length ? r[k] : ''));
+        const align = delim.map((c) => (c.startsWith(':') && c.endsWith(':') ? 'center' : c.endsWith(':') ? 'right' : c.startsWith(':') ? 'left' : null));
+        const rows = [];
+        let k = i + 2;
+        for (; k < lines.length && lines[k].trim() !== '' && lines[k].includes('|'); k++) rows.push(fit(cells(lines[k])));
+        out.push({ type: 'table', head, align, rows });
+        i = k - 1;
+        continue;
+      }
+    }
+    // Citação (missão B1): linhas que começam com "> ", juntas no mesmo bloco enquanto forem contínuas.
+    const quote = /^\s*>\s?(.*)$/.exec(lines[i]);
+    if (quote) {
+      flush();
+      const last = out[out.length - 1];
+      if (last && last.type === 'quote' && last.open) last.text += '\n' + quote[1];
+      else { for (const b of out) delete b.open; out.push({ type: 'quote', text: quote[1], open: true }); }
+      continue;
+    }
     const item = /^\s*(?:([-*])|(\d+)[.)])\s+(.*)$/.exec(lines[i]);
     if (item) {
       flush();
@@ -558,6 +605,12 @@ function liveLine(l, ms, t) {
   const phase = l.phase === 'tool' ? t('console.live.tool', { tool: l.tool || '?' }) : l.phase === 'writing' ? t('console.live.writing') : l.phase === 'approval' ? t('console.live.approval') : t('console.live.thinking');
   return [phase, elapsedText(ms), l.route].filter(Boolean).join(' · ');
 }
+// Silêncio de um harness (B3): segundos desde o último sinal do andamento; 0 se não é harness ou se faz menos de 30 s.
+function silentFor(live, now) {
+  if (!live || !String(live.route || '').startsWith('acp:') || typeof live.lastEventAt !== 'number') return 0;
+  const ms = now - live.lastEventAt;
+  return ms > 30000 ? Math.floor(ms / 1000) : 0;
+}
 // Matemática em LaTeX (o ChatGPT escreve \(30 \times 1\)) vira texto legível, sem biblioteca (ensaio da M0.8d).
 const TEX = { times: '×', div: '÷', cdot: '·', approx: '≈', leq: '≤', le: '≤', geq: '≥', ge: '≥', neq: '≠', to: '→', rightarrow: '→', pm: '±', infty: '∞' };
 function delatex(s) {
@@ -600,6 +653,13 @@ function threadsOf(runs, sessions, now, offsetMin) {
 // Aprovação pedida por um harness (M1.2d): a ação começa por "Harness <nome>: ". Devolve o id dele, para o ícone.
 function approvalHarness(action, hs) {
   const m = /^Harness (.+?): /.exec(String(action));
+  if (!m) return null;
+  const h = hs.find((x) => x.name === m[1]);
+  return h ? h.id : null;
+}
+// Primeira execução de um harness (SPEC 0002, critério 4): a ação começa por "Primeira execução de <nome>: ". Devolve o id.
+function firstRunHarnessOf(action, hs) {
+  const m = /^Primeira execução de (.+?): /.exec(String(action));
   if (!m) return null;
   const h = hs.find((x) => x.name === m[1]);
   return h ? h.id : null;
@@ -671,15 +731,32 @@ function canAttachImage(o) {
 }
 // Provedores que ficaram fora do catálogo, com o motivo (achado do ensaio: o OpenCode Go sumia sem explicação).
 function catalogLeftOut(errors, names) { return Object.entries(errors || {}).map(([id, why]) => (names[id] || id) + ': ' + why); }
+// Motivo da política em frase (B2): o núcleo manda texto curto em português; o que a tela não conhece segue cru.
+const POLICY_REASONS = new Map([['fora do workspace', 'console.reason.outsideWorkspace'], ['caminho protegido', 'console.reason.protectedPath'],
+  ['aprovação humana', 'console.reason.human'], ['regra', 'console.reason.rule'], ['padrão', 'console.reason.default'],
+  ['nonInteractive', 'console.reason.nonInteractive'], ['sessionPaused', 'console.reason.sessionPaused']]);
+function reasonKey(reason) {
+  if (typeof reason !== 'string') return null;
+  if (POLICY_REASONS.has(reason)) return POLICY_REASONS.get(reason);
+  if (reason.startsWith('concessão ')) return 'console.reason.grant';
+  return null;
+}
 // </puras>
 // Negrito e código em linha, montados como nós de texto: nada do modelo vira HTML.
 function inline(text) {
   const f = document.createDocumentFragment();
   // O LaTeX sai do texto corrido, nunca de dentro do código.
   const plain = String(text).split(/(`[^`\n]+`)/).map((x) => (/^`[^`]+`$/.test(x) ? x : delatex(x))).join('');
-  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/)) {
+  // Link (missão B1): só http(s) vira âncora; qualquer outro esquema (javascript:, data:) fica como o texto digitado.
+  const SAFE_URL = /^https?:\/\/\S+$/i;
+  for (const part of plain.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/)) {
     if (/^\*\*[^*]+\*\*$/.test(part)) f.append(el('strong', {}, part.slice(2, -2)));
     else if (/^`[^`]+`$/.test(part)) f.append(el('code', {}, part.slice(1, -1)));
+    else if (/^\[[^\]\n]+\]\([^)\s]+\)$/.test(part)) {
+      const m = /^\[([^\]\n]+)\]\(([^)\s]+)\)$/.exec(part);
+      if (SAFE_URL.test(m[2])) f.append(el('a', { href: m[2], target: '_blank', rel: 'noopener noreferrer' }, m[1]));
+      else f.append(document.createTextNode(part));
+    }
     else if (part) f.append(document.createTextNode(part));
   }
   return f;
@@ -690,6 +767,15 @@ function rich(text) {
     if (b.type === 'code') f.append(el('pre', { class: 'code' }, el('code', {}, b.text)));
     else if (b.type === 'list') f.append(el(b.ordered ? 'ol' : 'ul', {}, ...b.items.map((i) => el('li', {}, inline(i)))));
     else if (b.type === 'h') f.append(el('p', { class: 'h' }, el('strong', {}, inline(b.text))));
+    else if (b.type === 'table') {
+      // Células pelo inline(); o alinhamento vai em style, nunca em HTML do texto.
+      const cell = (tag, text, a) => el(tag, a ? { style: 'text-align:' + a } : {}, inline(text));
+      f.append(el('div', { class: 'tbl' }, el('table', {},
+        el('thead', {}, el('tr', {}, ...b.head.map((c, k) => cell('th', c, b.align[k])))),
+        el('tbody', {}, ...b.rows.map((r) => el('tr', {}, ...r.map((c, k) => cell('td', c, b.align[k]))))))));
+    }
+    else if (b.type === 'quote') f.append(el('blockquote', {}, inline(b.text)));
+    else if (b.type === 'hr') f.append(el('hr', {}));
     else f.append(el('p', {}, inline(b.text)));
   }
   return f;
@@ -758,7 +844,7 @@ function feedItems(evs) {
       }
       case 'run.options': if (p.harness) runHarness[p.run] = p.harness; break;
       case 'agent.reasoning': detail(el('details', { class: 'res reason', open: '' }, el('summary', {}, t('console.feed.reasoning')), el('pre', {}, String(p.text || '')))); break;
-      case 'run.stopped': speak(el('div', { class: 'ev err' }, t('log.runStopped', { run: p.run, reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
+      case 'run.stopped': speak(el('div', { class: 'ev err', title: p.run }, t('console.runStopped', { reason: REASONS[p.reason] ? t(REASONS[p.reason]) : p.reason }))); break;
       case 'run.interrupted': speak(el('div', { class: 'ev err' }, t('log.runInterrupted', { run: p.run }))); break;
       case 'run.resumed': detail(el('div', { class: 'ev' }, t('log.runResumed', { run: p.run }))); break;
       case 'agent.step': detail(el('div', { class: 'ev' }, t('log.step', { step: p.step, route: p.route, input: (p.usage || {}).input_tokens || 0, output: (p.usage || {}).output_tokens || 0 }) + (p.effort ? ' · ' + t('console.effort.' + p.effort) : ''))); break;
@@ -783,7 +869,7 @@ function feedItems(evs) {
         // Quem negou e por quê (A3): a política (com o motivo) ou o próprio Pai.
         const denied = p.decision === 'deny';
         const byPolicy = denied && p.reason && p.reason !== 'aprovação humana';
-        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: p.reason, tool: p.tool, target: p.target })
+        const text = byPolicy ? t('console.harness.deniedByPolicy', { reason: reasonKey(p.reason) ? t(reasonKey(p.reason)) : p.reason, tool: p.tool, target: p.target })
           : denied ? t('console.harness.deniedByYou', { tool: p.tool, target: p.target })
           : t('console.harness.permission', { decision: t(DECISION[p.decision] || DECISION.deny), tool: p.tool, target: p.target });
         detail(el('div', { class: 'ev' }, text)); break;
@@ -833,6 +919,10 @@ function renderLive() {
   if (l && l.running) {
     const r = l.running;
     kids.push(el('div', { class: 'line', role: 'status' }, el('span', { class: 'spin', 'aria-hidden': 'true' }), el('span', { id: 'liveLine' }, liveLine(r, Date.now() - Date.parse(r.callStartedAt), t))));
+    const quiet = silentFor(r, Date.now());
+    if (quiet) kids.push(el('div', { class: 'line silent', id: 'silentLine', role: 'status' },
+      el('span', {}, t('console.harness.silent', { name: harnessName(String(r.route).slice(4)), seconds: quiet })),
+      el('button', { class: 'btn', onclick: () => $('stop').click() }, t('console.harness.silentStop'))));
     if (r.reasoning) {
       const d = el('details', { class: 'grp reason' }, el('summary', {}, t('console.feed.reasoning')), el('pre', { id: 'liveReason' }, r.reasoning));
       d.open = reasonOpen === null ? prefs.details : reasonOpen;
@@ -913,10 +1003,11 @@ async function refreshApprovals() {
     who(a),
     el('span', { class: 'a' }, a.action),
     el('span', { class: 's' }, a.session === session ? '' : a.session),
-    el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny') }, t('console.approvals.deny')),
-    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve') }, t('console.approvals.approve')))));
+    el('button', { class: 'btn danger', onclick: () => resolve(a.id, 'deny', a.action) }, t('console.approvals.deny')),
+    el('button', { class: 'btn pri', onclick: () => resolve(a.id, 'approve', a.action) }, t('console.approvals.approve')))));
 }
-async function resolve(id, decision) {
+async function resolve(id, decision, action = '') {
+  const firstRunHid = firstRunHarnessOf(action, harnesses);
   if (decision === 'approve') { approvalNote = t('console.approvals.harness.running'); await refreshApprovals(); }
   try {
     const r = await api('approval.resolve', { id, decision });
@@ -924,6 +1015,13 @@ async function resolve(id, decision) {
     const HARNESS_NOTE = { pronto: 'console.approvals.harness.pronto', login: 'console.approvals.harness.login', negado: 'console.approvals.harness.negado', falhou: 'console.approvals.harness.falhou' };
     approvalNote = h ? t(HARNESS_NOTE[h.state] || HARNESS_NOTE.falhou, { name: h.name || h.id, version: (h.agent && h.agent.version) || '', reason: h.reason || '' }) : '';
   } catch (e) { approvalNote = ''; /* já resolvida */ }
+  // Respondida a primeira execução de um harness, a pílula não pode seguir em "AGUARDA APROVAÇÃO" (B4): refaz a sonda dele.
+  if (firstRunHid) {
+    try { probes[firstRunHid] = await api('harness.probe', { id: firstRunHid }); }
+    catch (e) { probes[firstRunHid] = { state: 'falhou', reason: e.message }; }
+    renderHarnessPill();
+    if (!$('hPop').hidden) renderHarnessList();
+  }
   await refreshApprovals();
 }
 
@@ -1172,6 +1270,8 @@ function hPop(open) {
 async function chooseHarness(id) {
   chosen = harnesses.some((h) => h.id === id) ? id : 'buddy';
   store.set('rb.harness', chosen);
+  // Escolher outro harness encerra o aviso de "pedido refeito" (B4).
+  if (approvalNote === t('console.harness.firstRun.reviewed')) approvalNote = '';
   renderHarnessPill();
   renderHome();
   if (chosen === 'buddy') return;
@@ -1265,6 +1365,8 @@ $('run').addEventListener('click', async () => {
     if (picked) params.route = picked;
   }
   if (cont) params.continueFrom = lastRun;
+  // Idioma da console (Pai, 2026-10-20: camada de inglês sob o app inteiro): o Buddy fala nele.
+  params.lang = lang;
   $('run').disabled = true;
   try {
     const r = await api('agent.run', params);

@@ -15,6 +15,7 @@ import { FsTools } from './tools/fs.ts';
 import { CommandTool } from './tools/command.ts';
 import { randomBytes } from 'node:crypto';
 import { Agent, type AgentProgress, type AgentResult, type Delegate } from './agent.ts';
+import { buddySystem, type AgentLang } from './persona.ts';
 import { apiKeyOf, buildRoutes, credentialSource, loadConfig, removeKey, saveKey, type ProviderId } from './config.ts';
 import { loadCredentials, logout, startLogin, SiwcAuth, SiwcAuthError, SIWC_ENDPOINTS, type PendingLogin } from './providers/siwc.ts';
 import { goUsage, GO_BASE, OLLAMA_BASE, OPENROUTER_BASE, type GoWindow } from './providers/index.ts';
@@ -120,7 +121,8 @@ export async function startOwner(home: string): Promise<Owner> {
 
   // ---------- Andamento ao vivo, fila, direcionamento e parada (SPEC 0001 rev. 6, critérios 31 e 33) ----------
   // O andamento fica em memória (fragmentos não vão para o log); a fila fica no log (sobrevive à queda).
-  interface LiveRun { run: string; phase: 'thinking' | 'writing' | 'tool' | 'approval'; route: string; step: number; startedAt: string; callStartedAt: string; reasoning: string; text: string; tool: string | null }
+  // lastEventAt: quando o andamento ganhou o último sinal (ms, Date.now()); a console mede o silêncio de um harness por ele.
+  interface LiveRun { run: string; phase: 'thinking' | 'writing' | 'tool' | 'approval'; route: string; step: number; startedAt: string; callStartedAt: string; reasoning: string; text: string; tool: string | null; lastEventAt: number }
   const LIVE_MAX = 200_000;
   const live = new Map<string, LiveRun>();
   const controllers = new Map<string, AbortController>();
@@ -128,11 +130,12 @@ export async function startOwner(home: string): Promise<Owner> {
   const nowIso = () => new Date().toISOString();
   const liveOf = (run: string): LiveRun => {
     let l = live.get(run);
-    if (!l) { l = { run, phase: 'thinking', route: '', step: 0, startedAt: nowIso(), callStartedAt: nowIso(), reasoning: '', text: '', tool: null }; live.set(run, l); }
+    if (!l) { l = { run, phase: 'thinking', route: '', step: 0, startedAt: nowIso(), callStartedAt: nowIso(), reasoning: '', text: '', tool: null, lastEventAt: Date.now() }; live.set(run, l); }
     return l;
   };
   const onProgress = (run: string, x: AgentProgress): void => {
     const l = liveOf(run);
+    l.lastEventAt = Date.now();
     if (x.kind === 'call') Object.assign(l, { phase: 'thinking', route: x.route, step: x.step, callStartedAt: nowIso(), reasoning: '', text: '', tool: null });
     else if (x.kind === 'reasoning') l.reasoning = (l.reasoning + x.delta).slice(-LIVE_MAX);
     else if (x.kind === 'text') { l.text = (l.text + x.delta).slice(-LIVE_MAX); l.phase = 'writing'; }
@@ -208,7 +211,9 @@ export async function startOwner(home: string): Promise<Owner> {
     const agent = agentFor(p, ac.signal);
     const prior = continueFrom ? agent.transcript(session, continueFrom) : undefined;
     const attachments = attachmentsOf(session, p.attachments);
-    const { run, done } = agent.begin(session, task, { ...(prior?.length ? { prior } : {}), ...(attachments.length ? { attachments } : {}) });
+    // Voz do Buddy no idioma da console (pt-BR por padrão), com a pasta de trabalho; o modelo entra a cada chamada.
+    const system = buddySystem((p.lang === 'en' ? 'en' : 'pt-BR') as AgentLang, String(p.workspace ?? ''));
+    const { run, done } = agent.begin(session, task, { system, ...(prior?.length ? { prior } : {}), ...(attachments.length ? { attachments } : {}) });
     controllers.set(run, ac);
     inboxes.set(run, inboxes.get(run) ?? []);
     liveOf(run);
@@ -480,7 +485,7 @@ export async function startOwner(home: string): Promise<Owner> {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash) });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR' });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
