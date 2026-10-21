@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-20T213833-0300-claude-code-desktop-6e2164-0072",
+  "ts": "2026-10-20T21:38:33-03:00",
+  "utc": "2026-10-21T00:38:33.927Z",
+  "session": "claude-code-desktop-6e2164",
+  "seq": 72,
+  "harness": "Claude Code (Desktop)",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/fechamento-sessao-6e2164",
+  "type": "session-end",
+  "summary": "Sessão claude-code-desktop-6e2164: decisões do Pai registradas (explicar em texto, permissões com modos e escopos e o Automático, paralelismo, repositório público, token trocado); piloto em três ondas com 13 missões Haiku; correções do uso real (#78) e da noite (#79); repositório público com a segurança ligada; página no GitHub Pages; voz do Buddy em pt e en; SPEC 0002 rev. 3. Post: O Que o Ensaio Não Negava.",
+  "refs": [],
+  "data": {}
+}

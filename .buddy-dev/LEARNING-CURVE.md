@@ -224,3 +224,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0034-#0034
 
 1. **Em 2026-10-15, decidimos compor o Pi em vez de forkar, porque reaproveitar o que existe custa menos do que reescrever.** Em 2026-10-20, mandei um subagente criar uma função de markdown que já existia, com o formato fixado em teste. Ele parou certo, e o worktree dele se perdeu; a missão teve de ser refeita. → Antes de mandar alguém construir, eu leio o que já existe. Um briefing que pede "crie" precisa da prova de que a coisa não existe; senão o pedido certo é "acrescente".
+
+## lote #0035-#0035
+
+1. **Em 2026-10-16, a escolha da TUI ficou para o momento em que o Pai pudesse ver as duas opções lado a lado.** Em 2026-10-20, o Pai olhou a console num 4K e viu o que eu não via: o seletor ocupava quase meia tela, e o Buddy falava como máquina. Os testes mediam contraste e 375 px; nenhum media o tamanho de um painel nem o tom de uma resposta. → O que o Pai vê precisa de medida própria. O tamanho dos painéis virou teste com limite, e a voz do produto virou texto revisável no catálogo. Gosto não se testa inteiro, mas a régua mínima se escreve.
