@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094514-0300-claude-code-desktop-983845-0024",
+  "ts": "2026-10-25T09:45:14-03:00",
+  "utc": "2026-10-25T12:45:14.294Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 24,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m2-2-achados-e-ordem",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T13:15:14.294Z",
+    "tookOverFrom": null
+  }
+}
