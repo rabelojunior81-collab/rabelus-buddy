@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174437-0300-claude-code-desktop-f9fa85-0019",
+  "ts": "2026-10-25T17:44:37-03:00",
+  "utc": "2026-10-25T20:44:37.275Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 19,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "session-end",
+  "summary": "Spike do Cua (M2.8) aprovado e feito: no Windows do Pai, computador por agente pelo Docker, OpenCode lá dentro sem ver as pastas do Pai, arquivos de ida e volta com a lista do que mudou; a rede do agente não se controla no Windows (política do Cua recusada no Docker Desktop). Máquina devolvida (computador apagado, Docker desligado). Aguarda o Pai: cua-depois-do-spike.",
+  "refs": [],
+  "data": {}
+}

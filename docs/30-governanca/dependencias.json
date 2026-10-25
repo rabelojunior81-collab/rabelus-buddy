@@ -140,6 +140,18 @@
       "ficha": "docs/20-conhecimento/sandbox-e-permissoes.md",
       "verifiedAt": "2026-10-25",
       "approvedBy": "Pai, 2026-10-25 (\"Aceito a ADR 0019: a contenção fica com a biblioteca da Microsoft (MXC). Pode seguir para a próxima etapa.\"); antes, para o spike: Pai, 2026-10-25 (SPEC 0003)"
+    },
+    {
+      "name": "@trycua/cua",
+      "version": "0.9.0",
+      "license": "MIT",
+      "kind": "dev",
+      "status": "aprovada",
+      "purpose": "Spike do M2.8: computador (contêiner) por agente, com os agentes por ACP; instalado só numa pasta separada fora do repositório, sem o app Spaces e sem QEMU",
+      "phase": "M2 (spike M2.8)",
+      "ficha": "docs/20-conhecimento/cua-computador-para-agentes.md",
+      "verifiedAt": "2026-10-25",
+      "approvedBy": "Pai, 2026-10-25 (\"Aprovo o teste do Cua (M2.8) nos limites propostos: só a biblioteca numa pasta separada, com o Docker que já tenho, sem o app Spaces, sem QEMU e sem mudar configurações do Windows. Abra a sessão nova e siga.\")"
     }
   ]
 }

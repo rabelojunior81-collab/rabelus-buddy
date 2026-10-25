@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Teste do Cua** (M2.8, 2026-10-25, aprovado pelo Pai). Um computador por agente pelo Docker do Pai: o OpenCode rodou lá dentro sem ver as pastas do Pai, e os arquivos foram e voltaram com a lista do que mudou. No Windows, o Cua não controla a internet do agente; a decisão de como seguir é do Pai.
+
 - **O Codex roda contido** (M2.2, 2026-10-25). Escolhido como agente, o Codex trabalha dentro da pasta de trabalho, preso pelo sistema: escreve ali sem pedir, não consegue escrever fora (nem tentando com permissão ampliada) e só acessa a internet do provedor dele; outros sites passam pelo cartão. O log diz se cada agente rodou contido e, se não, por quê.
 
 - **Comandos contidos sem cartão** (M2.4, 2026-10-25). Com a contenção do sistema confirmada, o Buddy roda comandos dentro da pasta de trabalho sem pedir aprovação; a internet continua pedindo cartão por site, e o modo Plano continua negando. Comandos só de leitura e locais rodam sem ligar a rede, mais rápido.

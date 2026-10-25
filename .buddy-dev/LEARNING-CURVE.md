@@ -260,3 +260,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0044-#0044
 
 1. **Em 2026-10-16, o login do ChatGPT no M0.6b nasceu do contrato real (PKCE, ID token conferido pela chave pública), não de suposição.** Em 2026-10-25, o Pai trouxe um projeto que "enxergou" como a solução da contenção inteira. A pesquisa ao vivo mostrou que ele resolve o que nos travava (o OpenCode com serviço de fundo), mas também mostrou o que a vitrine não diz: a política de rede é só por IP, não vale na máquina virtual do Windows, os arquivos entram por cópia e o Windows é prévia. → Entusiasmo do Pai é direção, não premissa. Eu levo a ele os fatos que confirmam e os que limitam, com a fonte, e o teste que decide; nunca só a metade que agrada.
+
+## lote #0045-#0045
+
+1. **Em 2026-10-16, o loop do agente do M0.6e passou a tratar cada efeito (escrita, comando, chamada de modelo) como coisa com identidade, que o núcleo sabe se aconteceu.** Em 2026-10-25, o teste do Cua trouxe efeitos que eu não tinha pedido: ligar o Docker Desktop subiu outros contêineres do Pai, a primeira execução do Cua provavelmente mandou telemetria antes de eu desligar, e o antivírus do Pai apagava o que eu instalava sem eu saber. → Todo teste em máquina do Pai tem efeitos colaterais além do que se mede. A conta inclui o que subiu junto, o que saiu pela rede e o que ficou em disco. E desligar e devolver ao estado anterior faz parte do teste.

@@ -1,6 +1,6 @@
 # Cua: um computador para os agentes
 
-**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-25T17:22:02-03:00 · **Estado:** vigente · **Reverificar:** no início do spike e a cada 30 dias (o projeto publica quase todo dia)
+**Classe:** CONHECIMENTO · **Última verificação:** 2026-10-25T17:42:59-03:00 · **Estado:** vigente · **Reverificar:** no início do spike e a cada 30 dias (o projeto publica quase todo dia)
 
 ## O que importa para o buddy
 
@@ -36,7 +36,11 @@ Isso resolve de outro jeito o que a contenção por processo (MXC, [ADR 0019](..
   - **Domínio:** a política de saída é por IP, então a lista por domínio e o cartão "rede" continuariam com o proxy do Buddy (deixar sair só para o IP do proxy).
   - **Arquivos:** entram e saem por cópia, o que casa com a M2.6 (cópia de trabalho por sessão, integração com diff e aprovação).
   - **Credenciais:** passam por variável de ambiente ou teleport. O login do ChatGPT no Codex não é copiado.
-- **O que não sabemos ainda (para o spike):**
+- **Medido no spike de 2026-10-25 ([registro](../registros/2026-10-25T174214-0300-spike-do-cua-no-windows-m2-8/README.md)):**
+  - **funciona no Windows do Pai:** contêiner pelo Docker Desktop (runc, sem gVisor), OpenCode por ACP lá dentro, nenhuma pasta do Windows visível, ida e volta de arquivos com a lista do que mudou, cerca de 800 MB parado;
+  - **não funciona:** a política de saída no Docker Desktop ("Operation not supported"); lá dentro, a internet fica livre;
+  - **outros fatos:** o Cua instala o OpenCode 1.18.32; a telemetria vem ligada por padrão (desliga com `CUA_TELEMETRY=0` ou `DO_NOT_TRACK=1`); o usuário do contêiner tem `sudo` sem senha.
+- **O que não sabemos ainda (antes do spike):**
   - se a política de saída vale nos contêineres do Docker Desktop no Windows (a página diz "qualquer Docker engine", e o Docker Desktop usa uma VM WSL2);
   - qual o custo de tempo e memória por agente;
   - como o `--repo` e o upload tratam a pasta do Pai;

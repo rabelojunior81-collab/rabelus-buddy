@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174217-0300-claude-code-desktop-f9fa85-0012",
+  "ts": "2026-10-25T17:42:17-03:00",
+  "utc": "2026-10-25T20:42:17.960Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 12,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T21:12:17.960Z",
+    "tookOverFrom": null
+  }
+}

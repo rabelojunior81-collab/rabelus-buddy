@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174435-0300-claude-code-desktop-f9fa85-0018",
+  "ts": "2026-10-25T17:44:35-03:00",
+  "utc": "2026-10-25T20:44:35.326Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 18,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "processo",
+  "summary": "post 'O Computador e a Rede' e a seção da daily publicados no Blog, com QA a 375 e 1440 px e check-surfaces sem erros; servidor do Blog encerrado",
+  "refs": [],
+  "data": {}
+}

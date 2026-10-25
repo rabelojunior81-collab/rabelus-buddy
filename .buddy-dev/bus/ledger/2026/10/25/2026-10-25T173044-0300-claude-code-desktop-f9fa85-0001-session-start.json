@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T173044-0300-claude-code-desktop-f9fa85-0001",
+  "ts": "2026-10-25T17:30:44-03:00",
+  "utc": "2026-10-25T20:30:44.965Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 1,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "M2.8: spike do Cua aprovado pelo Pai (só a biblioteca numa pasta separada, Docker existente, sem Spaces, sem QEMU, sem mudar o Windows): contêiner Linux, OpenCode dentro, rede pelo Buddy, arquivos, tempo e memória",
+  "refs": [],
+  "data": {}
+}
