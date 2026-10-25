@@ -163,4 +163,6 @@ if (SO.includes('srt')) {
 writeFileSync(SAIDA, JSON.stringify(resultado, null, 2));
 for (const b of resultado.baterias) console.log(`${b.nome}: fugas contidas ${b.contidas}/${b.fugas}; legítimos ok ${b.legitimosOk}/${b.legitimos}; erros ${b.erros}; ${b.msMedioLegitimo} ms por comando legítimo`);
 for (const n of resultado.notas) console.log(JSON.stringify(n));
+// Caso a caso, uma linha por caso: o log da CI é o que se lê de fora (o resumo do job não sai pela API).
+for (const b of resultado.baterias) for (const l of b.linhas) console.log(`  ${b.nome} ${l.id} ${l.feito} ${l.ms}ms código ${l.code} ${String(l.detalhe).replace(/\s+/g, ' ').slice(0, 220)}`);
 console.log(`resultado: ${SAIDA}`);
