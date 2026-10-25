@@ -14,7 +14,7 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
 
 ## TODO
 
-- [x] **M2.0 Spike `sandbox-runtime` × `mxc-sdk`** (critérios 1, 2 e 8). A bateria fica em [`scripts/spike-m2/`](../../../scripts/spike-m2/rodar.mjs): 12 fugas, 10 legítimos, sem contenção e dentro de cada biblioteca. As bibliotecas ficam fora da árvore do repositório, porque o `sandbox-runtime` traz alertas altos sem correção.
+- [x] **M2.0 Spike `sandbox-runtime` × `mxc-sdk`** (critérios 1, 2 e 8). A bateria fica em [`scripts/spike-m2/`](../../../archive/2026-10-25T165301-0300-spike-de-contencao-m2/scripts/spike-m2/rodar.mjs) (arquivada em 2026-10-25, depois da ADR 0019): 12 fugas, 10 legítimos, sem contenção e dentro de cada biblioteca. As bibliotecas ficam fora da árvore do repositório, porque o `sandbox-runtime` traz alertas altos sem correção.
   - [x] Base e MXC no Windows do Pai (2026-10-25). Base: 0 de 12 fugas contidas, 10 de 10 legítimos, 183 ms por comando. MXC no nível base-container, sem administrador: 10 de 12 contidas, 10 de 10 legítimos, 505 ms por comando.
   - [x] Linux e macOS pela CI (workflow `spike-m2`), as duas bibliotecas (2026-10-25, [registro](../../registros/2026-10-25T085733-0300-ensaio-do-spike-de-contencao-m2-0/README.md)). MXC: macOS 12 de 12, Linux 11 de 12. sandbox-runtime: macOS 11 de 12, Linux 10 de 12. 10 de 10 legítimos em todos.
   - [>] `sandbox-runtime` no Windows do Pai: dispensado pelo Pai ao aceitar a ADR 0019.

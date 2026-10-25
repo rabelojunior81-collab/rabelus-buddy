@@ -967,9 +967,10 @@
         "cache do npm do Pai (_npx/304981f1e6ac6717)"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "erro do buddy-dev em 2026-10-25 (registro da checagem real do Codex contido)",
-      "explicacao": "Durante o teste do Codex preso, um script meu aprovou por engano a primeira execução do agente da Anthropic (Claude Agent), que o Pai nunca aprovou. O programa dele foi baixado para a pasta de cache do npm deste computador e provavelmente abriu e fechou sem fazer nada. Isso aconteceu no núcleo de ensaio, não no do Pai: no núcleo do Pai, o Claude Agent continua sem aprovação. Opções: apagar essa pasta do cache (o mais limpo; eu apago se o Pai autorizar, porque fica fora do repositório) ou deixar como está (não roda sozinho; só fica guardado). Recomendo apagar."
+      "explicacao": "Durante o teste do Codex preso, um script meu aprovou por engano a primeira execução do agente da Anthropic (Claude Agent), que o Pai nunca aprovou. O programa dele foi baixado para a pasta de cache do npm deste computador e provavelmente abriu e fechou sem fazer nada. Isso aconteceu no núcleo de ensaio, não no do Pai: no núcleo do Pai, o Claude Agent continua sem aprovação. Opções: apagar essa pasta do cache (o mais limpo; eu apago se o Pai autorizar, porque fica fora do repositório) ou deixar como está (não roda sozinho; só fica guardado). Recomendo apagar.",
+      "evidencia": "Pai, 2026-10-25: \"Pode apagar\"; pasta _npx/304981f1e6ac6717 (claude-agent-acp@0.95.0, 8.261 arquivos, 332 MB) conferida e apagada pelo buddy-dev; nenhum processo a usava; nenhuma outra cópia no cache do npx"
     }
   ]
 }

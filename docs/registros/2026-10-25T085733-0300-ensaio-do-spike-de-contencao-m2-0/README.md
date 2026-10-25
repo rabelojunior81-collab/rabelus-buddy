@@ -8,7 +8,7 @@ A SPEC 0003, aprovada pelo Pai em 2026-10-25, manda escolher a biblioteca de con
 
 ## Como
 
-- **Bateria:** [`scripts/spike-m2/`](../../../scripts/spike-m2/rodar.mjs).
+- **Bateria:** [`scripts/spike-m2/`](../../../archive/2026-10-25T165301-0300-spike-de-contencao-m2/scripts/spike-m2/rodar.mjs) (arquivada em 2026-10-25, depois da ADR 0019).
   - **12 tentativas de fuga:**
     - E1: ler fora da pasta;
     - E2: ler o `.env`;

@@ -1,7 +1,5 @@
 {
   "console": {
-    "title": "Rabelus Buddy",
-    "subtitle": "Local console",
     "lang": "Language",
     "conn": {
       "ok": "connected to the core",
@@ -11,7 +9,6 @@
       "title": "Message",
       "placeholder": "What should buddy do?",
       "effort": "Reasoning effort",
-      "route": "Provider",
       "workspace": "Working folder",
       "run": "Send",
       "empty": "Write the task.",
@@ -30,20 +27,15 @@
       "ultra": "Ultra"
     },
     "route": {
-      "auto": "Automatic, in order (Go → Ollama → ChatGPT → OpenRouter)",
-      "ready": "ready",
       "missing": "no credentials"
     },
     "feed": {
-      "title": "Conversation",
-      "empty": "Write a task or open a run.",
       "you": "You",
       "buddy": "Buddy",
       "harnessSays": "{{name}}",
       "tool": "Tool",
       "result": "Result",
       "session": "Session {{session}}",
-      "working": "working…",
       "new": "New conversation",
       "showDetails": "Show reasoning and actions",
       "details": "Reasoning and actions ({{n}})",
@@ -51,9 +43,6 @@
       "steered": "steer"
     },
     "approvals": {
-      "title": "Approvals",
-      "none": "Nothing waiting.",
-      "approve": "Approve",
       "deny": "Deny",
       "harness": {
         "running": "Preparing the first run (this can take a few seconds)…",
@@ -121,8 +110,7 @@
     "runs": {
       "title": "Runs",
       "none": "None yet.",
-      "resume": "Resume",
-      "open": "Open"
+      "resume": "Resume"
     },
     "error": "Error: {{message}}",
     "live": {

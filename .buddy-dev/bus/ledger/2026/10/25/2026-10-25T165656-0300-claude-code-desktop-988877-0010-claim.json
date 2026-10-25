@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T165656-0300-claude-code-desktop-988877-0010",
+  "ts": "2026-10-25T16:56:56-03:00",
+  "utc": "2026-10-25T19:56:56.579Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 10,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "claim",
+  "summary": "locales/en/console.json",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:26:56.579Z",
+    "tookOverFrom": null
+  }
+}

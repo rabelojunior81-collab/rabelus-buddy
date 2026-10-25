@@ -1,7 +1,5 @@
 {
   "console": {
-    "title": "Rabelus Buddy",
-    "subtitle": "Console local",
     "lang": "Idioma",
     "conn": {
       "ok": "conectado ao núcleo",
@@ -11,7 +9,6 @@
       "title": "Mensagem",
       "placeholder": "O que o buddy deve fazer?",
       "effort": "Esforço de raciocínio",
-      "route": "Provedor",
       "workspace": "Pasta de trabalho",
       "run": "Enviar",
       "empty": "Escreva a tarefa.",
@@ -30,20 +27,15 @@
       "ultra": "Ultra"
     },
     "route": {
-      "auto": "Automático, pela ordem (Go → Ollama → ChatGPT → OpenRouter)",
-      "ready": "pronto",
       "missing": "sem credencial"
     },
     "feed": {
-      "title": "Conversa",
-      "empty": "Escreva uma tarefa ou abra uma execução.",
       "you": "Você",
       "buddy": "Buddy",
       "harnessSays": "{{name}}",
       "tool": "Ferramenta",
       "result": "Resultado",
       "session": "Sessão {{session}}",
-      "working": "trabalhando…",
       "new": "Nova conversa",
       "showDetails": "Mostrar raciocínio e ações",
       "details": "Raciocínio e ações ({{n}})",
@@ -51,9 +43,6 @@
       "steered": "direcionamento"
     },
     "approvals": {
-      "title": "Aprovações",
-      "none": "Nada aguardando.",
-      "approve": "Aprovar",
       "deny": "Negar",
       "harness": {
         "running": "Preparando a primeira execução (pode levar alguns segundos)…",
@@ -121,8 +110,7 @@
     "runs": {
       "title": "Execuções",
       "none": "Nenhuma ainda.",
-      "resume": "Retomar",
-      "open": "Abrir"
+      "resume": "Retomar"
     },
     "error": "Erro: {{message}}",
     "live": {

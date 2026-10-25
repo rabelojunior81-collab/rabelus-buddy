@@ -24,7 +24,7 @@
 | `openai` | 7.34.0 | Apache-2.0 | ≥ 22.0.0 | registro npm (tier 1) | 2026-10-15 |
 | `@anthropic-ai/sdk` | 0.135.0 (era 0.134.0 em 2026-10-15) | MIT | — | registro npm (tier 1) | 2026-10-16 |
 | `@google/genai` | 2.30.0 | Apache-2.0 | ≥ 20.0.0 | registro npm (tier 1) | 2026-10-15 |
-| `@opencode-ai/sdk` (M1: cliente do servidor do OpenCode) | 1.19.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
+| ~~`@opencode-ai/sdk` (M1: cliente do servidor do OpenCode)~~ **fora do registro em 2026-10-25**: nunca foi usado (o M1 fala com o OpenCode por ACP) e o OpenCode 2 trocou o SDK | 1.19.0 | MIT | — | registro npm (tier 1) | 2026-10-15 |
 | `typescript` (só desenvolvimento: `tsc --noEmit`) | 7.0.2 | Apache-2.0 | ≥ 16.20.0 | registro npm (tier 1) | 2026-10-15 |
 | `@types/node` (só desenvolvimento) | 24.19.2 (linha 24) | MIT | — | registro npm (tier 1) | 2026-10-15 |
 
