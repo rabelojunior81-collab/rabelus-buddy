@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170429-0300-claude-code-desktop-988877-0017",
+  "ts": "2026-10-25T17:04:29-03:00",
+  "utc": "2026-10-25T20:04:29.605Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 17,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:34:29.605Z",
+    "tookOverFrom": null
+  }
+}

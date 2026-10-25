@@ -1,7 +1,7 @@
 # Plano — M2: Execução isolada
 
 **SPEC:** [0003-execucao-isolada](../../40-specs/0003-execucao-isolada/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-25, com a SPEC, as duas bibliotecas do spike e o pedido de administrador durante ele)
-**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T16:36:58-03:00
+**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T17:04:29-03:00
 
 ## Objetivo
 
@@ -21,7 +21,7 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
   - [>] Agente real (OpenCode) dentro da biblioteca vencedora (critério 3): vai para a M2.2, que é onde o agente de fora é contido.
   - [x] ADR com a escolha: [ADR 0019](../../60-decisoes/0019-contencao-pelo-mxc.md), **aceita pelo Pai em 2026-10-25**: MXC. O `sandbox-runtime` saiu do registro de dependências.
 - [x] **M2.1 Camada de execução no núcleo** (`packages/core/src/sandbox/`; **feita em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T092213-0300-checagem-real-da-contencao-m2-1/README.md)): perfil por pasta (leitura e escrita na pasta; `.git`, `.buddy-dev` e `archive` só leitura; segredos negados; pastas acima só para listar; rede negada), contenção confirmada por uma execução real, o `run_command` do Buddy por ela, a chave `RBUDDY_CONTAINMENT=off`, e o resultado diz ao modelo que rodou contido (critérios 1, 2 e 5 com teste).
-- [~] **M2.2 Agente de fora contido** (**Codex feito em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T163610-0300-checagem-real-do-codex-contido-m2-2/README.md): o processo inteiro do codex-acp roda pela MXC, com ~/.codex e o cache do npm, e a rede só para o provedor dele; dentro da pasta sem cartão, fora negado. **Falta o OpenCode**, pelo caminho que o Pai escolheu: um serve privado dentro da contenção. Na postura "do agente", nada de contenção, também por escolha do Pai.) o processo do harness inteiro roda dentro da contenção, com o domínio do provedor liberado (critério 3). **Depois da M2.3** (decisão de ordem de 2026-10-25, dentro da SPEC aprovada): o agente precisa da rede por proxy com lista de domínios, e o OpenCode 2 tem um serviço de fundo que precisa ser entendido antes (achados abaixo).
+- [~] **M2.2 Agente de fora contido** (**Codex feito em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T163610-0300-checagem-real-do-codex-contido-m2-2/README.md): o processo inteiro do codex-acp roda pela MXC, com ~/.codex e o cache do npm, e a rede só para o provedor dele; dentro da pasta sem cartão, fora negado. **Falta o OpenCode.** O caminho que o Pai escolheu (servidor privado dentro da contenção) foi testado em 2026-10-25 e esbarra num limite da MXC 1.0.1 (achados abaixo); a decisão voltou ao Pai. Na postura "do agente", nada de contenção, também por escolha do Pai.) o processo do harness inteiro roda dentro da contenção, com o domínio do provedor liberado (critério 3). **Depois da M2.3** (decisão de ordem de 2026-10-25, dentro da SPEC aprovada): o agente precisa da rede por proxy com lista de domínios, e o OpenCode 2 tem um serviço de fundo que precisa ser entendido antes (achados abaixo).
 - [x] **M2.3 Rede por cartão** (**feita em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T100502-0300-checagem-real-da-rede-por-cartao-m2-3/README.md)): a rede do comando contido só sai pelo proxy do núcleo; cada destino passa pela política (ferramenta `network`: pergunta por padrão, quatro escopos, curinga de host, negação vence, Plano nega, Sem perguntas libera); o destino novo vira o cartão "rede", e o log guarda cada destino e o perfil de cada comando (critério 4).
 - [x] **M2.4 Sem prompt dentro da pasta** com a contenção confirmada (critério 6; **feita em 2026-10-25**, junto da rotina rápida pedida pelo Pai, [checagem real](../../../docs/registros/2026-10-25T161548-0300-checagem-real-da-rotina-rapida-m2-4/README.md)): contido, o comando roda sem cartão, e o Plano continua negando; comando só de leitura e local roda sem ligar a rede (cerca de 270 ms a menos). Medido: contido 185 ms, com rede 454 ms, sem contenção 39 ms.
 - [ ] **M2.5 Preparo pela console:** "Preparar a contenção" e "Desfazer", com explicação, quando a biblioteca escolhida pedir administrador (critério 7).
@@ -54,6 +54,14 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
   - subir um `opencode serve` privado dentro da mesma contenção e ligar o `acp` a ele;
   - conter primeiro um agente sem serviço de fundo (o adaptador do Codex, que já foi aprovado).
 - **Consequência:** a contenção de agente é por agente. Cada um tem pastas, domínios e arquitetura próprios, e o perfil de cada um vem de pesquisa ao vivo e de um ensaio, nunca de suposição.
+
+## Achados do servidor privado do OpenCode (2026-10-25, caminho 2 do Pai)
+
+- **CONFIRMADO:** o `opencode serve` privado (sem `--service`) sobe dentro da contenção. O problema antigo era só o modo de serviço.
+- **CONFIRMADO:** o `acp` não aceita `--server` nem `--standalone`. O `serve --stdio` só informa o endereço HTTP.
+- **CONFIRMADO, fora da contenção:** um lançador (servidor privado com senha nova, e configuração e estado privados que apontam o `acp` para ele, sem ler a senha real do Pai) faz a sessão do `acp` abrir.
+- **CONFIRMADO, dentro da contenção:** falha. Com o proxy de rede, o loopback fica liberado só para o proxy, e o `acp` não alcança o próprio servidor. A MXC 1.0.1 recusa liberar `127.0.0.1` junto com o proxy ("networkProxy requires egress deny with no allow rules"). Sem o proxy, dois processos do mesmo contêiner conversam, mas o modelo só seria alcançado liberando endereços IP do provedor.
+- **Conclusão:** conter o OpenCode 2 hoje depende de uma mudança na MXC (loopback interno junto com o proxy) ou no OpenCode (`acp` apontando para um servidor). Uma terceira via é aceitar a rede do OpenCode por IP, sem cartão por domínio.
 
 ## Dependências e bloqueios
 

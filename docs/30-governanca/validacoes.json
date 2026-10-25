@@ -971,6 +971,19 @@
       "origem": "erro do buddy-dev em 2026-10-25 (registro da checagem real do Codex contido)",
       "explicacao": "Durante o teste do Codex preso, um script meu aprovou por engano a primeira execução do agente da Anthropic (Claude Agent), que o Pai nunca aprovou. O programa dele foi baixado para a pasta de cache do npm deste computador e provavelmente abriu e fechou sem fazer nada. Isso aconteceu no núcleo de ensaio, não no do Pai: no núcleo do Pai, o Claude Agent continua sem aprovação. Opções: apagar essa pasta do cache (o mais limpo; eu apago se o Pai autorizar, porque fica fora do repositório) ou deixar como está (não roda sozinho; só fica guardado). Recomendo apagar.",
       "evidencia": "Pai, 2026-10-25: \"Pode apagar\"; pasta _npx/304981f1e6ac6717 (claude-agent-acp@0.95.0, 8.261 arquivos, 332 MB) conferida e apagada pelo buddy-dev; nenhum processo a usava; nenhuma outra cópia no cache do npx"
+    },
+    {
+      "id": "opencode-contido-depois-do-caminho-2",
+      "descricao": "Escolher como seguir com o OpenCode contido depois do limite da MXC 1.0.1: esperar uma mudança (com pedidos públicos à MXC e ao OpenCode, se autorizados), liberar a rede do OpenCode por endereço IP do provedor, ou manter o OpenCode sem contenção",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M2.2"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "experimentos do caminho 2 em 2026-10-25 (plano do M2)",
+      "explicacao": "Testei o caminho escolhido pelo Pai: um servidor privado do OpenCode dentro da contenção. Ele sobe, e o OpenCode consegue usá-lo fora da contenção; dentro dela, não, porque a biblioteca de contenção da Microsoft não deixa, ao mesmo tempo, a internet passar pelo intermediário do Buddy e o OpenCode falar com o próprio servidor dentro do contêiner. Opções: (1) esperar a correção, abrindo pedidos públicos no GitHub da Microsoft e do OpenCode (só com autorização do Pai, porque é publicação em nome dele); (2) prender o OpenCode deixando a internet dele aberta para os endereços numéricos do provedor, sem o cartão por site (mais fraco e quebra quando o provedor muda de endereço); (3) manter o OpenCode como está, sem contenção, com o cartão de permissão do Buddy ou na postura dele. Recomendo 3 agora, com o 1 se o Pai autorizar os pedidos."
     }
   ]
 }

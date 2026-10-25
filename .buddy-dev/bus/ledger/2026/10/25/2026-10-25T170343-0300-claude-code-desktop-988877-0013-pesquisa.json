@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170343-0300-claude-code-desktop-988877-0013",
+  "ts": "2026-10-25T17:03:43-03:00",
+  "utc": "2026-10-25T20:03:43.146Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 13,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "pesquisa",
+  "summary": "caminho 2 do OpenCode (serve privado dentro da contenção), experimentos no Windows do Pai: (1) opencode serve privado SOBE contido; (2) o host não alcança a porta dele (ETIMEDOUT) e serve --stdio só informa a URL; (3) opencode acp não aceita --server nem --standalone; (4) com um lançador no contêiner (serve privado + configuração e estado privados com senha nova, sem ler a senha real), FORA da contenção a sessão abre (CONFIRMADO); (5) DENTRO, falha: com o proxy, o loopback fica só para o proxy, e a MXC 1.0.1 recusa liberar 127.0.0.1 junto do proxy ('networkProxy requires egress deny with no allow rules'); sem proxy, o modelo só por IP; dois processos no mesmo contêiner conversam pelo loopback só sem proxy (CONFIRMADO); nenhum processo nem porta do experimento ficou vivo",
+  "refs": [],
+  "data": {}
+}
