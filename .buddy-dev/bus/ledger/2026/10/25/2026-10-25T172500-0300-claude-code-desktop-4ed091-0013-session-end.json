@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172500-0300-claude-code-desktop-4ed091-0013",
+  "ts": "2026-10-25T17:25:00-03:00",
+  "utc": "2026-10-25T20:25:00.405Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 13,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "session-end",
+  "summary": "Pesquisa ao vivo do Cua (pedido do Pai): computador por agente, com os agentes por ACP e a configuração deles; limites (rede só por IP, sem política em QEMU no Windows, arquivos por cópia, Windows em prévia); ficha, M2.8 proposto (S2 adiantado) e decisão do Pai cua-spike-s2.",
+  "refs": [],
+  "data": {}
+}

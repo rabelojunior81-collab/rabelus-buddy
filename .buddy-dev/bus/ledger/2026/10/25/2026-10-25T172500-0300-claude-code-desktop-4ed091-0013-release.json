@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172500-0300-claude-code-desktop-4ed091-0013",
+  "ts": "2026-10-25T17:25:00-03:00",
+  "utc": "2026-10-25T20:25:00.621Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 13,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "release",
+  "summary": ".buddy-dev/diario/2026-10-25.md",
+  "refs": [],
+  "data": {}
+}
