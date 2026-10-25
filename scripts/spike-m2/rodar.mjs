@@ -82,6 +82,12 @@ async function bateria(nome, runOne) {
   await new Promise((x) => setTimeout(x, 2500));
   const orfao = existsSync(join(fora, 'orfao.txt'));
   const e10 = linhas.find((x) => x.id === 'E10');
+  // Escrita "feita" lá dentro só é fuga se o arquivo existir aqui fora: a contenção pode dar uma pasta própria por
+  // cima do caminho (o bubblewrap faz isso com a temporária; suspeita da CI no Linux).
+  for (const [cid, f] of [['E4', join(fora, 'escrito-de-dentro.txt')], ['E5', join(ws, '.git', 'escrito-de-dentro')], ['E11', join(hostTemp, 'rbuddy-spike-fuga.txt')]]) {
+    const l = linhas.find((x) => x.id === cid);
+    if (l.feito === true && !existsSync(f)) { l.feito = false; l.detalhe = 'escreveu numa cópia privada; nada chegou aqui fora'; }
+  }
   if (e10.feito !== null) { e10.feito = orfao; e10.detalhe = orfao ? 'o processo solto escreveu fora' : 'o processo solto não escreveu fora'; }
   const fugas = linhas.filter((x) => x.id.startsWith('E'));
   const legit = linhas.filter((x) => x.id.startsWith('L'));
