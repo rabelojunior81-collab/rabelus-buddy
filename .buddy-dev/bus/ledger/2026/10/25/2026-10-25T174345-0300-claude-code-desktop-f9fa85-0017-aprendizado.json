@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174345-0300-claude-code-desktop-f9fa85-0017",
+  "ts": "2026-10-25T17:43:45-03:00",
+  "utc": "2026-10-25T20:43:45.491Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 17,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "aprendizado",
+  "summary": "lição do lote #0045: todo teste na máquina do Pai tem efeitos colaterais além do que se mede (o que subiu junto, o que saiu pela rede, o que ficou em disco); devolver ao estado anterior faz parte do teste; 899c75f",
+  "refs": [],
+  "data": {}
+}
