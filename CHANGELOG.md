@@ -10,6 +10,9 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Spike de contenção** (M2.0, 2026-10-25): duas bibliotecas medidas com 12 tentativas de fuga e 10 comandos normais, no Windows do Pai e na CI; a da Microsoft (MXC) foi escolhida pelo Pai (ADR 0019).
+- **Comandos do Buddy contidos pelo sistema** (M2.1, 2026-10-25; ADR 0019). Um comando aprovado roda dentro da pasta de trabalho: lê e escreve só ali, não lê `.env` nem chaves, não escreve no `.git` e não acessa a rede. Sem suporte na máquina, roda como antes, e o log diz por quê. A contenção se desliga com `RBUDDY_CONTAINMENT=off`. O Buddy fica sabendo quando um acesso foi negado pela contenção.
+
 - **Console nova validada pelo Pai** (M1.5 e M1.5d, 2026-10-21): o ChatGPT com esforço alto, o OpenCode com o modelo escolhido e duas mensagens seguidas, e a escrita aprovada "Nesta conversa" sem novo cartão.
 - **Comando também com "nesta conversa", "neste projeto" e "sempre"** (2026-10-21, decisão do Pai). A aprovação vale só para o comando exatamente igual: um comando parecido ou encadeado pergunta de novo, e nenhuma regra libera comando.
 - **Modelo gratuito sinalizado.** No seletor de Modelo de um agente, os modelos gratuitos levam a marca "gratuito"; com um deles escolhido, a caixa avisa que ele tem fila e limite e pode demorar, ficar mudo ou entregar menos.

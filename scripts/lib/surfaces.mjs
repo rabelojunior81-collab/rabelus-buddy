@@ -90,7 +90,8 @@ export function staleProposals(root) {
     for (const n of accepted) {
       // "ADR 0013, proposta", "ADR 0013 (proposta" e "[ADR 0013](link longo) proposta".
       const re = new RegExp(`ADR[\\s\\[]*${n}\\]?(\\([^)]*\\))?[^\\n|]{0,16}?propost`, 'i');
-      const hit = text.split('\n').find((l) => re.test(l) && !/~~/.test(l));
+      // A linha da main no STATUS cita o título do último merge, que é histórico (lacuna de 2026-10-25).
+      const hit = text.split('\n').find((l) => re.test(l) && !/~~/.test(l) && !/^\|\s*`main`\s*\|/.test(l));
       if (hit) gaps.push(`${p}: ADR ${n} citada como proposta, mas está aceita → "${hit.trim().slice(0, 90)}"`);
     }
   }

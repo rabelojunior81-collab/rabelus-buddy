@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T092205-0300-claude-code-desktop-983845-0012",
+  "ts": "2026-10-25T09:22:05-03:00",
+  "utc": "2026-10-25T12:22:05.638Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 12,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "feat",
+  "summary": "M2.1: packages/core/src/sandbox (perfil por pasta: leitura e escrita na pasta, .git/.buddy-dev/archive só leitura, segredos negados, pastas acima só para listar, interface ligada no Windows, rede negada; status confirmado por execução real; chave RBUDDY_CONTAINMENT=off); CommandTool assíncrono roda contido quando confirmado e registra contained/containment ou o motivo; resultado e descrição da ferramenta dizem ao modelo que rodou contido; CI do Linux com bubblewrap; teste contencao (7) antes do código; suíte 464/464; 8c16397",
+  "refs": [],
+  "data": {}
+}
