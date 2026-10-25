@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T160313-0300-claude-code-desktop-901c38-0004",
+  "ts": "2026-10-25T16:03:13-03:00",
+  "utc": "2026-10-25T19:03:13.667Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 4,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-postura-propria-do-agente",
+  "type": "feat",
+  "summary": "postura do agente (harnessPosture native): o Buddy não injeta permission ask no OpenCode nem impõe read-only no Codex; o seletor de modo do agente aparece; a escolha fica no log (harness.posture) e por agente na console, com aviso; o que o agente perguntar continua no cartão; teste postura-do-agente (5) antes; b9622ee",
+  "refs": [],
+  "data": {}
+}

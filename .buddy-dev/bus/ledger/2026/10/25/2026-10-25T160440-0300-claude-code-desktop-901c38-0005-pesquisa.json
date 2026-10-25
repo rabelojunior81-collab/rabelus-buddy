@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T160440-0300-claude-code-desktop-901c38-0005",
+  "ts": "2026-10-25T16:04:40-03:00",
+  "utc": "2026-10-25T19:04:40.006Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 5,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-postura-propria-do-agente",
+  "type": "pesquisa",
+  "summary": "ensaio no navegador in-app com o OpenCode real: a pílula de postura aparece na caixa (pelo Buddy), trocar para 'do agente' mostra o aviso, e a mensagem foi respondida ('Oi!') na postura do próprio agente",
+  "refs": [],
+  "data": {}
+}

@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Postura do próprio agente** (2026-10-25, pedido do Pai). Na caixa, cada agente pode seguir a postura do Buddy (o padrão: pergunta antes de escrever ou rodar, modo só leitura no Codex) ou a configuração dele mesmo. Com a postura do agente, o Buddy não injeta nada e mostra um aviso fixo; o que o agente ainda perguntar continua chegando pelo cartão.
+
 - **Rede por cartão** (M2.3, 2026-10-25). Um comando contido só alcança a internet pelo proxy do Buddy. Cada site novo vira um cartão "rede", com uma vez, nesta conversa, neste projeto ou sempre; o site negado devolve 403 ao comando. O log guarda cada destino.
 
 - **Spike de contenção** (M2.0, 2026-10-25): duas bibliotecas medidas com 12 tentativas de fuga e 10 comandos normais, no Windows do Pai e na CI; a da Microsoft (MXC) foi escolhida pelo Pai (ADR 0019).

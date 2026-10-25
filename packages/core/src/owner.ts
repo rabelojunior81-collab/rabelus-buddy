@@ -250,7 +250,10 @@ export async function startOwner(home: string): Promise<Owner> {
   // (docs/20-conhecimento/acp-permissoes-dos-harnesses.md): o OpenCode pergunta com permission ask, recebida só no
   // processo filho (a configuração do Pai não é tocada); harness que declara o modo read-only (Codex) o recebe.
   const OPENCODE_ASK = JSON.stringify({ permission: { edit: 'ask', bash: 'ask', webfetch: 'ask', websearch: 'ask', task: 'ask', external_directory: 'ask' } });
-  const postureOf = (h: { id: string; spec: LaunchSpec }): LaunchSpec => (h.id === 'opencode' ? { ...h.spec, env: { ...h.spec.env, OPENCODE_CONFIG_CONTENT: OPENCODE_ASK } } : h.spec);
+  // Postura "do agente" (pedido do Pai em 2026-10-25): nada é injetado; o agente segue a própria configuração.
+  type Posture = 'buddy' | 'native';
+  const postureOfParam = (v: unknown): Posture => (v === 'native' ? 'native' : 'buddy');
+  const postureOf = (h: { id: string; spec: LaunchSpec }, posture: Posture = 'buddy'): LaunchSpec => (posture === 'buddy' && h.id === 'opencode' ? { ...h.spec, env: { ...h.spec.env, OPENCODE_CONFIG_CONTENT: OPENCODE_ASK } } : h.spec);
   // Tipo de ação do ACP → ferramenta da política (ADR 0009). Leitura e busca são leitura; edição, remoção e movimento
   // são escrita; execução e o que não se conhece pedem aprovação de uma vez, como comando.
   const WRITES = ['edit', 'delete', 'move'];
@@ -258,7 +261,8 @@ export async function startOwner(home: string): Promise<Owner> {
   type HarnessRef = { id: string; name: string; spec: LaunchSpec };
   // Um turno com o harness, com a postura, as permissões pelo núcleo e o andamento no log da execução. Serve à
   // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
-  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string>; permMode?: PermMode }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+  const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string>; permMode?: PermMode; posture?: Posture }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
+    const posture = o.posture ?? 'buddy';
     const policy = new Policy(log, { workspace: o.workspace, mode: o.permMode ?? 'manual' });
     let reasoning = '';
     const titles = new Map<string, string>();
@@ -266,13 +270,13 @@ export async function startOwner(home: string): Promise<Owner> {
     const asked = new Set<string>();
     const warned = new Set<string>();
     let denied = false;
-    const r = await promptTurn(postureOf(h), {
-      cwd: o.workspace, task: o.task, signal: o.signal, preferMode: 'read-only',
+    const r = await promptTurn(postureOf(h, posture), {
+      cwd: o.workspace, task: o.task, signal: o.signal, ...(posture === 'buddy' ? { preferMode: 'read-only' } : {}),
       // Opções escolhidas pelo Pai (critério 18): modelo, esforço e modo do agente, aplicados antes da tarefa.
       ...(o.configValues && Object.keys(o.configValues).length ? { configValues: o.configValues, onApplied: (values: Record<string, string>) => log.append(session, 'harness.options.applied', { run, id: h.id, values }) } : {}),
       // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
       files: o.files ?? [],
-      onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, config: h.id === 'opencode' ? 'permission ask' : null }),
+      onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, posture, config: posture === 'buddy' && h.id === 'opencode' ? 'permission ask' : null }),
       onUpdate: (u) => {
         if (u.kind === 'tool') {
           const title = u.title || titles.get(u.id) || u.id;
@@ -353,7 +357,7 @@ export async function startOwner(home: string): Promise<Owner> {
       const effect = domain.beginEffect(session, run, 'harness.prompt', `${run}:acp:${h.id}`, h.id).id;
       const stopped = (reason: string, text = ''): AgentResult => { domain.stopRun(run, reason); return { run, outcome: 'stopped', reason, text, steps: 1 }; };
       try {
-        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)), configValues: harnessOptionsOf(p.harnessOptions), permMode: permModeOf(p.permMode) });
+        const { r, denied, reasoning } = await harnessTurn(session, run, h, { task, workspace, interactive, signal: ac.signal, files: attachments.map((a) => loadAttachment(workspace, a)), configValues: harnessOptionsOf(p.harnessOptions), permMode: permModeOf(p.permMode), posture: postureOfParam(p.harnessPosture) });
         domain.completeEffect(effect, { stopReason: r.stopReason, ...(r.agent ? { agent: r.agent } : {}) });
         if (reasoning) log.append(session, 'agent.reasoning', { run, step: 1, route: routeName, text: reasoning.slice(0, 20_000) });
         if (r.text) log.append(session, 'agent.message', { run, message: { role: 'assistant', content: r.text } });
@@ -506,7 +510,7 @@ export async function startOwner(home: string): Promise<Owner> {
         if (!p.workspace) throw new DomainError(-32602, 'workspace obrigatório');
         effort(p.effort); route(p.route); // valida já, não na hora de rodar
         const queue = `q-${randomBytes(4).toString('hex')}`;
-        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR', permMode: permModeOf(p.permMode), ...(p.harnessOptions ? { harnessOptions: harnessOptionsOf(p.harnessOptions) } : {}) });
+        log.append(session, 'run.queued', { queue, task: String(p.task), effort: effort(p.effort) ?? null, route: route(p.route) ?? null, workspace: String(p.workspace), interactive: p.interactive === true, harness: h?.id ?? null, attachments: atts.map((a) => a.hash), lang: p.lang === 'en' ? 'en' : 'pt-BR', permMode: permModeOf(p.permMode), ...(p.harnessOptions ? { harnessOptions: harnessOptionsOf(p.harnessOptions) } : {}), ...(p.harnessPosture === 'native' ? { harnessPosture: 'native' } : {}) });
         return { queued: queue };
       }
       if (h) return { run: startHarnessRun(session, String(p.task), p, h) };
@@ -591,15 +595,18 @@ export async function startOwner(home: string): Promise<Owner> {
     // agente. A opção de modo que serve de postura (read-only do Codex) não é oferecida: a postura vence.
     'harness.options': async (p) => {
       const h = await harnessFor(String(p.id));
-      const hit = optionsCache.get(h.id);
+      const posture = postureOfParam(p.posture);
+      const key = `${h.id}:${posture}`;
+      const hit = optionsCache.get(key);
       if (hit && Date.now() - hit.at < 10 * 60_000) return { options: hit.options };
       const cwd = join(home, 'area-de-trabalho');
       mkdirSync(cwd, { recursive: true });
       try {
-        const all = await describeSession(postureOf(h), cwd);
-        const posture = postureOption(all, 'read-only');
-        const options = all.filter((o) => o !== posture && o.options.length > 0);
-        optionsCache.set(h.id, { at: Date.now(), options });
+        const all = await describeSession(postureOf(h, posture), cwd);
+        // Na postura do Buddy, a opção de modo que serve de postura não vira seletor; na do agente, aparece.
+        const imposed = posture === 'buddy' ? postureOption(all, 'read-only') : undefined;
+        const options = all.filter((o) => o !== imposed && o.options.length > 0);
+        optionsCache.set(key, { at: Date.now(), options });
         return { options };
       } catch (e) {
         if (e instanceof NeedsLogin) throw new DomainError(-32004, `${h.name} pede login antes de mostrar as opções`, { id: h.id, methods: e.methods });
