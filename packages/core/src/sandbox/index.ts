@@ -15,7 +15,8 @@ import { dirname, join, basename, delimiter, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { ExecResult } from '../tools/command.ts';
 
-export interface Profile { readwrite: string[]; readonly: string[]; denied: string[]; enumerate: string[] }
+// path: o PATH que montou o perfil; o comando contido roda com ele (achado da checagem real da M2.3).
+export interface Profile { readwrite: string[]; readonly: string[]; denied: string[]; enumerate: string[]; path?: string }
 export interface ContainmentStatus { ok: boolean; level?: string; reason?: string }
 // Rede do comando contido: só pelo proxy do núcleo (sem isto, rede toda negada).
 export interface NetAccess { proxyUrl: string }
@@ -88,6 +89,8 @@ function runtimeDirs(workspace: string, env: NodeJS.ProcessEnv, platform: NodeJS
     if (platform === 'win32' && ['bin', 'cmd'].includes(basename(d).toLowerCase()) && dirname(parent) !== parent && !/program files( \(x86\))?$/i.test(parent)) dirs.add(parent);
   }
   if (platform !== 'win32') for (const d of ['/usr', '/lib', '/lib64', '/bin', '/etc']) if (isDir(d)) dirs.add(d);
+  // O npm.cmd do Node entrega a execução ao npm global do usuário quando ele existe, mesmo fora do PATH.
+  if (platform === 'win32' && env.APPDATA && isDir(join(env.APPDATA, 'npm'))) dirs.add(join(env.APPDATA, 'npm'));
   return [...dirs];
 }
 
@@ -95,10 +98,12 @@ export function profileFor(workspace: string, { env = process.env, platform = pr
   const protectedDirs = READ_ONLY_DIRS.map((d) => join(workspace, d)).filter(isDir);
   const readonly = [...runtimeDirs(workspace, env, platform), ...protectedDirs];
   return {
+    path: String(env.PATH ?? env.Path ?? ''),
     readwrite: [workspace],
     readonly,
     denied: secretsUnder(workspace),
-    enumerate: [...new Set([...readonly, workspace].flatMap(above))].filter((d) => !inside(d, workspace)),
+    // "Só listar" rebaixa a pasta: nunca dentro de uma pasta liberada (a de trabalho ou uma só leitura).
+    enumerate: [...new Set([...readonly, workspace].flatMap(above))].filter((d) => ![workspace, ...readonly].some((root) => inside(d, root))),
   };
 }
 
@@ -123,7 +128,8 @@ export function mxcContainment({ env = process.env, platform = process.platform,
       workingDirectory: cwd,
       filesystem: { readwritePaths: p.readwrite, readonlyPaths: p.readonly, deniedPaths: p.denied },
       network,
-      ...(net ? { environment: { HTTPS_PROXY: net.proxyUrl, HTTP_PROXY: net.proxyUrl, https_proxy: net.proxyUrl, http_proxy: net.proxyUrl }, inheritDefaultEnvironment: true } : {}),
+      environment: { ...(p.path ? { PATH: p.path } : {}), ...(net ? { HTTPS_PROXY: net.proxyUrl, HTTP_PROXY: net.proxyUrl, https_proxy: net.proxyUrl, http_proxy: net.proxyUrl } : {}) },
+      inheritDefaultEnvironment: true,
       ...(platform === 'win32' ? { ui: { disable: false }, containment: { type: 'processcontainer' as const, config: { filesystem: { enumeratePaths: p.enumerate } } } } : {}),
       timeoutMs,
     });

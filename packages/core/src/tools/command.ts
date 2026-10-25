@@ -36,7 +36,9 @@ export class CommandTool {
     if (d.effect !== 'allow') return { ok: false, reason: d.effect === 'ask' ? 'needsApproval' : d.reason };
     const st = this.containment ? await this.containment.status() : { ok: false, reason: 'sem contenção configurada' };
     let result: ExecResult;
+    let profile: ReturnType<typeof profileFor> | undefined;
     if (st.ok) {
+      profile = profileFor(this.workspace);
       // A rede do comando contido só sai pelo proxy; cada destino passa pela política e fica no log.
       const px = await netProxy(async (host, port) => {
         const nd = this.policy.decide({ session, tool: 'network', target: host }, ctx);
@@ -44,10 +46,10 @@ export class CommandTool {
         this.policy.log.append(session, 'network.request', { host, port, allowed, reason: nd.effect === 'ask' ? (allowed ? 'aprovação humana' : 'negado') : nd.reason });
         return allowed;
       });
-      try { result = await this.containment!.run(command, this.workspace, profileFor(this.workspace), { proxyUrl: px.url }); }
+      try { result = await this.containment!.run(command, this.workspace, profile, { proxyUrl: px.url }); }
       finally { await px.close(); }
     } else result = await this.exec(command, this.workspace);
-    this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok ? { containment: st.level } : { reason: st.reason }) });
+    this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok ? { containment: st.level, profile: { readwrite: profile!.readwrite, readonly: profile!.readonly, denied: profile!.denied.length } } : { reason: st.reason }) });
     return { ok: true, result: { ...result, contained: st.ok } };
   }
 }
