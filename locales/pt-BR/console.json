@@ -308,6 +308,12 @@
       "auto": "Automático",
       "yolo": "Sem perguntas",
       "yoloWarn": "Modo sem perguntas: dentro da pasta de trabalho, tudo roda sem pedir. Fora da pasta continua perguntando, e as áreas protegidas continuam bloqueadas."
+    },
+    "posture": {
+      "label": "Postura",
+      "buddy": "pelo Buddy",
+      "native": "do agente",
+      "nativeWarn": "{{name}} segue a configuração dele: o Buddy não impõe \"perguntar antes\" nem o modo só leitura, e só vê o que ele mesmo perguntar. Áreas protegidas continuam negadas quando ele pede."
     }
   }
 }

@@ -308,6 +308,12 @@
       "auto": "Automatic",
       "yolo": "No questions",
       "yoloWarn": "No-questions mode: inside the working folder, everything runs without asking. Outside the folder it still asks, and protected areas stay blocked."
+    },
+    "posture": {
+      "label": "Posture",
+      "buddy": "by Buddy",
+      "native": "agent's own",
+      "nativeWarn": "{{name}} follows its own configuration: Buddy does not impose \"ask first\" or read-only mode, and only sees what it asks. Protected areas stay denied when it asks."
     }
   }
 }

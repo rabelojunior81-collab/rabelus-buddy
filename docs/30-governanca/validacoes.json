@@ -953,9 +953,10 @@
         "M2.2"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "achados da M2.2 em 2026-10-25",
-      "explicacao": "Os comandos do Buddy já rodam presos à pasta de trabalho. Falta prender os agentes de fora, começando pelo OpenCode. A versão 2 do OpenCode trabalha por um serviço de fundo que fica rodando no computador, e esse serviço não consegue subir dentro da contenção; o modo de conversa que o Buddy usa não tem a opção de rodar sem ele. Há três caminhos: pedir ao projeto do OpenCode essa opção (precisa abrir um pedido público no GitHub deles, em nome do Pai); montar um servidor privado do OpenCode dentro da contenção (mais trabalho, mais frágil a cada versão nova); ou conter primeiro o agente do ChatGPT/Codex, que não tem serviço de fundo, e voltar ao OpenCode quando houver a opção. Recomendo o terceiro, com o pedido ao projeto em paralelo se o Pai autorizar."
+      "explicacao": "Os comandos do Buddy já rodam presos à pasta de trabalho. Falta prender os agentes de fora, começando pelo OpenCode. A versão 2 do OpenCode trabalha por um serviço de fundo que fica rodando no computador, e esse serviço não consegue subir dentro da contenção; o modo de conversa que o Buddy usa não tem a opção de rodar sem ele. Há três caminhos: pedir ao projeto do OpenCode essa opção (precisa abrir um pedido público no GitHub deles, em nome do Pai); montar um servidor privado do OpenCode dentro da contenção (mais trabalho, mais frágil a cada versão nova); ou conter primeiro o agente do ChatGPT/Codex, que não tem serviço de fundo, e voltar ao OpenCode quando houver a opção. Recomendo o terceiro, com o pedido ao projeto em paralelo se o Pai autorizar.",
+      "evidencia": "Pai, 2026-10-25: \"Codex primeiro + 2 depois\" (conter primeiro o Codex; depois o OpenCode por um serve privado dentro da contenção); e pediu uma rotina simplificada e segura para a rapidez da contenção, e uma forma de trabalhar com o OpenCode sem contenção, do jeito que ele mesmo se configura"
     }
   ]
 }
