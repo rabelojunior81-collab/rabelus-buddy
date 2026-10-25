@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174218-0300-claude-code-desktop-f9fa85-0013",
+  "ts": "2026-10-25T17:42:18-03:00",
+  "utc": "2026-10-25T20:42:18.977Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 13,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "claim",
+  "summary": "CHANGELOG.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T21:12:18.977Z",
+    "tookOverFrom": null
+  }
+}

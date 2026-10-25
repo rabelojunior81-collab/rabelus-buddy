@@ -994,9 +994,23 @@
         "M2.8"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "pedido do Pai em 2026-10-25 (explorar o Cua para a contenção)",
-      "explicacao": "O Cua dá a cada agente um computador inteiro (um contêiner), onde o OpenCode, o Codex e os outros rodam com a configuração deles, inclusive o serviço de fundo que a contenção atual não deixa o OpenCode usar. O Buddy falaria com eles pelo mesmo protocolo de hoje, a internet passaria pelo intermediário do Buddy, e os arquivos entrariam e sairiam por cópia, com o diff para o Pai aprovar. Para saber se funciona no Windows do Pai, proponho um teste: instalar só a biblioteca do Cua numa pasta separada (fora do projeto), usar o Docker Desktop que já está no computador, e medir: o OpenCode e o Codex rodando lá dentro, a internet só pelo Buddy, a cópia dos arquivos, o tempo e a memória. Fica de fora: o aplicativo Cua Spaces (no Windows ele é uma prévia e abre no login), a máquina virtual QEMU e qualquer mudança nas configurações do Windows. Recomendo aprovar o teste nesses limites."
+      "explicacao": "O Cua dá a cada agente um computador inteiro (um contêiner), onde o OpenCode, o Codex e os outros rodam com a configuração deles, inclusive o serviço de fundo que a contenção atual não deixa o OpenCode usar. O Buddy falaria com eles pelo mesmo protocolo de hoje, a internet passaria pelo intermediário do Buddy, e os arquivos entrariam e sairiam por cópia, com o diff para o Pai aprovar. Para saber se funciona no Windows do Pai, proponho um teste: instalar só a biblioteca do Cua numa pasta separada (fora do projeto), usar o Docker Desktop que já está no computador, e medir: o OpenCode e o Codex rodando lá dentro, a internet só pelo Buddy, a cópia dos arquivos, o tempo e a memória. Fica de fora: o aplicativo Cua Spaces (no Windows ele é uma prévia e abre no login), a máquina virtual QEMU e qualquer mudança nas configurações do Windows. Recomendo aprovar o teste nesses limites.",
+      "evidencia": "Pai, 2026-10-25 (\"Aprovo o teste do Cua (M2.8) nos limites propostos: só a biblioteca numa pasta separada, com o Docker que já tenho, sem o app Spaces, sem QEMU e sem mudar configurações do Windows. Abra a sessão nova e siga.\")"
+    },
+    {
+      "id": "cua-depois-do-spike",
+      "descricao": "Decidir como seguir com o Cua depois do spike: adotar com a rede livre dentro do computador, testar uma rede controlada por um contêiner-proxy do Docker (sem mudar o Windows), ou não adotar agora",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M2.8"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "spike do Cua em 2026-10-25",
+      "explicacao": "O teste mostrou que o Cua, no computador do Pai, protege os arquivos e o resto da máquina: cada agente roda num computador próprio, sem ver as pastas do Pai, e o trabalho volta por cópia, pronto para o Pai aprovar o que mudou. O que ele não faz no Windows é controlar a internet do agente: lá dentro ela fica livre, e nem a regra do Cua nem o intermediário do Buddy chegam ao contêiner sem mudar o Windows. Opções: (1) adotar assim: o agente age como num computador comum, com a internet dele, e o Buddy só controla o que entra e o que sai em arquivos (o que vaza, no pior caso, são os arquivos copiados e a chave do modelo daquela execução); (2) antes de decidir, testar uma rede controlada dentro do próprio Docker: um contêiner pequeno do Buddy como único caminho para a internet, sem mudar o Windows; (3) não adotar agora e seguir com a contenção atual. Recomendo a 2, por ser um teste curto e dentro dos mesmos limites; se não der, a 1 com o aviso claro."
     }
   ]
 }

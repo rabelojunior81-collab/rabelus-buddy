@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174201-0300-claude-code-desktop-f9fa85-0008",
+  "ts": "2026-10-25T17:42:01-03:00",
+  "utc": "2026-10-25T20:42:01.365Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 8,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "pesquisa",
+  "summary": "spike do Cua no Windows do Pai (M2.8), CONFIRMADO: contêiner Linux do Cua pelo Docker Desktop (runc, sem gVisor) criado em 91 s na primeira vez (imagem 4,6 GB), cua-spacesd em 9 ms, ~800 MB parado; OpenCode (o Cua instala o 1.18.32) respondeu por ACP em 35 s com a chave só na execução; nenhuma pasta do Windows visível no contêiner; ida e volta de arquivo: enviado 8 ms, o agente alterou (3 ferramentas), artifacts listou, baixado 2 ms; BLOQUEIO: a política de saída do Cua é recusada no Docker Desktop do Windows ('Operation not supported') e o contêiner não alcança o proxy do Buddy no loopback; sem política, internet livre; usuário com sudo sem senha (regra de rede dentro do contêiner não segura); telemetria do Cua ligada por padrão (desligada por env nas execuções seguintes; a primeira PROVAVELMENTE enviou tempos e erros); limpeza: computador apagado, Docker Desktop desligado, imagem de 4,6 GB e ~/.cua ficaram",
+  "refs": [],
+  "data": {}
+}
