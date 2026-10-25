@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T162855-0300-claude-code-desktop-901c38-0022",
+  "ts": "2026-10-25T16:28:55-03:00",
+  "utc": "2026-10-25T19:28:55.527Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 22,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "decisao",
+  "summary": "no núcleo de ensaio (estado próprio), aprovei a primeira execução de @agentclientprotocol/codex-acp@2.2.2, a mesma versão que o Pai aprovou para o núcleo dele em 2026-10-18 (validação aprovar-codex-primeira-execucao), já no cache do npm, para a checagem real da M2.2",
+  "refs": [],
+  "data": {}
+}

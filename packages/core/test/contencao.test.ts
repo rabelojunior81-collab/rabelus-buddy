@@ -135,6 +135,19 @@ test('M2.4: contido, o comando roda sem cartão; sem contenção, nada roda sem 
   assert.deepEqual(solto.spawned, [], 'sem contenção e sem concessão, nada roda');
 });
 
+// M2.2 com o Codex (checagem real de 2026-10-25): o agente contido escreve pelo próprio processo, que o sistema prende à
+// pasta. Escrita dentro da pasta, contida, passa sem cartão; caminho protegido continua negado; fora da pasta, negado.
+test('contido, a escrita dentro da pasta passa; protegido e fora da pasta não', () => {
+  const { dir, ws } = cenario();
+  const log = new EventLog(openDatabase(join(dir, 'n.db')));
+  const policy = new Policy(log, { workspace: ws });
+  const w = (target: string) => ({ session: 's1', tool: 'write_file' as const, target, contained: true });
+  assert.equal(policy.decide(w(join(ws, 'a.txt')), { interactive: true }).effect, 'allow');
+  assert.equal(policy.decide(w(join(ws, '.env')), { interactive: true }).effect, 'deny', 'protegido');
+  assert.equal(policy.decide(w(join(dir, 'fora.txt')), { interactive: true }).effect, 'deny', 'fora da pasta');
+  assert.equal(policy.decide({ ...w(join(ws, 'a.txt')), contained: false }, { interactive: true }).effect, 'ask', 'sem contenção, pergunta');
+});
+
 test('M2.4: o modo Plano continua negando o comando, mesmo contido', async () => {
   const calls: string[] = [];
   const { dir, ws } = cenario();

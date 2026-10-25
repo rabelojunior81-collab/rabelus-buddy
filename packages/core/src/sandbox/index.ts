@@ -9,11 +9,15 @@
 // A contenção só vale depois de confirmada por uma execução real (status); sem ela, o comando roda como antes.
 
 import { readdirSync, statSync } from 'node:fs';
+import { EventEmitter } from 'node:events';
+import type { Readable, Writable } from 'node:stream';
+import type { ChildProcess } from 'node:child_process';
 import { createServer } from 'node:http';
 import { connect, type Socket } from 'node:net';
 import { dirname, join, basename, delimiter, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { ExecResult } from '../tools/command.ts';
+import type { LaunchSpec } from '../harness/client.ts';
 
 // path: o PATH que montou o perfil; o comando contido roda com ele (achado da checagem real da M2.3).
 export interface Profile { readwrite: string[]; readonly: string[]; denied: string[]; enumerate: string[]; path?: string }
@@ -23,6 +27,51 @@ export interface NetAccess { proxyUrl: string }
 export interface Containment {
   status(): Promise<ContainmentStatus>;
   run(command: string, cwd: string, profile: Profile, net?: NetAccess): Promise<ExecResult>;
+  // Processo de longa duração com os fluxos abertos (o agente de fora, M2.2).
+  spawn?(command: string, cwd: string, profile: Profile, net?: NetAccess, env?: Record<string, string>): Promise<ContainedProcess>;
+}
+
+// O que o núcleo usa de um processo da MXC (MxcProcess).
+export interface ContainedProcess {
+  readonly id: number;
+  readonly standardInput: Writable | null;
+  readonly standardOutput: Readable | null;
+  readonly standardError: Readable | null;
+  wait(): Promise<{ exitCode: number; timedOut: boolean }>;
+  kill(): void;
+  dispose?(): void;
+}
+
+// Perfil de agente (M2.2): as pastas dele com escrita e os domínios do provedor liberados de saída, medidos ao vivo.
+// Codex (codex-acp 2.2.2 pelo npx, 2026-10-25): ~/.codex (sessões e login) e o cache do npm; rede só para chatgpt.com
+// (e o registro do npm, que o npx confere). OpenCode 2 fica de fora: o serviço de fundo dele não sobe contido.
+export interface AgentProfile { readwrite: string[]; domains: string[] }
+export function agentProfile(id: string, env: NodeJS.ProcessEnv = process.env): AgentProfile | undefined {
+  const home = String(env.USERPROFILE ?? env.HOME ?? '');
+  if (!home) return undefined;
+  const npmCache = env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'npm-cache') : join(home, '.npm');
+  if (id === 'codex-acp') return { readwrite: [join(home, '.codex'), npmCache], domains: ['chatgpt.com', 'registry.npmjs.org'] };
+  return undefined;
+}
+
+// Processo contido com a cara de um processo filho: fluxos, pid, exitCode, eventos exit/error e kill.
+export type ContainedChild = ChildProcess & { contained: true };
+export function containedChild(p: ContainedProcess): ContainedChild {
+  const e = new EventEmitter() as EventEmitter & Record<string, unknown>;
+  Object.assign(e, { contained: true, pid: p.id, exitCode: null, signalCode: null, stdin: p.standardInput, stdout: p.standardOutput, stderr: p.standardError });
+  e.kill = () => { try { p.kill(); } catch { /* já saiu */ } return true; };
+  p.wait().then((r) => { e.exitCode = r.timedOut ? 124 : r.exitCode; e.emit('exit', e.exitCode, null); try { p.dispose?.(); } catch { /* já liberado */ } }, (err) => e.emit('error', err));
+  return e as unknown as ContainedChild;
+}
+
+const q = (a: string) => (a === '' || /[\s"]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a);
+// Lançador contido para o promptTurn: a linha do agente (npx, .cmd ou binário) passa pelo shell, como no spawnHarness.
+export function containedLaunch(c: Containment, o: { profile: Profile; net?: NetAccess }): (spec: LaunchSpec, cwd: string) => Promise<ChildProcess> {
+  return async (spec, cwd) => {
+    if (!c.spawn) throw new Error('a contenção não abre processo de longa duração');
+    const p = await c.spawn([spec.cmd, ...spec.args].map(q).join(' '), cwd, o.profile, o.net, spec.env);
+    return containedChild(p);
+  };
 }
 
 // Proxy de rede do núcleo (M2.3): HTTP CONNECT em 127.0.0.1, porta livre. Cada destino passa por `decide` (a política,
@@ -94,6 +143,14 @@ function runtimeDirs(workspace: string, env: NodeJS.ProcessEnv, platform: NodeJS
   return [...dirs];
 }
 
+// Acrescenta pastas a um perfil (as do agente, M2.2) e refaz o "só listar": nunca dentro de uma pasta liberada.
+export function extendProfile(p: Profile, add: { readwrite?: string[]; readonly?: string[] }): Profile {
+  const readwrite = [...new Set([...p.readwrite, ...(add.readwrite ?? [])])];
+  const readonly = [...new Set([...p.readonly, ...(add.readonly ?? [])])];
+  const roots = [...readwrite, ...readonly];
+  return { ...p, readwrite, readonly, enumerate: [...new Set(roots.flatMap(above))].filter((d) => !roots.some((r) => inside(d, r))) };
+}
+
 export function profileFor(workspace: string, { env = process.env, platform = process.platform }: { env?: NodeJS.ProcessEnv; platform?: NodeJS.Platform } = {}): Profile {
   const protectedDirs = READ_ONLY_DIRS.map((d) => join(workspace, d)).filter(isDir);
   const readonly = [...runtimeDirs(workspace, env, platform), ...protectedDirs];
@@ -117,22 +174,25 @@ export function mxcContainment({ env = process.env, platform = process.platform,
   let mxc: Promise<Mxc> | undefined;
   let checked: Promise<ContainmentStatus> | undefined;
   const load = () => (mxc ??= import('@microsoft/mxc-sdk/v1'));
-  const exec = async (m: Mxc, command: string, cwd: string, p: Profile, net?: NetAccess): Promise<ExecResult> => {
+  const request = (command: string, cwd: string, p: Profile, net?: NetAccess, extraEnv: Record<string, string> = {}) => {
     // Com proxy, cada backend quer a entrada de um jeito (achados do spike): ProcessContainer e Seatbelt exigem a
     // entrada liberada com o loopback do host; o bubblewrap recusa regras de entrada. A saída continua negada.
     const network = net
       ? { egress: { default: 'deny' as const }, ...(platform === 'linux' ? {} : { ingress: { default: 'allow' as const, hostLoopback: 'allow' as const } }), runtimeConfig: { networkProxy: net.proxyUrl } }
       : { egress: { default: 'deny' as const } };
-    const r = await m.run({
+    return {
       command: shellLine(command, platform),
       workingDirectory: cwd,
       filesystem: { readwritePaths: p.readwrite, readonlyPaths: p.readonly, deniedPaths: p.denied },
       network,
-      environment: { ...(p.path ? { PATH: p.path } : {}), ...(net ? { HTTPS_PROXY: net.proxyUrl, HTTP_PROXY: net.proxyUrl, https_proxy: net.proxyUrl, http_proxy: net.proxyUrl } : {}) },
+      environment: { ...extraEnv, ...(p.path ? { PATH: p.path } : {}), ...(net ? { HTTPS_PROXY: net.proxyUrl, HTTP_PROXY: net.proxyUrl, https_proxy: net.proxyUrl, http_proxy: net.proxyUrl } : {}) },
       inheritDefaultEnvironment: true,
       ...(platform === 'win32' ? { ui: { disable: false }, containment: { type: 'processcontainer' as const, config: { filesystem: { enumeratePaths: p.enumerate } } } } : {}),
       timeoutMs,
-    });
+    };
+  };
+  const exec = async (m: Mxc, command: string, cwd: string, p: Profile, net?: NetAccess): Promise<ExecResult> => {
+    const r = await m.run(request(command, cwd, p, net));
     return { code: r.timedOut ? 124 : r.exitCode ?? 1, stdout: r.stdout ?? '', stderr: r.stderr ?? '' };
   };
   const probe = async (): Promise<ContainmentStatus> => {
@@ -153,5 +213,7 @@ export function mxcContainment({ env = process.env, platform = process.platform,
   return {
     status: () => (checked ??= probe()),
     run: async (command, cwd, profile, net) => exec(await load(), command, cwd, profile, net),
+    // O agente vive enquanto a conversa durar: sem o tempo-limite de comando.
+    spawn: async (command, cwd, profile, net, env) => (await load()).spawn({ ...request(command, cwd, profile, net, env), timeoutMs: undefined }) as unknown as ContainedProcess,
   };
 }

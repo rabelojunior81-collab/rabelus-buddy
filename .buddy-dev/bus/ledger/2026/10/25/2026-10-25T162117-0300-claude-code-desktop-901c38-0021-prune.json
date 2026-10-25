@@ -1,0 +1,23 @@
+{
+  "v": 1,
+  "id": "2026-10-25T162117-0300-claude-code-desktop-901c38-0021",
+  "ts": "2026-10-25T16:21:17-03:00",
+  "utc": "2026-10-25T19:21:17.443Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 21,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "feat/m2-4-rotina-rapida"
+    ],
+    "archived": [],
+    "kept": [],
+    "skipped": []
+  }
+}

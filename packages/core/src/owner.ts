@@ -28,7 +28,7 @@ import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec 
 import { describeSession, NeedsLogin, NoImageSupport, postureOption, promptTurn, type HarnessOption, type TurnResult } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 import { EFFORTS, type Effort } from './providers/types.ts';
-import { mxcContainment } from './sandbox/index.ts';
+import { agentProfile, containedLaunch, extendProfile, mxcContainment, netProxy, profileFor, type NetProxy } from './sandbox/index.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -263,6 +263,35 @@ export async function startOwner(home: string): Promise<Owner> {
   // conversa com o harness (critério 5) e à delegação do Buddy (critério 8); quem chama decide o fim da execução.
   const harnessTurn = async (session: string, run: string, h: HarnessRef, o: { task: string; workspace: string; interactive: boolean; signal: AbortSignal; files?: AttachmentFile[]; liveText?: boolean; configValues?: Record<string, string>; permMode?: PermMode; posture?: Posture }): Promise<{ r: TurnResult; denied: boolean; reasoning: string }> => {
     const posture = o.posture ?? 'buddy';
+    // Agente de fora contido (M2.2; decisão do Pai: o Codex primeiro). Só agente com perfil medido, na postura do Buddy
+    // e com a contenção confirmada; o resto roda como antes, e o motivo fica no log.
+    const ap = agentProfile(h.id);
+    const cst = posture === 'native' ? { ok: false, reason: 'postura do agente: sem a contenção do Buddy, por escolha do Pai' }
+      : !ap ? { ok: false, reason: `sem perfil de contenção para ${h.name}` }
+      : await containment.status();
+    let px: NetProxy | undefined;
+    let launch: ((spec: LaunchSpec, cwd: string) => Promise<import('node:child_process').ChildProcess>) | undefined;
+    if (cst.ok && ap) {
+      const dirs = ap.readwrite.filter((d) => existsSync(d));
+      px = await netProxy(async (host, port) => {
+        // Os domínios do provedor do agente saem sem cartão; o resto passa pela política e, se novo, pelo cartão "rede".
+        if (ap.domains.includes(host)) { log.append(session, 'network.request', { run, host, port, allowed: true, reason: 'provedor do agente' }); return true; }
+        const pol = new Policy(log, { workspace: o.workspace, mode: o.permMode ?? 'manual' });
+        const nd = pol.decide({ session, tool: 'network', target: host }, { interactive: o.interactive });
+        let allowed = nd.effect === 'allow';
+        if (nd.effect === 'ask') {
+          const nap = domain.requestApproval(session, `network ${host}`);
+          allowed = (await awaitApproval(nap)) === 'approve';
+          liveOf(run).lastEventAt = Date.now();
+          const sc = approvalScope.get(nap.id);
+          if (allowed && sc && sc !== 'once') pol.grant(sc, { tool: 'network', pattern: host }, { session });
+        }
+        log.append(session, 'network.request', { run, host, port, allowed, reason: nd.effect === 'ask' ? (allowed ? 'aprovação humana' : 'negado') : nd.reason });
+        return allowed;
+      });
+      launch = containedLaunch(containment, { profile: extendProfile(profileFor(o.workspace), { readwrite: dirs }), net: { proxyUrl: px.url } });
+    }
+    log.append(session, 'harness.contained', { run, id: h.id, contained: Boolean(launch), ...(launch && 'level' in cst ? { containment: cst.level } : { reason: cst.reason }) });
     const policy = new Policy(log, { workspace: o.workspace, mode: o.permMode ?? 'manual' });
     let reasoning = '';
     const titles = new Map<string, string>();
@@ -270,69 +299,73 @@ export async function startOwner(home: string): Promise<Owner> {
     const asked = new Set<string>();
     const warned = new Set<string>();
     let denied = false;
-    const r = await promptTurn(postureOf(h, posture), {
-      cwd: o.workspace, task: o.task, signal: o.signal, ...(posture === 'buddy' ? { preferMode: 'read-only' } : {}),
-      // Opções escolhidas pelo Pai (critério 18): modelo, esforço e modo do agente, aplicados antes da tarefa.
-      ...(o.configValues && Object.keys(o.configValues).length ? { configValues: o.configValues, onApplied: (values: Record<string, string>) => log.append(session, 'harness.options.applied', { run, id: h.id, values }) } : {}),
-      // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
-      files: o.files ?? [],
-      onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, posture, config: posture === 'buddy' && h.id === 'opencode' ? 'permission ask' : null }),
-      onUpdate: (u) => {
-        if (u.kind === 'tool') {
-          const title = u.title || titles.get(u.id) || u.id;
-          titles.set(u.id, title);
-          if (u.toolKind) kinds.set(u.id, u.toolKind);
-          log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
-          onProgress(run, { kind: 'tool', name: title });
-          // Escrita ou execução concluída sem pedido de permissão: a postura não valeu (configuração gerenciada,
-          // harness sem modo). Fica registrado como aviso.
-          const kind = kinds.get(u.id) ?? 'other';
-          if (u.status === 'completed' && (WRITES.includes(kind) || kind === 'execute') && !asked.has(u.id) && !warned.has(u.id)) {
-            warned.add(u.id);
-            log.append(session, 'harness.unasked', { run, id: h.id, title, kind });
+    try {
+      const r = await promptTurn(postureOf(h, posture), {
+        // Contido, o agente não é forçado ao modo só leitura: a contenção do sistema é a guarda, e o caminho de aprovação
+      // do próprio agente esbarra nela (Codex, os error 1920, checagem real de 2026-10-25).
+      cwd: o.workspace, task: o.task, signal: o.signal, ...(posture === 'buddy' && !launch ? { preferMode: 'read-only' } : {}), ...(launch ? { launch } : {}),
+        // Opções escolhidas pelo Pai (critério 18): modelo, esforço e modo do agente, aplicados antes da tarefa.
+        ...(o.configValues && Object.keys(o.configValues).length ? { configValues: o.configValues, onApplied: (values: Record<string, string>) => log.append(session, 'harness.options.applied', { run, id: h.id, values }) } : {}),
+        // Anexos (M1.3): o conteúdo, lido do arquivo com o hash conferido, vai só no prompt do harness.
+        files: o.files ?? [],
+        onPosture: ({ mode }) => log.append(session, 'harness.posture', { run, id: h.id, mode, posture, config: posture === 'buddy' && h.id === 'opencode' ? 'permission ask' : null }),
+        onUpdate: (u) => {
+          if (u.kind === 'tool') {
+            const title = u.title || titles.get(u.id) || u.id;
+            titles.set(u.id, title);
+            if (u.toolKind) kinds.set(u.id, u.toolKind);
+            log.append(session, 'harness.tool', { run, id: u.id, title, status: u.status });
+            onProgress(run, { kind: 'tool', name: title });
+            // Escrita ou execução concluída sem pedido de permissão: a postura não valeu (configuração gerenciada,
+            // harness sem modo). Fica registrado como aviso.
+            const kind = kinds.get(u.id) ?? 'other';
+            if (u.status === 'completed' && (WRITES.includes(kind) || kind === 'execute') && !asked.has(u.id) && !warned.has(u.id)) {
+              warned.add(u.id);
+              log.append(session, 'harness.unasked', { run, id: h.id, title, kind });
+            }
+          } else {
+            if (u.kind === 'reasoning') reasoning += u.delta;
+            // Na delegação, o texto do harness não vai ao vivo: ali ele apareceria como fala do Buddy (ensaio real, M1.4).
+            // Ele volta ao Buddy como resultado da ferramenta, e o Buddy responde.
+            if (u.kind === 'reasoning' || o.liveText !== false) onProgress(run, u);
           }
-        } else {
-          if (u.kind === 'reasoning') reasoning += u.delta;
-          // Na delegação, o texto do harness não vai ao vivo: ali ele apareceria como fala do Buddy (ensaio real, M1.4).
-          // Ele volta ao Buddy como resultado da ferramenta, e o Buddy responde.
-          if (u.kind === 'reasoning' || o.liveText !== false) onProgress(run, u);
-        }
-      },
-      onPermission: async (ask) => {
-        asked.add(ask.toolCallId);
-        const tool = toolOfKind(ask.kind);
-        // O Codex pede com o título genérico "Run command"; o comando veio antes no tool_call de mesmo id (2026-10-19).
-        const raw = tool === 'run_command' ? titles.get(ask.toolCallId) || ask.title : ask.paths[0] ?? ask.title;
-        const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
-        const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
-        const d = policy.decide({ session, tool, target: raw }, { interactive: o.interactive });
-        // Fora da pasta de trabalho, com o Pai na conversa, a política pergunta em vez de negar sozinha (A3).
-        // Sem o Pai, continua negando. O caminho protegido continua negado sem perguntar.
-        const outside = d.effect === 'deny' && d.reason === 'fora do workspace';
-        // Fora da pasta, uma concessão exata dada antes no cartão (conversa, projeto ou sempre) libera sem perguntar.
-        const outsideGranted = outside && policy.grantedOutside(session, tool, raw);
-        const askIt = !outsideGranted && (d.effect === 'ask' || (outside && o.interactive));
-        let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' || outsideGranted ? 'allow' : 'deny';
-        if (askIt) {
-          const where = outside ? ` (fora da pasta de trabalho)` : '';
-          const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${outside ? raw : target}${where}`);
-          decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
-          liveOf(run).lastEventAt = Date.now(); // a espera foi do Pai: o relógio do silêncio recomeça
-          // Escopo do cartão (critério 17): além de uma vez, vira concessão; comando e caminho de fora, só o exato.
-          const sc = approvalScope.get(ap.id);
-          if (decision === 'approve' && sc && sc !== 'once') policy.grant(sc, { tool, pattern: outside ? raw : target }, { session });
-        }
-        const pick = decision === 'deny'
-          ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
-          : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
-        if (decision === 'deny') denied = true;
-        const outcome = pick?.optionId ?? 'cancelled';
-        log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome, outside });
-        domain.completeEffect(eff, { decision, outcome });
-        return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
-      },
-    });
-    return { r, denied, reasoning };
+        },
+        onPermission: async (ask) => {
+          asked.add(ask.toolCallId);
+          const tool = toolOfKind(ask.kind);
+          // O Codex pede com o título genérico "Run command"; o comando veio antes no tool_call de mesmo id (2026-10-19).
+          const raw = tool === 'run_command' ? titles.get(ask.toolCallId) || ask.title : ask.paths[0] ?? ask.title;
+          const target = tool === 'run_command' ? raw : policy.relative(raw) ?? raw;
+          const eff = domain.beginEffect(session, run, 'harness.permission', `${run}:perm:${ask.toolCallId}`, target).id;
+          const d = policy.decide({ session, tool, target: raw, contained: Boolean(launch) }, { interactive: o.interactive });
+          // Fora da pasta de trabalho, com o Pai na conversa, a política pergunta em vez de negar sozinha (A3).
+          // Sem o Pai, continua negando. O caminho protegido continua negado sem perguntar.
+          const outside = d.effect === 'deny' && d.reason === 'fora do workspace';
+          // Fora da pasta, uma concessão exata dada antes no cartão (conversa, projeto ou sempre) libera sem perguntar.
+          const outsideGranted = outside && policy.grantedOutside(session, tool, raw);
+          const askIt = !outsideGranted && (d.effect === 'ask' || (outside && o.interactive));
+          let decision: 'allow' | 'deny' | 'approve' = d.effect === 'allow' || outsideGranted ? 'allow' : 'deny';
+          if (askIt) {
+            const where = outside ? ` (fora da pasta de trabalho)` : '';
+            const ap = domain.requestApproval(session, `Harness ${h.name}: ${tool} ${outside ? raw : target}${where}`);
+            decision = (await awaitApproval(ap)) === 'approve' ? 'approve' : 'deny';
+            liveOf(run).lastEventAt = Date.now(); // a espera foi do Pai: o relógio do silêncio recomeça
+            // Escopo do cartão (critério 17): além de uma vez, vira concessão; comando e caminho de fora, só o exato.
+            const sc = approvalScope.get(ap.id);
+            if (decision === 'approve' && sc && sc !== 'once') policy.grant(sc, { tool, pattern: outside ? raw : target }, { session });
+          }
+          const pick = decision === 'deny'
+            ? ask.options.find((x) => x.kind === 'reject_once') ?? ask.options.find((x) => x.kind.startsWith('reject'))
+            : ask.options.find((x) => x.kind === 'allow_once') ?? ask.options.find((x) => x.kind.startsWith('allow'));
+          if (decision === 'deny') denied = true;
+          const outcome = pick?.optionId ?? 'cancelled';
+          log.append(session, 'harness.permission', { run, id: h.id, title: ask.title, tool, target, decision, reason: d.reason, outcome, outside });
+          domain.completeEffect(eff, { decision, outcome });
+          return pick ? { outcome: 'selected', optionId: pick.optionId } : { outcome: 'cancelled' };
+        },
+      });
+      return { r, denied, reasoning };
+    } finally { await px?.close(); }
   };
   // Opções do agente (critério 18): só pares texto → texto, curtos; o agente ainda confere se o valor é declarado.
   const optionsCache = new Map<string, { at: number; options: HarnessOption[] }>();

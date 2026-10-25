@@ -36,6 +36,8 @@ export interface TurnOptions {
   // que serve de postura (contém preferMode) não é trocada por aqui: a postura vence.
   configValues?: Record<string, string>;
   onApplied?: (values: Record<string, string>) => void;
+  // Lançador do processo do agente (M2.2): contido pela MXC quando o núcleo decide; sem ele, o spawnHarness de sempre.
+  launch?: (spec: LaunchSpec, cwd: string) => Promise<ChildProcess>;
 }
 
 // Opções de sessão (ACP): lista plana ou agrupada ({ group, name, options }); agrupadas viram planas, com o nome do grupo.
@@ -105,7 +107,7 @@ export async function describeSession(spec: LaunchSpec, cwd: string, timeoutMs =
 export async function promptTurn(spec: LaunchSpec, o: TurnOptions): Promise<TurnResult> {
   const idleMs = o.idleMs ?? 10 * 60_000;
   let child: ChildProcess;
-  try { child = spawnHarness(spec, o.cwd); } catch (e) { throw new TurnError(`não foi possível iniciar: ${(e as Error).message}`); }
+  try { child = o.launch ? await o.launch(spec, o.cwd) : spawnHarness(spec, o.cwd); } catch (e) { throw new TurnError(`não foi possível iniciar: ${(e as Error).message}`); }
   let stderr = '';
   child.stderr?.on('data', (d) => { stderr = (stderr + String(d)).slice(-2000); });
   const lastLine = () => scrub(stderr.trim().split(/\r?\n/).filter(Boolean).at(-1) ?? '');
