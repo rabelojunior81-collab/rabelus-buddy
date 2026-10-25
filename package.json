@@ -21,6 +21,8 @@
     "typescript": "7.0.2"
   },
   "allowScripts": {
-    "@google/genai": false
+    "@google/genai": false,
+    "koffi": false,
+    "node-pty": false
   }
 }

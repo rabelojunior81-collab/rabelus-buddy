@@ -17,9 +17,9 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
 - [ ] **M2.0 Spike `sandbox-runtime` × `mxc-sdk`** (critérios 1, 2 e 8). A bateria fica em [`scripts/spike-m2/`](../../../scripts/spike-m2/rodar.mjs): 12 fugas, 10 legítimos, sem contenção e dentro de cada biblioteca. As bibliotecas ficam fora da árvore do repositório, porque o `sandbox-runtime` traz alertas altos sem correção.
   - [x] Base e MXC no Windows do Pai (2026-10-25). Base: 0 de 12 fugas contidas, 10 de 10 legítimos, 183 ms por comando. MXC no nível base-container, sem administrador: 10 de 12 contidas, 10 de 10 legítimos, 505 ms por comando.
   - [x] Linux e macOS pela CI (workflow `spike-m2`), as duas bibliotecas (2026-10-25, [registro](../../registros/2026-10-25T085733-0300-ensaio-do-spike-de-contencao-m2-0/README.md)). MXC: macOS 12 de 12, Linux 11 de 12. sandbox-runtime: macOS 11 de 12, Linux 10 de 12. 10 de 10 legítimos em todos.
-  - [ ] `sandbox-runtime` no Windows do Pai, depois do preparo de administrador feito por ele.
-  - [ ] Agente real (OpenCode) dentro da biblioteca vencedora (critério 3).
-  - [~] ADR com a escolha: [ADR 0019](../../60-decisoes/0019-contencao-pelo-mxc.md), **proposta**: MXC. Aguarda o Pai dizer se o sandbox-runtime ainda é medido no Windows; ao aceitar, a perdedora sai do registro de dependências.
+  - [>] `sandbox-runtime` no Windows do Pai: dispensado pelo Pai ao aceitar a ADR 0019.
+  - [>] Agente real (OpenCode) dentro da biblioteca vencedora (critério 3): vai para a M2.2, que é onde o agente de fora é contido.
+  - [x] ADR com a escolha: [ADR 0019](../../60-decisoes/0019-contencao-pelo-mxc.md), **aceita pelo Pai em 2026-10-25**: MXC. O `sandbox-runtime` saiu do registro de dependências.
 - [ ] **M2.1 Camada de execução no núcleo** (`packages/core/src/sandbox/`): interface única, perfil por sessão (pasta com leitura e escrita, caminhos protegidos negados, rede negada), `run_command` do Buddy por ela, critérios 1, 2 e 5 com teste.
 - [ ] **M2.2 Agente de fora contido:** o processo do harness inteiro roda dentro da contenção, com o domínio do provedor liberado (critério 3).
 - [ ] **M2.3 Rede por cartão:** domínio novo vira cartão "rede" com os quatro escopos, e o proxy registra cada destino (critério 4).

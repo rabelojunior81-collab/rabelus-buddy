@@ -42,7 +42,7 @@ Toda dependência, de produção ou de desenvolvimento, em qualquer `package.jso
 ## Dependências transitivas e scripts de instalação
 
 - **Transitivas:** o registro lista as diretas; as transitivas (57 pacotes na árvore em 2026-10-16) ficam **fixadas pelo `package-lock.json`** e são conferidas na CI por `npm audit --audit-level=high` (alta ou crítica reprova). Atualizar uma direta atualiza o lockfile no mesmo PR.
-- **Scripts de instalação:** ficam bloqueados (padrão do npm). Quando um pacote pede script, a decisão fica explícita em `allowScripts` no `package.json`: `false` (negado) por padrão; `true` só com `installScripts: "aprovado"` no registro, depois de ler o script. Em 2026-10-16, `@google/genai` pediu um `preinstall` que só faz `echo`; negado.
+- **Scripts de instalação:** ficam bloqueados (padrão do npm). Quando um pacote pede script, a decisão fica explícita em `allowScripts` no `package.json`: `false` (negado) por padrão; `true` só com `installScripts: "aprovado"` no registro, depois de ler o script. Em 2026-10-16, `@google/genai` pediu um `preinstall` que só faz `echo`; negado. Em 2026-10-25, `koffi` e `node-pty` (dependências do `@microsoft/mxc-sdk`, ADR 0019) pediram scripts que compilam ou baixam binários nativos; negados, porque o pacote já traz os binários dos três sistemas (provado no spike do M2).
 
 ## Rotina de atualização
 

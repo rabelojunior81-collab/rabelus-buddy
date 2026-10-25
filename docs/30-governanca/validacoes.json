@@ -939,10 +939,10 @@
         "M2.0"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "SPEC 0003; spike de 2026-10-25",
       "explicacao": "Medi as duas bibliotecas de contenção com 12 tentativas de fuga e 10 comandos normais. A da Microsoft funcionou no computador do Pai sem pedir administrador, segurou 10 das 12 fugas (as duas que passaram só mostram nomes de pastas e resolvem um endereço, sem conteúdo) e rodou todos os comandos normais; no Mac e no Linux, segurou 12 e 11. A da Anthropic foi bem no Mac e no Linux, mas deixa passar uma variável secreta, traz dependências com alertas de segurança sem correção e, no Windows, só roda depois de um preparo que cria uma conta e filtros de rede na máquina inteira, mudança que só o Pai pode fazer. Recomendo aceitar a da Microsoft como está. A alternativa é o Pai fazer o preparo para eu medir a da Anthropic no Windows também, e desfazer depois.",
-      "evidencia": "docs/registros/2026-10-25T085733-0300-ensaio-do-spike-de-contencao-m2-0/README.md"
+      "evidencia": "Pai, 2026-10-25 (\"Aceito a ADR 0019: a contenção fica com a biblioteca da Microsoft (MXC). Pode seguir para a próxima etapa.\")"
     }
   ]
 }
