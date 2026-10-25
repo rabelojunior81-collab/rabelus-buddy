@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094545-0300-claude-code-desktop-983845-0025",
+  "ts": "2026-10-25T09:45:45-03:00",
+  "utc": "2026-10-25T12:45:45.817Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 25,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m2-2-achados-e-ordem",
+  "type": "pesquisa",
+  "summary": "M2.2, experimento com o OpenCode real: opencode acp 2.0.32 contido pela MXC responde ao initialize (<1 s); session/new falha porque o OpenCode 2 inicia um serviço de fundo (serve --service) que faz chdir para a pasta do usuário e cai com EPERM, mesmo com ela só leitura (log do OpenCode lido só nas linhas de erro); HIPÓTESE: com o serviço rodando fora, o acp contido delegaria a ele (contenção de fachada); nenhum serviço do OpenCode rodando agora; c238a8f",
+  "refs": [],
+  "data": {}
+}
