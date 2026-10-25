@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172201-0300-claude-code-desktop-4ed091-0002",
+  "ts": "2026-10-25T17:22:01-03:00",
+  "utc": "2026-10-25T20:22:01.532Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 2,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "pesquisa",
+  "summary": "Cua (trycua/cua, MIT no SDK e CLI, Spaces e cua-spacesd FSL-1.1-MIT; 30.947 estrelas, release quase diária, 1.306 issues abertas): SDK (Rust; Python, @trycua/cua 0.9.0 MIT com binário win32-x64) cria sandboxes locais (contêiner Docker/Podman, gVisor no Linux; VM QEMU com WHPX no Windows; Lume no Mac); sandbox.agents() roda claude-code, openai-codex, gemini-cli, opencode, goose, pi, hermes, openclaw por ACP com eventos, retomada e artefatos; credencial só por env por execução ou teleport; projeto entra por cópia/repo (sem mount documentado); política de saída só por IP/CIDR, aplicada pelo host (contêiner em qualquer Docker; QEMU no Windows NÃO suportado); Spaces no Windows é prévia; conta cua.ai não é necessária para uso local; Cua Cloud acabou em 18/10/2026. Computador do Pai: Docker Desktop presente, sem QEMU nem cua, 32 GB e 12 núcleos (fontes: README, libs/cua/README, cua.ai/docs egress, run-a-coding-agent, install, local-runtimes)",
+  "refs": [],
+  "data": {}
+}

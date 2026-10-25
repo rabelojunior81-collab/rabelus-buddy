@@ -1,7 +1,7 @@
 # Plano — M2: Execução isolada
 
 **SPEC:** [0003-execucao-isolada](../../40-specs/0003-execucao-isolada/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-25, com a SPEC, as duas bibliotecas do spike e o pedido de administrador durante ele)
-**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T17:04:29-03:00
+**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T17:23:18-03:00
 
 ## Objetivo
 
@@ -24,6 +24,7 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
 - [~] **M2.2 Agente de fora contido** (**Codex feito em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T163610-0300-checagem-real-do-codex-contido-m2-2/README.md): o processo inteiro do codex-acp roda pela MXC, com ~/.codex e o cache do npm, e a rede só para o provedor dele; dentro da pasta sem cartão, fora negado. **Falta o OpenCode.** O caminho que o Pai escolheu (servidor privado dentro da contenção) foi testado em 2026-10-25 e esbarra num limite da MXC 1.0.1 (achados abaixo); a decisão voltou ao Pai. Na postura "do agente", nada de contenção, também por escolha do Pai.) o processo do harness inteiro roda dentro da contenção, com o domínio do provedor liberado (critério 3). **Depois da M2.3** (decisão de ordem de 2026-10-25, dentro da SPEC aprovada): o agente precisa da rede por proxy com lista de domínios, e o OpenCode 2 tem um serviço de fundo que precisa ser entendido antes (achados abaixo).
 - [x] **M2.3 Rede por cartão** (**feita em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T100502-0300-checagem-real-da-rede-por-cartao-m2-3/README.md)): a rede do comando contido só sai pelo proxy do núcleo; cada destino passa pela política (ferramenta `network`: pergunta por padrão, quatro escopos, curinga de host, negação vence, Plano nega, Sem perguntas libera); o destino novo vira o cartão "rede", e o log guarda cada destino e o perfil de cada comando (critério 4).
 - [x] **M2.4 Sem prompt dentro da pasta** com a contenção confirmada (critério 6; **feita em 2026-10-25**, junto da rotina rápida pedida pelo Pai, [checagem real](../../../docs/registros/2026-10-25T161548-0300-checagem-real-da-rotina-rapida-m2-4/README.md)): contido, o comando roda sem cartão, e o Plano continua negando; comando só de leitura e local roda sem ligar a rede (cerca de 270 ms a menos). Medido: contido 185 ms, com rede 454 ms, sem contenção 39 ms.
+- [?] **M2.8 Spike do Cua como computador dos agentes** (proposta de 2026-10-25, a pedido do Pai; [ficha](../../20-conhecimento/cua-computador-para-agentes.md)): o nível S2 adiantado para os agentes. Cada agente (OpenCode, Codex, Claude Code...) roda dentro de um contêiner com a configuração dele, pelo SDK do Cua, por ACP; a rede passa pelo proxy do Buddy, e os arquivos entram e saem por cópia, com diff (casa com a M2.6). **Aguarda o Pai** aprovar o spike e o que ele instala (`cua-spike-s2`).
 - [ ] **M2.5 Preparo pela console:** "Preparar a contenção" e "Desfazer", com explicação, quando a biblioteca escolhida pedir administrador (critério 7).
 - [ ] **M2.6 Worktree por sessão:** integração com diff, aprovação e desfazer (critério 9).
 - [ ] **M2.7 Ensaio e métricas** registrados (critério 8); retrospectiva.

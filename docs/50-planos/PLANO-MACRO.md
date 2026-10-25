@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-25T08:58:59-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-25T17:23:18-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -52,7 +52,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 - [x] Rede negada por padrão; proxy com lista de domínios por sessão; web como rede [R2; ADR 0012] — M2.3 (2026-10-25): proxy do núcleo e cartão "rede" com os quatro escopos
 - [ ] Worktree por sessão; integração com diff, aprovação e rollback [R5-4; ADR 0009]
 - [ ] Claims com geração (compare-and-set) sobre arquivos e worktrees; humano vence [R5-3; R5-8]
-- [>] S2 (VM descartável) para plugins de terceiros
+- [>] S2 (VM descartável) para plugins de terceiros — 2026-10-25: o Cua (computador por agente) é candidato a adiantar o S2 para os agentes de fora; spike proposto como M2.8, aguardando o Pai
 
 ## M3 — Interface de produto (ADR 0018)
 

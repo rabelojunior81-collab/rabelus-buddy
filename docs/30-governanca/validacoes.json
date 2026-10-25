@@ -984,6 +984,19 @@
       "estado": "pendente",
       "origem": "experimentos do caminho 2 em 2026-10-25 (plano do M2)",
       "explicacao": "Testei o caminho escolhido pelo Pai: um servidor privado do OpenCode dentro da contenção. Ele sobe, e o OpenCode consegue usá-lo fora da contenção; dentro dela, não, porque a biblioteca de contenção da Microsoft não deixa, ao mesmo tempo, a internet passar pelo intermediário do Buddy e o OpenCode falar com o próprio servidor dentro do contêiner. Opções: (1) esperar a correção, abrindo pedidos públicos no GitHub da Microsoft e do OpenCode (só com autorização do Pai, porque é publicação em nome dele); (2) prender o OpenCode deixando a internet dele aberta para os endereços numéricos do provedor, sem o cartão por site (mais fraco e quebra quando o provedor muda de endereço); (3) manter o OpenCode como está, sem contenção, com o cartão de permissão do Buddy ou na postura dele. Recomendo 3 agora, com o 1 se o Pai autorizar os pedidos."
+    },
+    {
+      "id": "cua-spike-s2",
+      "descricao": "Aprovar o spike do Cua como computador dos agentes (M2.8): o pacote @trycua/cua 0.9.0 numa pasta à parte, contêineres pelo Docker Desktop já instalado, sem o app Spaces, sem QEMU, sem conta cua.ai e sem tocar nas configurações de virtualização do Windows",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M2.8"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "pedido do Pai em 2026-10-25 (explorar o Cua para a contenção)",
+      "explicacao": "O Cua dá a cada agente um computador inteiro (um contêiner), onde o OpenCode, o Codex e os outros rodam com a configuração deles, inclusive o serviço de fundo que a contenção atual não deixa o OpenCode usar. O Buddy falaria com eles pelo mesmo protocolo de hoje, a internet passaria pelo intermediário do Buddy, e os arquivos entrariam e sairiam por cópia, com o diff para o Pai aprovar. Para saber se funciona no Windows do Pai, proponho um teste: instalar só a biblioteca do Cua numa pasta separada (fora do projeto), usar o Docker Desktop que já está no computador, e medir: o OpenCode e o Codex rodando lá dentro, a internet só pelo Buddy, a cópia dos arquivos, o tempo e a memória. Fica de fora: o aplicativo Cua Spaces (no Windows ele é uma prévia e abre no login), a máquina virtual QEMU e qualquer mudança nas configurações do Windows. Recomendo aprovar o teste nesses limites."
     }
   ]
 }

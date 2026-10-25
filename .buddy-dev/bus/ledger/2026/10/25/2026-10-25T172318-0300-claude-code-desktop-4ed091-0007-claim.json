@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172318-0300-claude-code-desktop-4ed091-0007",
+  "ts": "2026-10-25T17:23:18-03:00",
+  "utc": "2026-10-25T20:23:18.383Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 7,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:53:18.383Z",
+    "tookOverFrom": null
+  }
+}

@@ -38,6 +38,7 @@ Antes de qualquer tier: a casa e a família (este repositório, o [Blog](https:/
 | [bmad-method.md](./bmad-method.md) | BMad Method: versões, caminhos, artefatos | 2026-10-14 (reverificar após 16/10) |
 | [ci-github-actions.md](./ci-github-actions.md) | Actions fixadas por SHA, gitleaks, cota e preço dos minutos, plano de minutos da CI | 2026-10-18 |
 | [precos-llm.md](./precos-llm.md) | Preços de Anthropic, OpenAI, Google e dos modelos do OpenCode Go | 2026-10-16 (reverificar antes de 30/11) |
+| [cua-computador-para-agentes.md](./cua-computador-para-agentes.md) | Cua: um computador (sandbox) para cada agente; candidato ao nível S2 da contenção | 2026-10-25 |
 | [sandbox-e-permissoes.md](./sandbox-e-permissoes.md) | Isolamento de execução e modelos de permissão | 2026-10-14 |
 | [projetos-comparaveis.md](./projetos-comparaveis.md) | Harnesses, agentes e gateways abertos | 2026-10-14 |
 | [assinaturas-de-agentes.md](./assinaturas-de-agentes.md) | OpenCode Go, Sign in with ChatGPT, Ollama Cloud, OpenRouter; esforço de raciocínio | 2026-10-17 |
