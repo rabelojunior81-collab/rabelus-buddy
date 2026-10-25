@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T090248-0300-claude-code-desktop-694e2a-0026",
+  "ts": "2026-10-25T09:02:48-03:00",
+  "utc": "2026-10-25T12:02:48.753Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 26,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "processo",
+  "summary": "post 'O Bloqueio Que Não Aconteceu' e daily de 2026-10-25 publicados no Blog, com QA a 375 e 1440 px e check-surfaces sem erros; suíte inteira 457/457; servidor do Blog encerrado",
+  "refs": [],
+  "data": {}
+}
