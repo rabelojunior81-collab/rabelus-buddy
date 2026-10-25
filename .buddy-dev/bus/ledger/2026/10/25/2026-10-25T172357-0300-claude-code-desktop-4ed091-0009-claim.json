@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172357-0300-claude-code-desktop-4ed091-0009",
+  "ts": "2026-10-25T17:23:57-03:00",
+  "utc": "2026-10-25T20:23:57.117Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 9,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "claim",
+  "summary": ".buddy-dev/LEARNING-CURVE.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:53:57.117Z",
+    "tookOverFrom": null
+  }
+}

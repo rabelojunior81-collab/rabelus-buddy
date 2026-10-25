@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0044 · 2026-10-16T020142-0300 · claude-code-vs-code-fe93fb · feat
-
-M0.6b: ChatGPT por Sign in with ChatGPT (rbuddy login/logout chatgpt; PKCE, ID token pelo JWKS, credenciais 0600, refresh rotativo serializado; inferência em stream no contrato da prévia). Critérios 18 e 19 verdes contra servidores falsos; login real aguarda o Pai.
-
 ### #0045 · 2026-10-16T020831-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.6e: loop do agente (ordem de provedores com política e orçamento, chamada de modelo e escrita/comando como efeitos com identidade, troca ao esgotar janela, escrita uma vez, aprovação humana, compactação abaixo de 100k tokens). M0.6 completa.
@@ -207,3 +203,7 @@ M2: postura do próprio agente (OpenCode do jeito dele); rotina rápida e M2.4 (
 ### #0093 · 2026-10-25T170635-0300 · claude-code-desktop-988877 · processo
 
 Organização (pedido do Pai): pacote do Claude Agent baixado por engano apagado com autorização; spike do M2 e experimentos arquivados com lápide; SDK do OpenCode 1 fora do registro; 12 chaves órfãs da console arquivadas e teste novo contra órfãos no catálogo; OpenCode por servidor privado testado: sobe contido, mas a MXC 1.0.1 não junta loopback interno e proxy; decisão volta ao Pai
+
+### #0094 · 2026-10-25T172340-0300 · claude-code-desktop-4ed091 · pesquisa
+
+Pesquisa ao vivo do Cua (pedido do Pai): computador por agente (contêiner ou VM) com os agentes rodando por ACP com a configuração deles; política de saída só por IP e não suportada em QEMU no Windows; arquivos por cópia; credenciais por env; Windows em prévia; ficha nova e spike proposto como M2.8 (S2 adiantado para os agentes)

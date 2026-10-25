@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T172331-0300-claude-code-desktop-4ed091-0008",
+  "ts": "2026-10-25T17:23:31-03:00",
+  "utc": "2026-10-25T20:23:31.265Z",
+  "session": "claude-code-desktop-4ed091",
+  "seq": 8,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/pesquisa-cua",
+  "type": "doc",
+  "summary": "ficha cua-computador-para-agentes (fatos com fonte e data, encaixe no plano, riscos), índice, M2.8 proposto no plano do M2, nota no S2 do plano macro, STATUS e a pendência do Pai cua-spike-s2 com explicação; 960e1c1",
+  "refs": [],
+  "data": {}
+}
