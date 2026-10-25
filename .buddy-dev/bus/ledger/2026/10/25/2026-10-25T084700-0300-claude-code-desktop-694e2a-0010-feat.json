@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T084700-0300-claude-code-desktop-694e2a-0010",
+  "ts": "2026-10-25T08:47:00-03:00",
+  "utc": "2026-10-25T11:47:00.340Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 10,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "feat",
+  "summary": "bateria do spike (scripts/spike-m2): 12 fugas e 10 legítimos; base no Windows do Pai: 0/12 contidas, 10/10 legítimos, 183 ms; MXC 1.0.1 (base-container, sem administrador): 10/12 contidas, 10/10 legítimos, 505 ms; passaram E3 (nomes da pasta do usuário, efeito do enumeratePaths) e E9 (DNS resolve; a conexão é barrada no proxy); achados do MXC: proxy exige entrada de rede local liberada, node exige ui.disable false, node precisa listar as pastas acima (enumeratePaths), e listar a própria pasta rebaixa a escrita; erro de configuração passou a contar como erro e não como contida; 3c4b2ca",
+  "refs": [],
+  "data": {}
+}

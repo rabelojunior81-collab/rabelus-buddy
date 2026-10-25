@@ -1,6 +1,6 @@
 # Plano — Piloto de paralelismo com subagentes
 
-**Estado:** em execução (pedido do Pai em 2026-10-20) · **Dono:** buddy-dev, que corta as missões, revisa, integra e responde por elas · **Atualizado em:** 2026-10-20
+**Estado:** concluído em 2026-10-20 (pedido do Pai em 2026-10-20; todas as sub-fases marcadas; encerrado no registro em 2026-10-25, quando o M2 virou o plano ativo) · **Dono:** buddy-dev, que corta as missões, revisa, integra e responde por elas · **Atualizado em:** 2026-10-20
 
 ## Objetivo
 

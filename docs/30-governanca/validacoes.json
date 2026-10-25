@@ -929,6 +929,20 @@
       "origem": "ROADMAP (M2); SPEC 0003 rev. 1; METODO §2",
       "explicacao": "Hoje, um comando aprovado roda com os direitos do Pai: lê o disco inteiro, escreve fora da pasta e acessa qualquer endereço. A próxima etapa grande faz o próprio Windows conter cada comando (e o agente de fora inteiro) dentro da pasta de trabalho, com a internet só por um intermediário do Buddy, que pergunta antes de liberar um endereço novo. Há duas bibliotecas candidatas, uma da Anthropic e uma da Microsoft; eu as comparo no computador do Pai e escolho pela medição. O Pai aprova (ou ajusta) o que essa etapa entrega, a entrada das duas bibliotecas só para a comparação, e o pedido de administrador do Windows que a preparação pode abrir, com desfazer.",
       "evidencia": "Pai, 2026-10-25 (\"Aprovo a especificação da contenção de comandos, a entrada das duas bibliotecas para a comparação e o pedido de administrador do Windows durante ela, com desfazer\")"
+    },
+    {
+      "id": "adr-0019-contencao-pelo-mxc",
+      "descricao": "Aceitar a ADR 0019 (contenção pelo MXC) como está, ou fazer antes o preparo de administrador do sandbox-runtime no Windows para medi-lo também",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M2.0"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "SPEC 0003; spike de 2026-10-25",
+      "explicacao": "Medi as duas bibliotecas de contenção com 12 tentativas de fuga e 10 comandos normais. A da Microsoft funcionou no computador do Pai sem pedir administrador, segurou 10 das 12 fugas (as duas que passaram só mostram nomes de pastas e resolvem um endereço, sem conteúdo) e rodou todos os comandos normais; no Mac e no Linux, segurou 12 e 11. A da Anthropic foi bem no Mac e no Linux, mas deixa passar uma variável secreta, traz dependências com alertas de segurança sem correção e, no Windows, só roda depois de um preparo que cria uma conta e filtros de rede na máquina inteira, mudança que só o Pai pode fazer. Recomendo aceitar a da Microsoft como está. A alternativa é o Pai fazer o preparo para eu medir a da Anthropic no Windows também, e desfazer depois.",
+      "evidencia": "docs/registros/2026-10-25T085733-0300-ensaio-do-spike-de-contencao-m2-0/README.md"
     }
   ]
 }

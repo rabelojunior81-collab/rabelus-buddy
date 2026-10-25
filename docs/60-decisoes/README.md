@@ -24,3 +24,4 @@ Uma decisão aceita **não se edita** para mudar de ideia: escreve-se uma ADR no
 | [0016](./0016-pi-por-composicao-e-tui-em-avaliacao.md) | Pi por composição (agente plugável no M1), sem fork; TUI em avaliação (ink × pi-tui) | aceita |
 | [0017](./0017-console-web-local-no-m0.md) | Console web local servida pelo núcleo como superfície do Pai no M0 (paliativa; não substitui a 0013) | aceita |
 | [0018](./0018-ordem-c-depois-do-m0.md) | Ordem depois do M0: console como produto, multimodal cedo (C); AionUi, T3 e t3.chat (verde-oliva, vidro) como referências; TUI decidida no fim do M1 | aceita |
+| [0019](./0019-contencao-pelo-mxc.md) | Contenção de execução pelo MXC, pela medição do spike do M2 (SPEC 0003) | proposta (2026-10-25) |
