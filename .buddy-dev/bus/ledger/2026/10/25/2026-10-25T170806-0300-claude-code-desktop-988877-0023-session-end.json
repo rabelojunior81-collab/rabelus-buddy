@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170806-0300-claude-code-desktop-988877-0023",
+  "ts": "2026-10-25T17:08:06-03:00",
+  "utc": "2026-10-25T20:08:06.785Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 23,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "session-end",
+  "summary": "Pacote do Claude Agent apagado com autorização; auditoria de organização (spike e experimentos arquivados com lápide, SDK do OpenCode 1 fora do registro, 12 chaves órfãs arquivadas e teste contra órfãos); OpenCode por servidor privado testado: sobe contido, mas a MXC 1.0.1 não junta proxy e loopback interno. Aguarda o Pai: como seguir com o OpenCode contido.",
+  "refs": [],
+  "data": {}
+}

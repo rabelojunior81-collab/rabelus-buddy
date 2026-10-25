@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170703-0300-claude-code-desktop-988877-0021",
+  "ts": "2026-10-25T17:07:03-03:00",
+  "utc": "2026-10-25T20:07:03.226Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 21,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "aprendizado",
+  "summary": "lição do lote #0043: arquitetura que depende de duas peças precisa do experimento da soma antes de virar código; organização é conferir antes, durante e depois; 7c7716b",
+  "refs": [],
+  "data": {}
+}
