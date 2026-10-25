@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T163842-0300-claude-code-desktop-901c38-0037",
+  "ts": "2026-10-25T16:38:42-03:00",
+  "utc": "2026-10-25T19:38:42.794Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 37,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "session-end",
+  "summary": "Postura do próprio agente (#89); rotina rápida e M2.4 (#90); Codex contido pela MXC (M2.2), com checagem real. Erro grave: script de checagem aprovou a primeira execução do Claude Agent e o npx baixou o pacote; aguarda o Pai decidir. Próximo: OpenCode por serve privado dentro da contenção.",
+  "refs": [],
+  "data": {}
+}
