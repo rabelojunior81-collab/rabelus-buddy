@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T163620-0300-claude-code-desktop-901c38-0033",
+  "ts": "2026-10-25T16:36:20-03:00",
+  "utc": "2026-10-25T19:36:20.381Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 33,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "claim",
+  "summary": ".buddy-dev/diario/2026-10-25.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:06:20.381Z",
+    "tookOverFrom": null
+  }
+}

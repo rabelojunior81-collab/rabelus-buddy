@@ -957,6 +957,19 @@
       "origem": "achados da M2.2 em 2026-10-25",
       "explicacao": "Os comandos do Buddy já rodam presos à pasta de trabalho. Falta prender os agentes de fora, começando pelo OpenCode. A versão 2 do OpenCode trabalha por um serviço de fundo que fica rodando no computador, e esse serviço não consegue subir dentro da contenção; o modo de conversa que o Buddy usa não tem a opção de rodar sem ele. Há três caminhos: pedir ao projeto do OpenCode essa opção (precisa abrir um pedido público no GitHub deles, em nome do Pai); montar um servidor privado do OpenCode dentro da contenção (mais trabalho, mais frágil a cada versão nova); ou conter primeiro o agente do ChatGPT/Codex, que não tem serviço de fundo, e voltar ao OpenCode quando houver a opção. Recomendo o terceiro, com o pedido ao projeto em paralelo se o Pai autorizar.",
       "evidencia": "Pai, 2026-10-25: \"Codex primeiro + 2 depois\" (conter primeiro o Codex; depois o OpenCode por um serve privado dentro da contenção); e pediu uma rotina simplificada e segura para a rapidez da contenção, e uma forma de trabalhar com o OpenCode sem contenção, do jeito que ele mesmo se configura"
+    },
+    {
+      "id": "pacote-claude-agent-baixado-sem-aprovacao",
+      "descricao": "Decidir o que fazer com @agentclientprotocol/claude-agent-acp@0.95.0, baixado pelo npx para o cache do npm do Pai durante a checagem da M2.2, sem a aprovação dele",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "cache do npm do Pai (_npx/304981f1e6ac6717)"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "erro do buddy-dev em 2026-10-25 (registro da checagem real do Codex contido)",
+      "explicacao": "Durante o teste do Codex preso, um script meu aprovou por engano a primeira execução do agente da Anthropic (Claude Agent), que o Pai nunca aprovou. O programa dele foi baixado para a pasta de cache do npm deste computador e provavelmente abriu e fechou sem fazer nada. Isso aconteceu no núcleo de ensaio, não no do Pai: no núcleo do Pai, o Claude Agent continua sem aprovação. Opções: apagar essa pasta do cache (o mais limpo; eu apago se o Pai autorizar, porque fica fora do repositório) ou deixar como está (não roda sozinho; só fica guardado). Recomendo apagar."
     }
   ]
 }

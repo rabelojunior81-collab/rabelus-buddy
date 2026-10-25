@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **O Codex roda contido** (M2.2, 2026-10-25). Escolhido como agente, o Codex trabalha dentro da pasta de trabalho, preso pelo sistema: escreve ali sem pedir, não consegue escrever fora (nem tentando com permissão ampliada) e só acessa a internet do provedor dele; outros sites passam pelo cartão. O log diz se cada agente rodou contido e, se não, por quê.
+
 - **Comandos contidos sem cartão** (M2.4, 2026-10-25). Com a contenção do sistema confirmada, o Buddy roda comandos dentro da pasta de trabalho sem pedir aprovação; a internet continua pedindo cartão por site, e o modo Plano continua negando. Comandos só de leitura e locais rodam sem ligar a rede, mais rápido.
 
 - **Postura do próprio agente** (2026-10-25, pedido do Pai). Na caixa, cada agente pode seguir a postura do Buddy (o padrão: pergunta antes de escrever ou rodar, modo só leitura no Codex) ou a configuração dele mesmo. Com a postura do agente, o Buddy não injeta nada e mostra um aviso fixo; o que o agente ainda perguntar continua chegando pelo cartão.
