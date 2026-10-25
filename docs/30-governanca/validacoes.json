@@ -925,9 +925,10 @@
         "início do M2"
       ],
       "mecanismo": {},
-      "estado": "pendente",
+      "estado": "feito",
       "origem": "ROADMAP (M2); SPEC 0003 rev. 1; METODO §2",
-      "explicacao": "Hoje, um comando aprovado roda com os direitos do Pai: lê o disco inteiro, escreve fora da pasta e acessa qualquer endereço. A próxima etapa grande faz o próprio Windows conter cada comando (e o agente de fora inteiro) dentro da pasta de trabalho, com a internet só por um intermediário do Buddy, que pergunta antes de liberar um endereço novo. Há duas bibliotecas candidatas, uma da Anthropic e uma da Microsoft; eu as comparo no computador do Pai e escolho pela medição. O Pai aprova (ou ajusta) o que essa etapa entrega, a entrada das duas bibliotecas só para a comparação, e o pedido de administrador do Windows que a preparação pode abrir, com desfazer."
+      "explicacao": "Hoje, um comando aprovado roda com os direitos do Pai: lê o disco inteiro, escreve fora da pasta e acessa qualquer endereço. A próxima etapa grande faz o próprio Windows conter cada comando (e o agente de fora inteiro) dentro da pasta de trabalho, com a internet só por um intermediário do Buddy, que pergunta antes de liberar um endereço novo. Há duas bibliotecas candidatas, uma da Anthropic e uma da Microsoft; eu as comparo no computador do Pai e escolho pela medição. O Pai aprova (ou ajusta) o que essa etapa entrega, a entrada das duas bibliotecas só para a comparação, e o pedido de administrador do Windows que a preparação pode abrir, com desfazer.",
+      "evidencia": "Pai, 2026-10-25 (\"Aprovo a especificação da contenção de comandos, a entrada das duas bibliotecas para a comparação e o pedido de administrador do Windows durante ela, com desfazer\")"
     }
   ]
 }
