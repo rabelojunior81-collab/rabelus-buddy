@@ -166,7 +166,8 @@
       "acceptEditsMode": "modo Aceitar edições",
       "autoWrite": "Automático: escrita dentro da pasta",
       "autoCommand": "Automático: comando só de leitura",
-      "trainingModel": "este modelo treina com os dados: só com permissão do projeto"
+      "trainingModel": "este modelo treina com os dados: só com permissão do projeto",
+      "contained": "rodou contido: só alcança a pasta de trabalho"
     },
     "attach": {
       "add": "Anexar imagem ou arquivo (também dá para arrastar ou colar)",

@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-25T160940-0300-claude-code-desktop-901c38-0009",
+  "ts": "2026-10-25T16:09:40-03:00",
+  "utc": "2026-10-25T19:09:40.697Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 9,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #89: feat(m2): postura do próprio agente (o OpenCode do jeito dele)",
+  "refs": [
+    "#89"
+  ],
+  "data": {}
+}

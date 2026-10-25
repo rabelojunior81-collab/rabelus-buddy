@@ -166,7 +166,8 @@
       "acceptEditsMode": "Accept-edits mode",
       "autoWrite": "Auto: writing inside the folder",
       "autoCommand": "Auto: read-only command",
-      "trainingModel": "this model trains on your data: only with a project permission"
+      "trainingModel": "this model trains on your data: only with a project permission",
+      "contained": "ran contained: reaches only the workspace"
     },
     "attach": {
       "add": "Attach an image or file (you can also drag or paste)",

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T161547-0300-claude-code-desktop-901c38-0012",
+  "ts": "2026-10-25T16:15:47-03:00",
+  "utc": "2026-10-25T19:15:47.639Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 12,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-4-rotina-rapida",
+  "type": "pesquisa",
+  "summary": "checagem real da M2.4 no Windows do Pai, modelo real: git --version e node -v contidos sem nenhum cartão; npm view só com o cartão de rede (nenhum de comando), 1.3.0; site negado continua E403",
+  "refs": [],
+  "data": {}
+}

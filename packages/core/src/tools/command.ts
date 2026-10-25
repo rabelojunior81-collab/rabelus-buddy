@@ -3,7 +3,7 @@
 // pelo sistema quando a contenção está confirmada; sem ela, roda como antes, e o log diz por quê.
 
 import { spawnSync } from 'node:child_process';
-import type { Policy } from '../policy.ts';
+import { localCommand, type Policy } from '../policy.ts';
 import { netProxy, profileFor, type Containment } from '../sandbox/index.ts';
 
 export interface ExecResult { code: number; stdout: string; stderr: string }
@@ -32,22 +32,26 @@ export class CommandTool {
   // askNetwork (M2.3): o cartão "rede" para um destino que a política manda perguntar; sem ele, o destino novo é negado.
   async run(session: string, command: string, ctx: { interactive: boolean; observe?: boolean; askNetwork?: (host: string) => Promise<boolean> }): Promise<{ ok: true; result: ExecResult & { contained: boolean } } | { ok: false; reason: string }> {
     if (ctx.observe !== false) this.policy.observeCall(session, { tool: 'run_command', target: command });
-    const d = this.policy.decide({ session, tool: 'run_command', target: command }, ctx);
-    if (d.effect !== 'allow') return { ok: false, reason: d.effect === 'ask' ? 'needsApproval' : d.reason };
     const st = this.containment ? await this.containment.status() : { ok: false, reason: 'sem contenção configurada' };
+    const d = this.policy.decide({ session, tool: 'run_command', target: command, contained: st.ok }, ctx);
+    if (d.effect !== 'allow') return { ok: false, reason: d.effect === 'ask' ? 'needsApproval' : d.reason };
     let result: ExecResult;
     let profile: ReturnType<typeof profileFor> | undefined;
     if (st.ok) {
       profile = profileFor(this.workspace);
-      // A rede do comando contido só sai pelo proxy; cada destino passa pela política e fica no log.
-      const px = await netProxy(async (host, port) => {
-        const nd = this.policy.decide({ session, tool: 'network', target: host }, ctx);
-        const allowed = nd.effect === 'allow' || (nd.effect === 'ask' && ctx.askNetwork ? await ctx.askNetwork(host) : false);
-        this.policy.log.append(session, 'network.request', { host, port, allowed, reason: nd.effect === 'ask' ? (allowed ? 'aprovação humana' : 'negado') : nd.reason });
-        return allowed;
-      });
-      try { result = await this.containment!.run(command, this.workspace, profile, { proxyUrl: px.url }); }
-      finally { await px.close(); }
+      // Rede sob demanda (M2.4): comando só de leitura e local roda sem ligar a rede (cerca de 270 ms a menos no Windows).
+      if (localCommand(command)) result = await this.containment!.run(command, this.workspace, profile);
+      else {
+        // A rede do comando contido só sai pelo proxy; cada destino passa pela política e fica no log.
+        const px = await netProxy(async (host, port) => {
+          const nd = this.policy.decide({ session, tool: 'network', target: host }, ctx);
+          const allowed = nd.effect === 'allow' || (nd.effect === 'ask' && ctx.askNetwork ? await ctx.askNetwork(host) : false);
+          this.policy.log.append(session, 'network.request', { host, port, allowed, reason: nd.effect === 'ask' ? (allowed ? 'aprovação humana' : 'negado') : nd.reason });
+          return allowed;
+        });
+        try { result = await this.containment!.run(command, this.workspace, profile, { proxyUrl: px.url }); }
+        finally { await px.close(); }
+      }
     } else result = await this.exec(command, this.workspace);
     this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok ? { containment: st.level, profile: { readwrite: profile!.readwrite, readonly: profile!.readonly, denied: profile!.denied.length } } : { reason: st.reason }) });
     return { ok: true, result: { ...result, contained: st.ok } };

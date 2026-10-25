@@ -1,7 +1,7 @@
 # Plano — M2: Execução isolada
 
 **SPEC:** [0003-execucao-isolada](../../40-specs/0003-execucao-isolada/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-25, com a SPEC, as duas bibliotecas do spike e o pedido de administrador durante ele)
-**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T10:16:10-03:00
+**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T16:16:27-03:00
 
 ## Objetivo
 
@@ -23,7 +23,7 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
 - [x] **M2.1 Camada de execução no núcleo** (`packages/core/src/sandbox/`; **feita em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T092213-0300-checagem-real-da-contencao-m2-1/README.md)): perfil por pasta (leitura e escrita na pasta; `.git`, `.buddy-dev` e `archive` só leitura; segredos negados; pastas acima só para listar; rede negada), contenção confirmada por uma execução real, o `run_command` do Buddy por ela, a chave `RBUDDY_CONTAINMENT=off`, e o resultado diz ao modelo que rodou contido (critérios 1, 2 e 5 com teste).
 - [ ] **M2.2 Agente de fora contido:** o processo do harness inteiro roda dentro da contenção, com o domínio do provedor liberado (critério 3). **Depois da M2.3** (decisão de ordem de 2026-10-25, dentro da SPEC aprovada): o agente precisa da rede por proxy com lista de domínios, e o OpenCode 2 tem um serviço de fundo que precisa ser entendido antes (achados abaixo).
 - [x] **M2.3 Rede por cartão** (**feita em 2026-10-25**, [checagem real](../../../docs/registros/2026-10-25T100502-0300-checagem-real-da-rede-por-cartao-m2-3/README.md)): a rede do comando contido só sai pelo proxy do núcleo; cada destino passa pela política (ferramenta `network`: pergunta por padrão, quatro escopos, curinga de host, negação vence, Plano nega, Sem perguntas libera); o destino novo vira o cartão "rede", e o log guarda cada destino e o perfil de cada comando (critério 4).
-- [ ] **M2.4 Sem prompt dentro da pasta** com a contenção confirmada, no modo Manual (critério 6).
+- [x] **M2.4 Sem prompt dentro da pasta** com a contenção confirmada (critério 6; **feita em 2026-10-25**, junto da rotina rápida pedida pelo Pai, [checagem real](../../../docs/registros/2026-10-25T161548-0300-checagem-real-da-rotina-rapida-m2-4/README.md)): contido, o comando roda sem cartão, e o Plano continua negando; comando só de leitura e local roda sem ligar a rede (cerca de 270 ms a menos). Medido: contido 185 ms, com rede 454 ms, sem contenção 39 ms.
 - [ ] **M2.5 Preparo pela console:** "Preparar a contenção" e "Desfazer", com explicação, quando a biblioteca escolhida pedir administrador (critério 7).
 - [ ] **M2.6 Worktree por sessão:** integração com diff, aprovação e desfazer (critério 9).
 - [ ] **M2.7 Ensaio e métricas** registrados (critério 8); retrospectiva.
