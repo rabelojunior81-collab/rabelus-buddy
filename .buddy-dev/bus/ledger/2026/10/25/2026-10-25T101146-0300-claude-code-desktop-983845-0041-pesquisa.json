@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T101146-0300-claude-code-desktop-983845-0041",
+  "ts": "2026-10-25T10:11:46-03:00",
+  "utc": "2026-10-25T13:11:46.565Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 41,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-agente-contido",
+  "type": "pesquisa",
+  "summary": "M2.2: OpenCode 2 roda um serviço de fundo por usuário, que os clientes usam, nasce sob demanda e fica vivo; há --standalone (fontes: thenewstack.io/opencode-2-shared-service, computingforgeeks.com/opencode-cli-cheat-sheet, 2026-10); CONFIRMADO no Windows do Pai: com o proxy (loopback do host liberado), o comando contido NÃO alcança outro serviço local (EACCES), então o acp contido não delegaria a um serviço de fora",
+  "refs": [],
+  "data": {}
+}

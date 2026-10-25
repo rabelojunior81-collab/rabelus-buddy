@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T101606-0300-claude-code-desktop-983845-0043",
+  "ts": "2026-10-25T10:16:06-03:00",
+  "utc": "2026-10-25T13:16:06.766Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 43,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-agente-contido",
+  "type": "claim",
+  "summary": ".buddy-dev/STATUS.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T13:46:06.766Z",
+    "tookOverFrom": null
+  }
+}
