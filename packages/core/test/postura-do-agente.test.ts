@@ -70,6 +70,20 @@ test('postura do agente: nada é injetado, o modo dele fica, e a escolha vai par
   assert.equal(ev.find((e) => e.kind === 'harness.posture')?.payload.posture, 'native');
 });
 
+// M2.2: o turno registra se o agente rodou contido, e por que não. O OpenCode 2 não tem perfil de contenção (o serviço
+// de fundo dele não sobe contido); na postura do agente, a contenção não se aplica por escolha do Pai.
+test('o turno registra se o agente rodou contido e, se não, o motivo', async () => {
+  const ipc = await owner({ FAKE_ACP_MODE: 'ok' });
+  const workspace = mkdtempSync(join(tmpdir(), 'rbuddy-ws-'));
+  for (const [s, extra, motivo] of [['c1', {}, /sem perfil de contenção/], ['c2', { harnessPosture: 'native' }, /postura do agente/]] as const) {
+    const { run } = await ipc('agent.run', { session: s, task: 'oi', workspace, harness: 'opencode', ...extra });
+    await finished(ipc, run);
+    const ev = ((await ipc('session.events', { session: s })) as any[]).find((e) => e.kind === 'harness.contained');
+    assert.equal(ev?.payload.contained, false, s);
+    assert.match(String(ev?.payload.reason), motivo, s);
+  }
+});
+
 test('postura do agente: o seletor de modo dele aparece (na do Buddy, o modo é a postura e não vira seletor)', async () => {
   const ipc = await owner({ FAKE_ACP_MODE: 'ok', FAKE_ACP_GROUPED_MODE: '1' });
   const buddy = (await ipc('harness.options', { id: 'opencode' })).options as any[];

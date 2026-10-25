@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T163601-0300-claude-code-desktop-901c38-0024",
+  "ts": "2026-10-25T16:36:01-03:00",
+  "utc": "2026-10-25T19:36:01.151Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 24,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "feat",
+  "summary": "M2.2 com o Codex: agentProfile (codex-acp: ~/.codex e cache do npm com escrita; chatgpt.com e registry.npmjs.org), containedChild/containedLaunch (MxcProcess como processo filho), Containment.spawn sem tempo-limite, extendProfile; o turno roda o agente contido na postura do Buddy com a contenção confirmada (sem forçar read-only; permissões dentro da pasta passam como contidas), registra harness.contained e fecha o proxy no fim; testes antes; suíte 488/488; 9aa7864",
+  "refs": [],
+  "data": {}
+}

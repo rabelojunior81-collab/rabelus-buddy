@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0042 · 2026-10-16T012845-0300 · claude-code-vs-code-fe93fb · ferramenta
-
-M0.5: orçamento atômico por janela (Go por modelo 5h/semana/mês, ChatGPT pelo provedor, OpenRouter US$20/mês), reserva → liquidação pelo usage ou liberação, esgotamento por erro do provedor, rbuddy budget; critérios 14–16.
-
 ### #0043 · 2026-10-16T014212-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.6a: provedores OpenCode Go (Responses, Chat, Messages, Google), Ollama Cloud e OpenRouter com os SDKs aprovados; sonda e chamada real mínima por rota OK; Node passou a somar os certificados do sistema (cadeia do OpenRouter); npm audit na CI e scripts de instalação sob o protocolo.
@@ -207,3 +203,7 @@ M2 começou: Pai aprovou a SPEC 0003, as duas bibliotecas e o preparo de adminis
 ### #0091 · 2026-10-25T101626-0300 · claude-code-desktop-983845 · feat
 
 M2: ADR 0019 aceita (MXC no núcleo); M2.1 comandos do Buddy contidos; M2.3 rede só pelo proxy do Buddy com cartão por destino; M2.2 achados do OpenCode 2 (acp sem --standalone) e teste de que o comando contido não alcança serviço local; workspace/ arquivada com lápide; regra do Pai sem PR acumulado
+
+### #0092 · 2026-10-25T163713-0300 · claude-code-desktop-901c38 · feat
+
+M2: postura do próprio agente (OpenCode do jeito dele); rotina rápida e M2.4 (contido sem cartão, rede sob demanda; medido 185 ms contido, 454 com rede, 39 sem contenção); M2.2 Codex contido pela MXC, com rede só ao provedor; erro grave: script de checagem aprovou a primeira execução do Claude Agent e o npx baixou o pacote, pendente de decisão do Pai

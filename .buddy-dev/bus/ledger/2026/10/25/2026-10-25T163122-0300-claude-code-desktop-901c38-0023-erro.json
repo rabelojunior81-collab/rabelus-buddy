@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T163122-0300-claude-code-desktop-901c38-0023",
+  "ts": "2026-10-25T16:31:22-03:00",
+  "utc": "2026-10-25T19:31:22.298Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 23,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "erro",
+  "summary": "ERRO GRAVE meu: o script da checagem real da M2.2 aprovava todo cartão da sessão 'harness' (primeira execução); aprovou também a primeira execução do Claude Agent (claude-agent-acp 0.94.0 e 0.95.0), que o Pai nunca aprovou; o npx baixou @agentclientprotocol/claude-agent-acp@0.95.0 para o cache do npm do Pai às 16:29:31 (pasta _npx/304981f1e6ac6717), PROVÁVEL que tenha rodado o initialize; foi no núcleo de ensaio (estado próprio), o núcleo do Pai continua sem aprovar; o script passou a aprovar só os cartões da própria conversa; o pacote baixado fica até o Pai decidir (apagar fora do repositório é dele)",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T163602-0300-claude-code-desktop-901c38-0025",
+  "ts": "2026-10-25T16:36:02-03:00",
+  "utc": "2026-10-25T19:36:02.310Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 25,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-codex-contido",
+  "type": "pesquisa",
+  "summary": "checagem real da M2.2 com o Codex do Pai (núcleo de ensaio): contido mxc:base-container; teste.txt criado na pasta sem cartão; escrita fora da pasta falhou mesmo com a 'permissão ampliada' do Codex, nada no disco; rede só chatgpt.com e registry.npmjs.org; achado no caminho: com o read-only forçado, a ação aprovada do Codex esbarrava na contenção (os error 1920); 9aa7864",
+  "refs": [],
+  "data": {}
+}

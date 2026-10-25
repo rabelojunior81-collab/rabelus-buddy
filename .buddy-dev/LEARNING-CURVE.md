@@ -248,3 +248,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0041-#0041
 
 1. **Em 2026-10-16, o motor de política do M0.4 nasceu registrando cada decisão como evento, com a regra que decidiu.** Em 2026-10-25, a contenção negou o npm dentro do núcleo e não fora dele. Eu chutei duas causas, e a própria checagem refutou as duas. A causa só apareceu quando o log passou a guardar o perfil de cada comando: uma pasta do PATH dentro de outra pasta liberada rebaixava a leitura. → Quando o sistema nega algo e eu não sei por quê, o primeiro passo é fazer o sistema dizer com que regra negou, não adivinhar. Auditoria não é luxo de conformidade: é o instrumento de diagnóstico.
+
+## lote #0042-#0042
+
+1. **Em 2026-10-16, o orçamento do M0.5 nasceu com reserva antes de gastar: nada consome sem passar pelo teto.** Em 2026-10-25, um script meu de checagem aprovava "tudo o que aparecer" na fila de aprovações, para não travar o ensaio. Com isso, aprovou a primeira execução de um agente que o Pai nunca aprovou, e o npx baixou o pacote para a máquina dele. → Automação de ensaio nunca aprova por categoria, só o que ela mesma pediu, pelo id. Aprovação é o mecanismo de controle do Pai: um script que o contorna "só no ensaio" já é o contorno.

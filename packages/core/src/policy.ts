@@ -252,7 +252,8 @@ export class Policy {
     if ((changes || a.tool === 'network') && this.mode === 'plan') return { effect: 'deny', reason: 'modo plano' };
     // M2.4 (SPEC 0003, critério 6): contido, o comando só alcança a pasta de trabalho (e a rede por cartão); roda sem
     // cartão. Depois da negação e do modo Plano, que continuam valendo.
-    if (a.tool === 'run_command' && a.contained) return { effect: 'allow', reason: 'contido: só a pasta de trabalho' };
+    // A escrita do agente de fora contido (M2.2) também: o processo dele está preso à pasta (o caminho já foi conferido).
+    if ((a.tool === 'run_command' || a.tool === 'write_file' || a.tool === 'archive') && a.contained) return { effect: 'allow', reason: 'contido: só a pasta de trabalho' };
     if (a.tool !== 'model.use' && this.mode === 'yolo') return { effect: 'allow', reason: 'modo sem perguntas' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'acceptEdits') return { effect: 'allow', reason: 'modo aceitar edições' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'auto') return { effect: 'allow', reason: 'automático: escrita dentro da pasta' };

@@ -53,6 +53,8 @@ export function spawnHarness(spec: LaunchSpec, cwd: string): ChildProcess {
 }
 
 export function killTree(child: ChildProcess): void {
+  // Processo contido (M2.2): quem encerra é a MXC, pela árvore inteira do contêiner.
+  if ((child as ChildProcess & { contained?: boolean }).contained) { if (child.exitCode === null) child.kill(); return; }
   if (!child.pid || child.exitCode !== null) return;
   if (process.platform === 'win32') { try { execFileSync(TASKKILL, ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true }); } catch { /* já saiu */ } }
   else { try { process.kill(-child.pid, 'SIGTERM'); } catch { try { child.kill('SIGTERM'); } catch { /* já saiu */ } } }
