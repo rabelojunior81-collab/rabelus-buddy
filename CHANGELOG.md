@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Comandos contidos sem cartão** (M2.4, 2026-10-25). Com a contenção do sistema confirmada, o Buddy roda comandos dentro da pasta de trabalho sem pedir aprovação; a internet continua pedindo cartão por site, e o modo Plano continua negando. Comandos só de leitura e locais rodam sem ligar a rede, mais rápido.
+
 - **Postura do próprio agente** (2026-10-25, pedido do Pai). Na caixa, cada agente pode seguir a postura do Buddy (o padrão: pergunta antes de escrever ou rodar, modo só leitura no Codex) ou a configuração dele mesmo. Com a postura do agente, o Buddy não injeta nada e mostra um aviso fixo; o que o agente ainda perguntar continua chegando pelo cartão.
 
 - **Rede por cartão** (M2.3, 2026-10-25). Um comando contido só alcança a internet pelo proxy do Buddy. Cada site novo vira um cartão "rede", com uma vez, nesta conversa, neste projeto ou sempre; o site negado devolve 403 ao comando. O log guarda cada destino.
