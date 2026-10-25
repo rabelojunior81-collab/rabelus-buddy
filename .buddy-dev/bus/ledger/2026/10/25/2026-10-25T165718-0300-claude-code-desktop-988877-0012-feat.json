@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T165718-0300-claude-code-desktop-988877-0012",
+  "ts": "2026-10-25T16:57:18-03:00",
+  "utc": "2026-10-25T19:57:18.120Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 12,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "feat",
+  "summary": "mecanismo novo: teste 'o catálogo não guarda chave que a página não usa' reprova chave órfã da console nas duas línguas (antes, só o inverso era conferido); f5c8aac",
+  "refs": [],
+  "data": {}
+}

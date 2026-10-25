@@ -1,0 +1,30 @@
+{
+  "pt-BR": {
+    "console.title": "Rabelus Buddy",
+    "console.subtitle": "Console local",
+    "console.task.route": "Provedor",
+    "console.route.auto": "Automático, pela ordem (Go → Ollama → ChatGPT → OpenRouter)",
+    "console.route.ready": "pronto",
+    "console.feed.title": "Conversa",
+    "console.feed.empty": "Escreva uma tarefa ou abra uma execução.",
+    "console.feed.working": "trabalhando…",
+    "console.approvals.title": "Aprovações",
+    "console.approvals.none": "Nada aguardando.",
+    "console.approvals.approve": "Aprovar",
+    "console.runs.open": "Abrir"
+  },
+  "en": {
+    "console.title": "Rabelus Buddy",
+    "console.subtitle": "Local console",
+    "console.task.route": "Provider",
+    "console.route.auto": "Automatic, in order (Go → Ollama → ChatGPT → OpenRouter)",
+    "console.route.ready": "ready",
+    "console.feed.title": "Conversation",
+    "console.feed.empty": "Write a task or open a run.",
+    "console.feed.working": "working…",
+    "console.approvals.title": "Approvals",
+    "console.approvals.none": "Nothing waiting.",
+    "console.approvals.approve": "Approve",
+    "console.runs.open": "Open"
+  }
+}

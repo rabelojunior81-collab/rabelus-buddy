@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170627-0300-claude-code-desktop-988877-0018",
+  "ts": "2026-10-25T17:06:27-03:00",
+  "utc": "2026-10-25T20:06:27.017Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 18,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "doc",
+  "summary": "achados do caminho 2 no plano do M2, na ficha de sandbox e no STATUS; pendência do Pai opencode-contido-depois-do-caminho-2 com explicação e recomendação; workspace/spike-m2 arquivada com lápide em workspace/_arquivo; fda5128",
+  "refs": [],
+  "data": {}
+}

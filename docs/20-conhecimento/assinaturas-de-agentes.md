@@ -59,7 +59,7 @@ Por decisão do Pai ([ADR 0008](../60-decisoes/0008-orcamento-por-assinaturas.md
 
 - **M0:** o núcleo consome o Go direto pelo endpoint oficial, com os SDKs da OpenAI, da Anthropic e do Google conforme a rota do modelo, identificação própria e `x-opencode-session` (ADR 0014). O ChatGPT Plus entra pelo SIWC, com as restrições da prévia.
 - **Orçamento por assinatura não tem preço por chamada:** o Go limita em dólares por modelo e janela; o SIWC limita por um teto semanal que o usuário define. O núcleo estima, mede pelo `usage` e trata os erros de limite como fonte de verdade.
-- **M1:** o `@opencode-ai/sdk` e o ACP servem para conduzir o OpenCode como agente, não para chamar modelo.
+- **M1:** o `@opencode-ai/sdk` e o ACP servem para conduzir o OpenCode como agente, não para chamar modelo. (2026-10-25: o M1 usou só o ACP; o `@opencode-ai/sdk` 1.19.0 saiu do registro sem nunca ter sido instalado, e o OpenCode 2 trocou o SDK. Se o Buddy passar a conduzir o OpenCode pela API dele, o SDK novo entra pelo protocolo de dependências.)
 
 - O núcleo do buddy precisa de um cliente ACP desde cedo (M1): é por ele que o trabalho entra nas assinaturas.
 - O cliente ACP deve se identificar corretamente (user agent próprio, sessão estável), conforme os termos do Go.

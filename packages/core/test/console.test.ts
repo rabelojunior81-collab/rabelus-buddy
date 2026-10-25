@@ -71,6 +71,20 @@ test('console: só 127.0.0.1, com token e Host exato; sem token 401, Host estran
   assert.equal(CONSOLE_METHODS.includes('event.append' as never), false);
 });
 
+// O inverso (auditoria de organização pedida pelo Pai em 2026-10-25): chave do catálogo da console que a página não
+// usa, nem por montagem ("console.effort." + nível), é texto órfão. Em 2026-10-25 havia 12, da console antiga.
+test('console: o catálogo não guarda chave que a página não usa (órfãos)', () => {
+  const PAGE = readFileSync(join(import.meta.dirname, '..', 'console', 'index.html'), 'utf8');
+  const flat = (o: Record<string, unknown>, p = ''): string[] => Object.entries(o).flatMap(([k, v]) => (v && typeof v === 'object' ? flat(v as Record<string, unknown>, `${p}${k}.`) : [`${p}${k}`]));
+  const used = new Set([...PAGE.matchAll(/['"`]((?:console|status)\.[a-zA-Z0-9_.]+)/g)].map((m) => m[1]!));
+  const montadas = [...used].filter((k) => k.endsWith('.'));
+  for (const lang of ['pt-BR', 'en']) {
+    const cat = JSON.parse(readFileSync(join(import.meta.dirname, '..', '..', '..', 'locales', lang, 'console.json'), 'utf8')) as Record<string, unknown>;
+    const orfas = flat(cat).filter((k) => !used.has(k) && !montadas.some((p) => k.startsWith(p)));
+    assert.deepEqual(orfas, [], `${lang}: chaves sem uso`);
+  }
+});
+
 test('console: toda chave de catálogo usada pela página existe em pt-BR e en (critério 28)', async () => {
   const home = tempHome();
   owners.push(await spawnOwner(home, { RBUDDY_CONSOLE_PORT: '0' }));

@@ -46,18 +46,6 @@
       "approvedBy": "Pai, 2026-10-15 (SDKs definidos)"
     },
     {
-      "name": "@opencode-ai/sdk",
-      "version": "1.19.0",
-      "license": "MIT",
-      "kind": "runtime",
-      "status": "aprovada",
-      "purpose": "Cliente do servidor do OpenCode para conduzi-lo como agente",
-      "phase": "M1",
-      "ficha": "docs/20-conhecimento/assinaturas-de-agentes.md",
-      "verifiedAt": "2026-10-15",
-      "approvedBy": "Pai, 2026-10-15 (SDK extra)"
-    },
-    {
       "name": "i18next",
       "version": "26.4.5",
       "license": "MIT",

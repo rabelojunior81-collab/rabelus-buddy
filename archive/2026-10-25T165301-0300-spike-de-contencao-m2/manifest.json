@@ -1,0 +1,26 @@
+{
+  "v": 1,
+  "archivedAt": "2026-10-25T16:53:01-03:00",
+  "reason": "spike de contenção do M2 concluído: a ADR 0019 (MXC) foi aceita pelo Pai em 2026-10-25; o workflow seguia disparando e instalava o sandbox-runtime, que saiu do registro de dependências. A bateria fica aqui como evidência do registro do spike.",
+  "session": "claude-code-desktop-988877",
+  "entries": [
+    {
+      "from": "scripts/spike-m2/casos.mjs",
+      "to": "archive/2026-10-25T165301-0300-spike-de-contencao-m2/scripts/spike-m2/casos.mjs",
+      "sha256": "bddc7371ab2203f7d62d96ca5ca29b004146fc44d637cac7268dab8f447e784b",
+      "bytes": 5003
+    },
+    {
+      "from": "scripts/spike-m2/rodar.mjs",
+      "to": "archive/2026-10-25T165301-0300-spike-de-contencao-m2/scripts/spike-m2/rodar.mjs",
+      "sha256": "e5db309cf1e3dc5430f2c91d3829d1379802372108f591ea34c5fca30f8bb03b",
+      "bytes": 12584
+    },
+    {
+      "from": ".github/workflows/spike-m2.yml",
+      "to": "archive/2026-10-25T165301-0300-spike-de-contencao-m2/.github/workflows/spike-m2.yml",
+      "sha256": "70001f19e632a0682c6327bd46a33e1757e3387f7d04e86221e94a9b6f876289",
+      "bytes": 2356
+    }
+  ]
+}

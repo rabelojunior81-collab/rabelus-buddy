@@ -1,0 +1,19 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170654-0300-claude-code-desktop-988877-0020",
+  "ts": "2026-10-25T17:06:54-03:00",
+  "utc": "2026-10-25T20:06:54.607Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 20,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "claim",
+  "summary": ".buddy-dev/diario/2026-10-25.md",
+  "refs": [],
+  "data": {
+    "expiresUtc": "2026-10-25T20:36:54.607Z",
+    "tookOverFrom": null
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T170808-0300-claude-code-desktop-988877-0030",
+  "ts": "2026-10-25T17:08:08-03:00",
+  "utc": "2026-10-25T20:08:08.921Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 30,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "chore/organizacao-e-opencode-contido",
+  "type": "release",
+  "summary": "docs/30-governanca/validacoes.json",
+  "refs": [],
+  "data": {}
+}

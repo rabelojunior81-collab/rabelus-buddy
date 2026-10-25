@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T165108-0300-claude-code-desktop-988877-0001",
+  "ts": "2026-10-25T16:51:08-03:00",
+  "utc": "2026-10-25T19:51:08.697Z",
+  "session": "claude-code-desktop-988877",
+  "seq": 1,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "session-start",
+  "summary": "apagar o pacote do Claude Agent baixado por engano (autorizado); auditoria de órfãos, deprecados e processos; OpenCode por serve privado dentro da contenção",
+  "refs": [],
+  "data": {}
+}
