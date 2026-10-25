@@ -1,0 +1,57 @@
+# Spike de contenção do M2 (SPEC 0003, critério 8): a mesma bateria do Windows do Pai, no Linux e no macOS.
+# As duas bibliotecas são instaladas numa pasta temporária, fora da árvore do repositório: o sandbox-runtime traz
+# alertas altos sem correção (node-forge, zod 3), e a CI principal reprova isso, com razão. O resultado vai para o
+# resumo do job. Roda só quando a bateria ou este arquivo mudam, ou à mão.
+name: spike-m2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/spike-m2/**'
+      - '.github/workflows/spike-m2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bateria:
+    name: Bateria de contenção (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+      - name: Dependências do sistema (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bubblewrap socat ripgrep
+          # Ubuntu 24.04+: sem isto, o bubblewrap não cria user namespaces (documentado pelas duas bibliotecas).
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Bibliotecas do spike, fora da árvore do repositório
+        run: |
+          mkdir -p "$RUNNER_TEMP/deps" && cd "$RUNNER_TEMP/deps"
+          echo '{"name":"spike-m2","private":true,"type":"module"}' > package.json
+          npm install --save-exact --ignore-scripts @anthropic-ai/sandbox-runtime@0.0.81 @microsoft/mxc-sdk@1.0.1
+      - name: Bateria
+        run: |
+          node scripts/spike-m2/rodar.mjs --deps "$RUNNER_TEMP/deps" --base "$RUNNER_TEMP/spike" --saida "$RUNNER_TEMP/resultado.json" | tee "$RUNNER_TEMP/resumo.txt"
+          {
+            echo "## Spike de contenção — ${{ matrix.os }}"
+            echo '```'
+            cat "$RUNNER_TEMP/resumo.txt"
+            echo '```'
+            echo '<details><summary>resultado.json</summary>'
+            echo
+            echo '```json'
+            cat "$RUNNER_TEMP/resultado.json"
+            echo '```'
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"

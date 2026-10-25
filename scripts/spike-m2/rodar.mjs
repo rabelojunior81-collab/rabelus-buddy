@@ -140,10 +140,14 @@ if (SO.includes('mxc')) {
 
 if (SO.includes('srt')) {
   try {
-    const { SandboxManager } = await import(pathToFileURL(req.resolve('@anthropic-ai/sandbox-runtime')).href);
+    const srt = await import(pathToFileURL(req.resolve('@anthropic-ai/sandbox-runtime')).href);
+    const { SandboxManager } = srt;
+    // No Windows, o auxiliar srt-win.exe vem no pacote e precisa ser apontado (achado do ensaio).
+    const windows = platform() === 'win32' ? { windows: { srtWin: { path: srt.VENDORED_SRT_WIN_EXE } } } : {};
     const t0 = performance.now();
     const perguntados = [];
     await SandboxManager.initialize({
+      ...windows,
       network: { allowedDomains: ALLOWED, deniedDomains: [] },
       filesystem: { denyRead: [fora, homedir(), join(ws, '.env')], allowRead: [ws, bin, dirname(process.execPath), dirname(dirname(git)), dirname(dirname(dirname(npmCli)))], allowWrite: [ws], denyWrite: [join(ws, '.env'), join(ws, '.git')] },
     }, async (host) => { perguntados.push(host); return false; });
