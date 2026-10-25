@@ -121,7 +121,10 @@ test('MXC de verdade: dentro da pasta escreve; o .env, fora da pasta e a rede fa
   assert.equal(dentro.code, 0, dentro.stderr);
   assert.equal(readFileSync(join(ws, 'dentro.txt'), 'utf8'), 'x');
   assert.notEqual((await c.run(node(`r "${join(ws, '.env')}"`), ws, p)).code, 0, '.env negado');
-  assert.notEqual((await c.run(node(`w "${fora}"`), ws, p)).code, 0, 'fora da pasta');
+  // Fora da pasta, o que vale é nada chegar aqui fora. No Windows e no macOS a escrita falha; no Linux, o bubblewrap
+  // dá ao comando uma /tmp privada, e a escrita "funciona" numa cópia que some (achado do spike e da CI de 2026-10-25).
+  const escritaFora = await c.run(node(`w "${fora}"`), ws, p);
+  if (process.platform !== 'linux') assert.notEqual(escritaFora.code, 0, 'fora da pasta');
   assert.equal(existsSync(fora), false, 'e nada chegou aqui fora');
   assert.notEqual((await c.run(node('n'), ws, p)).code, 0, 'rede negada');
 });
