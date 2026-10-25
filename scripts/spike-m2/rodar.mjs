@@ -121,8 +121,9 @@ if (SO.includes('mxc')) {
           filesystem: { readwritePaths: [ws], readonlyPaths: ro, deniedPaths: [join(ws, '.env')] },
           // O ProcessContainer só aceita o proxy com a entrada da rede local liberada (achado: "networkProxy requires
           // network.ingress.default='allow'"); a saída continua negada.
-          // No bubblewrap, ao contrário, a entrada liberada é recusada (achado da CI no Linux): só no Windows.
-          network: { egress: { default: 'deny' }, ingress: { default: platform() === 'win32' ? 'allow' : 'deny', hostLoopback: 'allow' }, runtimeConfig: { networkProxy: px.url } },
+          // Cada backend quer a entrada de um jeito (achados da CI): o Seatbelt também exige entrada liberada junto com o
+          // loopback do host; o bubblewrap recusa as duas, porque o loopback dele é de outro namespace.
+          network: { egress: { default: 'deny' }, ...(platform() === 'linux' ? {} : { ingress: { default: 'allow', hostLoopback: 'allow' } }), runtimeConfig: { networkProxy: px.url } },
           // Com a interface desligada, o node.exe não inicializa (0xC0000142, achado do ensaio); área de transferência e
           // injeção de teclado continuam negadas, porque o MXC nega o que não é declarado.
           ui: { disable: false },
