@@ -1,0 +1,14 @@
+{
+  "v": 1,
+  "archivedAt": "2026-10-25T16:57:01-03:00",
+  "reason": "12 chaves do catálogo da console sem uso desde a reconstrução da console (M1.5), achadas na auditoria de organização pedida pelo Pai em 2026-10-25; o teste novo impede que voltem a se acumular. Os textos, nas duas línguas, ficam aqui.",
+  "session": "claude-code-desktop-988877",
+  "entries": [
+    {
+      "from": "chaves-orfas-da-console.json",
+      "to": "archive/2026-10-25T165701-0300-chaves-orfas-da-console/chaves-orfas-da-console.json",
+      "sha256": "b809151af78fa4a2b12af04aa22a04ab1838d71fe5d7b6c127fd94762c03fc11",
+      "bytes": 1172
+    }
+  ]
+}
