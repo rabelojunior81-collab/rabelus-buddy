@@ -1,7 +1,7 @@
 # SPEC — M2: Execução isolada
 
-**ID:** 0003-execucao-isolada · **Tamanho:** fase · **Revisão:** 1 · **Estado:** rascunho
-**Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-desktop-2ea315` · **Criada em:** 2026-10-21 · **Aprovada por:** pendente
+**ID:** 0003-execucao-isolada · **Tamanho:** fase · **Revisão:** 1 · **Estado:** aprovada
+**Autor:** buddy-dev (Buddy Fenix), sessão `claude-code-desktop-2ea315` · **Criada em:** 2026-10-21 · **Aprovada por:** Pai, 2026-10-25 ("Aprovo a especificação da contenção de comandos, a entrada das duas bibliotecas para a comparação e o pedido de administrador do Windows durante ela, com desfazer")
 **Revisão anterior:** — · **Decisão de origem:** [ROADMAP](../../50-planos/ROADMAP.md) e [ADR 0018](../../60-decisoes/0018-ordem-c-depois-do-m0.md) (ordem C: M2 é o isolamento); pesquisa [R2](../../10-pesquisa/rev-0.2/r2-sandbox.md), reverificada ao vivo em 2026-10-21 na [ficha de sandbox](../../20-conhecimento/sandbox-e-permissoes.md)
 
 ## Problema e resultado

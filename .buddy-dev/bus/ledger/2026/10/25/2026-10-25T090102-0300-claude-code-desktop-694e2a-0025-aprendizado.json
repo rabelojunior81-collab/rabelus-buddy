@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T090102-0300-claude-code-desktop-694e2a-0025",
+  "ts": "2026-10-25T09:01:02-03:00",
+  "utc": "2026-10-25T12:01:02.871Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 25,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "aprendizado",
+  "summary": "lição do lote #0040: num teste de segurança, a falta de sucesso não prova o bloqueio; o rodador do spike conta erro como erro e confere a fuga do lado de fora; diário de 2026-10-25; 7a46a17",
+  "refs": [],
+  "data": {}
+}

@@ -140,6 +140,30 @@
       "ficha": "docs/20-conhecimento/acp-registro-e-orquestradores.md",
       "verifiedAt": "2026-10-17",
       "approvedBy": "Pai, 2026-10-18 (\"Aprovados. Pode executar você\")"
+    },
+    {
+      "name": "@anthropic-ai/sandbox-runtime",
+      "version": "0.0.81",
+      "license": "Apache-2.0",
+      "purpose": "Candidata do spike de contenção do M2 (SPEC 0003): Seatbelt, bubblewrap e Windows em alfa; a perdedora sai antes do merge do M2",
+      "kind": "dev",
+      "status": "aprovada",
+      "phase": "M2 (spike)",
+      "ficha": "docs/20-conhecimento/sandbox-e-permissoes.md",
+      "verifiedAt": "2026-10-25",
+      "approvedBy": "Pai, 2026-10-25 (\"Aprovo a especificação da contenção de comandos, a entrada das duas bibliotecas para a comparação e o pedido de administrador do Windows durante ela, com desfazer\")"
+    },
+    {
+      "name": "@microsoft/mxc-sdk",
+      "version": "1.0.1",
+      "license": "MIT",
+      "purpose": "Candidata do spike de contenção do M2 (SPEC 0003): ProcessContainer no Windows 11, bubblewrap e Seatbelt; a perdedora sai antes do merge do M2",
+      "kind": "dev",
+      "status": "aprovada",
+      "phase": "M2 (spike)",
+      "ficha": "docs/20-conhecimento/sandbox-e-permissoes.md",
+      "verifiedAt": "2026-10-25",
+      "approvedBy": "Pai, 2026-10-25 (\"Aprovo a especificação da contenção de comandos, a entrada das duas bibliotecas para a comparação e o pedido de administrador do Windows durante ela, com desfazer\")"
     }
   ]
 }

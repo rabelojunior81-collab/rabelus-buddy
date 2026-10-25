@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T083949-0300-claude-code-desktop-694e2a-0008",
+  "ts": "2026-10-25T08:39:49-03:00",
+  "utc": "2026-10-25T11:39:49.023Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 8,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "decisao",
+  "summary": "Pai (2026-10-25) aprovou a SPEC 0003 (M2), a entrada de @anthropic-ai/sandbox-runtime 0.0.81 e @microsoft/mxc-sdk 1.0.1 para o spike e o pedido de administrador do Windows durante ele, com desfazer; registradas como dev (spike), a perdedora sai antes do merge do M2",
+  "refs": [],
+  "data": {}
+}

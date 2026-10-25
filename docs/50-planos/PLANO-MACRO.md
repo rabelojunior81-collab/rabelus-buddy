@@ -1,6 +1,6 @@
 # Plano Macro — TODO de tudo
 
-**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-21T13:30:31-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
+**Classe:** PLANO · **Versão:** 2 (sobre a Revisão 0.2) · **Atualizado em:** 2026-10-25T08:58:59-03:00 · **Estado:** aprovado pelo Pai em 2026-10-15
 
 Granularidade grossa: uma linha por capacidade do escopo completo, agrupada pelo marco que a entrega ([ROADMAP](./ROADMAP.md)). Cada linha ganha SPEC e plano quando o marco começa. Entre colchetes, a origem do requisito: briefing (§8), Revisão 0.2 (R1–R6) ou ADR.
 
@@ -47,7 +47,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 
 ## M2 — Execução isolada
 
-- [ ] Spike `@anthropic-ai/sandbox-runtime` × `@microsoft/mxc-sdk` nos três SOs [R2]
+- [~] Spike `@anthropic-ai/sandbox-runtime` × `@microsoft/mxc-sdk` nos três SOs [R2] — SPEC 0003 aprovada em 2026-10-25; medido no Windows do Pai (MXC) e na CI (as duas); [ADR 0019](../60-decisoes/0019-contencao-pelo-mxc.md) proposta: MXC
 - [ ] S1 em macOS (Seatbelt), Linux (bubblewrap + seccomp), Windows (resultado do spike) [R2; §8]
 - [ ] Rede negada por padrão; proxy com lista de domínios por sessão; web como rede [R2; ADR 0012]
 - [ ] Worktree por sessão; integração com diff, aprovação e rollback [R5-4; ADR 0009]

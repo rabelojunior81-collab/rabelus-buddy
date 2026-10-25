@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T085417-0300-claude-code-desktop-694e2a-0017",
+  "ts": "2026-10-25T08:54:17-03:00",
+  "utc": "2026-10-25T11:54:17.311Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 17,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "pesquisa",
+  "summary": "CI do spike, segunda rodada: sandbox-runtime Linux 10/12 contidas e 10/10 legítimos (75 ms; base 65), macOS 11/12 e 10/10 (147 ms; base 117); a fuga comum é E12, a variável de ambiente secreta do pai visível lá dentro; no Linux também E3 (lista a pasta do usuário); o MXC quer a rede configurada por backend: Seatbelt exige entrada liberada com o loopback do host, bubblewrap recusa regras de entrada; faca45d",
+  "refs": [],
+  "data": {}
+}

@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T090253-0300-claude-code-desktop-694e2a-0036",
+  "ts": "2026-10-25T09:02:53-03:00",
+  "utc": "2026-10-25T12:02:53.592Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 36,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "release",
+  "summary": "docs/50-planos/piloto-paralelismo/PLANO.md",
+  "refs": [],
+  "data": {}
+}

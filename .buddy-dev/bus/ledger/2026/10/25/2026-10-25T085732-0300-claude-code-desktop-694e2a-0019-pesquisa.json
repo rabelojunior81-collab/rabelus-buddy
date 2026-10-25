@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T085732-0300-claude-code-desktop-694e2a-0019",
+  "ts": "2026-10-25T08:57:32-03:00",
+  "utc": "2026-10-25T11:57:32.390Z",
+  "session": "claude-code-desktop-694e2a",
+  "seq": 19,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-spike-contencao",
+  "type": "pesquisa",
+  "summary": "CI do spike, quarta rodada (com conferência do lado de fora): MXC macOS 12/12, Linux 11/12 (E3), Windows 10/12 (E3, E9), 10/10 legítimos nos três; sandbox-runtime macOS 11/12 (E12), Linux 10/12 (E3, E12), 10/10 nos dois, Windows sem o preparo de administrador; E11 do Linux era cópia privada da temporária (CONFIRMADO)",
+  "refs": [],
+  "data": {}
+}

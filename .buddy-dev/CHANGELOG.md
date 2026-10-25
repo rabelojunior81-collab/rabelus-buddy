@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0040 · 2026-10-16T011421-0300 · claude-code-vs-code-fe93fb · ferramenta
-
-M0.3: execuções, efeitos com identidade e aprovações como eventos; retomada após kill -9 (critérios 4–6); rbuddy approvals/approve/deny. O teste do critério 3 achou um bug (evento de domínio malformado projetava id undefined); corrigido no código, com asserção nova.
-
 ### #0041 · 2026-10-16T012153-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.4: motor de política com auditoria em eventos, FsTools com compare-and-set e CommandTool só com aprovação explícita de uma vez; critérios 7–13 e 20; rebuild das projeções cobre a política (teste novo).
@@ -207,3 +203,7 @@ Pai validou a console nova (M1.5) nos três casos; comando ganhou os quatro esco
 ### #0089 · 2026-10-21T133709-0300 · claude-code-desktop-2ea315 · correcao
 
 Três registros saíram antes de commits barrados pela autoverificação, citando o hash anterior; corrigidos por registros que citam o hash certo. Lição: o registro do commit vai encadeado depois do commit (&&), nunca antes
+
+### #0090 · 2026-10-25T085954-0300 · claude-code-desktop-694e2a · feat
+
+M2 começou: Pai aprovou a SPEC 0003, as duas bibliotecas e o preparo de administrador; bateria de 12 fugas e 10 legítimos (scripts/spike-m2) medida no Windows do Pai e na CI; MXC sem administrador no Windows, 10/12, e 12/12 e 11/12 no macOS e no Linux; sandbox-runtime 11/12 e 10/12, com o Windows dependendo de preparo do Pai; ADR 0019 proposta: MXC

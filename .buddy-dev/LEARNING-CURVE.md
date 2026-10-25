@@ -240,3 +240,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0038-#0039
 
 1. **Em 2026-10-16, o M0.2 provou com mil comandos concorrentes que o log de eventos não tem buraco nem registro órfão.** Em 2026-10-21, três registros meus no barramento citaram commits que não existiam: eu registrava antes, e o commit vinha depois e era barrado pela autoverificação. No mesmo dia, rodei só os testes da console antes de seguir, e a suíte inteira pegou a falha que eu tinha deixado (uma chave de catálogo montada sem declarar os valores). → Registro e commit são uma transação: o registro do commit vai depois do commit confirmado, encadeado, nunca antes. E "passou" é da suíte inteira, não do pedaço que eu acho que foi afetado.
+
+## lote #0040-#0040
+
+1. **Em 2026-10-16, o teste do M0.3 achou um evento malformado que virava um id `undefined` em silêncio, e o conserto foi no código, com asserção nova.** Em 2026-10-25, a primeira rodada do meu spike de contenção marcou 12 de 12 fugas contidas, mas a biblioteca tinha recusado a configuração e nenhum comando rodou. Depois, uma escrita "feita" lá dentro do Linux caiu numa cópia privada e nunca chegou ao sistema. → Num teste de segurança, a falta de sucesso não prova o bloqueio. O teste precisa mostrar que o comando rodou e foi barrado, e a fuga precisa ser conferida do lado de fora. Erro conta como erro, nunca como contido.
