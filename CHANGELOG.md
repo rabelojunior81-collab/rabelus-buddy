@@ -10,6 +10,8 @@ O formato segue o [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.
 
 ### Adicionado
 
+- **Rede por cartão** (M2.3, 2026-10-25). Um comando contido só alcança a internet pelo proxy do Buddy. Cada site novo vira um cartão "rede", com uma vez, nesta conversa, neste projeto ou sempre; o site negado devolve 403 ao comando. O log guarda cada destino.
+
 - **Spike de contenção** (M2.0, 2026-10-25): duas bibliotecas medidas com 12 tentativas de fuga e 10 comandos normais, no Windows do Pai e na CI; a da Microsoft (MXC) foi escolhida pelo Pai (ADR 0019).
 - **Comandos do Buddy contidos pelo sistema** (M2.1, 2026-10-25; ADR 0019). Um comando aprovado roda dentro da pasta de trabalho: lê e escreve só ali, não lê `.env` nem chaves, não escreve no `.git` e não acessa a rede. Sem suporte na máquina, roda como antes, e o log diz por quê. A contenção se desliga com `RBUDDY_CONTAINMENT=off`. O Buddy fica sabendo quando um acesso foi negado pela contenção.
 

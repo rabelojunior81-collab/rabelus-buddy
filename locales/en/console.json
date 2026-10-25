@@ -75,7 +75,8 @@
         "run_command": "run the command",
         "read_file": "read",
         "list_dir": "list the folder",
-        "delegate": "delegate to the agent"
+        "delegate": "delegate to the agent",
+        "network": "reach the internet at"
       },
       "scope": {
         "once": "Once",

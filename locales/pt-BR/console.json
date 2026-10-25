@@ -75,7 +75,8 @@
         "run_command": "rodar o comando",
         "read_file": "ler",
         "list_dir": "listar a pasta",
-        "delegate": "delegar ao agente"
+        "delegate": "delegar ao agente",
+        "network": "acessar a internet em"
       },
       "scope": {
         "once": "Uma vez",

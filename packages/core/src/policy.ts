@@ -9,7 +9,8 @@ import { isAbsolute, relative, resolve, sep, posix, basename } from 'node:path';
 import { transaction, type Database } from './db.ts';
 import type { EventLog } from './log.ts';
 
-export type Tool = 'read_file' | 'list_dir' | 'write_file' | 'archive' | 'run_command' | 'model.use';
+// 'network': destino de rede pedido por um comando contido (M2.3; ADR 0012, web como rede); o alvo é o host.
+export type Tool = 'read_file' | 'list_dir' | 'write_file' | 'archive' | 'run_command' | 'model.use' | 'network';
 export type Effect = 'allow' | 'ask' | 'deny';
 export type Scope = 'once' | 'session' | 'project' | 'always';
 // Modos de permissão (SPEC 0002, critério 17; Pai, 2026-10-20). Manual é o padrão de sempre.
@@ -208,6 +209,9 @@ export class Policy {
         // Comando nunca passa por regra (critério 13 do M0); passa por aprovação explícita, que desde 2026-10-21 (decisão
         // do Pai) pode valer nesta conversa, neste projeto ou sempre, só para o comando exatamente igual.
         return { effect: 'ask', scopes: ['once', 'session', 'project', 'always'], rulesApply: false };
+      case 'network':
+        // Pergunta por padrão; regra e concessão valem por padrão de host ("*.npmjs.org"), com os quatro escopos.
+        return { effect: 'ask', scopes: ['once', 'session', 'project', 'always'], rulesApply: true };
       case 'model.use':
         return TRAINING_MODELS.includes(target)
           ? { effect: 'ask', scopes: ['project'], rulesApply: false }
@@ -242,7 +246,7 @@ export class Policy {
     if (base.effect === 'allow') return { effect: 'allow', reason: 'padrão' };
     // Modos (critério 17): depois da negação (que vence) e só dentro da pasta e fora do protegido (já conferidos).
     const changes = a.tool === 'write_file' || a.tool === 'archive' || a.tool === 'run_command';
-    if (changes && this.mode === 'plan') return { effect: 'deny', reason: 'modo plano' };
+    if ((changes || a.tool === 'network') && this.mode === 'plan') return { effect: 'deny', reason: 'modo plano' };
     if (a.tool !== 'model.use' && this.mode === 'yolo') return { effect: 'allow', reason: 'modo sem perguntas' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'acceptEdits') return { effect: 'allow', reason: 'modo aceitar edições' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'auto') return { effect: 'allow', reason: 'automático: escrita dentro da pasta' };

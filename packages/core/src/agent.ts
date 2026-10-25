@@ -75,7 +75,7 @@ export const AGENT_TOOLS: ToolSpec[] = [
   { name: 'read_file', description: 'Lê um arquivo de texto do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'list_dir', description: 'Lista as entradas de um diretório do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'write_file', description: 'Escreve um arquivo no workspace (leia antes, se ele já existir).', parameters: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
-  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana (uma vez, ou para o mesmo comando na conversa, no projeto ou sempre). Com contained=true, o comando rodou contido pelo sistema: só lê e escreve a pasta de trabalho, os segredos (.env, chaves) e a rede ficam negados, e um acesso negado vem disso.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
+  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana (uma vez, ou para o mesmo comando na conversa, no projeto ou sempre). Com contained=true, o comando rodou contido pelo sistema: só lê e escreve a pasta de trabalho, os segredos (.env, chaves) ficam negados, e um acesso negado vem disso. A rede sai só pelo proxy do Buddy (HTTPS_PROXY): cada site novo pede aprovação humana, e um 403 do proxy é um site negado.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
 ];
 
 // A ferramenta de delegação só aparece com harness pronto; o enum diz ao modelo quais existem.
@@ -384,7 +384,8 @@ export class Agent {
         case 'run_command': {
           const command = str(a.command);
           return out(await this.effect(session, run, tc, 'command', command, 'run_command', observe, async (obs) => {
-            const r = await this.o.cmd.run(session, command, { ...ctx, observe: obs });
+            const askNetwork = ctx.interactive ? (host: string) => this.askNetwork(session, host) : undefined;
+            const r = await this.o.cmd.run(session, command, { ...ctx, observe: obs, ...(askNetwork ? { askNetwork } : {}) });
             return r.ok ? { ok: true, ...r.result } : { ok: false, reason: r.reason };
           }));
         }
@@ -445,6 +446,16 @@ export class Agent {
     if (r.ok) domain.completeEffect(effect, r);
     else domain.failEffect(effect, String(r.reason));
     return r;
+  }
+
+  // Cartão "rede" (M2.3): o destino novo de um comando contido pede aprovação; o escopo escolhido vira concessão do host.
+  private async askNetwork(session: string, host: string): Promise<boolean> {
+    const decision = await this.approve(session, `network ${host}`);
+    if (decision !== 'approve') return false;
+    const scope = (this.lastApproval && this.o.scopeOf?.(this.lastApproval)) || 'once';
+    // "Uma vez" vale para esta conexão: o proxy já libera, e a concessão não precisa ficar.
+    if (scope !== 'once') this.o.policy.grant(scope, { tool: 'network', pattern: host }, { session });
+    return true;
   }
 
   private lastApproval: string | undefined;

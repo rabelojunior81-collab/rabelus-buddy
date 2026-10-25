@@ -38,6 +38,39 @@ test('perfil: a pasta com leitura e escrita; protegidos negados ou só leitura; 
   assert.ok(!p.enumerate.some((d) => d === ws || d.startsWith(ws + '\\') || d.startsWith(ws + '/')), 'nunca a própria pasta (rebaixa a escrita)');
 });
 
+// Achado da checagem real da M2.3: o comando contido achava o npm por um PATH diferente do que montou o perfil e caía
+// em pasta não liberada. O perfil carrega o PATH que o montou, e o comando contido roda com ele.
+test('perfil: carrega o PATH que o montou, para o comando contido achar programas só nas pastas liberadas', () => {
+  const { ws } = cenario();
+  const raiz = mkdtempSync(join(tmpdir(), 'rbuddy-bin-'));
+  const p = profileFor(ws, { env: { PATH: raiz } });
+  assert.equal(p.path, raiz);
+  assert.ok(p.readonly.includes(raiz));
+});
+
+// Causa achada pelo log de auditoria na checagem real da M2.3: com uma pasta do PATH dentro de outra pasta liberada
+// (o npm põe a node-gyp-bin dele no PATH), as pastas entre as duas entravam em "só listar" e perdiam a leitura.
+test('perfil: nenhuma pasta dentro de outra liberada vira "só listar"', () => {
+  const { ws } = cenario();
+  const raiz = mkdtempSync(join(tmpdir(), 'rbuddy-npmg-'));
+  const funda = join(raiz, 'node_modules', 'npm', 'bin');
+  mkdirSync(funda, { recursive: true });
+  const p = profileFor(ws, { env: { PATH: [raiz, funda].join(process.platform === 'win32' ? ';' : ':') } });
+  assert.ok(p.readonly.includes(raiz));
+  for (const d of [join(raiz, 'node_modules'), join(raiz, 'node_modules', 'npm'), funda]) assert.ok(!p.enumerate.includes(d), d);
+  assert.ok(p.enumerate.includes(dirname(raiz)), 'acima da pasta liberada continua listável');
+});
+
+// Achado da segunda checagem real da M2.3: no Windows, o npm.cmd do Node entrega a execução ao npm global do usuário
+// (%APPDATA%\npm) quando ele existe, mesmo fora do PATH do núcleo.
+test('perfil: no Windows, a pasta global do npm do usuário entra só leitura, mesmo fora do PATH', () => {
+  const { ws } = cenario();
+  const appdata = mkdtempSync(join(tmpdir(), 'rbuddy-appdata-'));
+  mkdirSync(join(appdata, 'npm'));
+  const p = profileFor(ws, { env: { PATH: '', APPDATA: appdata }, platform: 'win32' });
+  assert.ok(p.readonly.includes(join(appdata, 'npm')));
+});
+
 test('perfil: no Windows, a pasta de um programa em bin ou cmd entra com a raiz dele (o git chama o que mora ao lado)', () => {
   const { ws } = cenario();
   const raiz = mkdtempSync(join(tmpdir(), 'rbuddy-git-'));
@@ -71,6 +104,11 @@ test('com contenção disponível, o comando aprovado roda contido, e o log diz 
   assert.deepEqual(calls, ['npm test']);
   assert.deepEqual(spawned, [], 'nada roda solto');
   assert.deepEqual(ran(log).map((p) => [p.contained, p.containment]), [[true, 'teste']]);
+  // Auditoria: o log guarda com que perfil o comando rodou (achado da checagem real da M2.3: sem isso, não dava para
+  // saber por que o npm era negado no núcleo e não fora dele).
+  const perfil = ran(log)[0]!.profile as { readwrite: string[]; readonly: string[]; denied: number };
+  assert.ok(Array.isArray(perfil.readonly) && perfil.readonly.length > 0);
+  assert.equal(typeof perfil.denied, 'number');
 });
 
 test('sem contenção, nada muda: roda como antes, e o log diz por quê (critério 5)', async () => {
