@@ -58,7 +58,8 @@ const lineOf = (out) => { try { return JSON.parse(out.trim().split(/\r?\n/).filt
 function sh(cmd, env = {}) {
   return new Promise((ok) => {
     const t0 = performance.now();
-    const c = spawn(cmd, { shell: true, env: { ...process.env, ...env } });
+    // Roda a partir da pasta de trabalho: de uma pasta negada, o node nem descobre onde está (achado da CI no macOS).
+    const c = spawn(cmd, { shell: true, cwd: ws, env: { ...process.env, ...env } });
     let out = '', err = '';
     c.stdout.on('data', (d) => (out += d)); c.stderr.on('data', (d) => (err += d));
     const kill = setTimeout(() => c.kill(), 30_000);
@@ -120,7 +121,8 @@ if (SO.includes('mxc')) {
           filesystem: { readwritePaths: [ws], readonlyPaths: ro, deniedPaths: [join(ws, '.env')] },
           // O ProcessContainer só aceita o proxy com a entrada da rede local liberada (achado: "networkProxy requires
           // network.ingress.default='allow'"); a saída continua negada.
-          network: { egress: { default: 'deny' }, ingress: { default: 'allow', hostLoopback: 'allow' }, runtimeConfig: { networkProxy: px.url } },
+          // No bubblewrap, ao contrário, a entrada liberada é recusada (achado da CI no Linux): só no Windows.
+          network: { egress: { default: 'deny' }, ingress: { default: platform() === 'win32' ? 'allow' : 'deny', hostLoopback: 'allow' }, runtimeConfig: { networkProxy: px.url } },
           // Com a interface desligada, o node.exe não inicializa (0xC0000142, achado do ensaio); área de transferência e
           // injeção de teclado continuam negadas, porque o MXC nega o que não é declarado.
           ui: { disable: false },
@@ -149,7 +151,10 @@ if (SO.includes('srt')) {
     await SandboxManager.initialize({
       ...windows,
       network: { allowedDomains: ALLOWED, deniedDomains: [] },
-      filesystem: { denyRead: [fora, homedir(), join(ws, '.env')], allowRead: [ws, bin, dirname(process.execPath), dirname(dirname(git)), dirname(dirname(dirname(npmCli)))], allowWrite: [ws], denyWrite: [join(ws, '.env'), join(ws, '.git')] },
+      // O mesmo perfil fechado do MXC: a pasta do usuário negada, com o que as ferramentas precisam liberado. A pasta das
+      // bibliotecas também, porque o auxiliar de seccomp do Linux mora nela (achado da CI no Linux), e as configurações
+      // do git e do npm, que eles leem ao iniciar (achado da CI no macOS).
+      filesystem: { denyRead: [fora, homedir(), join(ws, '.env')], allowRead: [ws, bin, DEPS, dirname(process.execPath), dirname(dirname(git)), dirname(dirname(dirname(npmCli))), join(homedir(), '.gitconfig'), join(homedir(), '.npmrc')], allowWrite: [ws], denyWrite: [join(ws, '.env'), join(ws, '.git')] },
     }, async (host) => { perguntados.push(host); return false; });
     const preparoMs = Math.round(performance.now() - t0);
     const bat = await bateria('sandbox-runtime', async (id) => sh(await SandboxManager.wrapWithSandbox(cmdOf(id, file)), SEGREDO));

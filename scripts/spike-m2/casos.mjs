@@ -26,7 +26,9 @@ function viaProxy(host) {
       return;
     }
     const u = new URL(proxy);
-    const req = request({ host: u.hostname, port: u.port, method: 'CONNECT', path: `${host}:443` });
+    // O proxy do sandbox-runtime leva a credencial no próprio endereço (sem ela, 407; achado da CI no macOS).
+    const auth = u.username ? { 'Proxy-Authorization': `Basic ${Buffer.from(`${decodeURIComponent(u.username)}:${decodeURIComponent(u.password)}`).toString('base64')}` } : {};
+    const req = request({ host: u.hostname, port: u.port, method: 'CONNECT', path: `${host}:443`, headers: auth });
     req.on('connect', (res, sock) => { clearTimeout(t); sock.destroy(); res.statusCode === 200 ? ok(`proxy ${res.statusCode}`) : ko(new Error(`proxy ${res.statusCode}`)); });
     req.on('error', (e) => { clearTimeout(t); ko(e); });
     req.end();
