@@ -127,20 +127,20 @@ test('critério 12 (complemento): escrever arquivo existente sem ter lido també
   assert.equal(fs.writeFile('s1', 'src/novo.ts', 'arquivo novo', tty).ok, true, 'arquivo novo não precisa de leitura');
 });
 
-test('critério 13: run_command nunca executa sem aprovação explícita, nem com concessões de sessão ou projeto', () => {
+test('critério 13: run_command nunca executa sem aprovação explícita, nem com concessões de sessão ou projeto', async () => {
   const { policy, workspace } = setup();
   const spawned: string[] = [];
   const cmd = new CommandTool(policy, { workspace, exec: (c) => { spawned.push(c); return { code: 0, stdout: '', stderr: '' }; } });
   policy.grant('session', { tool: 'run_command', pattern: '**' }, { session: 's1' });
   policy.grant('project', { tool: 'run_command', pattern: '**' }, { session: 's1' });
   policy.addRule({ effect: 'allow', tool: 'run_command', pattern: '**' });
-  assert.equal(cmd.run('s1', 'npm test', noTty).ok, false);
+  assert.equal((await cmd.run('s1', 'npm test', noTty)).ok, false);
   assert.equal(policy.decide({ session: 's1', tool: 'run_command', target: 'npm test' }, tty).effect, 'ask');
   assert.deepEqual(spawned, [], 'nenhum processo sem aprovação explícita');
   policy.grant('once', { tool: 'run_command', pattern: 'npm test' }, { session: 's1' });
-  assert.equal(cmd.run('s1', 'npm test', noTty).ok, true, 'aprovação explícita de uma vez libera aquela execução');
+  assert.equal((await cmd.run('s1', 'npm test', noTty)).ok, true, 'aprovação explícita de uma vez libera aquela execução');
   assert.deepEqual(spawned, ['npm test']);
-  assert.equal(cmd.run('s1', 'npm test', noTty).ok, false, 'e só uma vez');
+  assert.equal((await cmd.run('s1', 'npm test', noTty)).ok, false, 'e só uma vez');
 });
 
 test('critério 20: modelos que treinam com os dados negados por padrão; só concessão de projeto libera, auditada', () => {

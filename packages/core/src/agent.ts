@@ -75,7 +75,7 @@ export const AGENT_TOOLS: ToolSpec[] = [
   { name: 'read_file', description: 'Lê um arquivo de texto do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'list_dir', description: 'Lista as entradas de um diretório do workspace.', parameters: { type: 'object', properties: { path: { type: 'string', description: 'caminho relativo ao workspace' } }, required: ['path'] } },
   { name: 'write_file', description: 'Escreve um arquivo no workspace (leia antes, se ele já existir).', parameters: { type: 'object', properties: { path: { type: 'string' }, content: { type: 'string' } }, required: ['path', 'content'] } },
-  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana (uma vez, ou para o mesmo comando na conversa, no projeto ou sempre).', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
+  { name: 'run_command', description: 'Roda um comando no workspace; exige aprovação humana (uma vez, ou para o mesmo comando na conversa, no projeto ou sempre). Com contained=true, o comando rodou contido pelo sistema: só lê e escreve a pasta de trabalho, os segredos (.env, chaves) e a rede ficam negados, e um acesso negado vem disso.', parameters: { type: 'object', properties: { command: { type: 'string' } }, required: ['command'] } },
 ];
 
 // A ferramenta de delegação só aparece com harness pronto; o enum diz ao modelo quais existem.
@@ -383,8 +383,8 @@ export class Agent {
         }
         case 'run_command': {
           const command = str(a.command);
-          return out(await this.effect(session, run, tc, 'command', command, 'run_command', observe, (obs) => {
-            const r = this.o.cmd.run(session, command, { ...ctx, observe: obs });
+          return out(await this.effect(session, run, tc, 'command', command, 'run_command', observe, async (obs) => {
+            const r = await this.o.cmd.run(session, command, { ...ctx, observe: obs });
             return r.ok ? { ok: true, ...r.result } : { ok: false, reason: r.reason };
           }));
         }
@@ -402,7 +402,7 @@ export class Agent {
   }
 
   // Efeito com identidade (run + id da chamada): feito uma vez, repete o recibo; desconhecido exige reconciliação.
-  private async effect(session: string, run: string, tc: ToolCall, kind: string, target: string, tool: Tool, observe: boolean, exec: (observe: boolean) => ToolOut): Promise<ToolOut> {
+  private async effect(session: string, run: string, tc: ToolCall, kind: string, target: string, tool: Tool, observe: boolean, exec: (observe: boolean) => ToolOut | Promise<ToolOut>): Promise<ToolOut> {
     const { domain, policy } = this.o;
     const key = `${run}:${tc.id}`;
     const prev = domain.effectByKey(key);
@@ -415,12 +415,12 @@ export class Agent {
       if (e instanceof DomainError && e.code === ERR.needsReconciliation) return { ok: false, reason: 'needsReconciliation', effect: e.data.effect };
       throw e;
     }
-    let r = exec(observe);
+    let r = await exec(observe);
     if (!r.ok && r.reason === 'needsApproval') {
       const decision = await this.approve(session, `${tool} ${target}`);
       if (decision === 'approve') {
         policy.grant((this.lastApproval && this.o.scopeOf?.(this.lastApproval)) || 'once', { tool, pattern: target }, { session });
-        r = exec(false);
+        r = await exec(false);
       } else r = { ok: false, reason: 'deniedByHuman' };
     }
     if (r.ok) domain.completeEffect(effect, r);
