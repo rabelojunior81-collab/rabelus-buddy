@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T100455-0300-claude-code-desktop-983845-0031",
+  "ts": "2026-10-25T10:04:55-03:00",
+  "utc": "2026-10-25T13:04:55.171Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 31,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-3-rede-por-cartao",
+  "type": "pesquisa",
+  "summary": "checagem real da M2.3 no Windows do Pai, modelo real: npm view left-pad pediu o cartão 'network registry.npmjs.org', aprovado nesta conversa, duas conexões e uma pergunta só, resposta 1.3.0 (contido); destino negado (registry.yarnpkg.com) deu E403 ao npm e o Buddy explicou o bloqueio; suíte 475/475; 460799c",
+  "refs": [],
+  "data": {}
+}

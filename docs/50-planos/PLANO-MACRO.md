@@ -49,7 +49,7 @@ Estado: `[ ]` aberto · `[~]` em andamento · `[x]` feito · `[?]` depende de de
 
 - [x] Spike `@anthropic-ai/sandbox-runtime` × `@microsoft/mxc-sdk` nos três SOs [R2] — SPEC 0003 aprovada em 2026-10-25; medido no Windows do Pai (MXC) e na CI (as duas); [ADR 0019](../60-decisoes/0019-contencao-pelo-mxc.md) aceita pelo Pai em 2026-10-25: MXC
 - [~] S1 em macOS (Seatbelt), Linux (bubblewrap + seccomp), Windows (resultado do spike) [R2; §8] — M2.1 (2026-10-25): os comandos do Buddy rodam contidos pela MXC nos três sistemas; falta o agente de fora (M2.2)
-- [ ] Rede negada por padrão; proxy com lista de domínios por sessão; web como rede [R2; ADR 0012]
+- [x] Rede negada por padrão; proxy com lista de domínios por sessão; web como rede [R2; ADR 0012] — M2.3 (2026-10-25): proxy do núcleo e cartão "rede" com os quatro escopos
 - [ ] Worktree por sessão; integração com diff, aprovação e rollback [R5-4; ADR 0009]
 - [ ] Claims com geração (compare-and-set) sobre arquivos e worktrees; humano vence [R5-3; R5-8]
 - [>] S2 (VM descartável) para plugins de terceiros
