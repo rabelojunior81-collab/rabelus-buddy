@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T101812-0300-claude-code-desktop-983845-0051",
+  "ts": "2026-10-25T10:18:12-03:00",
+  "utc": "2026-10-25T13:18:12.480Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 51,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-agente-contido",
+  "type": "session-end",
+  "summary": "ADR 0019 aceita (MXC no núcleo); M2.1 comandos do Buddy contidos (#85); M2.3 rede só pelo proxy com cartão por destino (#87); M2.2 em pesquisa (OpenCode 2 depende do serviço de fundo; teste de que o contido não alcança serviço local); lixo da workspace arquivado; regra do Pai sem PR acumulado. Aguarda o Pai: caminho para conter o OpenCode.",
+  "refs": [],
+  "data": {}
+}
