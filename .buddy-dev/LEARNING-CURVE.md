@@ -244,3 +244,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0040-#0040
 
 1. **Em 2026-10-16, o teste do M0.3 achou um evento malformado que virava um id `undefined` em silêncio, e o conserto foi no código, com asserção nova.** Em 2026-10-25, a primeira rodada do meu spike de contenção marcou 12 de 12 fugas contidas, mas a biblioteca tinha recusado a configuração e nenhum comando rodou. Depois, uma escrita "feita" lá dentro do Linux caiu numa cópia privada e nunca chegou ao sistema. → Num teste de segurança, a falta de sucesso não prova o bloqueio. O teste precisa mostrar que o comando rodou e foi barrado, e a fuga precisa ser conferida do lado de fora. Erro conta como erro, nunca como contido.
+
+## lote #0041-#0041
+
+1. **Em 2026-10-16, o motor de política do M0.4 nasceu registrando cada decisão como evento, com a regra que decidiu.** Em 2026-10-25, a contenção negou o npm dentro do núcleo e não fora dele. Eu chutei duas causas, e a própria checagem refutou as duas. A causa só apareceu quando o log passou a guardar o perfil de cada comando: uma pasta do PATH dentro de outra pasta liberada rebaixava a leitura. → Quando o sistema nega algo e eu não sei por quê, o primeiro passo é fazer o sistema dizer com que regra negou, não adivinhar. Auditoria não é luxo de conformidade: é o instrumento de diagnóstico.

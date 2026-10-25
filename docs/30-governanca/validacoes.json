@@ -943,6 +943,19 @@
       "origem": "SPEC 0003; spike de 2026-10-25",
       "explicacao": "Medi as duas bibliotecas de contenção com 12 tentativas de fuga e 10 comandos normais. A da Microsoft funcionou no computador do Pai sem pedir administrador, segurou 10 das 12 fugas (as duas que passaram só mostram nomes de pastas e resolvem um endereço, sem conteúdo) e rodou todos os comandos normais; no Mac e no Linux, segurou 12 e 11. A da Anthropic foi bem no Mac e no Linux, mas deixa passar uma variável secreta, traz dependências com alertas de segurança sem correção e, no Windows, só roda depois de um preparo que cria uma conta e filtros de rede na máquina inteira, mudança que só o Pai pode fazer. Recomendo aceitar a da Microsoft como está. A alternativa é o Pai fazer o preparo para eu medir a da Anthropic no Windows também, e desfazer depois.",
       "evidencia": "Pai, 2026-10-25 (\"Aceito a ADR 0019: a contenção fica com a biblioteca da Microsoft (MXC). Pode seguir para a próxima etapa.\")"
+    },
+    {
+      "id": "caminho-para-conter-o-opencode",
+      "descricao": "Escolher como conter o OpenCode 2: pedir ao projeto um acp com servidor privado, subir um serve privado dentro da contenção, ou conter primeiro o adaptador do Codex",
+      "quem": "pai",
+      "tipo": "decisao",
+      "onde": [
+        "M2.2"
+      ],
+      "mecanismo": {},
+      "estado": "pendente",
+      "origem": "achados da M2.2 em 2026-10-25",
+      "explicacao": "Os comandos do Buddy já rodam presos à pasta de trabalho. Falta prender os agentes de fora, começando pelo OpenCode. A versão 2 do OpenCode trabalha por um serviço de fundo que fica rodando no computador, e esse serviço não consegue subir dentro da contenção; o modo de conversa que o Buddy usa não tem a opção de rodar sem ele. Há três caminhos: pedir ao projeto do OpenCode essa opção (precisa abrir um pedido público no GitHub deles, em nome do Pai); montar um servidor privado do OpenCode dentro da contenção (mais trabalho, mais frágil a cada versão nova); ou conter primeiro o agente do ChatGPT/Codex, que não tem serviço de fundo, e voltar ao OpenCode quando houver a opção. Recomendo o terceiro, com o pedido ao projeto em paralelo se o Pai autorizar."
     }
   ]
 }

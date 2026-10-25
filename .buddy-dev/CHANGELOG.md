@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0041 · 2026-10-16T012153-0300 · claude-code-vs-code-fe93fb · ferramenta
-
-M0.4: motor de política com auditoria em eventos, FsTools com compare-and-set e CommandTool só com aprovação explícita de uma vez; critérios 7–13 e 20; rebuild das projeções cobre a política (teste novo).
-
 ### #0042 · 2026-10-16T012845-0300 · claude-code-vs-code-fe93fb · ferramenta
 
 M0.5: orçamento atômico por janela (Go por modelo 5h/semana/mês, ChatGPT pelo provedor, OpenRouter US$20/mês), reserva → liquidação pelo usage ou liberação, esgotamento por erro do provedor, rbuddy budget; critérios 14–16.
@@ -207,3 +203,7 @@ Três registros saíram antes de commits barrados pela autoverificação, citand
 ### #0090 · 2026-10-25T085954-0300 · claude-code-desktop-694e2a · feat
 
 M2 começou: Pai aprovou a SPEC 0003, as duas bibliotecas e o preparo de administrador; bateria de 12 fugas e 10 legítimos (scripts/spike-m2) medida no Windows do Pai e na CI; MXC sem administrador no Windows, 10/12, e 12/12 e 11/12 no macOS e no Linux; sandbox-runtime 11/12 e 10/12, com o Windows dependendo de preparo do Pai; ADR 0019 proposta: MXC
+
+### #0091 · 2026-10-25T101626-0300 · claude-code-desktop-983845 · feat
+
+M2: ADR 0019 aceita (MXC no núcleo); M2.1 comandos do Buddy contidos; M2.3 rede só pelo proxy do Buddy com cartão por destino; M2.2 achados do OpenCode 2 (acp sem --standalone) e teste de que o comando contido não alcança serviço local; workspace/ arquivada com lápide; regra do Pai sem PR acumulado

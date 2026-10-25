@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T101617-0300-claude-code-desktop-983845-0047",
+  "ts": "2026-10-25T10:16:17-03:00",
+  "utc": "2026-10-25T13:16:17.173Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 47,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-agente-contido",
+  "type": "feat",
+  "summary": "teste novo nos três sistemas: com o proxy, o comando contido não alcança outro serviço local (protege contra o agente contido entregar o trabalho a um serviço de fora); plano do M2 com os achados: opencode acp 2.0.32 não aceita --standalone (CONFIRMADO), o serviço de fundo não sobe contido, três caminhos para conter o OpenCode; 4344548",
+  "refs": [],
+  "data": {}
+}
