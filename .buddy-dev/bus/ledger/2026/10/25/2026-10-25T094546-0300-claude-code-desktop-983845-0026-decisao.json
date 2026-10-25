@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094546-0300-claude-code-desktop-983845-0026",
+  "ts": "2026-10-25T09:45:46-03:00",
+  "utc": "2026-10-25T12:45:46.914Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 26,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "docs/m2-2-achados-e-ordem",
+  "type": "decisao",
+  "summary": "ordem nova dentro da SPEC aprovada: M2.3 (rede por proxy com lista de domínios e cartão) antes da M2.2, porque o agente contido precisa dela e o serviço de fundo do OpenCode 2 precisa de pesquisa antes; a contenção de agente é por agente, com perfil de pesquisa ao vivo e ensaio",
+  "refs": [],
+  "data": {}
+}

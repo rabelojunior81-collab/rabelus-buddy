@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094135-0300-claude-code-desktop-983845-0021",
+  "ts": "2026-10-25T09:41:35-03:00",
+  "utc": "2026-10-25T12:41:35.381Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 21,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #85: feat(m2.1): comandos do Buddy contidos pela MXC (ADR 0019 aceita)",
+  "refs": [
+    "#85"
+  ],
+  "data": {}
+}
