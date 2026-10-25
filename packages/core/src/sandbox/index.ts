@@ -5,19 +5,54 @@
 // - as pastas acima só para listar (o node resolve o caminho real e consulta cada uma), nunca a própria pasta, que
 //   em "só listar" perde a escrita;
 // - no Windows, a interface ligada: com ela desligada o node.exe não inicializa (0xC0000142);
-// - rede negada (a lista de domínios, com cartão, é a M2.3).
+// - rede negada, salvo pelo proxy do núcleo (M2.3): cada destino passa pela política, e o novo vira cartão "rede".
 // A contenção só vale depois de confirmada por uma execução real (status); sem ela, o comando roda como antes.
 
-import { existsSync, readdirSync, statSync } from 'node:fs';
+import { readdirSync, statSync } from 'node:fs';
+import { createServer } from 'node:http';
+import { connect, type Socket } from 'node:net';
 import { dirname, join, basename, delimiter, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { ExecResult } from '../tools/command.ts';
 
 export interface Profile { readwrite: string[]; readonly: string[]; denied: string[]; enumerate: string[] }
 export interface ContainmentStatus { ok: boolean; level?: string; reason?: string }
+// Rede do comando contido: só pelo proxy do núcleo (sem isto, rede toda negada).
+export interface NetAccess { proxyUrl: string }
 export interface Containment {
   status(): Promise<ContainmentStatus>;
-  run(command: string, cwd: string, profile: Profile): Promise<ExecResult>;
+  run(command: string, cwd: string, profile: Profile, net?: NetAccess): Promise<ExecResult>;
+}
+
+// Proxy de rede do núcleo (M2.3): HTTP CONNECT em 127.0.0.1, porta livre. Cada destino passa por `decide` (a política,
+// e o cartão quando é novo); liberado, o túnel abre do lado de fora; negado, 403. Pedido HTTP sem CONNECT é recusado
+// (405): os clientes que respeitam HTTPS_PROXY usam CONNECT, e HTTP puro não sai.
+export interface NetProxy { url: string; destinos(): { host: string; port: number; ok: boolean }[]; close(): Promise<void> }
+export async function netProxy(decide: (host: string, port: number) => Promise<boolean>): Promise<NetProxy> {
+  const destinos: { host: string; port: number; ok: boolean }[] = [];
+  const sockets = new Set<Socket>();
+  const srv = createServer((_q, r) => { r.writeHead(405); r.end(); });
+  srv.on('connection', (s) => { sockets.add(s); s.on('close', () => sockets.delete(s)); });
+  srv.on('connect', async (req, sock: Socket) => {
+    sock.on('error', () => sock.destroy());
+    const m = /^\[?([^\]]+?)\]?:(\d+)$/.exec(String(req.url ?? ''));
+    if (!m) { sock.end('HTTP/1.1 400 Bad Request\r\n\r\n'); return; }
+    const host = m[1]!.toLowerCase(), port = Number(m[2]);
+    let ok = false;
+    try { ok = await decide(host, port); } catch { ok = false; }
+    destinos.push({ host, port, ok });
+    if (!ok) { sock.end('HTTP/1.1 403 Forbidden\r\n\r\n'); return; }
+    const up = connect(port, host, () => { sock.write('HTTP/1.1 200 Connection Established\r\n\r\n'); up.pipe(sock); sock.pipe(up); });
+    sockets.add(up);
+    up.on('close', () => sockets.delete(up));
+    up.on('error', () => sock.destroy());
+  });
+  await new Promise<void>((ok) => srv.listen(0, '127.0.0.1', ok));
+  return {
+    url: `http://127.0.0.1:${(srv.address() as { port: number }).port}`,
+    destinos: () => [...destinos],
+    close: () => new Promise<void>((ok) => { for (const s of sockets) s.destroy(); srv.close(() => ok()); }),
+  };
 }
 
 // Os mesmos protegidos do motor de política (policy.ts, PROTECTED): pastas só leitura, arquivos de segredo negados.
@@ -77,12 +112,18 @@ export function mxcContainment({ env = process.env, platform = process.platform,
   let mxc: Promise<Mxc> | undefined;
   let checked: Promise<ContainmentStatus> | undefined;
   const load = () => (mxc ??= import('@microsoft/mxc-sdk/v1'));
-  const exec = async (m: Mxc, command: string, cwd: string, p: Profile): Promise<ExecResult> => {
+  const exec = async (m: Mxc, command: string, cwd: string, p: Profile, net?: NetAccess): Promise<ExecResult> => {
+    // Com proxy, cada backend quer a entrada de um jeito (achados do spike): ProcessContainer e Seatbelt exigem a
+    // entrada liberada com o loopback do host; o bubblewrap recusa regras de entrada. A saída continua negada.
+    const network = net
+      ? { egress: { default: 'deny' as const }, ...(platform === 'linux' ? {} : { ingress: { default: 'allow' as const, hostLoopback: 'allow' as const } }), runtimeConfig: { networkProxy: net.proxyUrl } }
+      : { egress: { default: 'deny' as const } };
     const r = await m.run({
       command: shellLine(command, platform),
       workingDirectory: cwd,
       filesystem: { readwritePaths: p.readwrite, readonlyPaths: p.readonly, deniedPaths: p.denied },
-      network: { egress: { default: 'deny' } },
+      network,
+      ...(net ? { environment: { HTTPS_PROXY: net.proxyUrl, HTTP_PROXY: net.proxyUrl, https_proxy: net.proxyUrl, http_proxy: net.proxyUrl }, inheritDefaultEnvironment: true } : {}),
       ...(platform === 'win32' ? { ui: { disable: false }, containment: { type: 'processcontainer' as const, config: { filesystem: { enumeratePaths: p.enumerate } } } } : {}),
       timeoutMs,
     });
@@ -105,6 +146,6 @@ export function mxcContainment({ env = process.env, platform = process.platform,
   };
   return {
     status: () => (checked ??= probe()),
-    run: async (command, cwd, profile) => exec(await load(), command, cwd, profile),
+    run: async (command, cwd, profile, net) => exec(await load(), command, cwd, profile, net),
   };
 }

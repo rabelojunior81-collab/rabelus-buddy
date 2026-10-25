@@ -4,7 +4,7 @@
 
 import { spawnSync } from 'node:child_process';
 import type { Policy } from '../policy.ts';
-import { profileFor, type Containment } from '../sandbox/index.ts';
+import { netProxy, profileFor, type Containment } from '../sandbox/index.ts';
 
 export interface ExecResult { code: number; stdout: string; stderr: string }
 export type Exec = (command: string, cwd: string) => ExecResult | Promise<ExecResult>;
@@ -29,14 +29,24 @@ export class CommandTool {
   }
 
   // O resultado diz se rodou contido: o modelo precisa saber que um "acesso negado" veio da contenção.
-  async run(session: string, command: string, ctx: { interactive: boolean; observe?: boolean }): Promise<{ ok: true; result: ExecResult & { contained: boolean } } | { ok: false; reason: string }> {
+  // askNetwork (M2.3): o cartão "rede" para um destino que a política manda perguntar; sem ele, o destino novo é negado.
+  async run(session: string, command: string, ctx: { interactive: boolean; observe?: boolean; askNetwork?: (host: string) => Promise<boolean> }): Promise<{ ok: true; result: ExecResult & { contained: boolean } } | { ok: false; reason: string }> {
     if (ctx.observe !== false) this.policy.observeCall(session, { tool: 'run_command', target: command });
     const d = this.policy.decide({ session, tool: 'run_command', target: command }, ctx);
     if (d.effect !== 'allow') return { ok: false, reason: d.effect === 'ask' ? 'needsApproval' : d.reason };
     const st = this.containment ? await this.containment.status() : { ok: false, reason: 'sem contenção configurada' };
-    const result = st.ok
-      ? await this.containment!.run(command, this.workspace, profileFor(this.workspace))
-      : await this.exec(command, this.workspace);
+    let result: ExecResult;
+    if (st.ok) {
+      // A rede do comando contido só sai pelo proxy; cada destino passa pela política e fica no log.
+      const px = await netProxy(async (host, port) => {
+        const nd = this.policy.decide({ session, tool: 'network', target: host }, ctx);
+        const allowed = nd.effect === 'allow' || (nd.effect === 'ask' && ctx.askNetwork ? await ctx.askNetwork(host) : false);
+        this.policy.log.append(session, 'network.request', { host, port, allowed, reason: nd.effect === 'ask' ? (allowed ? 'aprovação humana' : 'negado') : nd.reason });
+        return allowed;
+      });
+      try { result = await this.containment!.run(command, this.workspace, profileFor(this.workspace), { proxyUrl: px.url }); }
+      finally { await px.close(); }
+    } else result = await this.exec(command, this.workspace);
     this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok ? { containment: st.level } : { reason: st.reason }) });
     return { ok: true, result: { ...result, contained: st.ok } };
   }

@@ -693,7 +693,7 @@ function approvalParts(action) {
   if (m) return { key: m[4] ? 'console.approvals.text.harnessOutside' : 'console.approvals.text.harness', vars: { name: m[1], target: m[3] }, tool: m[2] };
   m = /^reconcile (\w+) (.+)$/.exec(s);
   if (m) return { key: 'console.approvals.text.reconcile', vars: { target: m[2] }, tool: m[1] };
-  m = /^(write_file|archive|run_command|read_file|list_dir|delegate) (.+)$/.exec(s);
+  m = /^(write_file|archive|run_command|read_file|list_dir|delegate|network) (.+)$/.exec(s);
   if (m) return { key: 'console.approvals.text.plain', vars: { target: m[2] }, tool: m[1] };
   return null;
 }

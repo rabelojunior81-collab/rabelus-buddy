@@ -1,0 +1,18 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094705-0300-claude-code-desktop-983845-0027",
+  "ts": "2026-10-25T09:47:05-03:00",
+  "utc": "2026-10-25T12:47:05.820Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 27,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "merge",
+  "summary": "PR #86: docs(m2): achados da M2.2 com o OpenCode real; M2.3 antes da M2.2",
+  "refs": [
+    "#86"
+  ],
+  "data": {}
+}

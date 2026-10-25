@@ -44,7 +44,7 @@ test('o texto do cartão de aprovação é montado pelo catálogo; o desconhecid
   for (const lang of ['pt-BR', 'en']) {
     const c = cat(lang);
     for (const k of ['firstRun', 'harness', 'harnessOutside', 'plain', 'reconcile']) assert.ok(has(c, `console.approvals.text.${k}`), `${lang}: ${k}`);
-    for (const tool of ['write_file', 'archive', 'run_command', 'read_file', 'list_dir', 'delegate']) assert.ok(has(c, `console.approvals.tool.${tool}`), `${lang}: ${tool}`);
+    for (const tool of ['write_file', 'archive', 'run_command', 'read_file', 'list_dir', 'delegate', 'network']) assert.ok(has(c, `console.approvals.tool.${tool}`), `${lang}: ${tool}`);
   }
 });
 

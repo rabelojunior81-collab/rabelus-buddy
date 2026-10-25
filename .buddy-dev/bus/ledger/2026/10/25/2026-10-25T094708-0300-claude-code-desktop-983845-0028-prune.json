@@ -1,0 +1,23 @@
+{
+  "v": 1,
+  "id": "2026-10-25T094708-0300-claude-code-desktop-983845-0028",
+  "ts": "2026-10-25T09:47:08-03:00",
+  "utc": "2026-10-25T12:47:08.882Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 28,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "docs/m2-2-achados-e-ordem"
+    ],
+    "archived": [],
+    "kept": [],
+    "skipped": []
+  }
+}
