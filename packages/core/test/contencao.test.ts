@@ -121,12 +121,40 @@ test('sem contenção, nada muda: roda como antes, e o log diz por quê (critér
   assert.deepEqual(ran(log).map((p) => [p.contained, p.reason]), [[false, 'sem suporte nesta máquina']]);
 });
 
-test('a contenção não troca a aprovação: sem concessão, nada roda, nem contido', async () => {
+// M2.4 (SPEC 0003, critério 6, aprovado pelo Pai em 2026-10-25; rotina rápida pedida por ele no mesmo dia): com a
+// contenção confirmada, o comando dentro da pasta roda sem cartão; sem contenção, nada roda sem aprovação, como antes.
+test('M2.4: contido, o comando roda sem cartão; sem contenção, nada roda sem aprovação', async () => {
   const calls: string[] = [];
-  const { cmd, spawned } = tool(fake(true, calls));
-  const r = await cmd.run('s1', 'npm test', { interactive: false });
-  assert.equal(r.ok, false);
-  assert.deepEqual([calls, spawned], [[], []]);
+  const contido = tool(fake(true, calls));
+  const r = await contido.cmd.run('s1', 'npm test', { interactive: false });
+  assert.equal(r.ok, true);
+  assert.deepEqual([calls, contido.spawned], [['npm test'], []]);
+  const solto = tool(fake(false, []));
+  const r2 = await solto.cmd.run('s1', 'npm test', { interactive: false });
+  assert.equal(r2.ok, false);
+  assert.deepEqual(solto.spawned, [], 'sem contenção e sem concessão, nada roda');
+});
+
+test('M2.4: o modo Plano continua negando o comando, mesmo contido', async () => {
+  const calls: string[] = [];
+  const { dir, ws } = cenario();
+  const log = new EventLog(openDatabase(join(dir, 'n.db')));
+  const policy = new Policy(log, { workspace: ws, mode: 'plan' });
+  const cmd = new CommandTool(policy, { workspace: ws, containment: fake(true, calls) });
+  assert.equal((await cmd.run('s1', 'npm test', { interactive: true })).ok, false);
+  assert.deepEqual(calls, []);
+});
+
+test('rede sob demanda: comando só de leitura local roda sem ligar a rede; o resto ganha o proxy', async () => {
+  const redes: (string | undefined)[] = [];
+  const c: Containment = { status: async () => ({ ok: true, level: 'teste' }), run: async (_c, _w, _p, net) => { redes.push(net?.proxyUrl); return { code: 0, stdout: '', stderr: '' }; } };
+  const { cmd } = tool(c);
+  await cmd.run('s1', 'git status', { interactive: false });
+  await cmd.run('s1', 'npm install', { interactive: false });
+  await cmd.run('s1', 'git status && curl https://x', { interactive: false });
+  assert.equal(redes[0], undefined, 'git status: sem rede');
+  assert.match(String(redes[1]), /^http:\/\/127\.0\.0\.1:\d+$/, 'npm install: com o proxy');
+  assert.match(String(redes[2]), /^http:\/\/127\.0\.0\.1:\d+$/, 'encadeado nunca é "só leitura"');
 });
 
 test('a chave desliga: RBUDDY_CONTAINMENT=off deixa a contenção indisponível, com o motivo', async () => {

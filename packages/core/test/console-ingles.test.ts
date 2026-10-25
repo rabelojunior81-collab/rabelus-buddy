@@ -26,6 +26,7 @@ test('motivos dos modos de permissão e do modelo que treina viram chave do cat�
     ['automático: escrita dentro da pasta', 'console.reason.autoWrite'],
     ['automático: comando só de leitura', 'console.reason.autoCommand'],
     ['modelo treina com os dados: exige concessão de projeto', 'console.reason.trainingModel'],
+    ['contido: só a pasta de trabalho', 'console.reason.contained'],
   ];
   for (const [r, k] of casos) {
     assert.equal(reasonKey(r), k, r);

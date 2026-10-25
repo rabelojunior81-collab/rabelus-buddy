@@ -778,7 +778,7 @@ const POLICY_REASONS = new Map([['fora do workspace', 'console.reason.outsideWor
   ['nonInteractive', 'console.reason.nonInteractive'], ['sessionPaused', 'console.reason.sessionPaused'],
   ['modo plano', 'console.reason.planMode'], ['modo sem perguntas', 'console.reason.yoloMode'], ['modo aceitar edições', 'console.reason.acceptEditsMode'],
   ['automático: escrita dentro da pasta', 'console.reason.autoWrite'], ['automático: comando só de leitura', 'console.reason.autoCommand'],
-  ['modelo treina com os dados: exige concessão de projeto', 'console.reason.trainingModel']]);
+  ['modelo treina com os dados: exige concessão de projeto', 'console.reason.trainingModel'], ['contido: só a pasta de trabalho', 'console.reason.contained']]);
 function reasonKey(reason) {
   if (typeof reason !== 'string') return null;
   if (POLICY_REASONS.has(reason)) return POLICY_REASONS.get(reason);

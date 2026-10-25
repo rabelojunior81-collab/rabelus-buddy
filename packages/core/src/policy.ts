@@ -24,6 +24,8 @@ const SAFE_COMMANDS: RegExp[] = [
   /^git (status|diff|log|show|branch|rev-parse|ls-files|blame)(\s|$)/,
   /^npm (test|run test|ls)(\s|$)/, /^node (--test|--version|-v)(\s|$)/, /^(python|py) --version$/,
 ];
+// Só leitura e local (rede sob demanda, M2.4): os seguros, sem o npm, que pode precisar de rede.
+export const localCommand = (command: string): boolean => safeCommand(command) && !/^npms/.test(command.trim());
 export function safeCommand(command: string): boolean {
   const c = command.trim();
   if (!c || /[;&|><`]|\$\(|\r|\n/.test(c)) return false;
@@ -31,7 +33,8 @@ export function safeCommand(command: string): boolean {
   return SAFE_COMMANDS.some((re) => re.test(c));
 }
 
-export interface Action { session: string; tool: Tool; target: string }
+// contained (M2.4): o comando vai rodar contido pelo sistema, com a contenção confirmada.
+export interface Action { session: string; tool: Tool; target: string; contained?: boolean }
 export interface Decision { effect: Effect; reason: string }
 export interface Rule { effect: Effect; tool: Tool; pattern: string }
 
@@ -247,6 +250,9 @@ export class Policy {
     // Modos (critério 17): depois da negação (que vence) e só dentro da pasta e fora do protegido (já conferidos).
     const changes = a.tool === 'write_file' || a.tool === 'archive' || a.tool === 'run_command';
     if ((changes || a.tool === 'network') && this.mode === 'plan') return { effect: 'deny', reason: 'modo plano' };
+    // M2.4 (SPEC 0003, critério 6): contido, o comando só alcança a pasta de trabalho (e a rede por cartão); roda sem
+    // cartão. Depois da negação e do modo Plano, que continuam valendo.
+    if (a.tool === 'run_command' && a.contained) return { effect: 'allow', reason: 'contido: só a pasta de trabalho' };
     if (a.tool !== 'model.use' && this.mode === 'yolo') return { effect: 'allow', reason: 'modo sem perguntas' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'acceptEdits') return { effect: 'allow', reason: 'modo aceitar edições' };
     if ((a.tool === 'write_file' || a.tool === 'archive') && this.mode === 'auto') return { effect: 'allow', reason: 'automático: escrita dentro da pasta' };

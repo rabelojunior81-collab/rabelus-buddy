@@ -1,0 +1,23 @@
+{
+  "v": 1,
+  "id": "2026-10-25T160943-0300-claude-code-desktop-901c38-0010",
+  "ts": "2026-10-25T16:09:43-03:00",
+  "utc": "2026-10-25T19:09:43.802Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 10,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "main",
+  "type": "prune",
+  "summary": "1 removida(s), 0 arquivada(s)",
+  "refs": [],
+  "data": {
+    "removed": [
+      "feat/m2-postura-propria-do-agente"
+    ],
+    "archived": [],
+    "kept": [],
+    "skipped": []
+  }
+}
