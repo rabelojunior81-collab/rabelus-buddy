@@ -52,6 +52,15 @@ jobs:
       - name: Dependências exatas do lockfile
         run: npm ci --no-audit --no-fund
 
+      # Contenção (M2.1; ADR 0019): a MXC usa o bubblewrap no Linux; no Ubuntu 24.04+, só com user namespaces
+      # liberados (documentado pela MXC; medido no spike). Sem isto, o teste de contenção cobre só o caminho sem suporte.
+      - name: Bubblewrap para a contenção (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bubblewrap
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       - name: Vulnerabilidades na árvore inteira (npm audit, alta ou crítica reprova)
         run: npm audit --audit-level=high
 
@@ -130,6 +139,15 @@ jobs:
 
       - name: Dependências exatas do lockfile
         run: npm ci --no-audit --no-fund
+
+      # Contenção (M2.1; ADR 0019): a MXC usa o bubblewrap no Linux; no Ubuntu 24.04+, só com user namespaces
+      # liberados (documentado pela MXC; medido no spike). Sem isto, o teste de contenção cobre só o caminho sem suporte.
+      - name: Bubblewrap para a contenção (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bubblewrap
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       - name: Testes
         run: npm test

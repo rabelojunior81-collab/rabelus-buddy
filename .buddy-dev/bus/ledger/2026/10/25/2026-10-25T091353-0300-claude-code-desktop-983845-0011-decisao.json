@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T091353-0300-claude-code-desktop-983845-0011",
+  "ts": "2026-10-25T09:13:53-03:00",
+  "utc": "2026-10-25T12:13:53.796Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 11,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "decisao",
+  "summary": "Pai aceitou a ADR 0019 (MXC) sem medir o sandbox-runtime no Windows; @microsoft/mxc-sdk 1.0.1 virou dependência runtime do núcleo (npm audit 0 vulnerabilidades), com koffi e node-pty sem scripts de instalação (binários no pacote); sandbox-runtime saiu do registro; plano do M2, plano macro e validação atualizados; 3881e80",
+  "refs": [],
+  "data": {}
+}

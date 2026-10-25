@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T092206-0300-claude-code-desktop-983845-0013",
+  "ts": "2026-10-25T09:22:06-03:00",
+  "utc": "2026-10-25T12:22:06.762Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 13,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "pesquisa",
+  "summary": "checagem real da M2.1 no Windows do Pai, núcleo de ensaio da branch e modelo real (kimi-k3): node -v e leitura normal contidos com código 0; type .env 'Acesso negado' (na segunda rodada o Buddy nem tentou); escrita fora da pasta EPERM e nada chegou ao disco; depois de saber de contained=true, o Buddy explicou a negação em vez de especular; 8c16397",
+  "refs": [],
+  "data": {}
+}

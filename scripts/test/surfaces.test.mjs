@@ -164,6 +164,21 @@ test('cópias de worktrees de subagentes (.claude/worktrees) não são documento
   assert.match(g[0], /^docs\/50-planos\/ROADMAP\.md/);
 });
 
+// Lacuna de 2026-10-25: o status-main copia o título do último merge na linha da main do STATUS ("ADR 0019 proposta"
+// era verdade naquele merge), e a regra das propostas barrava o commit seguinte ao aceite. Título de commit citado é
+// histórico; o resto do STATUS continua conferido.
+test('a linha da main no STATUS (título de commit citado) não conta como proposta viva; o resto do STATUS conta', () => {
+  const r = repo({
+    'docs/60-decisoes/0019-c.md': '---\nstatus: aceita (2026-10-25)\n---',
+    '.buddy-dev/STATUS.md': '| `main` | `eff4bab` (Merge #84: feat(m2): spike; ADR 0019 proposta (MXC)), CI verde |\n',
+  });
+  assert.deepEqual(staleProposals(r), []);
+  writeFileSync(join(r, '.buddy-dev/STATUS.md'), '| `main` | `eff4bab` (Merge #84: ADR 0019 proposta) |\n**Agora:** ADR 0019 proposta: MXC\n');
+  const g = staleProposals(r);
+  assert.equal(g.length, 1, g.join('\n'));
+  assert.match(g[0], /Agora/);
+});
+
 // Lacuna de 2026-10-20: o status-main trocava a linha da main e o carimbo, mas deixava o **Por:** com a sessão
 // anterior, como se outra sessão tivesse escrito o estado. O Por passa a ser o id da sessão aberta deste worktree.
 test('status-main: com sessão aberta, o **Por:** do carimbo vira o id da sessão', () => {

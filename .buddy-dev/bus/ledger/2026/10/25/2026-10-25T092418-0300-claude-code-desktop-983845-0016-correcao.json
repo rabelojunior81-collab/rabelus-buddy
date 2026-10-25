@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T092418-0300-claude-code-desktop-983845-0016",
+  "ts": "2026-10-25T09:24:18-03:00",
+  "utc": "2026-10-25T12:24:18.090Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 16,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "correcao",
+  "summary": "conflito entre dois mecanismos meus: o status-main copia o título do último merge ('ADR 0019 proposta', verdadeiro no merge) e a regra das propostas vivas barrava o commit depois do aceite; a linha da main no STATUS passou a ser tratada como histórico, com teste antes (o resto do STATUS continua conferido); junto, o registro da checagem real da M2.1 e as superfícies; 24bbbeb",
+  "refs": [],
+  "data": {}
+}

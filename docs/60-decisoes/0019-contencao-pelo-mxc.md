@@ -1,7 +1,7 @@
 ---
-status: proposta (2026-10-25)
+status: aceita (2026-10-25)
 date: 2026-10-25
-decision-makers: buddy-dev (Buddy Fenix), pela medição que a SPEC 0003 manda; o Pai decide se o sandbox-runtime ainda é medido no Windows antes de aceitar
+decision-makers: Pai (Adilson Rabelo Junior), sobre a medição do buddy-dev que a SPEC 0003 manda
 consulted: Pai (Adilson Rabelo Junior)
 ---
 
@@ -25,7 +25,7 @@ A [SPEC 0003](../40-specs/0003-execucao-isolada/SPEC.md), aprovada pelo Pai em 2
 | MXC | 10/12 · 10/10 · +335 ms | 12/12 · 10/10 · +103 ms | 11/12 · 10/10 · +112 ms |
 | sandbox-runtime | não roda sem preparo de administrador | 11/12 · 10/10 · ±0 ms | 10/12 · 10/10 · +17 ms |
 
-## Decisão (proposta)
+## Decisão
 
 Opção **A, MXC**, porque:
 
@@ -46,6 +46,6 @@ Opção **A, MXC**, porque:
 - O `@microsoft/mxc-sdk` passa de dependência do spike a dependência do produto (`runtime`), com `node-pty` e `koffi` instalados sem scripts. O ensaio mostrou que os binários já vêm no pacote.
 - **M2.1:** a camada de execução nasce sobre o MXC, com o proxy de domínios no núcleo.
 
-## Pendente para aceitar
+## Aceite
 
-O `sandbox-runtime` não foi medido no Windows, porque o preparo dele é uma mudança de segurança da máquina que só o Pai pode fazer. Se o Pai quiser a comparação completa antes de aceitar, ele faz o preparo, eu rodo a bateria e ele desfaz. Se não, esta proposta vale como está.
+Pai, 2026-10-25 ("Aceito a ADR 0019: a contenção fica com a biblioteca da Microsoft (MXC). Pode seguir para a próxima etapa."), sem medir o `sandbox-runtime` no Windows (o preparo dele é uma mudança de segurança da máquina que só o Pai faria). O `@anthropic-ai/sandbox-runtime` saiu do registro de dependências no mesmo dia.

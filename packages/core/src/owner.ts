@@ -28,6 +28,7 @@ import { HarnessRefusal, launchFor, loginHarness, probeHarness, type LaunchSpec 
 import { describeSession, NeedsLogin, NoImageSupport, postureOption, promptTurn, type HarnessOption, type TurnResult } from './harness/session.ts';
 import { scrub } from './providers/adapters.ts';
 import { EFFORTS, type Effort } from './providers/types.ts';
+import { mxcContainment } from './sandbox/index.ts';
 
 // Janelas do orçamento: budget.json no diretório de estado, ou as padrão (ADR 0015).
 function loadWindows(home: string): WindowDef[] {
@@ -157,6 +158,8 @@ export async function startOwner(home: string): Promise<Owner> {
     return [...q.values()];
   };
 
+  // Contenção de execução (M2.1; ADR 0019): uma por núcleo, confirmada na primeira vez que um comando roda.
+  const containment = mxcContainment();
   const agentFor = (p: Record<string, unknown>, signal?: AbortSignal): Agent => {
     const workspace = String(p.workspace ?? '');
     if (!workspace) throw new DomainError(-32602, 'workspace obrigatório');
@@ -164,7 +167,7 @@ export async function startOwner(home: string): Promise<Owner> {
     return new Agent({
       log, domain, policy, budget,
       fs: new FsTools(policy, { workspace }),
-      cmd: new CommandTool(policy, { workspace }),
+      cmd: new CommandTool(policy, { workspace, containment }),
       routes: buildRoutes(home, loadConfig(home), process.env, route(p.route)),
       interactive: p.interactive === true,
       ...(effort(p.effort) ? { effort: effort(p.effort)! } : {}),
