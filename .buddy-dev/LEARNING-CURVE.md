@@ -252,3 +252,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0042-#0042
 
 1. **Em 2026-10-16, o orçamento do M0.5 nasceu com reserva antes de gastar: nada consome sem passar pelo teto.** Em 2026-10-25, um script meu de checagem aprovava "tudo o que aparecer" na fila de aprovações, para não travar o ensaio. Com isso, aprovou a primeira execução de um agente que o Pai nunca aprovou, e o npx baixou o pacote para a máquina dele. → Automação de ensaio nunca aprova por categoria, só o que ela mesma pediu, pelo id. Aprovação é o mecanismo de controle do Pai: um script que o contorna "só no ensaio" já é o contorno.
+
+## lote #0043-#0043
+
+1. **Em 2026-10-16, cada provedor do M0.6a só foi declarado pronto depois de uma chamada real mínima por rota.** Em 2026-10-25, o caminho que o Pai escolheu para conter o OpenCode (um servidor privado dentro da contenção) parecia viável no papel. O experimento mostrou que cada peça funcionava sozinha: o servidor subia contido, e o arranjo funcionava fora da contenção. A soma esbarrou num limite da biblioteca de contenção, que não junta o proxy de rede com o loopback interno. Testar as peças por separado e depois a soma, nesta ordem, transformou um "não funciona" vago em uma causa exata, que o Pai pode decidir. → Arquitetura que depende de duas peças precisa do experimento da soma antes de virar plano de código. E organização não é faxina no fim: é conferir antes, durante e depois o que ficou rodando, o que saiu de uso e o que perdeu dono.

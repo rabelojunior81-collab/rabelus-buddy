@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0043 · 2026-10-16T014212-0300 · claude-code-vs-code-fe93fb · ferramenta
-
-M0.6a: provedores OpenCode Go (Responses, Chat, Messages, Google), Ollama Cloud e OpenRouter com os SDKs aprovados; sonda e chamada real mínima por rota OK; Node passou a somar os certificados do sistema (cadeia do OpenRouter); npm audit na CI e scripts de instalação sob o protocolo.
-
 ### #0044 · 2026-10-16T020142-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.6b: ChatGPT por Sign in with ChatGPT (rbuddy login/logout chatgpt; PKCE, ID token pelo JWKS, credenciais 0600, refresh rotativo serializado; inferência em stream no contrato da prévia). Critérios 18 e 19 verdes contra servidores falsos; login real aguarda o Pai.
@@ -207,3 +203,7 @@ M2: ADR 0019 aceita (MXC no núcleo); M2.1 comandos do Buddy contidos; M2.3 rede
 ### #0092 · 2026-10-25T163713-0300 · claude-code-desktop-901c38 · feat
 
 M2: postura do próprio agente (OpenCode do jeito dele); rotina rápida e M2.4 (contido sem cartão, rede sob demanda; medido 185 ms contido, 454 com rede, 39 sem contenção); M2.2 Codex contido pela MXC, com rede só ao provedor; erro grave: script de checagem aprovou a primeira execução do Claude Agent e o npx baixou o pacote, pendente de decisão do Pai
+
+### #0093 · 2026-10-25T170635-0300 · claude-code-desktop-988877 · processo
+
+Organização (pedido do Pai): pacote do Claude Agent baixado por engano apagado com autorização; spike do M2 e experimentos arquivados com lápide; SDK do OpenCode 1 fora do registro; 12 chaves órfãs da console arquivadas e teste novo contra órfãos no catálogo; OpenCode por servidor privado testado: sobe contido, mas a MXC 1.0.1 não junta loopback interno e proxy; decisão volta ao Pai
