@@ -1,7 +1,7 @@
 # Plano — M2: Execução isolada
 
 **SPEC:** [0003-execucao-isolada](../../40-specs/0003-execucao-isolada/SPEC.md) · **Estado:** em execução (aprovado pelo Pai em 2026-10-25, com a SPEC, as duas bibliotecas do spike e o pedido de administrador durante ele)
-**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T10:05:42-03:00
+**Branch(es):** uma por sub-fase, `feat/m2-N-<slug>` · **Atualizado em:** 2026-10-25T10:16:10-03:00
 
 ## Objetivo
 
@@ -46,7 +46,13 @@ A biblioteca vem do spike, medido no Windows do Pai e na CI.
 
 - **CONFIRMADO:** o `opencode acp` (2.0.32) roda contido pela MXC e responde ao `initialize` do ACP em menos de 1 s, com leitura e escrita nas pastas dele (`~/.local/share/opencode`, `~/.local/state/opencode`, `~/.cache/opencode`) e leitura da configuração.
 - **CONFIRMADO:** o `session/new` falha ("Internal service failure"). O OpenCode 2 inicia um serviço de fundo (`opencode serve --service`), que muda o diretório para a pasta do usuário e cai com `EPERM` dentro da contenção, mesmo com a pasta do usuário liberada para leitura.
-- **HIPÓTESE, a pesquisar antes de prometer contenção do OpenCode:** se esse serviço já estiver rodando fora da contenção (o Pai usando o OpenCode por conta própria), o `opencode acp` contido pode entregar o trabalho a ele pelo loopback. Aí a contenção vira fachada. Não testei, porque subir o serviço fora da contenção mexeria no computador do Pai sem necessidade.
+- **Pesquisa ao vivo (2026-10-25):** o OpenCode 2 roda um serviço de fundo por usuário. Os clientes usam esse serviço, que nasce sob demanda e continua vivo depois. Existe o `--standalone`, para rodar com um servidor privado ([The New Stack](https://thenewstack.io/opencode-2-shared-service/), [ComputingForGeeks](https://computingforgeeks.com/opencode-cli-cheat-sheet/)).
+- **CONFIRMADO:** o `opencode acp` 2.0.32 não aceita `--standalone` ("Unrecognized flag", antes ou depois do subcomando). Pelo ACP, ele sempre usa o serviço de fundo, e o serviço não sobe dentro da contenção.
+- **CONFIRMADO, e virou teste nos três sistemas:** com o proxy ligado (loopback do host liberado no Windows e no macOS), o comando contido não alcança outro serviço local (`EACCES`). Um OpenCode contido não conseguiria entregar o trabalho a um serviço rodando fora. A hipótese da contenção de fachada está descartada para o desenho atual.
+- **Para conter o OpenCode, há três caminhos:**
+  - pedir ao projeto do OpenCode um `acp` com servidor privado (publicar no GitHub deles exige o Pai);
+  - subir um `opencode serve` privado dentro da mesma contenção e ligar o `acp` a ele;
+  - conter primeiro um agente sem serviço de fundo (o adaptador do Codex, que já foi aprovado).
 - **Consequência:** a contenção de agente é por agente. Cada um tem pastas, domínios e arquitetura próprios, e o perfil de cada um vem de pesquisa ao vivo e de um ensaio, nunca de suposição.
 
 ## Dependências e bloqueios

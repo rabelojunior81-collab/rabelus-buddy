@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T101810-0300-claude-code-desktop-983845-0050",
+  "ts": "2026-10-25T10:18:10-03:00",
+  "utc": "2026-10-25T13:18:10.284Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 50,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-2-agente-contido",
+  "type": "processo",
+  "summary": "post 'A Regra Que Negou' e a seção da daily de 2026-10-25 publicados no Blog, com QA a 375 e 1440 px e check-surfaces sem erros; servidor do Blog encerrado",
+  "refs": [],
+  "data": {}
+}

@@ -126,6 +126,13 @@ test('MXC de verdade: o comando contido alcança o destino liberado pelo proxy e
     assert.equal(ok.code, 0, ok.stdout + ok.stderr);
     const nao = await c.run(`"${process.execPath}" "${s}" localhost ${up.port}`, ws, p, { proxyUrl: px.url });
     assert.notEqual(nao.code, 0);
+    // Com o proxy, o loopback do host fica liberado (Windows e macOS), mas só para o proxy: outro serviço local
+    // (a console do Buddy, o serviço de fundo do OpenCode 2, um servidor de desenvolvimento) continua fora de alcance.
+    // Achado da M2.2 (2026-10-25): sem isso, um agente contido poderia entregar o trabalho a um serviço de fora.
+    const direto = join(ws, 'direto.mjs');
+    writeFileSync(direto, "import { get } from 'node:http';\nget({ host: '127.0.0.1', port: Number(process.argv[2]), agent: false }, () => process.exit(0)).on('error', () => process.exit(1));\n");
+    const servicoLocal = await c.run(`"${process.execPath}" "${direto}" ${up.port}`, ws, p, { proxyUrl: px.url });
+    assert.notEqual(servicoLocal.code, 0, 'serviço local fora do alcance do comando contido');
   } finally { await px.close(); up.close(); }
 });
 
