@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0045 · 2026-10-16T020831-0300 · claude-code-vs-code-fe93fb · feat
-
-M0.6e: loop do agente (ordem de provedores com política e orçamento, chamada de modelo e escrita/comando como efeitos com identidade, troca ao esgotar janela, escrita uma vez, aprovação humana, compactação abaixo de 100k tokens). M0.6 completa.
-
 ### #0046 · 2026-10-16T021524-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.7a: retomada do loop (conversa no log, reconciliação por tipo de efeito) e o dono executando o agente (agent.run/agent.resume, aprovação pelo IPC, rotas e credenciais configuradas); kill -9 + resume sem escrita duplicada contra provedor falso.
@@ -207,3 +203,7 @@ Organização (pedido do Pai): pacote do Claude Agent baixado por engano apagado
 ### #0094 · 2026-10-25T172340-0300 · claude-code-desktop-4ed091 · pesquisa
 
 Pesquisa ao vivo do Cua (pedido do Pai): computador por agente (contêiner ou VM) com os agentes rodando por ACP com a configuração deles; política de saída só por IP e não suportada em QEMU no Windows; arquivos por cópia; credenciais por env; Windows em prévia; ficha nova e spike proposto como M2.8 (S2 adiantado para os agentes)
+
+### #0095 · 2026-10-25T174321-0300 · claude-code-desktop-f9fa85 · pesquisa
+
+Spike do Cua no Windows do Pai (M2.8): contêiner pelo Docker Desktop, OpenCode por ACP lá dentro, sem ver as pastas do Pai, arquivos de ida e volta com a lista do que mudou; a política de saída do Cua é recusada no Docker Desktop e a rede lá dentro fica livre; telemetria do Cua ligada por padrão; decisão de como seguir com o Pai

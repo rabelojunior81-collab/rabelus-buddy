@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T174320-0300-claude-code-desktop-f9fa85-0014",
+  "ts": "2026-10-25T17:43:20-03:00",
+  "utc": "2026-10-25T20:43:20.560Z",
+  "session": "claude-code-desktop-f9fa85",
+  "seq": 14,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-8-spike-cua",
+  "type": "doc",
+  "summary": "registro do spike do Cua, ficha atualizada com o medido, M2.8 no plano, STATUS, CHANGELOG do produto e a pendência do Pai cua-depois-do-spike; 6c276c7",
+  "refs": [],
+  "data": {}
+}
