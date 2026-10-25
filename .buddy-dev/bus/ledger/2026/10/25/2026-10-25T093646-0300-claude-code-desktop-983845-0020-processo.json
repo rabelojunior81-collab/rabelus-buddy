@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T093646-0300-claude-code-desktop-983845-0020",
+  "ts": "2026-10-25T09:36:46-03:00",
+  "utc": "2026-10-25T12:36:46.547Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 20,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "processo",
+  "summary": "cobrança do Pai (2026-10-25): PR acumulado ou lixo organizacional, corrigir em voo. Conferido: só o #85 aberto (o 13 da barra lateral conta os PRs já mergeados desta conversa); lixo real na workspace/ (73 rascunhos de 15 a 21/10) arquivado em workspace/_arquivo/ com lápide, sem apagar; regra nova na MEMORY; #85 vai ao merge assim que a CI ficar verde, antes da M2.2",
+  "refs": [],
+  "data": {}
+}

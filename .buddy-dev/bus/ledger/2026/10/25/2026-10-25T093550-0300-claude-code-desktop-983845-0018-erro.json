@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T093550-0300-claude-code-desktop-983845-0018",
+  "ts": "2026-10-25T09:35:50-03:00",
+  "utc": "2026-10-25T12:35:50.645Z",
+  "session": "claude-code-desktop-983845",
+  "seq": 18,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-1-camada-de-execucao",
+  "type": "erro",
+  "summary": "intermitência na CI do Windows: o teste 'serve: comando rastreado... registro de processo morto some sozinho' falhou (processo ainda vivo na conferência) no commit c269785+1, que só acrescentou um registro do barramento; o mesmo código passou na rodada anterior; nova rodada só do job; investigar o tempo de morte do processo no Windows da CI, sem afrouxar o teste",
+  "refs": [],
+  "data": {}
+}
