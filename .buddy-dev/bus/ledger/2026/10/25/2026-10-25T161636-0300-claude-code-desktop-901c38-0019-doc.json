@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-10-25T161636-0300-claude-code-desktop-901c38-0019",
+  "ts": "2026-10-25T16:16:36-03:00",
+  "utc": "2026-10-25T19:16:36.793Z",
+  "session": "claude-code-desktop-901c38",
+  "seq": 19,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "feat/m2-4-rotina-rapida",
+  "type": "doc",
+  "summary": "registro da rotina rápida (medição por parte, o que entrou, o que ficou de fora e por quê, checagem real, risco declarado até a M2.6); plano do M2, CHANGELOG, READMEs e STATUS; 2770cb4",
+  "refs": [],
+  "data": {}
+}
