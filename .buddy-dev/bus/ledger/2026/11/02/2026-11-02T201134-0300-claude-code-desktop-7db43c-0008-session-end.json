@@ -1,0 +1,16 @@
+{
+  "v": 1,
+  "id": "2026-11-02T201134-0300-claude-code-desktop-7db43c-0008",
+  "ts": "2026-11-02T20:11:34-03:00",
+  "utc": "2026-11-02T23:11:34.094Z",
+  "session": "claude-code-desktop-7db43c",
+  "seq": 8,
+  "harness": "claude-code-desktop",
+  "model": "claude-opus-5-5",
+  "host": "DEV_MACHINNA",
+  "branch": "fix/macos-rede-contida",
+  "type": "session-end",
+  "summary": "brecha do macOS corrigida (comando contido sem rede, agente de fora sem contenção ali), bd pre mostra as rotinas agendadas; registro, docs, lição #0046, diário, post e daily; mapa pronto/planejado/pendente entregue ao Pai",
+  "refs": [],
+  "data": {}
+}
