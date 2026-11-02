@@ -13,6 +13,7 @@ import { checkDeps, latestVersions } from './lib/deps.mjs';
 import { testGuard } from './lib/testguard.mjs';
 import { classifyBranches, pruneBranches, mergeReadiness } from './lib/branches.mjs';
 import { checkValidations } from './lib/validacoes.mjs';
+import { scheduledRuns, scheduledVerdicts } from './lib/rotinas.mjs';
 import { ciPlan, changedFiles } from './lib/ciplan.mjs';
 import { governanceContext, recordCompaction } from './lib/contexto.mjs';
 import { findOrphans } from './lib/orfaos.mjs';
@@ -430,6 +431,10 @@ const commands = {
     const { aguardaPai } = checkValidations(r);
     for (const v of aguardaPai) warn(`aguarda o Pai: ${v.id} — ${v.descricao}`);
     for (const x of listServers(r)) warn(`servidor de conferência rodando: ${x.id} ${x.name}${x.port ? ` porta ${x.port}` : ''} (sessão ${x.session ?? '—'}); reaproveite ou encerre com bd serve --stop`);
+    // Rotinas agendadas do GitHub: a falha da CI semanal de 26/10 passou uma semana sem ninguém ver (2026-11-02).
+    const runs = scheduledRuns(r);
+    if (!runs) warn('rotinas agendadas não conferidas (gh indisponível ou sem rede)');
+    else for (const v of scheduledVerdicts(runs)) (v.ok ? ok : warn)(v.text);
     if (failures) process.exitCode = 1;
   },
 

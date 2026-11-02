@@ -108,6 +108,18 @@ test('MXC de verdade: o comando contido alcança o destino liberado pelo proxy e
   if (!st.ok) { assert.ok(typeof st.reason === 'string' && st.reason.length > 0); return; }
   const { ws } = setup();
   const up = await upstream();
+  const direto = join(ws, 'direto.mjs');
+  writeFileSync(direto, "import { get } from 'node:http';\nget({ host: '127.0.0.1', port: Number(process.argv[2]), agent: false }, () => process.exit(0)).on('error', () => process.exit(1));\n");
+  // No macOS (Seatbelt), a rede pelo proxy abre o loopback inteiro (CI semanal de 26/10 e 02/11): a contenção declara
+  // que não tem rede segura, e o comando contido roda sem rede. O serviço local continua fora de alcance.
+  assert.equal(st.network === false, process.platform === 'darwin', 'só o macOS declara rede insegura');
+  if (st.network === false) {
+    assert.ok(typeof st.networkReason === 'string' && st.networkReason.length > 0);
+    const semRede = await c.run(`"${process.execPath}" "${direto}" ${up.port}`, ws, profileFor(ws));
+    up.close();
+    assert.notEqual(semRede.code, 0, 'serviço local fora do alcance do comando contido');
+    return;
+  }
   const px = await netProxy(async (host) => host === '127.0.0.1');
   const s = join(ws, 'conecta.mjs');
   writeFileSync(s, [
@@ -129,8 +141,6 @@ test('MXC de verdade: o comando contido alcança o destino liberado pelo proxy e
     // Com o proxy, o loopback do host fica liberado (Windows e macOS), mas só para o proxy: outro serviço local
     // (a console do Buddy, o serviço de fundo do OpenCode 2, um servidor de desenvolvimento) continua fora de alcance.
     // Achado da M2.2 (2026-10-25): sem isso, um agente contido poderia entregar o trabalho a um serviço de fora.
-    const direto = join(ws, 'direto.mjs');
-    writeFileSync(direto, "import { get } from 'node:http';\nget({ host: '127.0.0.1', port: Number(process.argv[2]), agent: false }, () => process.exit(0)).on('error', () => process.exit(1));\n");
     const servicoLocal = await c.run(`"${process.execPath}" "${direto}" ${up.port}`, ws, p, { proxyUrl: px.url });
     assert.notEqual(servicoLocal.code, 0, 'serviço local fora do alcance do comando contido');
   } finally { await px.close(); up.close(); }

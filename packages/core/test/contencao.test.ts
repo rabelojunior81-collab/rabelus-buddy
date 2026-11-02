@@ -158,6 +158,18 @@ test('M2.4: o modo Plano continua negando o comando, mesmo contido', async () =>
   assert.deepEqual(calls, []);
 });
 
+// Brecha achada pela CI semanal (26/10 e 02/11, macOS): no Seatbelt, a rede pelo proxy exige liberar o loopback do
+// host, e aí o comando contido alcança qualquer serviço local. Onde a contenção declara que a rede pelo proxy não é
+// segura (network: false), o comando contido roda sem rede nenhuma, e o log diz por quê.
+test('sem rede segura na contenção (macOS), o comando contido roda sem rede e o log diz por quê', async () => {
+  const redes: (string | undefined)[] = [];
+  const c: Containment = { status: async () => ({ ok: true, level: 'teste', network: false, networkReason: 'no macOS a rede pelo proxy abre os serviços locais' }), run: async (_c, _w, _p, net) => { redes.push(net?.proxyUrl); return { code: 0, stdout: '', stderr: '' }; } };
+  const { cmd, log } = tool(c);
+  await cmd.run('s1', 'npm install', { interactive: false });
+  assert.deepEqual(redes, [undefined], 'sem proxy, sem rede');
+  assert.match(String(ran(log)[0]!.network), /serviços locais/);
+});
+
 test('rede sob demanda: comando só de leitura local roda sem ligar a rede; o resto ganha o proxy', async () => {
   const redes: (string | undefined)[] = [];
   const c: Containment = { status: async () => ({ ok: true, level: 'teste' }), run: async (_c, _w, _p, net) => { redes.push(net?.proxyUrl); return { code: 0, stdout: '', stderr: '' }; } };

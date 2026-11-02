@@ -39,8 +39,9 @@ export class CommandTool {
     let profile: ReturnType<typeof profileFor> | undefined;
     if (st.ok) {
       profile = profileFor(this.workspace);
-      // Rede sob demanda (M2.4): comando só de leitura e local roda sem ligar a rede (cerca de 270 ms a menos no Windows).
-      if (localCommand(command)) result = await this.containment!.run(command, this.workspace, profile);
+      // Roda sem rede quando a contenção não tem rede segura (macOS) ou quando o comando é só de leitura e local (rede
+      // sob demanda, M2.4: cerca de 270 ms a menos no Windows).
+      if (st.network === false || localCommand(command)) result = await this.containment!.run(command, this.workspace, profile);
       else {
         // A rede do comando contido só sai pelo proxy; cada destino passa pela política e fica no log.
         const px = await netProxy(async (host, port) => {
@@ -53,7 +54,7 @@ export class CommandTool {
         finally { await px.close(); }
       }
     } else result = await this.exec(command, this.workspace);
-    this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok ? { containment: st.level, profile: { readwrite: profile!.readwrite, readonly: profile!.readonly, denied: profile!.denied.length } } : { reason: st.reason }) });
+    this.policy.log.append(session, 'command.ran', { command, code: result.code, contained: st.ok, ...(st.ok && st.network === false ? { network: st.networkReason } : {}), ...(st.ok ? { containment: st.level, profile: { readwrite: profile!.readwrite, readonly: profile!.readonly, denied: profile!.denied.length } } : { reason: st.reason }) });
     return { ok: true, result: { ...result, contained: st.ok } };
   }
 }
