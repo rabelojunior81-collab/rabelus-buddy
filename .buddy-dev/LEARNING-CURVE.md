@@ -264,3 +264,7 @@ Formato de uma lição: **o que aconteceu → por que importa → o que mudou (m
 ## lote #0045-#0045
 
 1. **Em 2026-10-16, o loop do agente do M0.6e passou a tratar cada efeito (escrita, comando, chamada de modelo) como coisa com identidade, que o núcleo sabe se aconteceu.** Em 2026-10-25, o teste do Cua trouxe efeitos que eu não tinha pedido: ligar o Docker Desktop subiu outros contêineres do Pai, a primeira execução do Cua provavelmente mandou telemetria antes de eu desligar, e o antivírus do Pai apagava o que eu instalava sem eu saber. → Todo teste em máquina do Pai tem efeitos colaterais além do que se mede. A conta inclui o que subiu junto, o que saiu pela rede e o que ficou em disco. E desligar e devolver ao estado anterior faz parte do teste.
+
+## lote #0046-#0046
+
+1. **Em 2026-10-16, a retomada do M0.7a nasceu provada contra a queda (kill -9 e retomada sem escrita duplicada): o núcleo não confia no que acha que fez, confere.** Em 2026-11-02, a CI semanal falhou em 26/10 e de novo em 02/11, só no macOS, e ninguém viu por uma semana: o resultado das rotinas agendadas não aparecia em lugar nenhum por onde eu passo. A falha era uma brecha real (a rede do comando contido abria os serviços locais do computador). → Rotina que roda sozinha também precisa ser conferida sozinha. O resultado dela tem de aparecer onde eu começo toda sessão (`bd pre`), senão a rotina vira um alarme que toca numa sala vazia.
