@@ -21,7 +21,9 @@ import type { LaunchSpec } from '../harness/client.ts';
 
 // path: o PATH que montou o perfil; o comando contido roda com ele (achado da checagem real da M2.3).
 export interface Profile { readwrite: string[]; readonly: string[]; denied: string[]; enumerate: string[]; path?: string }
-export interface ContainmentStatus { ok: boolean; level?: string; reason?: string }
+// network: a rede pelo proxy mantém os serviços locais fora de alcance. false no macOS (Seatbelt exige liberar o
+// loopback do host junto com o proxy; achado da CI semanal de 26/10 e 02/11): ali o comando contido roda sem rede.
+export interface ContainmentStatus { ok: boolean; level?: string; reason?: string; network?: boolean; networkReason?: string }
 // Rede do comando contido: só pelo proxy do núcleo (sem isto, rede toda negada).
 export interface NetAccess { proxyUrl: string }
 export interface Containment {
@@ -205,7 +207,9 @@ export function mxcContainment({ env = process.env, platform = process.platform,
       const ws = tmpdir();
       const r = await exec(m, `"${process.execPath}" -v`, ws, { readwrite: [], readonly: [dirname(process.execPath)], denied: [], enumerate: above(dirname(process.execPath)) });
       if (r.code !== 0 || !r.stdout.trim().startsWith('v')) return { ok: false, reason: `a contenção não confirmou: código ${r.code} ${r.stderr.trim().slice(0, 200)}` };
-      return { ok: true, level: `mxc:${sup.isolationTier ?? sup.availableMethods?.[0] ?? platform}` };
+      const level = `mxc:${sup.isolationTier ?? sup.availableMethods?.[0] ?? platform}`;
+      if (platform === 'darwin') return { ok: true, level, network: false, networkReason: 'no macOS, a rede pelo intermediário do Buddy também abriria os serviços locais do computador: o comando contido roda sem rede' };
+      return { ok: true, level, network: true };
     } catch (e) {
       return { ok: false, reason: `a contenção não carregou: ${String((e as Error).message ?? e).slice(0, 200)}` };
     }

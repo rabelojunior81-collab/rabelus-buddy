@@ -268,7 +268,11 @@ export async function startOwner(home: string): Promise<Owner> {
     const ap = agentProfile(h.id);
     const cst = posture === 'native' ? { ok: false, reason: 'postura do agente: sem a contenção do Buddy, por escolha do Pai' }
       : !ap ? { ok: false, reason: `sem perfil de contenção para ${h.name}` }
-      : await containment.status();
+      : await (async () => {
+        const s = await containment.status();
+        // O agente precisa da internet do provedor: sem rede segura na contenção (macOS), ele não roda contido.
+        return s.ok && s.network === false ? { ok: false, reason: s.networkReason ?? 'sem rede segura na contenção' } : s;
+      })();
     let px: NetProxy | undefined;
     let launch: ((spec: LaunchSpec, cwd: string) => Promise<import('node:child_process').ChildProcess>) | undefined;
     if (cst.ok && ap) {

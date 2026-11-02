@@ -8,10 +8,6 @@
 >
 > Tipos: `nascimento`, `ferramenta`, `doc`, `decisao`, `pesquisa`, `correcao`, `aprendizado`, `processo`.
 
-### #0046 · 2026-10-16T021524-0300 · claude-code-vs-code-fe93fb · feat
-
-M0.7a: retomada do loop (conversa no log, reconciliação por tipo de efeito) e o dono executando o agente (agent.run/agent.resume, aprovação pelo IPC, rotas e credenciais configuradas); kill -9 + resume sem escrita duplicada contra provedor falso.
-
 ### #0047 · 2026-10-16T022302-0300 · claude-code-vs-code-fe93fb · feat
 
 M0.7b: CLI do agente (run com dono sob demanda e aprovação no terminal, resume, status, log, providers, login/logout por chave). bd surfaces passa a cobrar que toda sub-fase concluída esteja no CHANGELOG do produto e a última no Estado dos READMEs (lacuna de M0.6b–M0.7a corrigida).
@@ -207,3 +203,7 @@ Pesquisa ao vivo do Cua (pedido do Pai): computador por agente (contêiner ou VM
 ### #0095 · 2026-10-25T174321-0300 · claude-code-desktop-f9fa85 · pesquisa
 
 Spike do Cua no Windows do Pai (M2.8): contêiner pelo Docker Desktop, OpenCode por ACP lá dentro, sem ver as pastas do Pai, arquivos de ida e volta com a lista do que mudou; a política de saída do Cua é recusada no Docker Desktop e a rede lá dentro fica livre; telemetria do Cua ligada por padrão; decisão de como seguir com o Pai
+
+### #0096 · 2026-11-02T200915-0300 · claude-code-desktop-7db43c · fix
+
+No macOS, o comando contido roda sem rede e o agente de fora não roda contido: a rede pelo intermediário exigia liberar o loopback do computador e abria os serviços locais (achado da CI semanal de 26/10 e 02/11). O bd pre mostra o resultado das rotinas agendadas.
